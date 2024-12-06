@@ -17,6 +17,13 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->text('bio')->nullable();
+            $table->string('hobi')->nullable();
+            $table->string('ktp')->unique()->nullable();
+            $table->integer('umur')->nullable();
+            $table->enum('gender', ['L', 'P'])->nullable();
+            $table->string('foto_profil')->nullable();
+            $table->enum('status', ['aktif', 'suspend', 'banned'])->default('aktif');
             $table->rememberToken();
             $table->timestamps();
         });

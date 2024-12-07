@@ -45,4 +45,44 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function pinalti(){
+        return $this->hasMany(Pinalti::class, 'user_id');
+    }
+
+    public function pesanDiterima(){
+        return $this->hasMany(Pesan::class, 'penerima_id');
+    }
+
+    public function pertemananTerkirim(){
+        return $this->hasMany(Pertemanan::class, 'pengirim_id');
+    }
+
+    public function pertemananDiterima(){
+        return $this->hasMany(Pertemanan::class, 'penerima_id');
+    }
+
+    public function laporanDibuat(){
+        return $this->hasMany(Laporan::class, 'report_id');
+    }
+
+    public function laporanDiterima(){
+        return $this->hasMany(Laporan::class, 'reported_id');
+    }
+
+    public function chatDikirim(){
+        return $this->hasMany(Chat::class, 'pengirim_id');
+    }
+
+    public function chatDiterima(){
+        return $this->hasMany(Chat::class, 'penerima_id');
+    }
+
+    public function blokir(){
+        return $this->hasMany(Blokir::class, 'users_id');
+    }
+
+    public function diblokirOleh(){
+        return $this->hasMany(Blokir::class, 'blocked_user_id');
+    }
 }

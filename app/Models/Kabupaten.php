@@ -6,6 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Kabupaten extends Model
 {
-    protected $table = 'kabupatens';
-    protected $fillable = ['provinsi_id', 'nama_kabupaten'];
+    protected $table = 'kabupaten';
+    protected $fillable = [
+        'nama',
+        'provinsi_id',
+    ];
+
+    public function provinsi(){
+        return $this->belongsTo(Provinsi::class, 'provinsi_id');
+    }
+
+    public function kecamatan(){
+        return $this->hasMany(Kecamatan::class, 'kabupaten_id');
+    }
 }

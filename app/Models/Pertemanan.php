@@ -6,12 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pertemanan extends Model {
     //
-    protected $table = 'pertemanans';
+    protected $table = 'pertemanan';
     protected $fillable = [
         'pengirim_id',
         'penerima_id',
         'status',
-        'created_at',
-        'updated_at' ];
+    ];
+
+    public function pengirim(){
+        return $this->belongsTo(User::class, 'pengirim_id');
     }
+
+    public function penerima(){
+        return $this->belongsTo(User::class, 'penerima_id');
+    }
+}
 

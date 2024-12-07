@@ -11,7 +11,13 @@ class Chat extends Model {
         'pengirim_id',
         'penerima_id',
         'konten',
-        'created_at',
-        'updated_at',
     ];
+
+    public function pengirim(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function penerima(){
+        return $this->belongsTo(User::class, 'penerima_id');
+    }
 }

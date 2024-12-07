@@ -6,12 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pesan extends Model {
     //
-    protected $table = 'pesans';
+    protected $table = 'pesan';
     protected $fillable = [
-        'user_id',
-        'message',
+        'penerima_id',
+        'konten',
         'is_read',
-        'created_at',
-
     ];
+
+    public function penerima(){
+        return $this->belongsTo(User::class, 'penerima_id');
+    }
 }

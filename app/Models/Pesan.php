@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Pesan extends Model
-{
-    protected $table = 'pesan';
+class Pesan extends Model {
+    //
+    protected $table = 'pesans';
     protected $fillable = [
-        'penerima_id',
-        'konten',
+        'user_id',
+        'message',
         'is_read',
-    ];
+        'created_at',
 
+    ];
 }

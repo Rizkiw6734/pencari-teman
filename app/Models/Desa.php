@@ -7,6 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class Desa extends Model
 {
     //
-    protected $table = 'desas';
-    protected $fillable = ['kecamatan_id', 'nama_desa', 'latitude', 'longitude'];
+    protected $table = 'desa';
+    protected $fillable = [
+        'nama',
+        'kecamatan_id',
+        'latitude',
+        'longitude'
+    ];
+
+    public function kecamatan(){
+        return $this->belongsTo(Kecamatan::class, 'kecamatan_id');
+    }
 }

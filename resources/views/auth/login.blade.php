@@ -47,7 +47,7 @@
                 <h2 class="title">Sign up</h2>
                 <div class="input-field">
                   <i class="fas fa-user"></i>
-                  <input type="text" name="username" placeholder="Username" required />
+                  <input type="text" name="name" placeholder="Username" required />
                 </div>
                 <div class="input-field">
                   <i class="fas fa-envelope"></i>
@@ -100,7 +100,7 @@
           </div>
           <img src="img/log.svg" class="image" alt="" />
         </div>
-        
+
         <div class="panel right-panel">
           <div class="content">
             <h3>One of us ?</h3>

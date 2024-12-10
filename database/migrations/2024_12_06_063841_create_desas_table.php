@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->foreignId('kecamatan_id')->constrained('kecamatan')->restrictOnDelete();
-            $table->decimal('latitude');
-            $table->decimal('longitude');
+            $table->decimal('latitude', 9, 6);
+            $table->decimal('longitude', 9, 6);
             $table->timestamps();
         });
     }

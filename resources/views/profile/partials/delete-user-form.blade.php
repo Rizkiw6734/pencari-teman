@@ -1,4 +1,4 @@
-<section class="space-y-6">
+<section class="p-4 bg-red-50 rounded-lg shadow-sm">
     <header>
         <h2 class="text-lg font-medium text-gray-900">
             {{ __('Delete Account') }}
@@ -9,47 +9,42 @@
         </p>
     </header>
 
-    <x-danger-button
-        x-data=""
-        x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
-    >{{ __('Delete Account') }}</x-danger-button>
+    <button type="button" class="px-4 py-2 btn btn-xs btn-danger mb-4" onclick="confirmDeleteAccount()">
+        {{ __('Delete Account') }}
+    </button>
 
-    <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
-        <form method="post" action="{{ route('profile.destroy') }}" class="p-6">
-            @csrf
-            @method('delete')
+    <form id="delete-account-form" method="post" action="{{ route('profile.destroy') }}" style="display: none;">
+        @csrf
+        @method('delete')
+        <input type="hidden" name="password" id="password">
+    </form>
 
-            <h2 class="text-lg font-medium text-gray-900">
-                {{ __('Are you sure you want to delete your account?') }}
-            </h2>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
-            <p class="mt-1 text-sm text-gray-600">
-                {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
-            </p>
-
-            <div class="mt-6">
-                <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
-
-                <x-text-input
-                    id="password"
-                    name="password"
-                    type="password"
-                    class="mt-1 block w-3/4"
-                    placeholder="{{ __('Password') }}"
-                />
-
-                <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
-            </div>
-
-            <div class="mt-6 flex justify-end">
-                <x-secondary-button x-on:click="$dispatch('close')">
-                    {{ __('Cancel') }}
-                </x-secondary-button>
-
-                <x-danger-button class="ms-3">
-                    {{ __('Delete Account') }}
-                </x-danger-button>
-            </div>
-        </form>
-    </x-modal>
+    <script>
+        function confirmDeleteAccount() {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Please enter your password to confirm account deletion.",
+                input: 'password',
+                inputPlaceholder: 'Enter your password',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Confirm Delete',
+                cancelButtonText: 'Cancel',
+                preConfirm: (password) => {
+                    if (!password) {
+                        Swal.showValidationMessage('Password required');
+                    }
+                    return password;
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('password').value = result.value;
+                    document.getElementById('delete-account-form').submit();
+                }
+            });
+        }
+    </script>
 </section>

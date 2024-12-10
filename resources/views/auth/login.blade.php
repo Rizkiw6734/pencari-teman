@@ -24,6 +24,10 @@
                   <i class="fas fa-lock"></i>
                   <input type="password" name="password" placeholder="Password" required />
                 </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="rememberMe" checked="">
+                  <label class="form-check-label" for="rememberMe">Remember me</label>
+                </div>               
                 <input type="submit" value="Login" class="btn solid" />
                 <p class="social-text">Or Sign in with social platforms</p>
                 <div class="social-media">
@@ -91,28 +95,26 @@
           <div class="content">
             <h3>New here ?</h3>
             <p>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Debitis,
-              ex ratione. Aliquid!
+              Bergabunglah dengan kami untuk mendapatkan akses penuh ke semua fitur. Daftar sekarang untuk memulai pengalaman Anda dengan kami.
             </p>
             <button class="btn transparent" id="sign-up-btn">
               Sign up
             </button>
           </div>
-          <img src="img/log.svg" class="image" alt="" />
+          <img src="/assets/img/log.svg" class="image" alt=""/>
         </div>
 
         <div class="panel right-panel">
           <div class="content">
             <h3>One of us ?</h3>
             <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum
-              laboriosam ad deleniti.
+              Sudah memiliki akun? Masuk sekarang untuk melanjutkan dan menikmati semua fitur yang tersedia.
             </p>
             <button class="btn transparent" id="sign-in-btn">
               Sign in
             </button>
           </div>
-          <img src="img/register.svg" class="image" alt="" />
+          <img src="/assets/img/register.svg" class="image" alt="" />
         </div>
       </div>
     </div>

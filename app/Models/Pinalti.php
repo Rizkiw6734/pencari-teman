@@ -9,7 +9,7 @@ class Pinalti extends Model {
     //
     protected $table = 'pinalti';
     protected $fillable = [
-        'user_id',
+        'users_id',
         'jenis_pelanggaran',
         'alasan',
         'bukti',
@@ -20,7 +20,7 @@ class Pinalti extends Model {
     ];
 
     public function user(){
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'users_id');
     }
 
 }

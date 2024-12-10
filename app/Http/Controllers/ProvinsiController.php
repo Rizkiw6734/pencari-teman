@@ -10,8 +10,35 @@ class ProvinsiController extends Controller {
     //
 
     public function index() {
-        $provinsi = Provinsi::all();
-        return view( 'provinsi.index', compact( 'provinsi'));
+        $provinsi = Provinsi::with(['kabupaten' => function($query){
+            $query->with(['kecamatan' => function($query){
+                $query->with(['desa']);
+            }]);
+        }])->get();
+        foreach ($provinsi as $p) {
+            echo "Provinsi: $p->nama <br>";
+            $no = 1;
+            foreach ($p->kabupaten as $k) {
+                echo "$no . Kabupaten: $k->nama <br>";
+                $no++;
+                $nos = 1;
+                foreach ($k->kecamatan as $kec) {
+                    echo "$nos . Kecamatan: $kec->nama <br>";
+                    $nos++;
+                    $nus = 1;
+                    foreach ($kec->desa as $d) {
+                        echo "$nus . Desa: $d->nama <br>";
+                        echo "latitude: $d->latitude <br>";
+                        echo "longtitude: $d->longitude <br>";
+                        $nus++;
+                        echo "<br>";
+                    }
+                }
+                echo "<br>";
+            }
+            echo "<br>";
+        }
+        // return view( 'provinsi.index', compact( 'provinsi'));
     }
 
     public function create() {

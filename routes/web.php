@@ -8,6 +8,8 @@ use App\Http\Middleware\RoleMiddleware;
 use App\Http\Controllers\ProvinsiController;
 use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\DesaController;
+use App\Http\Controllers\PinaltiController;
+use App\Models\Pinalti;
 
 require __DIR__.'/auth.php';
 Route::get('/', function () {
@@ -66,6 +68,14 @@ Route::post('/desa', [DesaController::class, 'store'])->name('desa.store');
 Route::get('/desa/{id}/edit', [DesaController::class, 'edit'])->name('desa.edit');
 Route::patch('/desa/{id}', [DesaController::class, 'update'])->name('desa.update');
 Route::delete('/desa/{id}', [DesaController::class, 'destroy'])->name('desa.destroy');
+
+//pinalti
+Route::get('/pinalti', [PinaltiController::class, 'index'])->name('pinalti.index');
+Route::get('/pinalti/create', [PinaltiController::class, 'create'])->name('pinalti.create');
+Route::post('/pinalti', [PinaltiController::class, 'store'])->name('pinalti.store');
+Route::get('/pinalti/{id}/edit', [PinaltiController::class, 'edit'])->name('pinalti.edit');
+Route::patch('/pinalti/{id}', [PinaltiController::class, 'update'])->name('pinalti.update');
+Route::delete('/pinalti/{id}', [PinaltiController::class, 'destroy'])->name('pinalti.destroy');
 
 
 

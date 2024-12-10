@@ -10,9 +10,14 @@ use App\Models\Kabupaten;
 class KecamatanController extends Controller
 {
     public function index() {
-        $kecamatan = Kecamatan::all();
-        $kabupaten = Kabupaten::all();
-        return view( 'kecamatan.index', compact( 'kecamatan','kabupaten' ) );
+        $kecamatan = Kecamatan::with(['desa'])->get();
+        foreach ($kecamatan as $k) {
+            echo "Nama: $k->nama <br>";
+            foreach ($k->desa as $d) {
+                echo "Desa: $d->nama <br>";
+            }
+            echo"<br>";
+        }
     }
 
     public function create() {

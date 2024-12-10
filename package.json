@@ -33,5 +33,8 @@
     "bugs": {
         "url": "https://github.com/Rizkiw6734/pencari-teman/issues"
     },
-    "homepage": "https://github.com/Rizkiw6734/pencari-teman#readme"
+    "homepage": "https://github.com/Rizkiw6734/pencari-teman#readme",
+    "dependencies": {
+        "sweetalert2": "^11.6.13"
+    }
 }

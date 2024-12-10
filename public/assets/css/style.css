@@ -14,7 +14,7 @@ font-family: "Poppins", sans-serif;
 .container {
 position: relative;
 width: 100%;
-background-color: #fff;
+background-color: #000000;
 min-height: 100vh;
 overflow: hidden;
 }
@@ -62,7 +62,7 @@ z-index: 2;
 
 .title {
 font-size: 2.2rem;
-color: #444;
+color: #fff;
 margin-bottom: 10px;
 }
 
@@ -102,9 +102,62 @@ color: #aaa;
 font-weight: 500;
 }
 
+.form-check {
+display: flex;
+align-items: center;
+gap: 10px;
+}
+
+.form-check .form-check-input {
+flex-shrink: 0;
+}
+
+.form-check-input {
+width: 42px;
+height: 24px;
+background-color: #ccc;
+border-radius: 34px;
+position: relative;
+appearance: none;
+outline: none;
+cursor: pointer;
+transition: background-color 0.3s ease;
+}
+  
+.form-check-input::before {
+content: '';
+width: 20px;
+height: 20px;
+background-color: white;
+border-radius: 50%;
+position: absolute;
+top: 2px;
+left: 2px;
+transition: transform 0.3s ease;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+  
+.form-check-input:checked {
+background-color: #4481eb;
+}
+  
+.form-check-input:checked::before {
+transform: translateX(18px);
+}
+  
+.form-check-label {
+margin-left: 10px;
+font-size: 14px;
+color: #555;
+cursor: pointer;
+}  
+
 .social-text {
 padding: 0.7rem 0;
 font-size: 1rem;
+color: #aaa;
+margin: 0;
+line-height: 1;
 }
 
 .social-media {
@@ -119,9 +172,9 @@ display: flex;
 justify-content: center;
 align-items: center;
 margin: 0 0.45rem;
-color: #333;
+color: #aaa;
 border-radius: 50%;
-border: 1px solid #333;
+border: 1px solid #aaa;
 text-decoration: none;
 font-size: 1.1rem;
 transition: 0.3s;

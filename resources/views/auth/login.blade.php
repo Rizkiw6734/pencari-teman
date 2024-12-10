@@ -27,6 +27,7 @@
     <div class="container">
       <div class="forms-container">
         <div class="signin-signup">
+<<<<<<< HEAD
           <!-- Form Login -->
           <form action="{{ route('login') }}" method="POST" class="sign-in-form">
             @csrf
@@ -73,6 +74,40 @@
               </a>
             </div>
           </form>
+=======
+            <form action="{{ route('login') }}" method="POST" class="sign-in-form">
+                @csrf
+                <h2 class="title">Sign in</h2>
+                <div class="input-field">
+                  <i class="fas fa-envelope"></i>
+                  <input type="email" name="email" placeholder="Email" required />
+                </div>
+                <div class="input-field">
+                  <i class="fas fa-lock"></i>
+                  <input type="password" name="password" placeholder="Password" required />
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="rememberMe" checked="">
+                  <label class="form-check-label" for="rememberMe">Remember me</label>
+                </div>               
+                <input type="submit" value="Login" class="btn solid" />
+                <p class="social-text">Or Sign in with social platforms</p>
+                <div class="social-media">
+                <a href="#" class="social-icon">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="social-icon">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="social-icon">
+                    <i class="fab fa-google"></i>
+                </a>
+                <a href="#" class="social-icon">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                </div>
+            </form>
+>>>>>>> 2a371acf83a42786b7c816e02e80962a1aa29e35
 
           <!-- Form Register -->
           <form action="{{ route('register') }}" method="POST" class="sign-up-form">
@@ -155,26 +190,34 @@
           <div class="content">
             <h3>Baru di sini?</h3>
             <p>
+<<<<<<< HEAD
               Bergabunglah dengan komunitas kami dan nikmati layanan terbaik kami.
+=======
+              Bergabunglah dengan kami untuk mendapatkan akses penuh ke semua fitur. Daftar sekarang untuk memulai pengalaman Anda dengan kami.
+>>>>>>> 2a371acf83a42786b7c816e02e80962a1aa29e35
             </p>
             <button class="btn transparent" id="sign-up-btn">
               Daftar
             </button>
           </div>
-          <img src="img/log.svg" class="image" alt="" />
+          <img src="/assets/img/log.svg" class="image" alt=""/>
         </div>
 
         <div class="panel right-panel">
           <div class="content">
             <h3>Sudah punya akun?</h3>
             <p>
+<<<<<<< HEAD
               Masuk dan kelola data Anda dengan mudah di sistem kami.
+=======
+              Sudah memiliki akun? Masuk sekarang untuk melanjutkan dan menikmati semua fitur yang tersedia.
+>>>>>>> 2a371acf83a42786b7c816e02e80962a1aa29e35
             </p>
             <button class="btn transparent" id="sign-in-btn">
               Masuk
             </button>
           </div>
-          <img src="img/register.svg" class="image" alt="" />
+          <img src="/assets/img/register.svg" class="image" alt="" />
         </div>
       </div>
     </div>

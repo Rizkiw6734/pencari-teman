@@ -10,6 +10,9 @@ class Laporan extends Model {
     protected $fillable = [
         'report_id',
         'reported_id',
+        'bukti',
+        'alasan',
+        'status'
     ];
 
     public function pelapor(){

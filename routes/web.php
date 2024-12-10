@@ -8,6 +8,7 @@ use App\Http\Middleware\RoleMiddleware;
 use App\Http\Controllers\ProvinsiController;
 use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\DesaController;
+use App\Http\Controllers\LaporanController;
 
 require __DIR__.'/auth.php';
 Route::get('/', function () {
@@ -66,6 +67,14 @@ Route::post('/desa', [DesaController::class, 'store'])->name('desa.store');
 Route::get('/desa/{id}/edit', [DesaController::class, 'edit'])->name('desa.edit');
 Route::patch('/desa/{id}', [DesaController::class, 'update'])->name('desa.update');
 Route::delete('/desa/{id}', [DesaController::class, 'destroy'])->name('desa.destroy');
+
+//laporan
+Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+Route::get('/laporan/create', [LaporanController::class, 'create'])->name('laporan.create');
+Route::post('/laporan', [LaporanController::class, 'store'])->name('laporan.store');
+Route::get('/laporan/{id}/edit', [LaporanController::class, 'edit'])->name('laporan.edit');
+Route::patch('/laporan/{id}', [LaporanController::class, 'update'])->name('laporan.update');
+Route::delete('/laporan/{id}', [LaporanController::class, 'destroy'])->name('laporan.destroy');
 
 
 

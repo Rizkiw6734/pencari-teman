@@ -5,90 +5,80 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Provinsi;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\DB;
 
 class ProvinsiController extends Controller {
-    //
 
+    // Ambil Semua Data Provinsi dengan Relasi Kabupaten, Kecamatan, Desa
     public function index() {
-        $provinsi = Provinsi::with(['kabupaten' => function($query){
-            $query->with(['kecamatan' => function($query){
+        // Mengambil data lokasi terdekat dari database
+        $nearbyLocations = DB::table('lokasi')
+            ->select('provinsi', 'kabupaten', 'kecamatan', 'desa', 'distance')
+            ->get();
+
+        // Mengirim data ke view
+        return view('lokasi.index', compact('nearbyLocations'));
+    }
+
+
+    // Menghitung jarak antar lokasi (menggunakan Haversine Formula)
+    private function calculateDistance($lat1, $lon1, $lat2, $lon2) {
+        $earthRadius = 6371; // Radius Bumi dalam km
+
+        $deltaLat = deg2rad($lat2 - $lat1);
+        $deltaLon = deg2rad($lon2 - $lon1);
+
+        $a = sin($deltaLat / 2) * sin($deltaLat / 2) +
+             cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+             sin($deltaLon / 2) * sin($deltaLon / 2);
+
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        return $earthRadius * $c; // Jarak dalam km
+    }
+
+    // Buat Lokasi Terdekat berdasarkan Koordinat User
+    public function findNearby(Request $request) {
+        $userLat = $request->input('latitude');
+        $userLon = $request->input('longitude');
+
+        $provinsi = Provinsi::with(['kabupaten' => function($query) {
+            $query->with(['kecamatan' => function($query) {
                 $query->with(['desa']);
             }]);
         }])->get();
+
+        $nearbyLocations = [];
+
         foreach ($provinsi as $p) {
-            echo "Provinsi: $p->nama <br>";
-            $no = 1;
             foreach ($p->kabupaten as $k) {
-                echo "$no . Kabupaten: $k->nama <br>";
-                $no++;
-                $nos = 1;
                 foreach ($k->kecamatan as $kec) {
-                    echo "$nos . Kecamatan: $kec->nama <br>";
-                    $nos++;
-                    $nus = 1;
                     foreach ($kec->desa as $d) {
-                        echo "$nus . Desa: $d->nama <br>";
-                        echo "latitude: $d->latitude <br>";
-                        echo "longtitude: $d->longitude <br>";
-                        $nus++;
-                        echo "<br>";
+                        $distance = $this->calculateDistance($userLat, $userLon, $d->latitude, $d->longitude);
+                        $nearbyLocations[] = [
+                            'provinsi'   => $p->nama,
+                            'kabupaten'  => $k->nama,
+                            'kecamatan'  => $kec->nama,
+                            'desa'       => $d->nama,
+                            'distance'   => round($distance, 2) . " km"
+                        ];
                     }
                 }
-                echo "<br>";
             }
-            echo "<br>";
         }
-        // return view( 'provinsi.index', compact( 'provinsi'));
+
+        return view('lokasi.index', compact('nearbyLocations'));
     }
 
-    public function create() {
-        return view( 'provinsi.create' );
-    }
+    public function store(Request $request) {
+        $validated = $request->validate(['nama' => 'required|string|max:255']);
 
-    public function store( Request $request ) {
-        $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-        ], [
-            'nama.required' => 'Nama Provinsi wajib diisi.',
-        ]);
-
-       try {
-            Provinsi::create( $request->all() );
+        try {
+            Provinsi::create($request->all());
         } catch (\Exception $e) {
             Alert::error('Gagal', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage());
         }
-        return redirect()->route('provinsi.index')->with('success', 'Data Provinsi berhasil ditambahkan.');
+
+        return redirect()->route('lokasi.index')->with('success', 'Data Provinsi berhasil ditambahkan.');
     }
-
-    public function edit($id) {
-        $provinsi = Provinsi::findOrFail($id);
-        return view('provinsi.edit', compact('provinsi'));
-    }
-
-    public function update( Request $request, $id ) {
-        $validated = $request->validate( [
-            'nama' => 'required|string|max:255',
-        ],[
-            'nama.required' => 'Nama Provinsi wajib diisi.',
-        ] );
-
-      try {
-            $provinsi = Provinsi::findOrFail( $id );
-            $provinsi->update( $request->all() );
-        } catch (\Exception $e) {
-            Alert::error('Gagal', 'Terjadi kesalahan saat mengupdate data: ' . $e->getMessage());
-        }
-        return redirect()->route('provinsi.index')->with('success', 'Data Provinsi berhasil diupdate.');
-    }
-
-    public function destroy( $id ) {
-        try {
-            $provinsi = Provinsi::findOrFail( $id );
-            $provinsi->delete();
-
-        } catch (\Exception $e) {
-            Alert::error('Gagal', 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage());
-        }
-        return redirect()->route('provinsi.index')->with('success', 'Data Provinsi berhasil dihapus.');
-    }
-        }
+}

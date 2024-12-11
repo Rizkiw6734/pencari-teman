@@ -27,8 +27,8 @@ class DesaController extends Controller
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'kecamatan_id' => 'required|integer|exists:kecamatan,id',
-            'latitude' => 'required|decimal',
-            'longitude' => 'required|decimal'
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric'
         ],[
             'nama.required' => 'Nama Desa wajib diisi',
             'kecamatan_id.required' => ' Nama kecamatan wajib diisi',

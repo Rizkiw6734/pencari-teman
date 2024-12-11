@@ -10,6 +10,7 @@ use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\DesaController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PinaltiController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
 require __DIR__.'/auth.php';
 Route::get('/', function () {
@@ -22,17 +23,29 @@ Route::middleware([ToSweetAlert::class])->group(function () {
     });
 });
 
+# Route untuk registrasi (tidak terkena middleware)
+Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
+Route::post('register', [RegisteredUserController::class, 'store']);
+
 Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function () {
     Route::get('/homead', function () {
         return view('home');
     });
+});
+
+    Route::middleware('auth')->group(function () {
+        Route::get('/dashboard', function () {
+            return view('dashboard');
+        })->name('dashboard');
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    });
+
     //provinsi
-    Route::get('/provinsi', [ProvinsiController::class, 'index'])->name('provinsi.index');
-    Route::get('/provinsi/create', [ProvinsiController::class, 'create'])->name('provinsi.create');
-    Route::post('/provinsi', [ProvinsiController::class, 'store'])->name('provinsi.store');
-    Route::get('/provinsi/{id}/edit', [ProvinsiController::class, 'edit'])->name('provinsi.edit');
-    Route::put('/provinsi/{id}', [ProvinsiController::class, 'update'])->name('provinsi.update');
-    Route::delete('/provinsi/{id}', [ProvinsiController::class, 'destroy'])->name('provinsi.destroy');
+    Route::get('/lokasi', [ProvinsiController::class, 'index'])->name('lokasi.index');
+    Route::get('/find-nearby', [ProvinsiController::class, 'findNearby'])->name('lokasi.index');
+
 
     //kabupaten
     Route::get('/kabupaten', [KabupatenController::class, 'index'])->name('kabupaten.index');
@@ -66,6 +79,7 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
     Route::put('/laporan/{id}', [LaporanController::class, 'update'])->name('laporan.update');
     Route::delete('/laporan/{id}', [LaporanController::class, 'destroy'])->name('laporan.destroy');
 
+    //pinalti
     Route::get('/pinalti', [PinaltiController::class, 'index'])->name('pinalti.index');
     Route::get('/pinalti/create', [PinaltiController::class, 'create'])->name('pinalti.create');
     Route::post('/pinalti', [PinaltiController::class, 'store'])->name('pinalti.store');
@@ -73,16 +87,12 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
     Route::put('/pinalti/{id}', [PinaltiController::class, 'update'])->name('pinalti.update');
     Route::delete('/pinalti/{id}', [PinaltiController::class, 'destroy'])->name('pinalti.destroy');
 
-});
 
-Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+
+
+
+
+
 
 
 

@@ -14,9 +14,8 @@ class LaporanController extends Controller
      */
     public function index()
     {
-        $laporan = Laporan::all();
-        $user = User::all();
-        return view('laporan.index', compact('laporan', 'user'));
+        $laporans = Laporan::with(['pelapor', 'terlapor'])->paginate(10);
+        return view('laporan.index', compact('laporans'));
     }
 
     /**
@@ -24,8 +23,8 @@ class LaporanController extends Controller
      */
     public function create()
     {
-        $user = User::all();
-        return view('laporan.create', compact('laporan', 'user'));
+        $users = User::all();
+        return view('laporan.create', compact('users'));
     }
 
     /**
@@ -33,26 +32,23 @@ class LaporanController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'report_id' => 'required|integer|exists:user,id',
-            'reported_id' => 'required|integer|exists:user,id',
-            'bukti' => 'required|string|max:255',
-            'alasan' => 'required|text|max:255',
-            'status' => 'required|enum:0,1'
-        ],[
-            'report_id.required' => 'Laporan wajib diisi.',
-            'reported_id.required' => 'Reported wajib diisi.',
-            'bukti.required' => 'Bukti wajib diisi.',
-            'alasan.required' => 'Alasan wajib diisi.',
-            'status.required' => 'Status wajib diisi.'
+        $request->validate([
+            'report_id' => 'required|exists:users,id',
+            'reported_id' => 'required|exists:users,id|different:report_id',
+            'bukti' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'alasan' => 'required|string|max:255',
         ]);
 
-        try {
-            Laporan::create($request->all());
-        } catch (\Exception $e) {
-            Alert::error('Gagal', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage());
-        }
-        return redirect()->route('laporan.index')->with('success', 'Data Laporan berhasil ditambahkan.');
+        $buktiPath = $request->file('bukti')->store('bukti', 'public');
+
+        $laporan = new Laporan();
+        $laporan->report_id = $request->report_id;
+        $laporan->reported_id = $request->reported_id;
+        $laporan->bukti = $buktiPath;
+        $laporan->alasan = $request->alasan;
+        $laporan->save();
+
+        return redirect()->route('laporan.index')->with('success', 'Laporan berhasil ditambahkan!');
     }
 
     /**
@@ -69,8 +65,8 @@ class LaporanController extends Controller
     public function edit(string $id)
     {
         $laporan = Laporan::findOrFail($id);
-        $user = User::findOrFail($laporan->report_id);
-        return view('laporan.edit', compact('laporan', 'user'));
+        $users = User::all();
+        return view('laporan.edit', compact('laporan', 'users'));
     }
 
     /**
@@ -78,27 +74,26 @@ class LaporanController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $validated = $request->validate([
-            'report_id' => 'required|integer|exists:user,id',
-            'reported_id' => 'required|integer|exists:user,id',
-            'bukti' => 'required|string|max:255',
-            'alasan' => 'required|text|max:255',
-            'status' => 'required|enum:0,1'
-        ],[
-            'report_id.required' => 'Laporan wajib diisi.',
-            'reported_id.required' => 'Reported wajib diisi.',
-            'bukti.required' => 'Bukti wajib diisi.',
-            'alasan.required' => 'Alasan wajib diisi.',
-            'status.required' => 'Status wajib diisi.'
+        $request->validate([
+            'report_id' => 'required|exists:users,id',
+            'reported_id' => 'required|exists:users,id|different:report_id',
+            'bukti' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'alasan' => 'required|string|max:255',
         ]);
 
-        try {
-            $laporan = Laporan::findOrFail($id);
-            $laporan->update($request->all());
-        } catch (\Exception $e) {
-            Alert::error('Gagal', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage());
+        $laporan = Laporan::findOrFail($id);
+
+        if ($request->hasFile('bukti')) {
+            $buktiPath = $request->file('bukti')->store('bukti', 'public');
+            $laporan->bukti = $buktiPath;
         }
-        return redirect()->route('laporan.index')->with('success', 'Data Laporan berhasil diupdate.');
+
+        $laporan->report_id = $request->report_id;
+        $laporan->reported_id = $request->reported_id;
+        $laporan->alasan = $request->alasan;
+        $laporan->save();
+
+        return redirect()->route('laporan.index')->with('success', 'Laporan berhasil diperbarui!');
     }
 
     /**
@@ -106,12 +101,8 @@ class LaporanController extends Controller
      */
     public function destroy(string $id)
     {
-        try {
-            $laporan = Laporan::findOrFail($id);
-            $laporan->delete();
-        } catch (\Exception $e) {
-            Alert::error('Gagal', 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage());
-        }
-        return redirect()->route('laporan.index')->with('success', 'Data Laporan berhasil dihapus.');
+        $laporan = Laporan::findOrFail($id);
+        $laporan->delete();
+        return redirect()->route('laporan.index')->with('success', 'Laporan berhasil dihapus!');
     }
 }

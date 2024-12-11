@@ -8,6 +8,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -24,11 +26,30 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+    $request->validate([
+        'email' => 'required|string|email',
+        'password' => 'required|string'
+    ], [
+        'email.required' => 'Email wajib diisi.',
+        'email.email' => 'Format email tidak valid.',
+        'password.required' => 'Password wajib diisi.'
+    ]);
 
-        $request->session()->regenerate();
+    if (!Auth::attempt($request->only('email', 'password'))) {
+        return back()->with('error', 'Login gagal, email atau password salah.');
+    }
 
-        return redirect()->intended(route('dashboard', absolute: false));
+    $request->session()->regenerate();
+
+    $user = Auth::user();
+
+    if ($user->hasRole('Admin')) {
+        return redirect()->route('dashboard')
+            ->with('success', 'Selamat datang Admin ' . $user->name . '!');
+    } elseif ($user->hasRole('User')) {
+        return redirect()->route('home')
+            ->with('success', 'Selamat datang ' . $user->name . '!');
+    }
     }
 
     /**

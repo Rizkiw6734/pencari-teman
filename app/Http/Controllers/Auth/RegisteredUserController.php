@@ -31,7 +31,7 @@ class RegisteredUserController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User ::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ], [
             'name.required' => 'Nama wajib diisi.',
@@ -47,16 +47,20 @@ class RegisteredUserController extends Controller
             'password.confirmed' => 'Password konfirmasi tidak sesuai.'
         ]);
 
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        try {
+            $user = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+            ]);
 
-        $user->assignRole('User');
+            $user->assignRole('User ');
 
-        Auth::login($user);
+            Auth::login($user);
 
-        return redirect()->route('home')->with('success','Registrasi berhasil, selamat datang!');
+            return redirect()->route('home')->with('success', 'Registrasi berhasil, selamat datang!');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['registration' => 'Terjadi kesalahan saat registrasi. Silakan coba lagi.'])->withInput();
+        }
     }
 }

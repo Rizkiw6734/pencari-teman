@@ -27,7 +27,6 @@
     <div class="container">
       <div class="forms-container">
         <div class="signin-signup">
-<<<<<<< HEAD
           <!-- Form Login -->
           <form action="{{ route('login') }}" method="POST" class="sign-in-form">
             @csrf
@@ -39,10 +38,9 @@
                 name="email"
                 placeholder="Email"
                 value="{{ old('email') }}"
-                required
               />
               @error('email')
-              <div class="error-message">Email tidak valid atau sudah terdaftar.</div>
+              <div class="error-message">{{ $message }}</div>
               @enderror
             </div>
             <div class="input-field">
@@ -51,11 +49,14 @@
                 type="password"
                 name="password"
                 placeholder="Password"
-                required
               />
               @error('password')
-              <div class="error-message">Password salah atau wajib diisi.</div>
+              <div class="error-message">{{ $message }}</div>
               @enderror
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="rememberMe" />
+              <label class="form-check-label" for="rememberMe">Remember me</label>
             </div>
             <input type="submit" value="Masuk" class="btn solid" />
             <p class="social-text">Atau masuk dengan platform sosial</p>
@@ -74,40 +75,6 @@
               </a>
             </div>
           </form>
-=======
-            <form action="{{ route('login') }}" method="POST" class="sign-in-form">
-                @csrf
-                <h2 class="title">Sign in</h2>
-                <div class="input-field">
-                  <i class="fas fa-envelope"></i>
-                  <input type="email" name="email" placeholder="Email" required />
-                </div>
-                <div class="input-field">
-                  <i class="fas fa-lock"></i>
-                  <input type="password" name="password" placeholder="Password" required />
-                </div>
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="rememberMe" checked="">
-                  <label class="form-check-label" for="rememberMe">Remember me</label>
-                </div>               
-                <input type="submit" value="Login" class="btn solid" />
-                <p class="social-text">Or Sign in with social platforms</p>
-                <div class="social-media">
-                <a href="#" class="social-icon">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-                <a href="#" class="social-icon">
-                    <i class="fab fa-twitter"></i>
-                </a>
-                <a href="#" class="social-icon">
-                    <i class="fab fa-google"></i>
-                </a>
-                <a href="#" class="social-icon">
-                    <i class="fab fa-linkedin-in"></i>
-                </a>
-                </div>
-            </form>
->>>>>>> 2a371acf83a42786b7c816e02e80962a1aa29e35
 
           <!-- Form Register -->
           <form action="{{ route('register') }}" method="POST" class="sign-up-form">
@@ -120,10 +87,9 @@
                 name="name"
                 placeholder="Nama Pengguna"
                 value="{{ old('name') }}"
-                required
               />
               @error('name')
-              <div class="error-message">Nama harus valid dan belum terdaftar.</div>
+              <div class="error-message">{{ $message }}</div>
               @enderror
             </div>
             <div class="input-field">
@@ -133,10 +99,9 @@
                 name="email"
                 placeholder="Email"
                 value="{{ old('email') }}"
-                required
               />
               @error('email')
-              <div class="error-message">Email tidak valid atau sudah terdaftar.</div>
+              <div class="error-message">{{ $message }}</div>
               @enderror
             </div>
             <div class="input-field">
@@ -145,11 +110,10 @@
                 type="password"
                 name="password"
                 placeholder="Password"
-                required
               />
               @error('password')
               <div class="error-message">
-                Password wajib diisi dan harus sesuai dengan aturan keamanan.
+                {{ $message }}
               </div>
               @enderror
             </div>
@@ -159,10 +123,9 @@
                 type="password"
                 name="password_confirmation"
                 placeholder="Konfirmasi Password"
-                required
               />
               @error('password_confirmation')
-              <div class="error-message">Konfirmasi password tidak cocok.</div>
+              <div class="error-message">{{ $message }}</div>
               @enderror
             </div>
             <input type="submit" class="btn" value="Daftar" />
@@ -184,17 +147,12 @@
           </form>
         </div>
       </div>
-
       <div class="panels-container">
         <div class="panel left-panel">
           <div class="content">
             <h3>Baru di sini?</h3>
             <p>
-<<<<<<< HEAD
               Bergabunglah dengan komunitas kami dan nikmati layanan terbaik kami.
-=======
-              Bergabunglah dengan kami untuk mendapatkan akses penuh ke semua fitur. Daftar sekarang untuk memulai pengalaman Anda dengan kami.
->>>>>>> 2a371acf83a42786b7c816e02e80962a1aa29e35
             </p>
             <button class="btn transparent" id="sign-up-btn">
               Daftar
@@ -202,16 +160,11 @@
           </div>
           <img src="/assets/img/log.svg" class="image" alt=""/>
         </div>
-
         <div class="panel right-panel">
           <div class="content">
             <h3>Sudah punya akun?</h3>
             <p>
-<<<<<<< HEAD
               Masuk dan kelola data Anda dengan mudah di sistem kami.
-=======
-              Sudah memiliki akun? Masuk sekarang untuk melanjutkan dan menikmati semua fitur yang tersedia.
->>>>>>> 2a371acf83a42786b7c816e02e80962a1aa29e35
             </p>
             <button class="btn transparent" id="sign-in-btn">
               Masuk
@@ -221,7 +174,6 @@
         </div>
       </div>
     </div>
-
     <script src="/assets/js/app.js"></script>
   </body>
 </html>

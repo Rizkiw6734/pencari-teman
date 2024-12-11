@@ -46,5 +46,13 @@
                 }
             });
         }
+
+        @if ($errors->userDeletion->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                html: '<span style="display:block; margin-bottom:5px;">Password yang Anda masukkan salah.</span><span>Silahkan coba lagi.</span>',
+            });
+        @endif
     </script>
 </section>

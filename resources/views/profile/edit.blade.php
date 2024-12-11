@@ -14,6 +14,22 @@
             </div>
         </nav>
         
+        <style>
+            .card-header {
+                font-size: 1.25rem;
+                padding: 1rem;
+                }
+            
+            h3 {
+                color: #4a5568;
+                margin-bottom: 1rem;
+                }
+        
+            .bg-red-50 {
+                background-color: #fff5f5;
+                }
+        </style>
+
         <div class="page-header min-height-250 border-radius-lg mt-4 d-flex flex-column justify-content-end" style="background-image: url('assets/img/curved-images/curved14.jpg'); background-size: cover; background-position: center;">
             <div class="w-100 position-relative p-3">
                 <div class="d-flex justify-content-between align-items-end">

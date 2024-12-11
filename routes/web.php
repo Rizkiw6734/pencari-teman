@@ -10,7 +10,6 @@ use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\DesaController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PinaltiController;
-use App\Http\Controllers\Auth\RegisteredUserController;
 
 require __DIR__.'/auth.php';
 Route::get('/', function () {
@@ -23,9 +22,6 @@ Route::middleware([ToSweetAlert::class])->group(function () {
     });
 });
 
-# Route untuk registrasi (tidak terkena middleware)
-Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
-Route::post('register', [RegisteredUserController::class, 'store']);
 
 Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function () {
     Route::get('/homead', function () {
@@ -86,7 +82,6 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
     Route::get('/pinalti/{id}/edit', [PinaltiController::class, 'edit'])->name('pinalti.edit');
     Route::put('/pinalti/{id}', [PinaltiController::class, 'update'])->name('pinalti.update');
     Route::delete('/pinalti/{id}', [PinaltiController::class, 'destroy'])->name('pinalti.destroy');
-
 
 
 

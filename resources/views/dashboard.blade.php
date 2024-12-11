@@ -123,7 +123,7 @@
         <div class="row">
           <div class="col-lg-6 col-md-6 col-12">
             <div class="card">
-              <span class="mask bg-primary opacity-10 border-radius-lg"></span>
+              <span class="mask bg-primary opacity-10 border-radius-lg" style="background: #0D6EFD !important;"></span>
               <div class="card-body p-3 position-relative">
                 <div class="row">
                   <div class="col-8 text-start">
@@ -264,7 +264,7 @@
                   </div>
                   <div>
                     <div class="progress progress-md">
-                      <div class="progress-bar bg-primary w-80" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                      <div class="progress-bar bg-primary w-80" style="background: #0D6EFD !important;" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                   </div>
                 </div>
@@ -277,7 +277,7 @@
                   </div>
                   <div>
                     <div class="progress progress-md">
-                      <div class="progress-bar bg-primary w-10" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+                      <div class="progress-bar bg-primary w-10" style="background: #0D6EFD !important;" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                   </div>
                 </div>
@@ -290,7 +290,7 @@
                   </div>
                   <div>
                     <div class="progress progress-md">
-                      <div class="progress-bar bg-primary w-5" role="progressbar" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100"></div>
+                      <div class="progress-bar bg-primary w-5" style="background: #0D6EFD !important;" role="progressbar" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                   </div>
                 </div>

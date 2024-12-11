@@ -10,6 +10,8 @@ use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\DesaController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PinaltiController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+
 
 require __DIR__.'/auth.php';
 Route::get('/', function () {
@@ -84,5 +86,5 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 

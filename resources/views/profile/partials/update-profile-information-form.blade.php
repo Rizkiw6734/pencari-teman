@@ -56,7 +56,7 @@
 
         <!-- Save Button -->
         <div class="flex justify-end">
-            <button type="submit" class="px-4 py-2 btn btn-xs btn-primary">
+            <button type="submit" class="px-4 py-2 btn btn-xs btn-primary text-white" style="background: #0D6EFD;">
                 {{ __('Save') }}
             </button>
         </div>

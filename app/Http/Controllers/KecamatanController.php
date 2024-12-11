@@ -43,7 +43,7 @@ class KecamatanController extends Controller
     }
 
     public function edit($id) {
-        $kecamatan = Kecamatan::findOrfail($id);
+        $kecamatan = Kecamatan::findOrFail($id);
         $kabupaten = Kabupaten::all();
         return view( 'kecamatan.edit', compact( 'kecamatan', 'kabupaten' ) );
     }
@@ -59,7 +59,7 @@ class KecamatanController extends Controller
         ]);
 
         try {
-            $kecamatan = Kecamatan::findOrfail($id);
+            $kecamatan = Kecamatan::findOrFail($id);
             $kecamatan->update($request->all());
         } catch (\Exception $e) {
             Alert::error('Gagal', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage());
@@ -69,7 +69,7 @@ class KecamatanController extends Controller
 
     public function destroy($id) {
        try {
-           $kecamatan = Kecamatan::findOrfail($id);
+           $kecamatan = Kecamatan::findOrFail($id);
            $kecamatan->delete();
        } catch (\Exception $e) {
            Alert::error('Gagal', 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage());

@@ -7,6 +7,9 @@
       src="https://kit.fontawesome.com/64d58efce2.js"
       crossorigin="anonymous"
     ></script>
+    <link rel="apple-touch-icon" sizes="76x76" href="/assets/img/logo.jpg">
+    <link rel="icon" type="image/png" href="/assets/img/logo.jpg">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/style.css" />
     <title>Login</title>
     <style>

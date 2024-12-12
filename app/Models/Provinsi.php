@@ -12,7 +12,7 @@ class Provinsi extends Model
         'nama',
     ];
 
-    public function kabupaten(){
+    public function kabupatens(){
         return $this->hasMany(Kabupaten::class, 'provinsi_id');
     }
 }

@@ -11,6 +11,7 @@ use App\Http\Controllers\DesaController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PinaltiController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Api\JarakController;
 
 require __DIR__.'/auth.php';
 Route::get('/', function () {
@@ -61,3 +62,6 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     });
+    
+    Route::get('/hitung-jarak', [JarakController::class, 'hitungJarak']);
+

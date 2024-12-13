@@ -54,13 +54,13 @@ class RegisteredUserController extends Controller
                 'password' => Hash::make($data['password']),
             ]);
 
-            $user->assignRole('User ');
+            $user->assignRole('User');
 
             Auth::login($user);
 
             return redirect()->route('home')->with('success', 'Registrasi berhasil, selamat datang!');
         } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['registration' => 'Terjadi kesalahan saat registrasi. Silakan coba lagi.'])->withInput();
+            return redirect()->back()->withInput()->with('form', 'register');
         }
     }
 }

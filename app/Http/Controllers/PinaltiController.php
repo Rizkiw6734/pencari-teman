@@ -22,7 +22,9 @@ class PinaltiController extends Controller
      */
     public function create()
     {
-        $users = User::all();
+        $users = User::whereHas('roles', function ($query) {
+                $query->where('name', 'User ');
+            })->get();
         return view('pinalti.create', compact('users'));
     }
 

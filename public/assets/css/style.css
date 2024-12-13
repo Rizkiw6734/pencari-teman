@@ -123,7 +123,7 @@ outline: none;
 cursor: pointer;
 transition: background-color 0.3s ease;
 }
-  
+
 .form-check-input::before {
 content: '';
 width: 20px;
@@ -136,21 +136,21 @@ left: 2px;
 transition: transform 0.3s ease;
 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-  
+
 .form-check-input:checked {
 background-color: #4481eb;
 }
-  
+
 .form-check-input:checked::before {
 transform: translateX(18px);
 }
-  
+
 .form-check-label {
 margin-left: 10px;
 font-size: 14px;
 color: #555;
 cursor: pointer;
-}  
+}
 
 .social-text {
 padding: 0.7rem 0;
@@ -387,6 +387,13 @@ pointer-events: all;
     height: 35px;
     font-size: 0.7rem;
 }
+
+body.sign-up-mode .sign-in-form {
+    display: none;
+  }
+body.sign-up-mode .sign-up-form {
+    display: block;
+  }
 
 .container:before {
     width: 1500px;

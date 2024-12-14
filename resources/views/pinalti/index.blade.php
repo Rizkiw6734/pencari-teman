@@ -9,12 +9,12 @@
             <div class="col-lg-12 col-12">
                 <h1 class="my-4">Data Pinalti</h1>
 
-                <a href="{{ route('pinalti.create') }}" class="btn btn-primary mb-3">Tambah Pinalti</a>
+                <a href="{{ route('pinalti.create') }}" class="btn btn-info mb-3">+ Tambah Pinalti</a>
 
                 <div class="card">
                     <div class="card-body">
-                        <table class="table table-bordered table-striped">
-                            <thead>
+                        <table class="table table-bordered ">
+                            <thead class="table-light">
                                 <tr>
                                     <th>No</th>
                                     <th>Pengguna</th>
@@ -24,19 +24,21 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($pinalti as $item)
+                                @foreach ($pinalti as $data)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ optional($item->user)->name ?? 'Pengguna tidak ditemukan' }}</td>
-                                        <td>{{ $item->jenis_pelanggaran }}</td>
-                                        <td>{{ $item->alasan }}</td>
+                                        <td>{{ $data->jenis_pelanggaran }}</td>
+                                        <td>{{ $data->alasan }}</td>
                                         <td>
                                             <a href="#" class="btn btn-info btn-sm">Detail</a>
-                                            <a href="{{ route('pinalti.edit', $item->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                            <form action="{{ route('pinalti.destroy', $item->id) }}" method="POST" style="display:inline;">
+                                            <a href="{{ route('pinalti.edit', $data->id) }}" class="btn btn-warning btn-sm"> <i class="fas fa-edit"></i></a>
+                                            <form action="{{ route('pinalti.destroy', $data->id) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                                <button type="submit" class="btn btn-danger btn-sm"
+                                                onclick="return confirm('Apakah anda yakin ingin menghapus data {{ optional($data->user)->name }}?')">
+                                                <i class="fas fa-trash-alt"></i></button>
                                             </form>
                                         </td>
                                     </tr>

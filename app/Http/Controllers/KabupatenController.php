@@ -46,7 +46,6 @@ class KabupatenController extends Controller {
     public function update( Request $request, $id ) {
         $validated = $request->validate( [
             'nama' => 'required|string|max:255',
-            'kabupaten_id' => 'required|integer|exists:kabupaten,id',
         ], [
             'nama.required' => 'Nama Kabupaten wajib diisi.',
         ] );

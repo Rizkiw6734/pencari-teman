@@ -15,7 +15,7 @@ class DashboardController extends Controller
     public function index()
     {
         // Data untuk dashboard
-        $usersActive = User::where('status', 'active')->count();
+        $usersActive = User::where('status', 'aktif')->count();
         // $clickEvents = Purchase::where('type', 'click')->count();
         // $purchases = Purchase::where('type', 'purchase')->count();
         // $likes = Review::where('rating', 5)->count();

@@ -43,12 +43,12 @@
             <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="fa fa-bell cursor-pointer"></i>
             </a>
-            <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+            <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
               <li class="mb-2">
-                <a class="dropdown-item border-radius-md" href="javascript:;">
+                <a class="dropdown-item border-radius-md" href="/laporan/detail/1">
                   <div class="d-flex py-1">
                     <div class="my-auto">
-                      <img src="/assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
+                      <img src="/assets/img/team-2.jpg" class="avatar avatar-sm me-3">
                     </div>
                     <div class="d-flex flex-column justify-content-center">
                       <h6 class="text-sm font-weight-normal mb-1">
@@ -63,10 +63,10 @@
                 </a>
               </li>
               <li class="mb-2">
-                <a class="dropdown-item border-radius-md" href="javascript:;">
+                <a class="dropdown-item border-radius-md" href="/laporan/detail/2">
                   <div class="d-flex py-1">
                     <div class="my-auto">
-                      <img src="/assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark  me-3 ">
+                      <img src="/assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark me-3">
                     </div>
                     <div class="d-flex flex-column justify-content-center">
                       <h6 class="text-sm font-weight-normal mb-1">
@@ -81,9 +81,9 @@
                 </a>
               </li>
               <li>
-                <a class="dropdown-item border-radius-md" href="javascript:;">
+                <a class="dropdown-item border-radius-md" href="/laporan/detail/3">
                   <div class="d-flex py-1">
-                    <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
+                    <div class="avatar avatar-sm bg-gradient-secondary me-3 my-auto">
                       <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                         <title>credit-card</title>
                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -111,7 +111,7 @@
                 </a>
               </li>
             </ul>
-          </li>
+          </li>          
         </ul>
       </div>
     </div>
@@ -446,5 +446,20 @@
         </div>
       </div>
   </div>
+  <footer class="footer pt-3  ">
+    <div class="container-fluid">
+      <div class="row align-items-center justify-content-center">
+        <div class="col-lg-6 mb-lg-0 mb-4">
+          <div class="copyright text-center text-sm text-muted">
+            <p>Copyright &copy; <i class="fa fa-heart"></i> by around.you
+                <script>
+                document.write(new Date().getFullYear())
+                </script>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
 </main>
 @endsection

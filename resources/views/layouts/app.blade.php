@@ -2,26 +2,28 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="/assets/img/logo.jpg">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-  <link rel="icon" type="image/png" href="/assets/img/logo.jpg">
-  <title>
-    Around You
-  </title>
-  <!--     Fonts and icons     -->
-  <link href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,800" rel="stylesheet" />
-  <!-- Nucleo Icons -->
-  <link href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-icons.css" rel="stylesheet" />
-  <link href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-svg.css" rel="stylesheet" />
-  <!-- Font Awesome Icons -->
-  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-  <!-- CSS Files -->
-  <link id="pagestyle" href="/assets/css/soft-ui-dashboard.css" rel="stylesheet" />
-  <!-- Nepcha Analytics (nepcha.com) -->
-  <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
-  <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="/assets/img/logo.jpg">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/assets/img/logo.jpg">
+    <title>Around You</title>
+
+    <!-- Fonts and icons -->
+    <link href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,800" rel="stylesheet" />
+
+    <!-- Nucleo Icons -->
+    <link href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-svg.css" rel="stylesheet" />
+
+    <!-- CSS Files -->
+    <link id="pagestyle" href="/assets/css/soft-ui-dashboard.css" rel="stylesheet" />
+
+    <!-- Nepcha Analytics -->
+    <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+
+    <!-- Bootstrap JS (for dropdown functionality) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
@@ -60,28 +62,58 @@
               <span class="nav-link-text ms-1">Pinalti</span>
           </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="collapse" href="#lokasiCollapse" role="button" aria-expanded="false" aria-controls="lokasiCollapse">
+                <div class="fa fa-map-marker-alt icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
+                     style="background-color: #ffffff; color: #000000;">
+                </div>
+                <span class="nav-link-text ms-1">Lokasi</span>
+            </a>
+            <div class="collapse" id="lokasiCollapse">
+                <ul class="nav nav-sm flex-column ms-4">
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('kabupaten.index') ? 'active' : '' }}" href="{{ route('kabupaten.index') }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <span class="nav-link-text">Kabupaten</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('kecamatan.index') ? 'active' : '' }}" href="{{ route('kecamatan.index') }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <span class="nav-link-text">Kecamatan</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('desa.index') ? 'active' : '' }}" href="{{ route('desa.index') }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <span class="nav-link-text">Desa</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
       </ul>
     </div>
-    <div class="sidenav-footer mx-3 ">
-      <div class="card card-background shadow-none card-background-mask-secondary" id="sidenavCard">
-        <div class="full-background" style="background-image: url('/assets/img/map-background.jpg'); background-size: cover; background-position: center;"></div>
-        <div class="card-body text-start p-3 w-100">
-          <div class="icon icon-shape icon-sm bg-white shadow text-center mb-3 d-flex align-items-center justify-content-center border-radius-md">
-            <i class="fas fa-location-dot text-dark text-gradient text-lg top-0" aria-hidden="true" id="sidenavCardIcon"></i>
-          </div>
-          <div class="docs-info">
-            <h6 class="text-white up mb-0">Lokasi</h6>
-            <p class="text-xs font-weight-bold">Lihat persebaran pengguna.</p>
-            <a href="#" class="btn btn-white btn-sm w-100 mb-0">Lihat</a>
+    <div class="sidenav-footer mx-3">
+        <div class="card card-background shadow-none card-background-mask-secondary" id="sidenavCard">
+          <div class="full-background" style="background-image: url('/assets/img/map-background.jpg'); background-size: cover; background-position: center;"></div>
+          <div class="card-body text-start p-3 w-100">
+            <div class="icon icon-shape icon-sm bg-white shadow text-center mb-3 d-flex align-items-center justify-content-center border-radius-md">
+              <i class="fas fa-location-dot text-dark text-gradient text-lg top-0" aria-hidden="true" id="sidenavCardIcon"></i>
+            </div>
+            <div class="docs-info">
+              <h6 class="text-white up mb-0">Lokasi</h6>
+              <p class="text-xs font-weight-bold mb-3">Lihat persebaran pengguna.</p> <!-- Added margin-bottom here -->
+              <a href="#" class="btn btn-white btn-sm w-100 mb-0">Lihat</a>
+            </div>
           </div>
         </div>
-      </div>
-      <a href="#" class="btn btn-primary mt-3 w-100" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" style="background: #0D6EFD">Logout</a>
+        <a href="#" class="btn btn-primary mt-3 w-100" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" style="background: #0D6EFD">Logout</a>
 
-      <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-          @csrf
-      </form>
-    </div>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            @csrf
+        </form>
+      </div>
   </aside>
 
   @yield('content')
@@ -144,6 +176,8 @@
   <script src="/assets/js/plugins/perfect-scrollbar.min.js"></script>
   <script src="/assets/js/plugins/smooth-scrollbar.min.js"></script>
   <script src="/assets/js/plugins/chartjs.min.js"></script>
+  <script src="/assets/js/core/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     var ctx = document.getElementById("chart-bars").getContext("2d");
 

@@ -62,6 +62,6 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     });
-    
+
     Route::get('/hitung-jarak', [JarakController::class, 'hitungJarak']);
 

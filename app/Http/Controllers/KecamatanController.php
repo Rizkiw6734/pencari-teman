@@ -71,4 +71,9 @@ class KecamatanController extends Controller
        }
        return redirect()->route('kecamatan.index')->with('success', 'Data Kecamatan berhasil dihapus.');
     }
+
+    public function getKecamatanByKabupaten($kabupaten_id) {
+        $kecamatan = Kecamatan::where('kabupaten_id', $kabupaten_id)->get();
+        return response()->json($kecamatan);
+    }
 }

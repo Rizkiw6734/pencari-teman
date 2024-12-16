@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
 
 class RoleMiddleware
 {
@@ -18,11 +17,13 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, $role)
     {
-        
+        // Periksa apakah user tidak ada atau tidak memiliki role yang sesuai
         if (!$request->user() || !$request->user()->hasRole($role)) {
-            return redirect('/')->with('error', 'You do not have the required permissions.');
+            // Redirect dengan pesan error
+            return redirect('/')->with('error', 'You do not have the required permissions to access this page.');
         }
 
+        // Jika lolos, lanjutkan permintaan ke controller
         return $next($request);
     }
 }

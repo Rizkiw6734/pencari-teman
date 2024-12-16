@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Kecamatan;
 use App\Models\Kabupaten;
+use Illuminate\Validation\Rule;
 
 class KecamatanController extends Controller
 {
@@ -22,10 +23,16 @@ class KecamatanController extends Controller
 
     public function store(Request $request) {
        $validated = $request->validate([
-            'nama' => 'required|string|max:255',
+            'nama' => ['required', 'string', 'max:255',
+                Rule::unique('kecamatan')->where(function($query) use($request){
+                    return $query->where('nama', $request->nama)
+                                    ->where('kabupaten_id', $request->kabupaten_id);
+                })
+        ],
             'kabupaten_id' => 'required|integer|exists:kabupaten,id',
         ], [
             'nama.required' => 'Nama Kecamatan wajib diisi.',
+            'nama.unique' => 'Kecamatan dengan Kabupaten yang sama sudah ada.',
             'kabupaten_id.required' => 'Nama kabupaten wajib diisi.',
         ]);
 
@@ -45,10 +52,17 @@ class KecamatanController extends Controller
 
     public function update(Request $request, $id) {
         $validated = $request->validate([
-            'nama' => 'required|string|max:255',
+            'nama' => ['required', 'string', 'max:255',
+            Rule::unique('kecamatan')->where(function($query) use($request, $id){
+                return $query->where('nama', $request->nama)
+                                ->where('kabupaten_id', $request->kabupaten_id)
+                                    ->where('id', '!=', $id);
+            })
+        ],
             'kabupaten_id' => 'required|integer|exists:kabupaten,id',
         ], [
             'nama.required' => 'Nama Kecamatan wajib diisi.',
+            'nama.unique' => 'Kecamatan dengan Kabupaten yang sama sudah ada',
             'kabupaten_id.required' => ' Nama kabupaten wajib diisi.',
 
         ]);

@@ -6,6 +6,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Http\Request;
 use App\Models\Desa;
 use App\Models\Kecamatan;
+use Illuminate\Validation\Rule;
 
 class DesaController extends Controller
 {
@@ -25,12 +26,18 @@ class DesaController extends Controller
     // Menyimpan data desa baru
     public function store(Request $request){
         $validated = $request->validate([
-            'nama' => 'required|string|max:255',
+            'nama' => ['required', 'string', 'max:255',
+            Rule::unique('desa')->where(function($query) use($request) {
+                return $query->where('nama', $request->nama)
+                                ->where('kecamatan_id', $request->kecamatan_id);
+            })
+        ],
             'kecamatan_id' => 'required|integer|exists:kecamatan,id',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric'
         ],[
             'nama.required' => 'Nama Desa wajib diisi',
+            'nama.unique' => 'Desa dengan kecamatan yang sama sudah ada.',
             'kecamatan_id.required' => ' Nama kecamatan wajib diisi',
             'latitude.required' => 'Latitude wajib diisi',
             'longitude.required' => 'Longitude wajib diisi'
@@ -56,7 +63,13 @@ class DesaController extends Controller
     // Mengupdate data desa
     public function update(Request $request, $id){
         $validated = $request->validate([
-            'nama' => 'required|string|max:255',
+            'nama' => ['required', 'string', 'max:255',
+                Rule::unique('desa')->where(function($query) use($request, $id){
+                    return $query->where('nama', $request->nama)
+                            ->where('kecamatan_id', $request->kecamatan_id)
+                                ->where('id', '!=', $id);
+                })
+        ],
             'kecamatan_id' => 'required|integer|exists:kecamatan,id',
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric'

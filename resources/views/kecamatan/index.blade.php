@@ -138,8 +138,8 @@
                                     @foreach ($kecamatan as $data)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $data->nama }}</td>
                                             <td>{{ optional($data->kabupaten)->nama ?? 'Kabupaten tidak ditemukan' }}</td>
+                                            <td>{{ $data->nama }}</td>
                                             <td>
                                                 <!-- Tombol Edit -->
                                                 <button class="btn btn-warning btn-sm" data-bs-toggle="modal"

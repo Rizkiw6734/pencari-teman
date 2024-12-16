@@ -15,8 +15,8 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>No</th>
-                                        <th>Nama Desa</th>
                                         <th>Kecamatan</th>
+                                        <th>Nama Desa</th>
                                         <th>Latitude</th>
                                         <th>Longitude</th>
                                         <th>Aksi</th>
@@ -26,16 +26,11 @@
                                     @foreach ($desa as $data)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $data->nama }}</td>
                                             <td>{{ optional($data->kecamatan)->nama ?? 'Kecamatan tidak ditemukan' }}</td>
+                                            <td>{{ $data->nama }}</td>
                                             <td>{{ $data->latitude }}</td>
                                             <td>{{ $data->longitude }}</td>
                                             <td>
-                                                <!-- Tombol Detail -->
-                                                <a href="#" class="btn btn-info btn-sm" aria-label="Detail Desa {{ $data->nama }}">
-                                                    <i class="fas fa-info-circle"></i> Detail
-                                                </a>
-
                                                 <!-- Tombol Edit -->
                                                 <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
                                                     data-bs-target="#editDesaModal{{ $data->id }}" aria-label="Edit Desa {{ $data->nama }}">
@@ -69,14 +64,6 @@
                                                         @method('PUT')
                                                         <div class="modal-body">
                                                             <div class="form-group">
-                                                                <label for="nama">Nama Desa</label>
-                                                                <input type="text" class="form-control" id="nama" name="nama" value="{{ $data->nama }}">
-                                                                @error('nama')
-                                                                    <div class="text-danger">{{ $message }}</div>
-                                                                @enderror
-                                                            </div>
-
-                                                            <div class="form-group">
                                                                 <label for="kecamatan_id">Kecamatan</label>
                                                                 <select class="form-control" id="kecamatan_id" name="kecamatan_id">
                                                                     @foreach ($kecamatan as $item)
@@ -86,6 +73,14 @@
                                                                     @endforeach
                                                                 </select>
                                                                 @error('kecamatan_id')
+                                                                    <div class="text-danger">{{ $message }}</div>
+                                                                @enderror
+                                                            </div>
+
+                                                            <div class="form-group">
+                                                                <label for="nama">Nama Desa</label>
+                                                                <input type="text" class="form-control" id="nama" name="nama" value="{{ $data->nama }}">
+                                                                @error('nama')
                                                                     <div class="text-danger">{{ $message }}</div>
                                                                 @enderror
                                                             </div>
@@ -137,17 +132,6 @@
                     <form action="{{ route('desa.store') }}" method="POST">
                         @csrf
                         <div class="mb-3">
-                            <label for="nama" class="form-label">Nama Desa</label>
-                            <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama"
-                                id="nama" placeholder="Masukkan Nama Desa Anda" value="{{ old('nama') }}">
-                            @error('nama')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
                             <label for="kecamatan_id" class="form-label">Kecamatan</label>
                             <select class="form-control @error('kecamatan_id') is-invalid @enderror" name="kecamatan_id"
                                 id="kecamatan_id">
@@ -159,6 +143,17 @@
                                 @endforeach
                             </select>
                             @error('kecamatan_id')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="nama" class="form-label">Nama Desa</label>
+                            <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama"
+                                id="nama" placeholder="Masukkan Nama Desa Anda" value="{{ old('nama') }}">
+                            @error('nama')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>

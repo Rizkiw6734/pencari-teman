@@ -15,8 +15,8 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>No</th>
-                                        <th>Nama Kecamatan</th>
                                         <th>Nama Kabupaten</th>
+                                        <th>Nama Kecamatan</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -60,14 +60,6 @@
                                                         @method('PUT')
                                                         <div class="modal-body">
                                                             <div class="form-group">
-                                                                <label for="nama">Nama Kecamatan</label>
-                                                                <input type="text" class="form-control" id="nama" name="nama" value="{{ $data->nama }}">
-                                                                @error('nama')
-                                                                    <div class="text-danger">{{ $message }}</div>
-                                                                @enderror
-                                                            </div>
-
-                                                            <div class="form-group">
                                                                 <label for="kabupaten_id"> Nama Kabupaten</label>
                                                                 <select class="form-control" id="kabupaten_id" name="kabupaten_id">
                                                                     @foreach ($kabupaten as $item)
@@ -80,6 +72,15 @@
                                                                     <div class="text-danger">{{ $message }}</div>
                                                                 @enderror
                                                             </div>
+
+                                                            <div class="form-group">
+                                                                <label for="nama">Nama Kecamatan</label>
+                                                                <input type="text" class="form-control" id="nama" name="nama" value="{{ $data->nama }}">
+                                                                @error('nama')
+                                                                    <div class="text-danger">{{ $message }}</div>
+                                                                @enderror
+                                                            </div>
+
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>
@@ -111,17 +112,6 @@
                     <form action="{{ route('kecamatan.store') }}" method="POST">
                         @csrf
                         <div class="mb-3">
-                            <label for="nama" class="form-label">Nama Kecamatan</label>
-                            <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama"
-                                id="nama" placeholder="Masukkan Nama Kecamatan Anda" value="{{ old('nama') }}">
-                            @error('nama')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
                             <label for="kabupaten_id" class="form-label"> Nama Kabupaten</label>
                             <select class="form-control @error('kabupaten_id') is-invalid @enderror" name="kabupaten_id"
                                 id="kabupaten_id">
@@ -133,6 +123,17 @@
                                 @endforeach
                             </select>
                             @error('kabupaten_id')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="nama" class="form-label">Nama Kecamatan</label>
+                            <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama"
+                                id="nama" placeholder="Masukkan Nama Kecamatan Anda" value="{{ old('nama') }}">
+                            @error('nama')
                                 <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>

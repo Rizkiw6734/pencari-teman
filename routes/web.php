@@ -24,15 +24,13 @@ Route::middleware([ToSweetAlert::class])->group(function () {
     });
 });
 
-Route::get('/auth', function () {
-    return view('auth.auth');
-});
-
-
 Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function () {
-    Route::get('/home', function () {
-        return view('home');
-    });
+
+    //dasboard
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
     //provinsi
     Route::get('/lokasi', [ProvinsiController::class, 'index'])->name('lokasi.index');
     Route::get('/find-nearby', [ProvinsiController::class, 'findNearby'])->name('lokasi.index');
@@ -52,16 +50,13 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
 
     //pinalti
     Route::resource('pinalti', PinaltiController::class);
+
+    //hitung jarak
+    Route::get('/hitung-jarak', [JarakController::class, 'hitungJarak']);
 });
 
     Route::middleware('auth')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('dashboard');
-        })->name('dashboard');
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     });
-
-    Route::get('/hitung-jarak', [JarakController::class, 'hitungJarak']);
-

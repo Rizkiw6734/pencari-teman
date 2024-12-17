@@ -77,8 +77,11 @@ class KecamatanController extends Controller
     }
 
     public function destroy($id) {
+        $kecamatan = Kecamatan::findOrFail( $id );
+        if ($kecamatan->desa()->exists()) {
+            return redirect('/kecamatan')->with('error', 'Kecamatan tak bisa di hapus karna memiliki Desa yang terkait.');
+        }
        try {
-           $kecamatan = Kecamatan::findOrFail($id);
            $kecamatan->delete();
        } catch (\Exception $e) {
            Alert::error('Gagal', 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage());

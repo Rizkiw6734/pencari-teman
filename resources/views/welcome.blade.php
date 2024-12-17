@@ -1,168 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    @vite('resources/css/app.css')
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AroundYou - Temukan Teman Baru</title>
+  @vite('resources/css/app.css')
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            fadeIn: 'fadeIn 1.5s ease-in-out',
+            slideIn: 'slideIn 1s ease-out',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideIn: {
+              '0%': { transform: 'translateX(-50%)', opacity: '0' },
+              '100%': { transform: 'translateX(0)', opacity: '1' },
+            },
+          },
+        },
+      },
+    };
+  </script>
 </head>
-<body class="bg-gray-50 font-sans">
-    <!-- Container -->
-    <div class="flex h-screen">
-        <!-- Sidebar -->
-        <aside id="sidebar" class="w-64 bg-gradient-to-b from-blue-800 to-blue-600 text-white flex flex-col transition-all duration-300">
-            <div class="p-6 text-center text-xl font-bold border-b border-blue-500">Admin Dashboard</div>
-            <nav class="flex-1 overflow-y-auto">
-                <ul class="p-4">
-                    <li class="mb-3">
-                        <a href="#" class="block py-3 px-4 hover:bg-blue-700 rounded transition-all duration-300">
-                            <i class="fas fa-home mr-2"></i>Dashboard
-                        </a>
-                    </li>
-                    <li class="mb-3">
-                        <a href="#" class="block py-3 px-4 hover:bg-blue-700 rounded transition-all duration-300">
-                            <i class="fas fa-users mr-2"></i>Users
-                        </a>
-                    </li>
-                    <li class="mb-3">
-                        <a href="#" class="block py-3 px-4 hover:bg-blue-700 rounded transition-all duration-300">
-                            <i class="fas fa-flag mr-2"></i>Reports
-                        </a>
-                    </li>
-                    <li class="mb-3">
-                        <a href="#" class="block py-3 px-4 hover:bg-blue-700 rounded transition-all duration-300">
-                            <i class="fas fa-cogs mr-2"></i>Settings
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            <div class="p-6 border-t border-blue-500">
-                <button class="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded transition-all duration-300">
-                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                </button>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto p-6">
-            <!-- Header -->
-            <header class="flex justify-between items-center mb-6">
-                <button id="toggleSidebar" class="text-blue-800 text-xl focus:outline-none">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <h1 class="text-3xl font-bold text-gray-700">Welcome, Admin</h1>
-                <div class="text-right">
-                    <p id="server-time" class="text-gray-500 text-sm">Loading time...</p>
-                    <span id="active-users" class="text-gray-500 text-lg">Active users: Loading...</span>
-                </div>
-            </header>
-
-            <!-- Dashboard Stats -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div class="bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg p-6 rounded-lg transform hover:scale-105 transition-all duration-300">
-                    <h2 class="text-xl font-bold mb-2">Total Users</h2>
-                    <p class="text-4xl">1,234</p>
-                </div>
-                <div class="bg-gradient-to-r from-green-400 to-green-600 text-white shadow-lg p-6 rounded-lg transform hover:scale-105 transition-all duration-300">
-                    <h2 class="text-xl font-bold mb-2">New Signups</h2>
-                    <p class="text-4xl">56</p>
-                </div>
-                <div class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white shadow-lg p-6 rounded-lg transform hover:scale-105 transition-all duration-300">
-                    <h2 class="text-xl font-bold mb-2">Revenue</h2>
-                    <p class="text-4xl">$12,345</p>
-                </div>
-            </div>
-
-            <!-- Charts -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white shadow-lg p-6 rounded-lg">
-                    <h2 class="text-xl font-bold text-gray-700 mb-4">Monthly Revenue</h2>
-                    <canvas id="revenueChart"></canvas>
-                </div>
-                <div class="bg-white shadow-lg p-6 rounded-lg">
-                    <h2 class="text-xl font-bold text-gray-700 mb-4">User Growth</h2>
-                    <canvas id="userChart"></canvas>
-                </div>
-            </div>
-        </main>
-
-        <!-- Notification Toast -->
-        <div id="toast" class="fixed bottom-4 right-4 bg-blue-600 text-white p-4 rounded-lg shadow-lg opacity-0 transition-opacity duration-300">
-            Real-time update: <span id="toast-message"></span>
-        </div>
+<body class="bg-gray-50">
+  <!-- Hero Section -->
+  <header class="bg-gradient-to-r from-blue-500 via-indigo-600 to-purple-600 text-white">
+    <div class="max-w-7xl mx-auto py-20 px-8 text-center">
+      <h1 class="text-5xl md:text-7xl font-bold animate-fadeIn">Selamat Datang di AroundYou</h1>
+      <p class="mt-4 text-xl md:text-2xl">Temukan teman baru di sekitar Anda dengan mudah dan aman!</p>
+      <div class="mt-8 flex justify-center space-x-4">
+        <a href="#features" class="bg-white text-indigo-600 px-6 py-3 rounded-full font-semibold hover:bg-indigo-50 transition">Jelajahi</a>
+        <a href="#daftar" class="bg-indigo-700 px-6 py-3 rounded-full hover:bg-indigo-600 transition">Daftar Sekarang</a>
+      </div>
     </div>
+  </header>
 
-    @vite('resources/js/app.js')
+  <!-- Features Section -->
+  <section id="features" class="py-16 px-8 bg-white text-gray-800">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-4xl font-bold text-center mb-12">Kenapa Memilih AroundYou?</h2>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="text-center p-8 shadow-lg rounded-lg hover:shadow-xl transition-all">
+          <div class="text-5xl text-indigo-600 mb-4">🔍</div>
+          <h3 class="text-2xl font-bold">Pencarian Teman</h3>
+          <p class="mt-4">Cari teman berdasarkan lokasi, minat, dan usia dengan mudah.</p>
+        </div>
+        <div class="text-center p-8 shadow-lg rounded-lg hover:shadow-xl transition-all">
+          <div class="text-5xl text-indigo-600 mb-4">💬</div>
+          <h3 class="text-2xl font-bold">Chat Langsung</h3>
+          <p class="mt-4">Mulai percakapan langsung dengan teman baru Anda.</p>
+        </div>
+        <div class="text-center p-8 shadow-lg rounded-lg hover:shadow-xl transition-all">
+          <div class="text-5xl text-indigo-600 mb-4">🛡️</div>
+          <h3 class="text-2xl font-bold">Keamanan & Laporan</h3>
+          <p class="mt-4">Laporkan aktivitas tidak pantas dengan cepat dan mudah.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Sidebar toggle
-            const sidebar = document.getElementById('sidebar');
-            const toggleSidebar = document.getElementById('toggleSidebar');
-            toggleSidebar.addEventListener('click', () => {
-                sidebar.classList.toggle('-ml-64');
-            });
+  <!-- Testimonial Section -->
+  <section class="py-16 px-8 bg-gradient-to-r from-purple-600 to-blue-500 text-white">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-4xl font-bold text-center mb-12">Apa Kata Pengguna?</h2>
+      <div class="relative">
+        <div class="flex space-x-8 overflow-hidden">
+          <div class="bg-white text-gray-800 p-8 rounded-lg shadow-lg w-1/3 animate-slideIn">
+            <p class="italic">"Layanan ini sangat membantu saya menemukan teman baru di sekitar."</p>
+            <h4 class="mt-4 font-bold">- Aulia</h4>
+          </div>
+          <div class="bg-white text-gray-800 p-8 rounded-lg shadow-lg w-1/3 animate-slideIn">
+            <p class="italic">"Sangat aman, saya merasa nyaman menggunakannya!"</p>
+            <h4 class="mt-4 font-bold">- Bayu</h4>
+          </div>
+          <div class="bg-white text-gray-800 p-8 rounded-lg shadow-lg w-1/3 animate-slideIn">
+            <p class="italic">"Fitur-fiturnya memudahkan saya untuk berkomunikasi dengan pengguna lain."</p>
+            <h4 class="mt-4 font-bold">- Citra</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-            // Server time
-            const serverTimeElement = document.getElementById('server-time');
-            setInterval(() => {
-                const now = new Date();
-                serverTimeElement.textContent = `Server Time: ${now.toLocaleTimeString()}`;
-            }, 1000);
+  <!-- Call to Action -->
+  <section id="daftar" class="py-20 bg-indigo-50 text-center">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-4xl font-bold text-gray-800">Bergabung Sekarang!</h2>
+      <p class="mt-4 text-xl text-gray-600">Jadilah bagian dari komunitas yang terus berkembang.</p>
+      <a href="#" class="mt-6 inline-block bg-indigo-600 text-white px-8 py-4 rounded-full font-bold hover:bg-indigo-700 transition">Daftar Gratis</a>
+    </div>
+  </section>
 
-            // Active users (simulated real-time data)
-            const activeUsersElement = document.getElementById('active-users');
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toast-message');
-
-            setInterval(() => {
-                const activeUsers = Math.floor(Math.random() * 100) + 1; // Simulated active users
-                activeUsersElement.textContent = `Active users: ${activeUsers}`;
-
-                // Show toast notification
-                toastMessage.textContent = `${activeUsers} users online`;
-                toast.classList.remove('opacity-0');
-                setTimeout(() => toast.classList.add('opacity-0'), 3000);
-            }, 3000);
-
-            // Charts (using Chart.js)
-            const revenueChartCtx = document.getElementById('revenueChart').getContext('2d');
-            const userChartCtx = document.getElementById('userChart').getContext('2d');
-
-            new Chart(revenueChartCtx, {
-                type: 'line',
-                data: {
-                    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-                    datasets: [{
-                        label: 'Revenue',
-                        data: [5000, 8000, 6000, 9000, 12000, 15000],
-                        borderColor: '#4F46E5',
-                        backgroundColor: 'rgba(79, 70, 229, 0.3)',
-                        tension: 0.4,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                }
-            });
-
-            new Chart(userChartCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-                    datasets: [{
-                        label: 'User Growth',
-                        data: [50, 80, 60, 90, 120, 150],
-                        backgroundColor: '#34D399',
-                    }]
-                },
-                options: {
-                    responsive: true,
-                }
-            });
-        });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-gray-400 py-8">
+    <div class="max-w-7xl mx-auto text-center">
+      <p>&copy; 2024 AroundYou. Semua Hak Dilindungi.</p>
+      <div class="flex justify-center space-x-6 mt-4">
+        <a href="#" class="hover:text-white">Tentang Kami</a>
+        <a href="#" class="hover:text-white">Kebijakan Privasi</a>
+        <a href="#" class="hover:text-white">Hubungi Kami</a>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>

@@ -2,52 +2,28 @@
 @section('content')
 <div class="main-content position-relative max-height-vh-100 h-100">
     <div class="container-fluid">
-        <nav class="navbar navbar-main navbar-expand-lg bg-transparent shadow-none position-absolute z-index-2">
-            <div class="container-fluid">
-                <nav aria-label="breadcrumb">
-                <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 ps-2 me-sm-6 me-5">
-                    <li class="breadcrumb-item text-sm"><a class="text-white opacity-5" href="javascript:;">Pages</a></li>
-                    <li class="breadcrumb-item text-sm text-white active" aria-current="page">Profile</li>
-                </ol>
-                <h6 class="text-white font-weight-bolder ms-2">Profile</h6>
-                </nav>
-            </div>
-        </nav>
-        
-        <style>
-            .card-header {
-                font-size: 1.25rem;
-                padding: 1rem;
-                }
-            
-            h3 {
-                color: #4a5568;
-                margin-bottom: 1rem;
-                }
-        
-            .bg-red-50 {
-                background-color: #fff5f5;
-                }
-        </style>
-
-        <div class="page-header min-height-250 border-radius-lg mt-4 d-flex flex-column justify-content-end" style="background-image: url('assets/img/curved-images/curved14.jpg'); background-size: cover; background-position: center;">
-            <div class="w-100 position-relative p-3">
-                <div class="d-flex justify-content-between align-items-end">
-                    <div class="d-flex align-items-center">
-                        <div class="avatar avatar-xl position-relative me-3">
-                            <img src="/assets/img/bruce-mars.jpg" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
-                        </div>
-                        <div>
-                            <h5 class="mb-1 text-white font-weight-bolder">
-                            Alec Thompson
-                            </h5>
-                            <p class="mb-0 text-white text-sm">
-                            CEO / Co-Founder
-                            </p>
-                        </div>
+        <div class="card shadow-sm mt-4" style="max-width: 600px; margin: 0 auto;">
+            <div class="card-body text-center">
+                <div class="d-flex flex-column align-items-center">
+                    <!-- Avatar -->
+                    <div class="avatar avatar-xl position-relative mb-3">
+                        <img src="{{ $user->foto_profil ? asset('storage/' . $user->foto_profil) : asset('images/marie.jpg') }}" alt="Foto Profil" class="w-100 border-radius-lg shadow-sm">
+                    </div>
+                    
+                    <!-- Informasi Pengguna -->
+                    <div>
+                        <h5 class="mb-1 font-weight-bolder">
+                            {{ $user['name'] }}
+                        </h5>
+                        <p class="mb-0 text-muted">
+                            Email: {{ $user['email'] }}
+                        </p>
+                        <p class="mb-0 text-muted">
+                            Active Since: {{ date('d M Y', strtotime($user['created_at'])) }}
+                        </p>
                     </div>
                 </div>
-            </div>
+            </div>            
         </div>
     </div>
     
@@ -65,13 +41,6 @@
                             <div class="card-body py-6">
                                 <!-- Update Password -->
                                 @include('profile.partials.update-password-form')
-                            </div>
-            
-                            <div class="card-body py-6">
-                                <!-- Delete Account -->
-                                <div class="bg-red-50 rounded-lg shadow-sm border border-gray-300">
-                                    @include('profile.partials.delete-user-form')
-                                </div>
                             </div>
                         </div>
                     </div>

@@ -94,7 +94,7 @@
     <div class="max-w-7xl mx-auto">
       <h2 class="text-4xl font-bold text-gray-800">Bergabung Sekarang!</h2>
       <p class="mt-4 text-xl text-gray-600">Jadilah bagian dari komunitas yang terus berkembang.</p>
-      <a href="#" class="mt-6 inline-block bg-indigo-600 text-white px-8 py-4 rounded-full font-bold hover:bg-indigo-700 transition">Daftar Gratis</a>
+      <a href="/register" class="mt-6 inline-block bg-indigo-600 text-white px-8 py-4 rounded-full font-bold hover:bg-indigo-700 transition">Daftar Gratis</a>
     </div>
   </section>
 

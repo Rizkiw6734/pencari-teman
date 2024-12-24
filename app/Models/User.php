@@ -50,13 +50,6 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    /**
-     * Relationship: Pinalti yang terkait dengan pengguna.
-     */
-    public function pinalti()
-    {
-        return $this->hasMany(Pinalti::class, 'user_id');
-    }
 
     /**
      * Relationship: Pesan yang diterima oleh pengguna.

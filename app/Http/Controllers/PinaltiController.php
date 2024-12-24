@@ -13,7 +13,7 @@ class PinaltiController extends Controller
      */
     public function index()
     {
-        $pinalti = Pinalti::with('user')->paginate(5);
+        $pinalti = Pinalti::with('laporan.terlapor')->paginate(5);
         return view('pinalti.index', compact('pinalti'));
     }
 

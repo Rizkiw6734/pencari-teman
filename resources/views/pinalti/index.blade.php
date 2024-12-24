@@ -133,8 +133,12 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Pengguna</th>
-                                    <th>Jenis Pelanggaran</th>
+                                    <th>Jenis Hukuman</th>
                                     <th>Alasan</th>
+                                    <th>Pesan</th>
+                                    <th>Durasi</th>
+                                    <th>Tanggal Mulai</th>
+                                    <th>Tanggal Selesai</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -142,9 +146,13 @@
                                 @foreach ($pinalti as $data)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ optional($data->user)->name ?? 'Pengguna tidak ditemukan' }}</td>
-                                        <td>{{ $data->jenis_pelanggaran }}</td>
-                                        <td>{{ $data->alasan }}</td>
+                                        <td>{{ optional($data->laporan->terlapor)->name ?? 'Pengguna tidak ditemukan' }}</td>
+                                        <td>{{ $data->jenis_hukuman }}</td>
+                                        <td>{{ $data->laporan->alasan }}</td>
+                                        <td>{{ $data->pesan }}</td>
+                                        <td>{{ $data->durasi }}</td>
+                                        <td>{{ $data->start_date }}</td>
+                                        <td>{{ $data->end_date ? $data->end_date : 'Belum selesai' }}</td>
                                         <td>
                                             <a href="#" class="btn btn-info btn-sm">Detail</a>
                                             <a href="{{ route('pinalti.edit', $data->id) }}" class="btn btn-warning btn-sm"> <i class="fas fa-edit"></i></a>
@@ -152,7 +160,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Apakah anda yakin ingin menghapus data {{ optional($data->user)->name }}?')">
+                                                onclick="return confirm('Apakah anda yakin ingin menghapus data {{ optional($data->laporan->terlapor)->name ?? 'Pengguna tidak ditemukan' }}?')">
                                                 <i class="fas fa-trash-alt"></i></button>
                                             </form>
                                         </td>

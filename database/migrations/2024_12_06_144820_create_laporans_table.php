@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('report_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('reported_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('bukti');
-            $table->text('alasan');
+            $table->string('alasan');
             $table->enum('status', ['proses', 'diterima', 'ditolak'])->default('proses');
             $table->unique(['report_id', 'reported_id']);
             $table->timestamps();

@@ -22,4 +22,8 @@ class Laporan extends Model {
     public function terlapor(){
         return $this->belongsTo(User::class, 'reported_id');
     }
+
+    public function pinalti() {
+        return $this->HasOne(Pinalti::class, 'laporan_id');
+    }
 }

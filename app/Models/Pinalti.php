@@ -9,18 +9,16 @@ class Pinalti extends Model {
     //
     protected $table = 'pinalti';
     protected $fillable = [
-        'users_id',
-        'jenis_pelanggaran',
-        'alasan',
-        'bukti',
+        'laporan_id',
         'jenis_hukuman',
+        'pesan',
         'durasi',
         'start_date',
         'end_date',
     ];
 
-    public function user(){
-        return $this->belongsTo(User::class, 'users_id');
+    public function laporan() {
+        return $this->belongsTo(Laporan::class, 'laporan_id');
     }
 
 }

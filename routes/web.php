@@ -47,6 +47,7 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
 
     //laporan
     Route::resource('laporan', LaporanController::class);
+    Route::post('laporan/{id}/hukuman', [LaporanController::class, 'berikanHukuman'])->name('laporan.hukuman');
 
     //pinalti
     Route::resource('pinalti', PinaltiController::class);

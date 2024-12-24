@@ -50,7 +50,7 @@
                     <a class="dropdown-item border-radius-md" href="javascript:;">
                       <div class="d-flex py-1">
                         <div class="my-auto">
-                          <img src="/assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
+                          <img src="/assets/img " class="avatar avatar-sm  me-3 ">
                         </div>
                         <div class="d-flex flex-column justify-content-center">
                           <h6 class="text-sm font-weight-normal mb-1">
@@ -142,7 +142,7 @@
                             </p>
                             <div class="mb-3">
                                 @if ($laporan->bukti)
-                                    <img src="{{ asset('storage/' . $laporan->bukti) }}" alt="Bukti" class="img-fluid rounded">
+                                    <img src="{{ asset('assets/img/laporan/' . $laporan->bukti) }}" alt="Bukti" class="img-fluid rounded">
                                 @else
                                     <span class="text-muted">Tidak ada bukti</span>
                                 @endif
@@ -162,7 +162,7 @@
                 <div class="col-lg-12">
                     <div class="alert alert-info" style="background: linear-gradient(90deg, #0D6EFD, #1A75FF); color: white;">
                         Tidak ada laporan tersedia.
-                    </div>                    
+                    </div>
                 </div>
             @endforelse
         </div>

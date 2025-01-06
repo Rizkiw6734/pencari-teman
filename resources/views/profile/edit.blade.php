@@ -9,7 +9,7 @@
                     <div class="avatar avatar-xl position-relative mb-3">
                         <img src="{{ $user->foto_profil ? asset('storage/' . $user->foto_profil) : asset('images/marie.jpg') }}" alt="Foto Profil" class="w-100 border-radius-lg shadow-sm">
                     </div>
-                    
+
                     <!-- Informasi Pengguna -->
                     <div>
                         <h5 class="mb-1 font-weight-bolder">
@@ -23,10 +23,10 @@
                         </p>
                     </div>
                 </div>
-            </div>            
+            </div>
         </div>
     </div>
-    
+
     <div class="container-fluid py-4">
         <div class="row">
             <div class="container-fluid">
@@ -37,7 +37,7 @@
                                 <!-- Update Profile Information -->
                                 @include('profile.partials.update-profile-information-form')
                             </div>
-            
+
                             <div class="card-body py-6">
                                 <!-- Update Password -->
                                 @include('profile.partials.update-password-form')
@@ -45,8 +45,8 @@
                         </div>
                     </div>
                 </div>
-            </div>            
-            
+            </div>
+
             <footer class="footer pt-3  ">
                 <div class="container-fluid">
                   <div class="row align-items-center justify-content-center">

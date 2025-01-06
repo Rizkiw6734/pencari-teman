@@ -12,6 +12,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PinaltiController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Api\JarakController;
+use App\Http\Controllers\PenggunaController;
 
 require __DIR__.'/auth.php';
 Route::get('/', function () {
@@ -52,12 +53,20 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
     //pinalti
     Route::resource('pinalti', PinaltiController::class);
 
-    //hitung jarak
-    Route::get('/hitung-jarak', [JarakController::class, 'hitungJarak']);
 });
 
     Route::middleware('auth')->group(function () {
+        Route::put('/profile/update-picture', [ProfileController::class, 'updatePicture'])->name('profile.update-picture');
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+        Route::get('/admin/users', [PenggunaController::class, 'index'])->name('admin.users.index');
+        Route::post('/admin/users/{id}/block', [PenggunaController::class, 'block'])->name('admin.users.block');
+        Route::delete('/admin/users/{id}', [PenggunaController::class, 'destroy'])->name('admin.users.destroy');
+        Route::get('/users/banned',[PenggunaController::class, 'banned'])->name('admin.users.banned');
+        Route::post('/users/{id}/unblock', [PenggunaController::class, 'unblock'])->name('admin.users.unblock');
     });
+
+    Route::get('/hitung-jarak', [JarakController::class, 'hitungJarak']);
+

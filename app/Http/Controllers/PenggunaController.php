@@ -12,8 +12,11 @@ class PenggunaController extends Controller
      */
     public function index()
     {
-        $users = User::all();
-        return view('Admin.users', compact($users));
+        $users = User::where('status','!=','banned')
+        ->whereDoesntHave('roles', function ($query) {
+            $query->where('name', 'admin');
+        })->get();
+        return view('Admin.users.index', compact('users'));
     }
 
     /**
@@ -61,12 +64,33 @@ class PenggunaController extends Controller
         $user = User::findOrFail($id);
         if($user->hasRole('admin')){
             redirect()->route('Pengguna.index')->with('error', 'pengguna adalah Admin');
-        } 
+        }
 
         $user->status = 'banned';
         $user->save();
         return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil diblokir');
     }
+
+    public function banned()
+    {
+        $bannedUsers = User::where('status', 'banned')->get();
+        return view('admin.users.banned', compact('bannedUsers'));
+    }
+
+    public function unblock($id)
+    {
+        $user = User::findOrFail($id);
+
+        if($user->status !== 'banned') {
+            return redirect()->route('admin.users.banned')->with('error', 'Pengguna tidak dalam status banned');
+        }
+
+        $user->status = 'aktif';
+        $user->save();
+
+        return redirect()->route('admin.users.banned')->with('success', 'Pengguna berhasil dibuka banned-nya');
+    }
+
 
     /**
      * Remove the specified resource from storage.
@@ -76,8 +100,8 @@ class PenggunaController extends Controller
         $user = User::findOrFail($id);
 
         if($user->hasRole('admin')){
-            redirect()->route('Pengguna.index')->with('error', 'pengguna adalah Admin');
-        } 
+            redirect()->route('Pengguna.index')->with('error', 'Pengguna adalah Admin');
+        }
         $user->delete();
         redirect()->route('Pengguna.index')->with('success', 'Pengguna ini berhasil di hapus');
     }

@@ -47,7 +47,7 @@ class AuthenticatedSessionController extends Controller
         return redirect()->route('dashboard')
             ->with('success', 'Selamat datang Admin ' . $user->name . '!');
     } elseif ($user->hasRole('User')) {
-        return redirect()->route('home')
+        return redirect()->route('user.home')
             ->with('success', 'Selamat datang ' . $user->name . '!');
     }
     }

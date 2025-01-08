@@ -102,5 +102,13 @@
             </form>
         </div>
     </div>
+
+    <!-- Tolak Laporan -->
+    <form action="{{ route('laporan.tolak', $laporan->id) }}" method="POST" style="display:inline;">
+        @csrf
+        <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menolak laporan ini?')">
+            Tolak Laporan
+        </button>
+    </form>
 </div>
 @endsection

@@ -10,14 +10,36 @@ class PenggunaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::where('status','!=','banned')
-        ->whereDoesntHave('roles', function ($query) {
-            $query->where('name', 'admin');
-        })->get();
+        // Ambil data filter dari request
+        $kabupaten = $request->input('kabupaten');
+        $kecamatan = $request->input('kecamatan');
+        $desa = $request->input('desa');
+        $perPage = $request->input('per_page', 2); 
+    
+        // Query dasar
+        $query = User::where('status', '!=', 'banned')
+            ->whereDoesntHave('roles', function ($query) {
+                $query->where('name', 'admin');
+            });
+    
+        // Filter berdasarkan lokasi
+        if ($kabupaten) {
+            $query->where('kabupaten', $kabupaten);
+        }
+        if ($kecamatan) {
+            $query->where('kecamatan', $kecamatan);
+        }
+        if ($desa) {
+            $query->where('desa', $desa);
+        }
+    
+        // Paginate hasilnya dengan jumlah data per halaman yang dipilih
+        $users = $query->paginate($perPage);
+    
         return view('Admin.users.index', compact('users'));
-    }
+    }              
 
     /**
      * Show the form for creating a new resource.
@@ -64,33 +86,12 @@ class PenggunaController extends Controller
         $user = User::findOrFail($id);
         if($user->hasRole('admin')){
             redirect()->route('Pengguna.index')->with('error', 'pengguna adalah Admin');
-        }
+        } 
 
         $user->status = 'banned';
         $user->save();
         return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil diblokir');
     }
-
-    public function banned()
-    {
-        $bannedUsers = User::where('status', 'banned')->get();
-        return view('admin.users.banned', compact('bannedUsers'));
-    }
-
-    public function unblock($id)
-    {
-        $user = User::findOrFail($id);
-
-        if($user->status !== 'banned') {
-            return redirect()->route('admin.users.banned')->with('error', 'Pengguna tidak dalam status banned');
-        }
-
-        $user->status = 'aktif';
-        $user->save();
-
-        return redirect()->route('admin.users.banned')->with('success', 'Pengguna berhasil dibuka banned-nya');
-    }
-
 
     /**
      * Remove the specified resource from storage.
@@ -100,8 +101,8 @@ class PenggunaController extends Controller
         $user = User::findOrFail($id);
 
         if($user->hasRole('admin')){
-            redirect()->route('Pengguna.index')->with('error', 'Pengguna adalah Admin');
-        }
+            redirect()->route('Pengguna.index')->with('error', 'pengguna adalah Admin');
+        } 
         $user->delete();
         redirect()->route('Pengguna.index')->with('success', 'Pengguna ini berhasil di hapus');
     }

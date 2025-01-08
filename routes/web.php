@@ -65,6 +65,7 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
     Route::resource('pinalti', PinaltiController::class);
 
     //pengguna
+    Route::get('/admin/users', [PenggunaController::class, 'index'])->name('admin.users.index');
     Route::post('/admin/users/{id}/block', [PenggunaController::class, 'block'])->name('admin.users.block');
     Route::get('/users/banned',[PenggunaController::class, 'banned'])->name('admin.users.banned');
     Route::post('/users/{id}/unblock', [PenggunaController::class, 'unblock'])->name('admin.users.unblock');
@@ -76,8 +77,6 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::resource('/admin/users', PenggunaController::class);
-
     });
 
     //PENGGUNA

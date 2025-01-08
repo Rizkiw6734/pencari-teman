@@ -90,6 +90,12 @@ class LaporanController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $laporan = Laporan::findOrFail($id);
+
+        if ($laporan->status === 'diterima' || $laporan->status === 'ditolak') {
+            return redirect('/laporan')->with('error', 'Laporan sudah selesai, tidak dapat diubah.');
+        }
+
         $request->validate([
             'report_id' => 'required|exists:users,id',
             'reported_id' => 'required|exists:users,id|different:report_id',
@@ -97,7 +103,7 @@ class LaporanController extends Controller
             'alasan' => 'required|string|max:255',
         ]);
 
-        $laporan = Laporan::findOrFail($id);
+
 
         if ($request->hasFile('bukti')) {
             $buktiPath = $request->file('bukti')->store('bukti', 'public');
@@ -141,8 +147,11 @@ class LaporanController extends Controller
                     'pesan' => $request->input('pesan'),
                     'durasi' => $durasi,
                     'start_date' => now(),
-                    'end_date' => now()->addDays('durasi'),
+                    'end_date' => now()->addDays($durasi),
                 ]);
+                $user = User::find($laporan->reported_id);
+                $user->status = 'suspend';
+                $user->save();
                 break;
 
             case 'banned':
@@ -168,6 +177,25 @@ class LaporanController extends Controller
 
         return redirect()->route('laporan.index')->with('success', 'Hukuman berhasil diberikan dan status laporan diperbarui.');
     }
+
+
+        /**
+     * Reject a specific report and update its status.
+     */
+    public function tolakLaporan(Request $request, string $id)
+    {
+        $laporan = Laporan::findOrFail($id);
+
+        if ($laporan->status === 'diterima' || $laporan->status === 'ditolak') {
+            return redirect('/laporan')->with('error', 'Laporan sudah selesai dan tidak dapat diubah.');
+        }
+
+        $laporan->status = 'ditolak';
+        $laporan->save();
+
+        return redirect()->route('laporan.index')->with('success', 'Laporan berhasil ditolak.');
+    }
+
 
 
 

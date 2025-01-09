@@ -122,4 +122,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Blokir::class, 'blocked_user_id');
     }
+
+    public function banding()
+    {
+        return $this->hasone(Banding::class, 'users_id');
+    }
 }

@@ -16,14 +16,14 @@ class PenggunaController extends Controller
         $kabupaten = $request->input('kabupaten');
         $kecamatan = $request->input('kecamatan');
         $desa = $request->input('desa');
-        $perPage = $request->input('per_page', 2); 
-    
+        $perPage = $request->input('per_page', 2);
+
         // Query dasar
         $query = User::where('status', '!=', 'banned')
             ->whereDoesntHave('roles', function ($query) {
                 $query->where('name', 'admin');
             });
-    
+
         // Filter berdasarkan lokasi
         if ($kabupaten) {
             $query->where('kabupaten', $kabupaten);
@@ -34,12 +34,12 @@ class PenggunaController extends Controller
         if ($desa) {
             $query->where('desa', $desa);
         }
-    
+
         // Paginate hasilnya dengan jumlah data per halaman yang dipilih
         $users = $query->paginate($perPage);
-    
+
         return view('Admin.users.index', compact('users'));
-    }              
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -86,11 +86,23 @@ class PenggunaController extends Controller
         $user = User::findOrFail($id);
         if($user->hasRole('admin')){
             redirect()->route('Pengguna.index')->with('error', 'pengguna adalah Admin');
-        } 
+        }
 
         $user->status = 'banned';
         $user->save();
         return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil diblokir');
+    }
+
+    public function unblock($id)
+    {
+        $user = User::findOrFail($id);
+        if($user->hasRole('admin')){
+            redirect()->route('Pengguna.index')->with('error', 'pengguna adalah Admin');
+        }
+
+        $user->status = 'aktif';
+        $user->save();
+        return redirect()->route('admin.users.index')->with('success', 'Banned pengguna berhasil dicabut');
     }
 
     /**
@@ -102,8 +114,22 @@ class PenggunaController extends Controller
 
         if($user->hasRole('admin')){
             redirect()->route('Pengguna.index')->with('error', 'pengguna adalah Admin');
-        } 
+        }
         $user->delete();
         redirect()->route('Pengguna.index')->with('success', 'Pengguna ini berhasil di hapus');
+    }
+
+    public function banned(Request $request)
+    {
+        $perPage = $request->input('per_page', 2);
+        $query = User::where('status', '=', 'banned')
+            ->whereDoesntHave('roles', function ($query) {
+                $query->where('name', 'admin');
+            });
+
+        // Paginate hasilnya dengan jumlah data per halaman yang dipilih
+        $bannedUsers = $query->paginate($perPage);
+
+        return view('Admin.users.banned', compact('bannedUsers'));
     }
 }

@@ -26,4 +26,8 @@ class Laporan extends Model {
     public function pinalti() {
         return $this->HasOne(Pinalti::class, 'laporan_id');
     }
+
+    public function banding() {
+        return $this->hasOne(Banding::class, 'laporan_id');
+    }
 }

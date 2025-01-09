@@ -10,7 +10,7 @@
     <ul class="navbar-nav">
       <li class="nav-label">Dashboard</li>
       <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}" 
+        <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}"
            style="position: relative; padding-left: 10px;">
           <div class="d-flex align-items-center">
             <div class="fa fa-home icon-sm shadow border-radius-md text-center me-2 d-flex align-items-center justify-content-center"
@@ -21,7 +21,7 @@
           @if(request()->routeIs('dashboard'))
             <div style="position: absolute; left: 0; top: 0; width: 4px; height: 100%; background-color: #0d6efd;"></div>
           @endif
-        </a>              
+        </a>
       </li>
       <li class="nav-label">Management</li>
       <li class="nav-item">
@@ -58,9 +58,9 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('laporan.index') ? 'active' : '' }}" href="{{ route('laporan.index') }}">
+        <a class="nav-link {{ request()->routeIs('admin.users.banned') ? 'active' : '' }}" href="{{ route('admin.users.banned') }}">
           <div class="fa fa-ban icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
-               style="background-color: {{ request()->routeIs('laporan.index') ? '#0d6efd' : '#ffffff' }} !important; color: {{ request()->routeIs('laporan.index') ? '#ffffff' : '#000000' }} !important;">
+               style="background-color: {{ request()->routeIs('admin.users.banned') ? '#0d6efd' : '#ffffff' }} !important; color: {{ request()->routeIs('admin.users.banned') ? '#ffffff' : '#000000' }} !important;">
           </div>
           <span class="nav-link-text ms-1">Banned Pengguna</span>
         </a>

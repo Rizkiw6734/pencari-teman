@@ -285,9 +285,9 @@ body { background: var(--white); }
   padding: 150px 0 var(--section-padding);
 }
 
-.hero-banner { 
-  margin-bottom: 30px;  
-  transform: translateY(-65px); 
+.hero-banner {
+  margin-bottom: 30px;
+  transform: translateY(-65px);
 }
 
 .hero-banner img { width: 100%; }
@@ -311,8 +311,8 @@ body { background: var(--white); }
   margin-bottom: 40px;
 }
 
-.handphone { 
-  width: 100%; 
+.handphone {
+  width: 100%;
   transform: translateX(-20px);
 }
 
@@ -745,7 +745,11 @@ body { background: var(--white); }
 
 
   /**
-   * REUSED STYLE
+   * REUSED
+
+
+
+   
    */
 
   .container { max-width: 750px; }
@@ -897,7 +901,7 @@ body { background: var(--white); }
 
   .navbar-link::after {
     --scale: 0;
-    
+
     content: "";
     position: absolute;
     bottom: 15px;
@@ -1105,7 +1109,7 @@ body { background: var(--white); }
 
 
   /**
-   * CTA 
+   * CTA
    */
 
   .cta .title-wrapper { max-width: 64%; }

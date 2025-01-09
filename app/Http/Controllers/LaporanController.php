@@ -125,10 +125,16 @@ class LaporanController extends Controller
 
         switch ($jenisHukuman) {
             case 'peringatan':
+                $pesan = $request->validate([
+                    'pesan' => 'required|regex:/^[a-zA-Z\s]+$/',
+                ],[
+                  'pesan.required' => 'Pesan Peringatan Tidak Boleh Kosong',
+                  'pesan.regex' => 'Pesan Tidak Boleh Angka'
+                ]);
                 Pinalti::create([
                     'laporan_id' => $laporan->id,
                     'jenis_hukuman' => 'peringatan',
-                    'pesan' => $request->input('pesan'),
+                    'pesan' => $pesan,
                     'start_date' => now(),
                     'end_date' => null,
                 ]);

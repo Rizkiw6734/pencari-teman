@@ -7,17 +7,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AroundYou - Temukan Teman Baru</title>
 
-  <!-- 
+  <!--
     - favicon
   -->
   <link rel="icon" type="image/png" href="/assets/img/logo.jpg">
 
-  <!-- 
+  <!--
     - custom css link
   -->
   <link rel="stylesheet" href="./assets/css/style.custom.css">
 
-  <!-- 
+  <!--
     - google font link
   -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,7 +28,7 @@
 </head>
 
 <body id="top">
-  <!-- 
+  <!--
     - #HEADER
   -->
   <header class="header" data-header>
@@ -64,14 +64,14 @@
             <a href="#" class="navbar-link">Contact</a>
           </li>
         </ul>
-        <button class="btn btn-secondary">Mulai Sekarang</button>
+        <button class="btn btn-secondary" onclick="window.location.href='{{ route('login') }}'">Mulai Sekarang</button>
       </nav>
     </div>
   </header>
 
   <main>
     <article>
-      <!-- 
+      <!--
         - #HERO
       -->
       <section class="hero">
@@ -89,7 +89,7 @@
         </div>
       </section>
 
-      <!-- 
+      <!--
         - #ABOUT
       -->
       <section class="about">
@@ -111,7 +111,7 @@
         </div>
       </section>
 
-      <!-- 
+      <!--
         - #FITUR
       -->
       <section class="departments">
@@ -181,7 +181,7 @@
         </div>
       </section>
 
-      <!-- 
+      <!--
         - #COMMENT
       -->
 
@@ -235,7 +235,7 @@
 
 
 
-      <!-- 
+      <!--
         - #CTA
       -->
 
@@ -250,7 +250,7 @@
               <img src="./assets/img/cta-vector.svg" alt="Vector arrow art" class="vector-line">
             </h2>
 
-            <button class="btn btn-primary">Register Now</button>
+            <button class="btn btn-primary" onclick="window.location.href='{{ route('register') }}'">Register Now</button>
 
           </div>
 
@@ -266,7 +266,7 @@
 
 
 
-  <!-- 
+  <!--
     - #FOOTER
   -->
 
@@ -432,7 +432,7 @@
 
 
 
-  <!-- 
+  <!--
     - #GO TO TOP
   -->
 
@@ -444,12 +444,12 @@
 
 
 
-  <!-- 
+  <!--
     - custom js link
   -->
   <script src="./assets/js/script.custom.js"></script>
 
-  <!-- 
+  <!--
     - ionicon link
   -->
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>

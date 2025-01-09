@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('banding', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pinalti_id')->constrained('pinalti')->onDelete('cascade');
             $table->foreignId('users_id')->constrained('users')->onDelete('cascade');
-            $table->enum('jenis_hukuman', ['peringatan', 'suspend', 'banned']);
+            $table->foreignId('laporan_id')->constrained('laporan')->onDelete('cascade');
+            $table->text('alasan_banding');
             $table->enum('status', ['proses', 'diterima', 'ditolak'])->default('proses');
-            $table->text('alasan');
             $table->timestamps();
         });
     }

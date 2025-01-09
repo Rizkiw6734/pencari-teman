@@ -12,7 +12,8 @@ class BandingController extends Controller
      */
     public function index()
     {
-        //
+        $bandings = Banding::with(['user', 'laporan'])->get();
+        return view('banding.index', compact('bandings'));
     }
 
     /**

@@ -10,9 +10,9 @@
         </div>
 
         <ul class="navbar-nav d-flex align-items-center" style="margin-left: -15px;">
-          <li class="nav-item dropdown pe-2 d-flex align-items-center justify-content-center" 
+          <li class="nav-item dropdown pe-2 d-flex align-items-center justify-content-center"
               style="width: 45px; height: 45px; flex-grow: 0; margin: 3.2px 12px 0 0; padding: 7px; border-radius: 15px; background-color: rgba(45, 156, 219, 0.15);">
-            <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center" 
+            <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center"
               id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="fa fa-bell cursor-pointer" style="font-size: 20px; color: #2970ff;"></i>
             </a>
@@ -38,7 +38,7 @@
             </ul>
           </li>
           <div class="d-flex align-items-center">
-            <li class="nav-item px-3 d-flex align-items-center justify-content-center" 
+            <li class="nav-item px-3 d-flex align-items-center justify-content-center"
                 style="width: 45px; height: 45px; flex-grow: 0; padding: 9px; border-radius: 15px; background-color: rgba(255, 91, 91, 0.15);">
                 <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center">
                     <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer" style="font-size: 20px; color: #ff5b5b;"></i>
@@ -46,11 +46,11 @@
             </li>
 
             <div style="width: 1px; height: 45px; background-color: #ddd; margin: 0 10px;"></div>
-        
+
             <li class="nav-item dropdown">
-                <a href="#" class="nav-link text-body font-weight-bold px-0 d-flex align-items-center" 
+                <a href="#" class="nav-link text-body font-weight-bold px-0 d-flex align-items-center"
                     id="adminMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="{{ Auth::user()->foto_profil ?? '/images/marie.jpg' }}" 
+                    <img src="{{ Auth::user()->foto_profil ?? '/images/marie.jpg' }}"
                         class="rounded-circle me-2" alt="Profile Image" width="45" height="45">
                     <span class="d-sm-inline d-none">{{ Auth::user()->name }}</span>
                     <i class="fa fa-chevron-down ms-2"></i>
@@ -77,12 +77,12 @@
                     @csrf
                 </form>
             </li>
-          </div>           
-        </ul>        
+          </div>
+        </ul>
       </div>
-    </div>    
+    </div>
   </nav>
-  
+
   <div class="container-fluid py-4">
     <div class="row">
       <!-- Kolom Kiri -->
@@ -101,121 +101,129 @@
               <img src="images/header.svg" alt="Welcome Image" style="max-width: 150px; border-radius: 10px;">
             </div>
           </div>
-        </div>        
+        </div>
 
         <div class="row gx-3">
-          <!-- Card Total Pengguna -->
-          <div class="col-lg-4 col-md-6 col-12 mb-4">
-              <div class="card" style="width: 100%; height: 286px;">
-                  <span class="mask bg-white opacity-10 border-radius-lg"></span>
-                  <div class="card-body p-3 position-relative">
-                      <div style="position: relative; height: 120px;">
-                          <canvas id="totalUsersChart"></canvas>
-                      </div>
-                      <div class="row mt-3">
-                          <div class="col-8 text-start">
-                              <h5 class="text-dark font-weight-bolder mb-0 mt-3">1600</h5>
-                              <span class="text-dark text-sm">Total Pengguna</span>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      
-          <!-- Card Total Laporan -->
-          <div class="col-lg-4 col-md-6 col-12 mb-4">
-              <div class="card" style="width: 100%; height: 286px;">
-                  <span class="mask bg-white opacity-10 border-radius-lg"></span>
-                  <div class="card-body p-3 position-relative">
-                      <div style="position: relative; height: 120px;">
-                          <canvas id="totalReportsChart"></canvas>
-                      </div>
-                      <div class="row mt-3">
-                          <div class="col-8 text-start">
-                              <h5 class="text-dark font-weight-bolder mb-0 mt-3">357</h5>
-                              <span class="text-dark text-sm">Total Laporan</span>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      
-          <!-- Card Total Pinalti -->
-          <div class="col-lg-4 col-md-6 col-12 mb-4">
-              <div class="card" style="width: 100%; height: 286px;">
-                  <span class="mask bg-white opacity-10 border-radius-lg"></span>
-                  <div class="card-body p-3 position-relative">
-                      <div style="position: relative; height: 120px;">
-                          <canvas id="totalPenaltiesChart"></canvas>
-                      </div>
-                      <div class="row mt-3">
-                          <div class="col-8 text-start">
-                              <h5 class="text-dark font-weight-bolder mb-0 mt-3">2300</h5>
-                              <span class="text-dark text-sm">Total Pinalti</span>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
+            <!-- Card Total Pengguna -->
+            <div class="col-lg-4 col-md-6 col-12 mb-4">
+                <div class="card" style="width: 100%; height: 286px;">
+                    <span class="mask bg-white opacity-10 border-radius-lg"></span>
+                    <div class="card-body p-3 position-relative">
+                        <div style="position: relative; height: 120px;">
+                            <canvas id="totalUsersChart" data-total="{{ $totalUsers }}" data-sisa="{{ 50 - $totalUsers }}"></canvas>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-8 text-start">
+                                <h5 class="text-dark font-weight-bolder mb-0 mt-3">{{ $totalUsers }}</h5>
+                                <span class="text-dark text-sm">Total Pengguna</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Total Laporan -->
+            <div class="col-lg-4 col-md-6 col-12 mb-4">
+                <div class="card" style="width: 100%; height: 286px;">
+                    <span class="mask bg-white opacity-10 border-radius-lg"></span>
+                    <div class="card-body p-3 position-relative">
+                        <div style="position: relative; height: 120px;">
+                            <canvas id="totalReportsChart" data-total="{{ $totalReports }}" data-sisa="{{ 50 - $totalReports }}"></canvas>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-8 text-start">
+                                <h5 class="text-dark font-weight-bolder mb-0 mt-3">{{ $totalReports }}</h5>
+                                <span class="text-dark text-sm">Total Laporan</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Total Pinalti -->
+            <div class="col-lg-4 col-md-6 col-12 mb-4">
+                <div class="card" style="width: 100%; height: 286px;">
+                    <span class="mask bg-white opacity-10 border-radius-lg"></span>
+                    <div class="card-body p-3 position-relative">
+                        <div style="position: relative; height: 120px;">
+                            <canvas id="totalPenaltiesChart" data-total="{{ $totalPenalties }}" data-sisa="{{ 50 - $totalPenalties }}"></canvas>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-8 text-start">
+                                <h5 class="text-dark font-weight-bolder mb-0 mt-3">{{ $totalPenalties }}</h5>
+                                <span class="text-dark text-sm">Total Pinalti</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Chart for Total Pengguna
+                var totalUsersCanvas = document.getElementById('totalUsersChart');
+                var totalUsers = totalUsersCanvas.getAttribute('data-total');
+                var totalUsersSisa = totalUsersCanvas.getAttribute('data-sisa');
+                var totalUsersChart = new Chart(totalUsersCanvas.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Total Pengguna', 'Sisa'],
+                        datasets: [{
+                            data: [totalUsers, totalUsersSisa],
+                            backgroundColor: ['#3243fd', '#e9ecf3'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        cutoutPercentage: 80
+                    }
+                });
+
+                // Chart for Total Laporan
+                var totalReportsCanvas = document.getElementById('totalReportsChart');
+                var totalReports = totalReportsCanvas.getAttribute('data-total');
+                var totalReportsSisa = totalReportsCanvas.getAttribute('data-sisa');
+                var totalReportsChart = new Chart(totalReportsCanvas.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Total Laporan', 'Sisa'],
+                        datasets: [{
+                            data: [totalReports, totalReportsSisa],
+                            backgroundColor: ['#FF6600', '#e9ecf3'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        cutoutPercentage: 80
+                    }
+                });
+
+                // Chart for Total Pinalti
+                var totalPenaltiesCanvas = document.getElementById('totalPenaltiesChart');
+                var totalPenalties = totalPenaltiesCanvas.getAttribute('data-total');
+                var totalPenaltiesSisa = totalPenaltiesCanvas.getAttribute('data-sisa');
+                var totalPenaltiesChart = new Chart(totalPenaltiesCanvas.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Total Pinalti', 'Sisa'],
+                        datasets: [{
+                            data: [totalPenalties, totalPenaltiesSisa],
+                            backgroundColor: ['#DC3545', '#e9ecf3'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        cutoutPercentage: 80
+                    }
+                });
+            });
+        </script>
       </div>
-      
-      <script>
-          // Chart for Total Pengguna
-          var ctx1 = document.getElementById('totalUsersChart').getContext('2d');
-          var totalUsersChart = new Chart(ctx1, {
-              type: 'doughnut',
-              data: {
-                  labels: ['Total Pengguna', 'Sisa'],
-                  datasets: [{
-                      data: [1600, 400], // Sesuaikan dengan jumlah total dan sisa
-                      backgroundColor: ['#3243fd', '#e9ecf3'],
-                      borderWidth: 0
-                  }]
-              },
-              options: {
-                  responsive: true,
-                  cutoutPercentage: 80
-              }
-          });
-      
-          // Chart for Total Laporan
-          var ctx2 = document.getElementById('totalReportsChart').getContext('2d');
-          var totalReportsChart = new Chart(ctx2, {
-              type: 'doughnut',
-              data: {
-                  labels: ['Total Laporan', 'Sisa'],
-                  datasets: [{
-                      data: [357, 1000], // Sesuaikan dengan jumlah total dan sisa
-                      backgroundColor: ['#FF6600', '#e9ecf3'],
-                      borderWidth: 0
-                  }]
-              },
-              options: {
-                  responsive: true,
-                  cutoutPercentage: 80
-              }
-          });
-      
-          // Chart for Total Pinalti
-          var ctx3 = document.getElementById('totalPenaltiesChart').getContext('2d');
-          var totalPenaltiesChart = new Chart(ctx3, {
-              type: 'doughnut',
-              data: {
-                  labels: ['Total Pinalti', 'Sisa'],
-                  datasets: [{
-                      data: [2300, 500], // Sesuaikan dengan jumlah total dan sisa
-                      backgroundColor: ['#DC3545', '#e9ecf3'],
-                      borderWidth: 0
-                  }]
-              },
-              options: {
-                  responsive: true,
-                  cutoutPercentage: 80
-              }
-          });
-      </script>      
-      </div>
-  
+
       <!-- Kolom Kanan -->
       <div class="col-lg-4 col-12">
         <div class="card shadow h-100 float-end" style="width: 100%;">
@@ -226,8 +234,8 @@
             <!-- Bagian untuk ulasan positif -->
             <div class="d-flex align-items-center pb-3" style="background-color: #E9F7FF; border-radius: 10px; padding: 10px;">
               <div class="me-3" style="flex: 1;">
-                <h6 class="mb-0" style="font-size: 12px">Anda telah menerima 
-                  <span class="mb-0" style=" font-size: 16px; font-weight: bold; color: #3243fd;">80%</span> 
+                <h6 class="mb-0" style="font-size: 12px">Anda telah menerima
+                  <span class="mb-0" style=" font-size: 16px; font-weight: bold; color: #3243fd;">80%</span>
                   ulasan positif dari pengguna!
                 </h6>
               </div>
@@ -243,8 +251,8 @@
             <!-- Bagian untuk ulasan netral -->
             <div class="d-flex align-items-center pb-3 mt-3" style="background-color: #FFF7E5; border-radius: 10px; padding: 10px;">
               <div class="me-3" style="flex: 1;">
-                <h6 class="mb-0" style="font-size: 12px">Anda telah menerima 
-                  <span class="mb-0" style=" font-size: 16px; font-weight: bold; color: #FFC107;">17%</span> 
+                <h6 class="mb-0" style="font-size: 12px">Anda telah menerima
+                  <span class="mb-0" style=" font-size: 16px; font-weight: bold; color: #FFC107;">17%</span>
                   ulasan netral dari pengguna!
                 </h6>
               </div>
@@ -260,8 +268,8 @@
             <!-- Bagian untuk ulasan negatif -->
             <div class="d-flex align-items-center mt-3" style="background-color: #FFE9E9; border-radius: 10px; padding: 10px;">
               <div class="me-3" style="flex: 1;">
-                <h6 class="mb-0" style="font-size: 12px">Anda telah menerima 
-                  <span class="mb-0" style=" font-size: 16px; font-weight: bold; color: #DC3545;">3%</span> 
+                <h6 class="mb-0" style="font-size: 12px">Anda telah menerima
+                  <span class="mb-0" style=" font-size: 16px; font-weight: bold; color: #DC3545;">3%</span>
                   ulasan negatif dari pengguna!
                 </h6>
               </div>
@@ -280,7 +288,7 @@
     </div>
   </div>
 
-      
+
     <!-- Tambahkan CDN Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
@@ -306,7 +314,7 @@
           cutout: '70%' // Potongan tengah lebih besar
         }
       });
-      
+
       const ctxNeutral = document.getElementById('neutralChart').getContext('2d');
       const neutralChart = new Chart(ctxNeutral, {
         type: 'doughnut',
@@ -330,7 +338,7 @@
           cutout: '70%' // Potongan tengah lebih besar
         }
       });
-    
+
       const ctxNegative = document.getElementById('negativeChart').getContext('2d');
       const negativeChart = new Chart(ctxNegative, {
         type: 'doughnut',
@@ -354,7 +362,7 @@
           cutout: '70%' // Potongan tengah lebih besar
         }
       });
-    </script>      
+    </script>
 
     <div class="row mt-4">
         <div class="col-lg-5 mb-lg-0 mb-4">
@@ -491,7 +499,7 @@
         </div>
       </div>
   </div>
-  
+
   <footer class="footer pt-3  ">
     <div class="container-fluid">
       <div class="row align-items-center justify-content-center">

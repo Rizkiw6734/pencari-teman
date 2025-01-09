@@ -38,9 +38,7 @@ Route::middleware([ToSweetAlert::class])->group(function () {
 Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function () {
 
     //dasboard
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     //provinsi
     Route::get('/lokasi', [ProvinsiController::class, 'index'])->name('lokasi.index');

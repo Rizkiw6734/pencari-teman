@@ -181,75 +181,102 @@
             });
         </script>
     
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        @if(session('success'))
-                            <div class="alert alert-success">
-                                {{ session('success') }}
-                            </div>
-                        @endif
-    
-                        @if(session('error'))
-                            <div class="alert alert-danger">
-                                {{ session('error') }}
-                            </div>
-                        @endif
-    
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Nama</th>
-                                    <th>Email</th>
-                                    <th>Umur</th>
-                                    <th>Gender</th>
-                                    <th>Status</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($users as $user)
-                                    <tr>
-                                        <td>{{ $user->name }}</td>
-                                        <td>{{ $user->email }}</td>
-                                        <td>{{ $user->umur }}</td>
-                                        <td>{{ $user->gender }}</td>
-                                        <td>
-                                            <span class="badge {{ $user->status === 'banned' ? 'bg-danger' : 'bg-success' }}">
-                                                {{ $user->status }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            @if($user->status !== 'banned')
-                                                <form action="{{ route('admin.users.block', $user->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('Apakah Anda yakin ingin memblokir pengguna ini?')">
-                                                        Blokir
-                                                    </button>
-                                                </form>
-                                            @endif
-                                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus pengguna ini?')">
-                                                    Hapus
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" class="text-center">Tidak ada data pengguna.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped rounded-table text-center">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>Umur</th>
+                            <th>Gender</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($users as $user)
+                            <tr class="align-middle">
+                                <td>{{ $user->name }}</td>
+                                <td>{{ $user->email }}</td>
+                                <td>{{ $user->umur }}</td>
+                                <td>{{ $user->gender }}</td>
+                                <td>
+                                    <span 
+                                        class="badge align-items-center justify-content-center 
+                                        {{ $user->status === 'banned' ? 'status-banned' : 'status-active' }}">
+                                        @if($user->status === 'banned')
+                                            <i class="fa fa-ban me-1 mt-2"></i> Banned
+                                        @else
+                                            <i class="fa fa-check-square me-1 mt-2"></i> Aktif
+                                        @endif
+                                    </span>
+                                </td>
+                                <td>
+                                    @if($user->status !== 'banned')
+                                        <form action="{{ route('admin.users.block', $user->id) }}" method="POST" class="d-inline" id="block-form-{{ $user->id }}">
+                                            @csrf
+                                            <button type="button" class="btn btn-block-user btn-sm" onclick="confirmBan('{{ $user->id }}')" style="margin-top: 10px !important;">
+                                                <i class="fa fa-ban" style="font-size: 18px;"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline" id="delete-form-{{ $user->id }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" class="btn btn-delete-user btn-sm" onclick="confirmDelete('{{ $user->id }}')" style="margin-top: 10px !important;">
+                                            <i class="fa fa-trash" style="font-size: 18px;"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                                
+                                <script>
+                                    function confirmBan(userId) {
+                                        Swal.fire({
+                                            title: 'Apakah Anda yakin?',
+                                            text: "Pengguna ini akan diblokir.",
+                                            icon: 'warning',
+                                            showCancelButton: true,
+                                            confirmButtonColor: '#3085d6',
+                                            cancelButtonColor: '#d33',
+                                            confirmButtonText: 'Ya, blokir!',
+                                            cancelButtonText: 'Batal'
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                document.getElementById('block-form-' + userId).submit();
+                                            }
+                                        });
+                                    }
+                                
+                                    function confirmDelete(userId) {
+                                        Swal.fire({
+                                            title: 'Apakah Anda yakin?',
+                                            text: "Pengguna ini akan dihapus.",
+                                            icon: 'warning',
+                                            showCancelButton: true,
+                                            confirmButtonColor: '#3085d6',
+                                            cancelButtonColor: '#d33',
+                                            confirmButtonText: 'Ya, hapus!',
+                                            cancelButtonText: 'Batal'
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                document.getElementById('delete-form-' + userId).submit();
+                                            }
+                                        });
+                                    }
+                                </script>                                                             
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center">Tidak ada data pengguna.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
-    </div>
+    </div>    
     
     <div class="d-flex justify-content-center mt-4">
         <nav aria-label="Page navigation">

@@ -17,9 +17,219 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </head>
 
+  <style>
+    @media (min-width: 992px) {
+        .laporan-col {
+            flex: 0 0 20%;
+        }
+    }
+
+    .laporan-header {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Mengatur agar ikon mata tetap berada di kanan */
+    .laporan-icon {
+        background-color: #d1e0ff;
+        padding: 3px 12px;
+        border-radius: 10px;
+        display: none;
+        position: absolute;
+        top: 8px;
+        right: 10px; /* Menempatkan ikon di kanan */
+        font-size: 1.2rem;
+        color: #3243FD;
+        cursor: pointer;
+        transition: opacity 0.3s ease; /* Menambahkan efek transisi untuk ikon */
+    }
+
+    /* Menampilkan ikon mata saat hover pada teks */
+        .laporan-header:hover .laporan-text {
+        transform: translateX(-20px); /* Menggeser teks ke kiri */
+    }
+
+    .laporan-header:hover .laporan-icon {
+        display: inline-block; /* Menampilkan ikon saat hover */
+        opacity: 1; /* Menampilkan ikon secara halus */
+    }
+
+    /* Mengatur tampilan teks laporan # */
+        .laporan-text {
+        transition: transform 0.3s ease; /* Efek transisi pada pergerakan teks */
+    }
+
+    .custom-modal-sm {
+        max-width: 600px; /* Ubah ukuran modal sesuai kebutuhan */
+    }
+
+    .detail-laporan {
+        font-size: 1rem;
+        padding-right: 10px;
+    }
+
+    .bukti-laporan img {
+        max-width: 100%;
+        max-height: 200px; /* Batasi tinggi gambar agar tidak terlalu besar */
+    }
+
+    .border-divider {
+        position: relative;
+        padding: 0;
+        margin: 0;
+    }
+
+    .vertical-line {
+        height: 100%;
+        width: 1px;
+        background-color: #ccc;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .modal-header .btn-close i {
+        font-size: 1.2rem; /* Ukuran ikon */
+        color: #6c757d; /* Warna ikon */
+    }
+
+    .modal-header .btn-close:hover i {
+        color: #dc3545; /* Warna ikon saat hover */
+    }
+
+    .rounded-table {
+        border-collapse: separate; /* Pisahkan border antar sel */
+        border-spacing: 0; /* Hapus jarak antar border */
+        border-radius: 10px; /* Atur sudut melengkung */
+        overflow: hidden; /* Agar isi tabel tetap di dalam area sudut */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Tambahkan sedikit bayangan */
+    }
+
+    .rounded-table thead {
+        border-radius: 10px 10px 0 0; /* Sudut atas melengkung */
+        background-color: #f8f9fa; /* Warna terang untuk header */
+        border-bottom: 2px solid #dee2e6; /* Border bawah header */
+    }
+
+    .rounded-table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 10px; /* Sudut kiri bawah */
+    }
+
+    .rounded-table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 10px; /* Sudut kanan bawah */
+    }
+
+    .status-active {
+        background-color: #F0FFF3; /* Warna hijau muda */
+        color: #00FF37; /* Hijau teks */
+        padding: 0;
+        width: 100px; /* Lebar tombol */
+        height: 30px; /* Tinggi tombol */
+    }
+
+    .status-banned {
+        background-color: #FFF0F0; /* Warna merah muda */
+        color: #FF0000; /* Merah teks */
+        padding: 0;
+        width: 100px; /* Lebar tombol */
+        height: 30px; /* Tinggi tombol */
+    }
+
+    .status-active i,
+    .status-banned i {
+        font-size: 14px; /* Ukuran ikon */
+    }
+
+    .btn-block-user {
+        background-color: #FFF0F0; /* Warna merah muda */
+        color: #dc3545; /* Merah teks */
+        border: 1px solid #dc3545; /* Border merah */
+        padding: 0;
+        width: 40px; /* Lebar tombol */
+        height: 30px; /* Tinggi tombol */
+    }
+
+    .btn-block-user:hover {
+        background-color: #dc3545; /* Warna merah saat hover */
+        color: #fff; /* Teks putih saat hover */
+    }
+
+    .btn-delete-user {
+        background-color: #FFF0DE; /* Warna oranye muda */
+        color: #fd7e14; /* Oranye teks */
+        border: 1px solid #fd7e14; /* Border oranye */
+        padding: 0; /* Tombol lebih kecil */
+        width: 40px; /* Lebar tombol */
+        height: 30px; /* Tinggi tombol */
+    }
+
+    .btn-delete-user:hover {
+        background-color: #fd7e14; /* Warna oranye saat hover */
+        color: #fff; /* Teks putih saat hover */
+    }
+
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .pagination {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        gap: 10px;
+    }
+
+    .pagination li {
+        display: inline-block;
+    }
+
+    .pagination a, .pagination span {
+        text-decoration: none;
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    .pagination .disabled span,
+    .pagination .active span {
+        font-weight: bold;
+    }
+
+    .pagination .active span {
+        background-color: #3243fd;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    .pagination a:not(.page-link), 
+    .pagination .disabled:not(.page-link) span {
+        background: none;
+        padding: 0;
+        border-radius: 0;
+        color: inherit;
+    }
+
+    .pagination .page-link {
+        background-color: #eff4ff;
+        padding: 5px 10px;
+        border-radius: 5px;
+        border: 1px solid #dee2e6;
+        color: #3243fd;
+    }
+
+    .pagination .page-link:hover {
+        background-color: #e2e6ea;
+    }
+  </style>
+  
   <body class="g-sidenav-show  bg-gray-100">
     @include('partials.sidebar')
 

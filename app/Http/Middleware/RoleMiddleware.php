@@ -18,7 +18,7 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next, $role)
     {
         if (!$request->user() || !$request->user()->hasRole($role)) {
-            return redirect('/')->with('error', 'Anda tidak memiliki ijin untuk mengakses halaman ini.');
+            return redirect('/home')->with('error', 'Anda tidak memiliki ijin untuk mengakses halaman ini.');
         }
         return $next($request);
     }

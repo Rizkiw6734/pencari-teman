@@ -142,15 +142,22 @@ class LaporanController extends Controller
 
             case 'suspend':
                 $request->validate([
-                    'durasi' => 'required|integer|min:1',
+                    'pesan' => 'required|regex:/^[a-zA-Z\s]+$/',
+                    'durasi' => 'required|integer|min:1|max:6',
+                ], [
+                    'pesan.required' => 'Pesan Peringatan Tidak Boleh Kosong',
+                    'pesan.regex' => 'Pesan Tidak Boleh Angka',
+                    'durasi.required' => 'Durasi Suspend harus jelas.',
+                    'durasi.min' => 'Minimal durasi suspend adalah satu hari.',
+                    'durasi.max' => 'Max waktu suspend adalah 6 hari.'
                 ]);
 
-                $durasi = (int) $request->input('durasi');
+                $durasi = (int) $request->durasi;
 
                 Pinalti::create([
                     'laporan_id' => $laporan->id,
                     'jenis_hukuman' => 'suspend',
-                    'pesan' => $request->input('pesan'),
+                    'pesan' => 'Kepada pengguna' . $laporan->reported,
                     'durasi' => $durasi,
                     'start_date' => now(),
                     'end_date' => now()->addDays($durasi),

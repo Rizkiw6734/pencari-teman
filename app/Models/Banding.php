@@ -8,7 +8,7 @@ class Banding extends Model
 {
     protected $fillable = [
         'users_id',
-        'laporan_id',
+        'pinalti_id',
         'alasan_banding',
         'status'
     ];
@@ -17,7 +17,7 @@ class Banding extends Model
         return $this->belongsTo(User::class, 'users_id');
     }
 
-    public function laporan() {
+    public function pinalti() {
         return $this->belongsTo(Laporan::class, 'laporan_id');
     }
 }

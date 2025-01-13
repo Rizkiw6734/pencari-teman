@@ -21,4 +21,7 @@ class Pinalti extends Model {
         return $this->belongsTo(Laporan::class, 'laporan_id');
     }
 
+    public function banding() {
+        return $this->hasOne(Banding::class, 'pinalti_id');
+    }
 }

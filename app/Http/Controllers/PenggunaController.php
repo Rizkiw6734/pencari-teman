@@ -16,7 +16,7 @@ class PenggunaController extends Controller
         $kabupaten = $request->input('kabupaten');
         $kecamatan = $request->input('kecamatan');
         $desa = $request->input('desa');
-        $perPage = $request->input('per_page', 2);
+        $perPage = $request->input('per_page', 10);
 
         // Query dasar
         $query = User::where('status', '!=', 'banned')
@@ -102,7 +102,7 @@ class PenggunaController extends Controller
 
         $user->status = 'aktif';
         $user->save();
-        return redirect()->route('admin.users.index')->with('success', 'Banned pengguna berhasil dicabut');
+        return redirect()->route('admin.users.banned')->with('success', 'Banned pengguna berhasil dicabut');
     }
 
     /**
@@ -121,7 +121,7 @@ class PenggunaController extends Controller
 
     public function banned(Request $request)
     {
-        $perPage = $request->input('per_page', 2);
+        $perPage = $request->input('per_page', 10);
         $query = User::where('status', '=', 'banned')
             ->whereDoesntHave('roles', function ($query) {
                 $query->where('name', 'admin');

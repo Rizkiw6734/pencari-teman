@@ -335,7 +335,7 @@
           document.querySelectorAll(".badge.filter").forEach(function(el) {
               el.classList.remove("active");
           });
-          const selectedColor = document.querySelector(`[data-color="${color}"]`);
+          const selectedColor = document.querySelector([data-color="${color}"]);
           if (selectedColor) selectedColor.classList.add("active");
           sidebar.setAttribute("data-color", color);
       }

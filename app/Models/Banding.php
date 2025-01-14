@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Banding extends Model
 {
+    protected $table = 'banding';
     protected $fillable = [
         'users_id',
         'pinalti_id',

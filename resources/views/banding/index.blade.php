@@ -91,7 +91,7 @@
                     <div style="display: flex; align-items: center;">
                         <div style="flex: 1; text-indent: 20px;">
                             <p class="mb-0 text-xs" style="color: #000000;">{{ Auth::user()->name }}, Kamu Sedang Dihalaman</p>
-                            <h4 class="mb-0">Banned Pengguna</h4>
+                            <h4 class="mb-0">Management Aju Banding</h4>
                         </div>
                         <div style="flex-shrink: 0;">
                             <img src="{{ asset('images/header.svg') }}" alt="Welcome Image" 
@@ -119,109 +119,47 @@
                     window.location.search = '?per_page=' + perPage;
                 });
             </script>
-            
-            <div class="d-flex align-items-center">
-                <!-- Dropdown untuk Provinsi -->
-                <select id="provinsi" class="form-select me-2" style="background-color: #d1e0ff; width: auto; padding-right: 33px;">
-                    <option value="">Provinsi</option>
-                    <option value="jawa-timur">Jawa Timur</option>
-                    <option value="jawa-barat">Jawa Barat</option>
-                    <option value="dki-jakarta">DKI Jakarta</option>
-                </select>
-                
-                <!-- Dropdown untuk Kabupaten -->
-                <select id="kabupaten" class="form-select me-2" style="background-color: #d1e0ff; width: auto; padding-right: 33px;">
-                    <option value="">Kabupaten</option>
-                </select>
-                
-                <!-- Dropdown untuk Kecamatan -->
-                <select id="kecamatan" class="form-select me-2" style="background-color: #d1e0ff; width: auto; padding-right: 33px;">
-                    <option value="">Kecamatan</option>
-                </select>
-                
-                <!-- Dropdown untuk Desa -->
-                <select id="desa" class="form-select" style="background-color: #d1e0ff; width: auto; padding-right: 33px;">
-                    <option value="">Desa</option>
-                </select>
-            </div>
         </div>
     </div>
     
-
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-12">
                 <table class="table table-hover rounded-table text-center"
                        style="font-size: 15px; width: 100%; background-color: white;">
-                       <thead>
+                    <thead class="thead-light">
                         <tr>
                             <th>Nama</th>
-                            <th>Email</th>
+                            <th>Pinalti</th>
+                            <th>Alasan Banding</th>
                             <th>Status</th>
-                            <th>Lokasi</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($bannedUsers as $user)
+                        @forelse($bandings as $user)
                             <tr class="align-middle">
-                                <td>{{ $user->name }}</td>
-                                <td>{{ $user->email }}</td>
-                                <td>
-                                    <span 
-                                        class="badge align-items-center justify-content-center 
-                                        {{ $user->status === 'banned' ? 'status-banned' : 'status-active' }}">
-                                        @if($user->status === 'banned')
-                                            <i class="fa fa-ban me-1 mt-2"></i> Banned
-                                        @else
-                                            <i class="fa fa-check-square me-1 mt-2"></i> Aktif
-                                        @endif
-                                    </span>
-                                </td>
+                                <td>{{ $user->users_id }}</td>
+                                <td>{{ $user->pinalti_id }}</td>
+                                <td>{{ $user->alasan_banding }}</td>
                                 <td>#</td>
-                                <td>
-                                    <form action="{{ route('admin.users.unblock', $user->id) }}" method="POST" class="d-inline" id="unblock-form-{{ $user->id }}">
-                                        @csrf
-                                        <button type="button" class="btn btn-sm text-white" style="background-color: #5D87FF; margin-top: 10px !important;" onclick="confirmUnblock('{{ $user->id }}')">
-                                            Buka Banned
-                                        </button>                                        
-                                    </form>
-                                </td>
-                                
-                                <script>
-                                    function confirmUnblock(userId) {
-                                        Swal.fire({
-                                            title: 'Apakah Anda yakin?',
-                                            text: "Pengguna ini akan dibuka banned-nya.",
-                                            icon: 'warning',
-                                            showCancelButton: true,
-                                            confirmButtonColor: '#3085d6',
-                                            cancelButtonColor: '#d33',
-                                            confirmButtonText: 'Ya, buka banned!',
-                                            cancelButtonText: 'Batal'
-                                        }).then((result) => {
-                                            if (result.isConfirmed) {
-                                                document.getElementById('unblock-form-' + userId).submit();
-                                            }
-                                        });
-                                    }
-                                </script>
+                                <td>#</td>                                                            
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center">Tidak ada pengguna yang dibanned.</td>
+                                <td colspan="6" class="text-center">Data tidak ditemukan.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
-    </div>
+    </div>   
     
     {{-- <div class="d-flex justify-content-center mt-4">
         <nav aria-label="Page navigation">
             <ul class="pagination pagination-lg">
-                {{ $users->links('pagination::bootstrap-4') }}
+                {{ $bandings->links('pagination::bootstrap-4') }}
             </ul>
         </nav>
     </div> --}}

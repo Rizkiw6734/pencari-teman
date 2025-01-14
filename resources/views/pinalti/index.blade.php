@@ -1,192 +1,175 @@
 @extends('layouts.app')
-
-@section('title', 'Data Pinalti')
-
 @section('content')
-<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
-    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
-        <div class="container-fluid py-1 px-3">
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-              <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
-              <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Pinalti</li>
-            </ol>
-            <h6 class="font-weight-bolder mb-0">Pinalti</h6>
-          </nav>
-          <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-            <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-              <div class="input-group">
-                <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-                <input type="text" class="form-control" placeholder="Type here.">
-              </div>
+<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+    <nav class="navbar navbar-main navbar-expand-lg mt-3 px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center w-100" id="navbar">
+                <div class="input-group d-flex" style="width: 725px; height: 40px; box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.25); margin: 3.2px 37px 2px 0;">
+                    <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+                    <input type="text" class="form-control" placeholder="Mencari apa?">
+                </div>
+
+                <ul class="navbar-nav d-flex align-items-center" style="margin-left: -15px;">
+                <li class="nav-item dropdown pe-2 d-flex align-items-center justify-content-center" 
+                    style="width: 45px; height: 45px; flex-grow: 0; margin: 3.2px 12px 0 0; padding: 7px; border-radius: 15px; background-color: rgba(45, 156, 219, 0.15);">
+                    <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center" 
+                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-bell cursor-pointer" style="font-size: 20px; color: #2970ff;"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+                    <li class="mb-2">
+                        <a class="dropdown-item border-radius-md" href="/laporan/detail/1">
+                        <div class="d-flex py-1">
+                            <div class="my-auto">
+                            <img src="/assets/img/team-2.jpg" class="avatar avatar-sm me-3">
+                            </div>
+                            <div class="d-flex flex-column justify-content-center">
+                            <h6 class="text-sm font-weight-normal mb-1">
+                                <span class="font-weight-bold">New message</span> from Laur
+                            </h6>
+                            <p class="text-xs text-secondary mb-0">
+                                <i class="fa fa-clock me-1"></i>
+                                13 minutes ago
+                            </p>
+                            </div>
+                        </div>
+                        </a>
+                    </li>
+                    </ul>
+                </li>
+                <div class="d-flex align-items-center">
+                    <li class="nav-item px-3 d-flex align-items-center justify-content-center" 
+                        style="width: 45px; height: 45px; flex-grow: 0; padding: 9px; border-radius: 15px; background-color: rgba(255, 91, 91, 0.15);">
+                        <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center">
+                            <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer" style="font-size: 20px; color: #ff5b5b;"></i>
+                        </a>
+                    </li>
+
+                    <div style="width: 1px; height: 45px; background-color: #ddd; margin: 0 10px;"></div>
+                
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link text-body font-weight-bold px-0 d-flex align-items-center" 
+                            id="adminMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{{ Auth::user()->foto_profil ?? '/images/marie.jpg' }}" 
+                                class="rounded-circle me-2" alt="Profile Image" width="45" height="45">
+                            <span class="d-sm-inline d-none">{{ Auth::user()->name }}</span>
+                            <i class="fa fa-chevron-down ms-2"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminMenuButton">
+                            <li class="dropdown-item-text px-3 py-2">
+                                <strong>{{ Auth::user()->name }}</strong><br>
+                                <small>{{ Auth::user()->role }}</small>
+                            </li>
+                            <hr class="my-2">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                                    <i class="fa fa-user me-2"></i> Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="{{ route('logout') }}"
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="fa fa-sign-out-alt me-2"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </li>
+                </div>           
+                </ul>        
             </div>
-            <ul class="navbar-nav justify-content-end">
-              <li class="nav-item d-flex align-items-center">
-                <a href="{{ route('profile.edit') }}" class="nav-link text-body font-weight-bold px-0">
-                  <i class="fa fa-user me-sm-1"></i>
-                  <span class="d-sm-inline d-none">Profile</span>
-                </a>
-              </li>
-              <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
-                <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
-                  <div class="sidenav-toggler-inner">
-                    <i class="sidenav-toggler-line"></i>
-                    <i class="sidenav-toggler-line"></i>
-                    <i class="sidenav-toggler-line"></i>
-                  </div>
-                </a>
-              </li>
-              <li class="nav-item px-3 d-flex align-items-center">
-                <a href="javascript:;" class="nav-link text-body p-0">
-                  <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
-                </a>
-              </li>
-              <li class="nav-item dropdown pe-2 d-flex align-items-center">
-                <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="fa fa-bell cursor-pointer"></i>
-                </a>
-                <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
-                  <li class="mb-2">
-                    <a class="dropdown-item border-radius-md" href="javascript:;">
-                      <div class="d-flex py-1">
-                        <div class="my-auto">
-                          <img src="/assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
-                        </div>
-                        <div class="d-flex flex-column justify-content-center">
-                          <h6 class="text-sm font-weight-normal mb-1">
-                            <span class="font-weight-bold">New message</span> from Laur
-                          </h6>
-                          <p class="text-xs text-secondary mb-0 ">
-                            <i class="fa fa-clock me-1"></i>
-                            13 minutes ago
-                          </p>
-                        </div>
-                      </div>
-                    </a>
-                  </li>
-                  <li class="mb-2">
-                    <a class="dropdown-item border-radius-md" href="javascript:;">
-                      <div class="d-flex py-1">
-                        <div class="my-auto">
-                          <img src="/assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark  me-3 ">
-                        </div>
-                        <div class="d-flex flex-column justify-content-center">
-                          <h6 class="text-sm font-weight-normal mb-1">
-                            <span class="font-weight-bold">New album</span> by Travis Scott
-                          </h6>
-                          <p class="text-xs text-secondary mb-0 ">
-                            <i class="fa fa-clock me-1"></i>
-                            1 day
-                          </p>
-                        </div>
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item border-radius-md" href="javascript:;">
-                      <div class="d-flex py-1">
-                        <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
-                          <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                            <title>credit-card</title>
-                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                              <g transform="translate(-2169.000000, -745.000000)" fill="#FFFFFF" fill-rule="nonzero">
-                                <g transform="translate(1716.000000, 291.000000)">
-                                  <g transform="translate(453.000000, 454.000000)">
-                                    <path class="color-background" d="M43,10.7482083 L43,3.58333333 C43,1.60354167 41.3964583,0 39.4166667,0 L3.58333333,0 C1.60354167,0 0,1.60354167 0,3.58333333 L0,10.7482083 L43,10.7482083 Z" opacity="0.593633743"></path>
-                                    <path class="color-background" d="M0,16.125 L0,32.25 C0,34.2297917 1.60354167,35.8333333 3.58333333,35.8333333 L39.4166667,35.8333333 C41.3964583,35.8333333 43,34.2297917 43,32.25 L43,16.125 L0,16.125 Z M19.7083333,26.875 L7.16666667,26.875 L7.16666667,23.2916667 L19.7083333,23.2916667 L19.7083333,26.875 Z M35.8333333,26.875 L28.6666667,26.875 L28.6666667,23.2916667 L35.8333333,23.2916667 L35.8333333,26.875 Z"></path>
-                                  </g>
-                                </g>
-                              </g>
-                            </g>
-                          </svg>
-                        </div>
-                        <div class="d-flex flex-column justify-content-center">
-                          <h6 class="text-sm font-weight-normal mb-1">
-                            Payment successfully completed
-                          </h6>
-                          <p class="text-xs text-secondary mb-0 ">
-                            <i class="fa fa-clock me-1"></i>
-                            2 days
-                          </p>
-                        </div>
-                      </div>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
+        </div>    
     </nav>
 
     <div class="container-fluid py-4">
         <div class="row">
-            <div class="col-lg-12 col-12">
-                <h1 class="my-4">Data Pinalti</h1>
-
-                <a href="{{ route('pinalti.create') }}" class="btn btn-info mb-3">+ Tambah Pinalti</a>
-
-                <div class="card">
-                    <div class="card-body">
-                        <table class="table table-bordered">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>No</th>
-                                    <th>Pengguna</th>
-                                    <th>Jenis Hukuman</th>
-                                    <th>Alasan</th>
-                                    <th>Pesan</th>
-                                    <th>Durasi</th>
-                                    <th>Tanggal Mulai</th>
-                                    <th>Tanggal Selesai</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($pinalti as $data)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ optional($data->laporan->terlapor)->name ?? 'Pengguna tidak ditemukan' }}</td>
-                                        <td>{{ $data->jenis_hukuman }}</td>
-                                        <td>{{ $data->laporan->alasan }}</td>
-                                        <td>{{ $data->pesan }}</td>
-                                        <td>{{ $data->durasi }}</td>
-                                        <td>{{ $data->start_date }}</td>
-                                        <td>{{ $data->end_date ? $data->end_date : 'Belum selesai' }}</td>
-                                        <td>
-                                            <a href="#" class="btn btn-info btn-sm">Detail</a>
-                                            <a href="{{ route('pinalti.edit', $data->id) }}" class="btn btn-warning btn-sm"> <i class="fas fa-edit"></i></a>
-                                            <form action="{{ route('pinalti.destroy', $data->id) }}" method="POST" style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Apakah anda yakin ingin menghapus data {{ optional($data->laporan->terlapor)->name ?? 'Pengguna tidak ditemukan' }}?')">
-                                                <i class="fas fa-trash-alt"></i></button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        <!-- Pagination -->
-                        <div class="mt-3">
-                            {{ $pinalti->links() }}
+            <div class="col-12">
+                <div class="card mb-4" style="background: #d1e0ff; border: none;">
+                    <div class="card-header" style="background: inherit; border: none; padding: 0;"></div>
+                    <div style="display: flex; align-items: center;">
+                        <div style="flex: 1; text-indent: 20px;">
+                            <p class="mb-0 text-xs" style="color: #000000;">{{ Auth::user()->name }}, Kamu Sedang Dihalaman</p>
+                            <h4 class="mb-0">Management Pinalti</h4>
                         </div>
-                    </div>
+                        <div style="flex-shrink: 0;">
+                            <img src="{{ asset('images/header.svg') }}" alt="Welcome Image" 
+                                 style="max-width: 150px; height: auto; object-fit: cover; border-radius: 10px;">
+                        </div>
+                    </div>                
                 </div>
             </div>
         </div>
+        
+        <div class="d-flex justify-content-between">
+            <div class="d-flex align-items-center">
+                <label for="data-count" style="margin-right: 10px;">Show</label>
+                <select id="data-count" class="form-select" style="background-color: #d1e0ff; width: auto; padding-right: 25px;">
+                    <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                    <option value="20" {{ request('per_page') == 20 ? 'selected' : '' }}>20</option>
+                    <option value="30" {{ request('per_page') == 30 ? 'selected' : '' }}>30</option>
+                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                </select>                
+            </div>            
+    
+            <script>
+                document.getElementById('data-count').addEventListener('change', function() {
+                    var perPage = this.value;
+                    window.location.search = '?per_page=' + perPage;
+                });
+            </script>
+        </div>
     </div>
-
-    <!-- Footer -->
+    
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-hover rounded-table text-center"
+                       style="font-size: 15px; width: 100%; background-color: white;">
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Jenis Hukuman</th>
+                            <th>Pesan</th>
+                            <th>Durasi</th>
+                            <th>Tanggal Mulai</th>
+                            <th>Tanggal Selesai</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($pinalti as $data)
+                            <tr>
+                                <td>{{ optional($data->laporan->terlapor)->name ?? 'Pengguna tidak ditemukan' }}</td>
+                                <td>{{ $data->jenis_hukuman }}</td>
+                                <td>{{ $data->pesan }}</td>
+                                <td>{{ $data->durasi }}</td>
+                                <td>{{ $data->start_date }}</td>
+                                <td>{{ $data->end_date ? $data->end_date : 'Belum selesai' }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-lg">
+                {{ $pinalti->links('pagination::bootstrap-4') }}
+            </ul>
+        </nav>
+    </div>    
+  
     <footer class="footer pt-3">
         <div class="container-fluid">
             <div class="row align-items-center justify-content-center">
                 <div class="col-lg-6 mb-lg-0 mb-4">
                     <div class="copyright text-center text-sm text-muted">
-                        <p>Copyright &copy; <i class="fa fa-heart"></i> by around.you
+                        <p>Copyright &copy; by around.you
                             <script>
-                                document.write(new Date().getFullYear())
+                            document.write(new Date().getFullYear())
                             </script>
                         </p>
                     </div>
@@ -194,6 +177,5 @@
             </div>
         </div>
     </footer>
-    <!-- End Footer -->
 </main>
 @endsection

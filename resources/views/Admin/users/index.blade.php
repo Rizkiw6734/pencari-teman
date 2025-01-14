@@ -102,7 +102,7 @@
             </div>
         </div>
         
-        <div class="d-flex justify-content-between mb-3">
+        <div class="d-flex justify-content-between">
             <div class="d-flex align-items-center">
                 <label for="data-count" style="margin-right: 10px;">Show</label>
                 <select id="data-count" class="form-select" style="background-color: #d1e0ff; width: auto; padding-right: 25px;">
@@ -112,85 +112,53 @@
                     <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
                 </select>                
             </div>            
-
+    
             <script>
                 document.getElementById('data-count').addEventListener('change', function() {
                     var perPage = this.value;
-                    
                     window.location.search = '?per_page=' + perPage;
                 });
             </script>
-        
-            <div>
-                <button type="button" class="btn btn-transparent" style="border: solid 1px #c9c1ff; color: #624de3b3;" id="filter-toggle">
-                    Filter <i class="fa fa-filter" style="margin-left: 5px;"></i>
-                </button>
+            
+            <div class="d-flex align-items-center">
+                <!-- Dropdown untuk Provinsi -->
+                <select id="provinsi" class="form-select me-2" style="background-color: #d1e0ff; width: auto; padding-right: 33px;">
+                    <option value="">Provinsi</option>
+                    <option value="jawa-timur">Jawa Timur</option>
+                    <option value="jawa-barat">Jawa Barat</option>
+                    <option value="dki-jakarta">DKI Jakarta</option>
+                </select>
+                
+                <!-- Dropdown untuk Kabupaten -->
+                <select id="kabupaten" class="form-select me-2" style="background-color: #d1e0ff; width: auto; padding-right: 33px;">
+                    <option value="">Kabupaten</option>
+                </select>
+                
+                <!-- Dropdown untuk Kecamatan -->
+                <select id="kecamatan" class="form-select me-2" style="background-color: #d1e0ff; width: auto; padding-right: 33px;">
+                    <option value="">Kecamatan</option>
+                </select>
+                
+                <!-- Dropdown untuk Desa -->
+                <select id="desa" class="form-select" style="background-color: #d1e0ff; width: auto; padding-right: 33px;">
+                    <option value="">Desa</option>
+                </select>
             </div>
         </div>
-                  
-        <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="filterModalLabel">Filter Pengguna</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="GET" action="{{ route('admin.users.index') }}">
-                            <div class="mb-3">
-                                <label for="kabupaten" class="form-label">Kabupaten</label>
-                                <select name="kabupaten" id="kabupaten" class="form-select">
-                                    <option value="">-- Pilih Kabupaten --</option>
-                                    <option value="Kabupaten A" {{ request('kabupaten') == 'Kabupaten A' ? 'selected' : '' }}>Kabupaten A</option>
-                                    <option value="Kabupaten B" {{ request('kabupaten') == 'Kabupaten B' ? 'selected' : '' }}>Kabupaten B</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="kecamatan" class="form-label">Kecamatan</label>
-                                <select name="kecamatan" id="kecamatan" class="form-select">
-                                    <option value="">-- Pilih Kecamatan --</option>
-                                    <option value="Kecamatan X" {{ request('kecamatan') == 'Kecamatan X' ? 'selected' : '' }}>Kecamatan X</option>
-                                    <option value="Kecamatan Y" {{ request('kecamatan') == 'Kecamatan Y' ? 'selected' : '' }}>Kecamatan Y</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="desa" class="form-label">Desa</label>
-                                <select name="desa" id="desa" class="form-select">
-                                    <option value="">-- Pilih Desa --</option>
-                                    <option value="Desa 1" {{ request('desa') == 'Desa 1' ? 'selected' : '' }}>Desa 1</option>
-                                    <option value="Desa 2" {{ request('desa') == 'Desa 2' ? 'selected' : '' }}>Desa 2</option>
-                                </select>
-                            </div>
-
-                            <div class="d-flex justify-content-end">
-                                <button type="submit" class="btn btn-primary">Filter</button>
-                                <button type="button" class="btn btn-secondary ms-2" data-bs-dismiss="modal">Tutup</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div> 
-
-        <script>
-            document.getElementById('filter-toggle').addEventListener('click', function() {
-            var filterModal = new bootstrap.Modal(document.getElementById('filterModal'));
-            filterModal.show();
-            });
-        </script>
+    </div>
     
-    <div class="row">
-        <div class="col-12">
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped rounded-table text-center">
-                    <thead class="thead-light">
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-hover rounded-table text-center"
+                       style="font-size: 15px; width: 100%; background-color: white;">
+                       <thead class="thead-light">
                         <tr>
                             <th>Nama</th>
                             <th>Email</th>
                             <th>Umur</th>
                             <th>Gender</th>
+                            <th>Lokasi</th>
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
@@ -202,6 +170,7 @@
                                 <td>{{ $user->email }}</td>
                                 <td>{{ $user->umur }}</td>
                                 <td>{{ $user->gender }}</td>
+                                <td>#</td>
                                 <td>
                                     <span 
                                         class="badge align-items-center justify-content-center 
@@ -276,7 +245,7 @@
                 </table>
             </div>
         </div>
-    </div>    
+    </div>   
     
     <div class="d-flex justify-content-center mt-4">
         <nav aria-label="Page navigation">
@@ -285,64 +254,6 @@
             </ul>
         </nav>
     </div>
-    
-    <style>
-        .pagination-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .pagination {
-            list-style: none;
-            padding: 0;
-            display: flex;
-            gap: 10px;
-        }
-
-        .pagination li {
-            display: inline-block;
-        }
-
-        .pagination a, .pagination span {
-            text-decoration: none;
-            font-weight: bold;
-            color: #007bff;
-        }
-
-        .pagination .disabled span,
-        .pagination .active span {
-            font-weight: bold;
-        }
-
-        .pagination .active span {
-            background-color: #3243fd;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-
-        .pagination a:not(.page-link), 
-        .pagination .disabled:not(.page-link) span {
-            background: none;
-            padding: 0;
-            border-radius: 0;
-            color: inherit;
-        }
-
-        .pagination .page-link {
-            background-color: #eff4ff;
-            padding: 5px 10px;
-            border-radius: 5px;
-            border: 1px solid #dee2e6;
-            color: #3243fd;
-        }
-
-        .pagination .page-link:hover {
-            background-color: #e2e6ea;
-        }
-    </style>
   
     <footer class="footer pt-3">
         <div class="container-fluid">

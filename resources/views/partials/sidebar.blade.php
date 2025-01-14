@@ -44,11 +44,14 @@
         </a>
       </li>
       <li class="nav-item" style="position: relative;">
-        <a class="nav-link {{ request()->routeIs('pinalti.index') ? 'active' : '' }}" href="{{ route('pinalti.index') }}">
+        <a class="nav-link {{ request()->routeIs('banding.index') ? 'active' : '' }}" href="{{ route('banding.index') }}">
           <div class="fa fa-balance-scale icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
-               style="background-color: {{ request()->routeIs('pinalti.index') ? '#3243fd' : '#ffffff' }} !important; color: {{ request()->routeIs('pinalti.index') ? '#ffffff' : '#000000' }} !important;">
+               style="background-color: {{ request()->routeIs('banding.index') ? '#3243fd' : '#ffffff' }} !important; color: {{ request()->routeIs('banding.index') ? '#ffffff' : '#000000' }} !important;">
           </div>
           <span class="nav-link-text ms-1">Management Aju Banding</span>
+          @if(request()->routeIs('banding.index'))
+            <div style="position: absolute; left: 0; top: 0; width: 4px; height: 100%; background-color: #3243fd; border-radius: 0 6px 6px 0;"></div>
+         @endif
         </a>
       </li>
       <li class="nav-label">User</li>

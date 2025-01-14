@@ -9,6 +9,7 @@ use App\Http\Controllers\KecamatanController;
 use App\Http\Controllers\DesaController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PinaltiController;
+use App\Http\Controllers\BandingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Api\JarakController;
 use App\Http\Controllers\PenggunaController;
@@ -91,6 +92,9 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
         // Rute untuk halaman suspend
         Route::get('/suspend', [UserStatusController::class, 'suspendPage'])->name('user.suspend');
     });
+
+    //Banding
+    Route::get('/banding', [BandingController::class, 'index'])->name('banding.index');
 
     Route::get('/hitung-jarak', [JarakController::class, 'hitungJarak']);
 

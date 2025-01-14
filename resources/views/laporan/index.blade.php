@@ -96,66 +96,24 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-between">       
-            <div>
-                <button type="button" class="btn btn-transparent" style="border: solid 1px #c9c1ff; color: #624de3b3;" id="filter-toggle">
-                    Filter <i class="fa fa-filter" style="margin-left: 5px;"></i>
-                </button>
-            </div>
+        <div class="d-flex justify-content-between">
+            <div class="d-flex align-items-center">
+                <label for="data-count" style="margin-right: 10px;">Show</label>
+                <select id="data-count" class="form-select" style="background-color: #d1e0ff; width: auto; padding-right: 25px;">
+                    <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                    <option value="20" {{ request('per_page') == 20 ? 'selected' : '' }}>20</option>
+                    <option value="30" {{ request('per_page') == 30 ? 'selected' : '' }}>30</option>
+                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                </select>                
+            </div>            
+    
+            <script>
+                document.getElementById('data-count').addEventListener('change', function() {
+                    var perPage = this.value;
+                    window.location.search = '?per_page=' + perPage;
+                });
+            </script>
         </div>
-                  
-        <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="filterModalLabel">Filter Pengguna</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="GET" action="{{ route('admin.users.index') }}">
-                            <div class="mb-3">
-                                <label for="kabupaten" class="form-label">Kabupaten</label>
-                                <select name="kabupaten" id="kabupaten" class="form-select">
-                                    <option value="">-- Pilih Kabupaten --</option>
-                                    <option value="Kabupaten A" {{ request('kabupaten') == 'Kabupaten A' ? 'selected' : '' }}>Kabupaten A</option>
-                                    <option value="Kabupaten B" {{ request('kabupaten') == 'Kabupaten B' ? 'selected' : '' }}>Kabupaten B</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="kecamatan" class="form-label">Kecamatan</label>
-                                <select name="kecamatan" id="kecamatan" class="form-select">
-                                    <option value="">-- Pilih Kecamatan --</option>
-                                    <option value="Kecamatan X" {{ request('kecamatan') == 'Kecamatan X' ? 'selected' : '' }}>Kecamatan X</option>
-                                    <option value="Kecamatan Y" {{ request('kecamatan') == 'Kecamatan Y' ? 'selected' : '' }}>Kecamatan Y</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="desa" class="form-label">Desa</label>
-                                <select name="desa" id="desa" class="form-select">
-                                    <option value="">-- Pilih Desa --</option>
-                                    <option value="Desa 1" {{ request('desa') == 'Desa 1' ? 'selected' : '' }}>Desa 1</option>
-                                    <option value="Desa 2" {{ request('desa') == 'Desa 2' ? 'selected' : '' }}>Desa 2</option>
-                                </select>
-                            </div>
-
-                            <div class="d-flex justify-content-end">
-                                <button type="submit" class="btn btn-primary">Filter</button>
-                                <button type="button" class="btn btn-secondary ms-2" data-bs-dismiss="modal">Tutup</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div> 
-
-        <script>
-            document.getElementById('filter-toggle').addEventListener('click', function() {
-            var filterModal = new bootstrap.Modal(document.getElementById('filterModal'));
-            filterModal.show();
-            });
-        </script>
         
         <div class="container-fluid py-4" style="padding-left: 0; padding-right: 0;">
             <div class="row" style="padding-left: 0; padding-right: 0;">
@@ -238,25 +196,81 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="modal-footer d-flex justify-content-center">
+                                <div class="modal-footer d-flex justify-content-center align-items-center">
                                     @if ($laporan->status === 'proses')
                                         @foreach ([
-                                            ['label' => 'Kirim Peringatan', 'class' => 'btn-warning', 'target' => "modalPeringatan{$laporan->id}"],
-                                            ['label' => 'Suspend User', 'class' => 'btn-danger', 'target' => "modalSuspend{$laporan->id}"],
-                                            ['label' => 'Banned User', 'class' => 'btn-dark', 'target' => "modalBanned{$laporan->id}"]
+                                            ['label' => 'Beri Peringatan', 'class' => 'btn', 'style' => 'background-color: #FF8800; color: white;', 'target' => "modalPeringatan{$laporan->id}"],
+                                            ['label' => 'Suspend User', 'class' => 'btn', 'style' => 'background-color: #FF0000; color: white;', 'target' => "modalSuspend{$laporan->id}"],
                                         ] as $action)
-                                            <button type="button" class="btn {{ $action['class'] }}" data-bs-toggle="modal" data-bs-target="#{{ $action['target'] }}">
+                                            <button type="button" class="btn" style="{{ $action['style'] }}" data-bs-toggle="modal" data-bs-target="#{{ $action['target'] }}">
                                                 {{ $action['label'] }}
                                             </button>
                                         @endforeach
+                                        
+                                        <!-- Tombol Banned User -->
+                                        <form id="form-banned-user-{{ $laporan->id }}" action="{{ route('user.banned', $laporan->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            <button type="button" class="btn btn-banned-user" style="background-color: #000000; color: white; margin-top: 3px !important;">
+                                                Banned User
+                                            </button>
+                                        </form>                                    
                                 
                                         <!-- Tombol Tolak Laporan -->
-                                        <form action="{{ route('laporan.tolak', $laporan->id) }}" method="POST" style="display:inline;">
+                                        <form id="form-tolak-laporan-{{ $laporan->id }}" action="{{ route('laporan.tolak', $laporan->id) }}" method="POST" class="d-inline">
                                             @csrf
-                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menolak laporan ini?')">
+                                            <button type="button" class="btn btn-tolak-laporan" style="background-color: #FFD900; color: white; margin-top: 3px !important;">
                                                 Tolak Laporan
                                             </button>
                                         </form>
+                                        
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function () {
+                                                document.querySelectorAll('.btn-tolak-laporan').forEach(button => {
+                                                    button.addEventListener('click', function () {
+                                                        const form = this.closest('form');
+                                                        Swal.fire({
+                                                            title: 'Apakah Anda yakin?',
+                                                            text: 'Laporan ini akan ditolak!',
+                                                            icon: 'warning',
+                                                            showCancelButton: true,
+                                                            confirmButtonColor: '#3085d6',
+                                                            cancelButtonColor: '#d33',
+                                                            confirmButtonText: 'Ya, Tolak!',
+                                                            cancelButtonText: 'Batal',
+                                                        }).then((result) => {
+                                                            if (result.isConfirmed) {
+                                                                form.submit();
+                                                            }
+                                                        });
+                                                    });
+                                                });
+                                            });
+
+                                            document.addEventListener('DOMContentLoaded', function () {
+                                                document.querySelectorAll('.btn-banned-user').forEach(button => {
+                                                    button.addEventListener('click', function () {
+                                                        const form = this.closest('form');
+                                                        Swal.fire({
+                                                            title: 'Apakah Anda yakin?',
+                                                            html: `
+                                                                <p>Apakah Anda yakin ingin membanned pengguna ini?</p>
+                                                                <p class="text-danger"><strong>Catatan:</strong> Pengguna ini tidak akan bisa login setelah dibanned.</p>
+                                                            `,
+                                                            icon: 'warning',
+                                                            showCancelButton: true,
+                                                            confirmButtonColor: '#000000',
+                                                            cancelButtonColor: '#d33',
+                                                            confirmButtonText: 'Konfirmasi Banned',
+                                                            cancelButtonText: 'Batal'
+                                                        }).then((result) => {
+                                                            if (result.isConfirmed) {
+                                                                form.submit();
+                                                            }
+                                                        });
+                                                    });
+                                                });
+                                            });
+                                        </script>
                                 
                                     @elseif ($laporan->status === 'diterima')
                                         <p class="text-success">Laporan telah diterima dan diproses.</p>

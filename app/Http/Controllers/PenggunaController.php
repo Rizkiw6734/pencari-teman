@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 use App\Models\User;
 
 use Illuminate\Http\Request;
+use App\Models\Provinces;
+use App\Models\Regencies;
+use App\Models\Districts;
+use App\Models\Villages;
 
 class PenggunaController extends Controller
 {
@@ -12,33 +16,38 @@ class PenggunaController extends Controller
      */
     public function index(Request $request)
     {
-        // Ambil data filter dari request
-        $kabupaten = $request->input('kabupaten');
-        $kecamatan = $request->input('kecamatan');
-        $desa = $request->input('desa');
+        $provinsi = $request->input('provinces');
+        $kabupaten = $request->input('regencies');
+        $kecamatan = $request->input('districts');
+        $desa = $request->input('villages');
         $perPage = $request->input('per_page', 10);
 
-        // Query dasar
         $query = User::where('status', '!=', 'banned')
             ->whereDoesntHave('roles', function ($query) {
                 $query->where('name', 'admin');
             });
 
-        // Filter berdasarkan lokasi
+        if ($provinsi) {
+            $query->where('provinces', $provinsi);
+        }
         if ($kabupaten) {
-            $query->where('kabupaten', $kabupaten);
+            $query->where('regencies', $kabupaten);
         }
         if ($kecamatan) {
-            $query->where('kecamatan', $kecamatan);
+            $query->where('districts', $kecamatan);
         }
         if ($desa) {
-            $query->where('desa', $desa);
+            $query->where('villages', $desa);
         }
 
-        // Paginate hasilnya dengan jumlah data per halaman yang dipilih
         $users = $query->paginate($perPage);
 
-        return view('Admin.users.index', compact('users'));
+        $provinces = Provinces::all();
+        $regencies = $provinsi ? Regencies::where('province_id', $provinsi)->get() : [];
+        $districts = $kabupaten ? Districts::where('regency_id', $kabupaten)->get() : [];
+        $villages = $kecamatan ? Villages::where('district_id', $kecamatan)->get() : [];
+
+        return view('Admin.users.index', compact('users', 'provinces', 'regencies', 'districts', 'villages'));
     }
 
     /**
@@ -132,4 +141,33 @@ class PenggunaController extends Controller
 
         return view('Admin.users.banned', compact('bannedUsers'));
     }
+
+    public function getProvinsi()
+    {
+        $provinsis = Provinces::select('id', 'name')->get();
+        return response()->json($provinsis);
+    }
+
+    // Controller untuk lokasi
+    public function getKabupaten(Request $request)
+    {
+        $provinsiId = $request->query('provinsi_id');
+        $kabupaten = Regencies::where('province_id', $provinsiId)->select('id', 'name')->get();
+        return response()->json($kabupaten);
+    }
+
+    public function getKecamatan(Request $request)
+    {
+        $kabupatenId = $request->query('kabupaten_id');
+        $kecamatan = Districts::where('regency_id', $kabupatenId)->select('id', 'name')->get();
+        return response()->json($kecamatan);
+    }
+
+    public function getDesa(Request $request)
+    {
+        $kecamatanId = $request->query('kecamatan_id');
+        $desa = Villages::where('district_id', $kecamatanId)->select('id', 'name')->get();
+        return response()->json($desa);
+    }
+
 }

@@ -63,6 +63,12 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
     //pinalti
     Route::resource('pinalti', PinaltiController::class);
 
+    //Banding
+    Route::resource('banding', BandingController::class);
+    Route::post('/banding/{id}/tolak', [BandingController::class, 'tolakBanding'])->name('banding.tolak');
+    Route::post('/banding/{id}/terima', 'BandingController@terimaBanding')->name('banding.terima');
+
+
     //pengguna
     Route::get('/admin/users', [PenggunaController::class, 'index'])->name('admin.users.index');
     Route::post('/admin/users/{id}/block', [PenggunaController::class, 'block'])->name('admin.users.block');
@@ -91,10 +97,9 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
 
         // Rute untuk halaman suspend
         Route::get('/suspend', [UserStatusController::class, 'suspendPage'])->name('user.suspend');
-    });
+        Route::resource('banding', BandingController::class);
 
-    //Banding
-    Route::get('/banding', [BandingController::class, 'index'])->name('banding.index');
+    });
 
     Route::get('/hitung-jarak', [JarakController::class, 'hitungJarak']);
 

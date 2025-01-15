@@ -157,7 +157,7 @@ class LaporanController extends Controller
                 Pinalti::create([
                     'laporan_id' => $laporan->id,
                     'jenis_hukuman' => 'suspend',
-                    'pesan' => 'Kepada pengguna' . $laporan->reported,
+                    'pesan' => $request->pesan,
                     'durasi' => $durasi,
                     'start_date' => now(),
                     'end_date' => now()->addDays($durasi),

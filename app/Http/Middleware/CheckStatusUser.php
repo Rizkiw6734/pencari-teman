@@ -27,6 +27,10 @@ class CheckStatusUser
         return $next($request);
     }
 
+    if ($request->route()->named('banding.create') || $request->route()->named('banding.store')) {
+        return $next($request);
+    }
+
     // Redirect berdasarkan status pengguna
     if ($user->status === 'banned') {
         return redirect()->route('user.banned')->with('error', 'Akun Anda Terbanned');

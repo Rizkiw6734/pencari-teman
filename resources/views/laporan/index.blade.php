@@ -10,7 +10,7 @@
                     <input type="text" class="form-control" placeholder="Mencari apa?">
                 </div>
 
-                <ul class="navbar-nav d-flex align-items-center" style="margin-left: -15px;">
+                <ul class="navbar-nav d-flex align-items-center" style="marqgin-left: -15px;">
                     <li class="nav-item dropdown pe-2 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; flex-grow: 0; margin: 3.2px 12px 0 0; padding: 7px; border-radius: 15px; background-color: rgba(45, 156, 219, 0.15);">
                         <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fa fa-bell cursor-pointer" style="font-size: 20px; color: #2970ff;"></i>

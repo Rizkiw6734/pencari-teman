@@ -74,6 +74,11 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
     Route::post('/admin/users/{id}/block', [PenggunaController::class, 'block'])->name('admin.users.block');
     Route::get('/users/banned',[PenggunaController::class, 'banned'])->name('admin.users.banned');
     Route::post('/users/{id}/unblock', [PenggunaController::class, 'unblock'])->name('admin.users.unblock');
+
+    Route::get('/locations/provinsi', [PenggunaController::class, 'getProvinsi']);
+    Route::get('/locations/kabupaten', [PenggunaController::class, 'getKabupaten']);
+    Route::get('/locations/kecamatan', [PenggunaController::class, 'getKecamatan']);
+    Route::get('/locations/desa', [PenggunaController::class, 'getDesa']);
 });
 
     //profil (semua bisa akses tetapi harus login)

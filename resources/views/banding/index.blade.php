@@ -10,9 +10,9 @@
                 </div>
 
                 <ul class="navbar-nav d-flex align-items-center" style="margin-left: -15px;">
-                <li class="nav-item dropdown pe-2 d-flex align-items-center justify-content-center" 
+                <li class="nav-item dropdown pe-2 d-flex align-items-center justify-content-center"
                     style="width: 45px; height: 45px; flex-grow: 0; margin: 3.2px 12px 0 0; padding: 7px; border-radius: 15px; background-color: rgba(45, 156, 219, 0.15);">
-                    <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center" 
+                    <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center"
                     id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa fa-bell cursor-pointer" style="font-size: 20px; color: #2970ff;"></i>
                     </a>
@@ -38,7 +38,7 @@
                     </ul>
                 </li>
                 <div class="d-flex align-items-center">
-                    <li class="nav-item px-3 d-flex align-items-center justify-content-center" 
+                    <li class="nav-item px-3 d-flex align-items-center justify-content-center"
                         style="width: 45px; height: 45px; flex-grow: 0; padding: 9px; border-radius: 15px; background-color: rgba(255, 91, 91, 0.15);">
                         <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center">
                             <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer" style="font-size: 20px; color: #ff5b5b;"></i>
@@ -46,11 +46,11 @@
                     </li>
 
                     <div style="width: 1px; height: 45px; background-color: #ddd; margin: 0 10px;"></div>
-                
+
                     <li class="nav-item dropdown">
-                        <a href="#" class="nav-link text-body font-weight-bold px-0 d-flex align-items-center" 
+                        <a href="#" class="nav-link text-body font-weight-bold px-0 d-flex align-items-center"
                             id="adminMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="{{ Auth::user()->foto_profil ?? '/images/marie.jpg' }}" 
+                            <img src="{{ Auth::user()->foto_profil ?? '/images/marie.jpg' }}"
                                 class="rounded-circle me-2" alt="Profile Image" width="45" height="45">
                             <span class="d-sm-inline d-none">{{ Auth::user()->name }}</span>
                             <i class="fa fa-chevron-down ms-2"></i>
@@ -77,10 +77,10 @@
                             @csrf
                         </form>
                     </li>
-                </div>           
-                </ul>        
+                </div>
+                </ul>
             </div>
-        </div>    
+        </div>
     </nav>
 
     <div class="container-fluid py-4">
@@ -94,14 +94,14 @@
                             <h4 class="mb-0">Management Aju Banding</h4>
                         </div>
                         <div style="flex-shrink: 0;">
-                            <img src="{{ asset('images/header.svg') }}" alt="Welcome Image" 
+                            <img src="{{ asset('images/header.svg') }}" alt="Welcome Image"
                                  style="max-width: 150px; height: auto; object-fit: cover; border-radius: 10px;">
                         </div>
-                    </div>                
+                    </div>
                 </div>
             </div>
         </div>
-        
+
         <div class="d-flex justify-content-between">
             <div class="d-flex align-items-center">
                 <label for="data-count" style="margin-right: 10px;">Show</label>
@@ -110,9 +110,9 @@
                     <option value="20" {{ request('per_page') == 20 ? 'selected' : '' }}>20</option>
                     <option value="30" {{ request('per_page') == 30 ? 'selected' : '' }}>30</option>
                     <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                </select>                
-            </div>            
-    
+                </select>
+            </div>
+
             <script>
                 document.getElementById('data-count').addEventListener('change', function() {
                     var perPage = this.value;
@@ -121,7 +121,7 @@
             </script>
         </div>
     </div>
-    
+
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-12">
@@ -137,13 +137,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($bandings as $user)
+                        @forelse($bandings as $banding)
                             <tr class="align-middle">
-                                <td>{{ $user->users_id }}</td>
-                                <td>{{ $user->pinalti_id }}</td>
-                                <td>{{ $user->alasan_banding }}</td>
-                                <td>#</td>
-                                <td>#</td>                                                            
+                                <td>{{ optional($banding->user)->name ?? 'Pengguna tidak ditemukan' }}</td>
+                                <td>{{ $banding->jenis_hukuman }}</td>
+                                <td>{{ $banding->alasan_banding }}</td>
+                                <td>{{ $banding->status }}</td>
+                                <td>
+                                    <form action="{{ route('banding.tolak', $banding->id) }}" method="POST" class="d-inline" id="block-form-{{ $banding->id }}">
+                                        @csrf
+                                        <button type="submit" class="btn btn-block-user btn-sm" style="margin-top: 10px !important;">
+                                            Tolak
+                                        </button>
+                                    </form>
+                                </td>
                             </tr>
                         @empty
                             <tr>
@@ -154,8 +161,8 @@
                 </table>
             </div>
         </div>
-    </div>   
-    
+    </div>
+
     {{-- <div class="d-flex justify-content-center mt-4">
         <nav aria-label="Page navigation">
             <ul class="pagination pagination-lg">
@@ -163,7 +170,7 @@
             </ul>
         </nav>
     </div> --}}
-  
+
     <footer class="footer pt-3">
         <div class="container-fluid">
             <div class="row align-items-center justify-content-center">

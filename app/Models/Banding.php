@@ -10,6 +10,7 @@ class Banding extends Model
     protected $fillable = [
         'users_id',
         'pinalti_id',
+        'jenis_hukuman',
         'alasan_banding',
         'status'
     ];
@@ -19,6 +20,6 @@ class Banding extends Model
     }
 
     public function pinalti() {
-        return $this->belongsTo(Laporan::class, 'laporan_id');
+        return $this->belongsTo(Pinalti::class, 'pinalti_id');
     }
 }

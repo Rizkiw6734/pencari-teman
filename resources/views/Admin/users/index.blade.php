@@ -10,9 +10,9 @@
                 </div>
 
                 <ul class="navbar-nav d-flex align-items-center" style="margin-left: -15px;">
-                <li class="nav-item dropdown pe-2 d-flex align-items-center justify-content-center" 
+                <li class="nav-item dropdown pe-2 d-flex align-items-center justify-content-center"
                     style="width: 45px; height: 45px; flex-grow: 0; margin: 3.2px 12px 0 0; padding: 7px; border-radius: 15px; background-color: rgba(45, 156, 219, 0.15);">
-                    <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center" 
+                    <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center"
                     id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa fa-bell cursor-pointer" style="font-size: 20px; color: #2970ff;"></i>
                     </a>
@@ -38,7 +38,7 @@
                     </ul>
                 </li>
                 <div class="d-flex align-items-center">
-                    <li class="nav-item px-3 d-flex align-items-center justify-content-center" 
+                    <li class="nav-item px-3 d-flex align-items-center justify-content-center"
                         style="width: 45px; height: 45px; flex-grow: 0; padding: 9px; border-radius: 15px; background-color: rgba(255, 91, 91, 0.15);">
                         <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center">
                             <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer" style="font-size: 20px; color: #ff5b5b;"></i>
@@ -46,11 +46,11 @@
                     </li>
 
                     <div style="width: 1px; height: 45px; background-color: #ddd; margin: 0 10px;"></div>
-                
+
                     <li class="nav-item dropdown">
-                        <a href="#" class="nav-link text-body font-weight-bold px-0 d-flex align-items-center" 
+                        <a href="#" class="nav-link text-body font-weight-bold px-0 d-flex align-items-center"
                             id="adminMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="{{ Auth::user()->foto_profil ?? '/images/marie.jpg' }}" 
+                            <img src="{{ Auth::user()->foto_profil ?? '/images/marie.jpg' }}"
                                 class="rounded-circle me-2" alt="Profile Image" width="45" height="45">
                             <span class="d-sm-inline d-none">{{ Auth::user()->name }}</span>
                             <i class="fa fa-chevron-down ms-2"></i>
@@ -77,10 +77,10 @@
                             @csrf
                         </form>
                     </li>
-                </div>           
-                </ul>        
+                </div>
+                </ul>
             </div>
-        </div>    
+        </div>
     </nav>
 
     <div class="container-fluid py-4">
@@ -94,14 +94,14 @@
                             <h4 class="mb-0">Pengguna</h4>
                         </div>
                         <div style="flex-shrink: 0;">
-                            <img src="{{ asset('images/header.svg') }}" alt="Welcome Image" 
+                            <img src="{{ asset('images/header.svg') }}" alt="Welcome Image"
                                  style="max-width: 150px; height: auto; object-fit: cover; border-radius: 10px;">
                         </div>
-                    </div>                
+                    </div>
                 </div>
             </div>
         </div>
-        
+
         <div class="d-flex justify-content-between">
             <div class="d-flex align-items-center">
                 <label for="data-count" style="margin-right: 10px;">Show</label>
@@ -110,16 +110,16 @@
                     <option value="20" {{ request('per_page') == 20 ? 'selected' : '' }}>20</option>
                     <option value="30" {{ request('per_page') == 30 ? 'selected' : '' }}>30</option>
                     <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                </select>                
-            </div>            
-    
+                </select>
+            </div>
+
             <script>
                 document.getElementById('data-count').addEventListener('change', function() {
                     var perPage = this.value;
                     window.location.search = '?per_page=' + perPage;
                 });
             </script>
-            
+
             <div class="d-flex align-items-center">
                 <!-- Dropdown untuk Provinsi -->
                 <select id="provinsi" class="form-select me-2" style="background-color: #d1e0ff; width: auto; padding-right: 33px;">
@@ -128,17 +128,17 @@
                     <option value="jawa-barat">Jawa Barat</option>
                     <option value="dki-jakarta">DKI Jakarta</option>
                 </select>
-                
+
                 <!-- Dropdown untuk Kabupaten -->
                 <select id="kabupaten" class="form-select me-2" style="background-color: #d1e0ff; width: auto; padding-right: 33px;">
                     <option value="">Kabupaten</option>
                 </select>
-                
+
                 <!-- Dropdown untuk Kecamatan -->
                 <select id="kecamatan" class="form-select me-2" style="background-color: #d1e0ff; width: auto; padding-right: 33px;">
                     <option value="">Kecamatan</option>
                 </select>
-                
+
                 <!-- Dropdown untuk Desa -->
                 <select id="desa" class="form-select" style="background-color: #d1e0ff; width: auto; padding-right: 33px;">
                     <option value="">Desa</option>
@@ -146,7 +146,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-12">
@@ -172,8 +172,8 @@
                                 <td>{{ $user->gender }}</td>
                                 <td>#</td>
                                 <td>
-                                    <span 
-                                        class="badge align-items-center justify-content-center 
+                                    <span
+                                        class="badge align-items-center justify-content-center
                                         {{ $user->status === 'banned' ? 'status-banned' : 'status-active' }}">
                                         @if($user->status === 'banned')
                                             <i class="fa fa-ban me-1 mt-2"></i> Banned
@@ -184,7 +184,7 @@
                                 </td>
                                 <td>
                                     @if($user->status !== 'banned')
-                                        <form action="{{ route('admin.users.block', $user->id) }}" method="POST" class="d-inline" id="block-form-{{ $user->id }}">
+                                        <form action="{{ route('admin.users.block', $users->id) }}" method="POST" class="d-inline" id="block-form-{{ $user->id }}">
                                             @csrf
                                             <button type="button" class="btn btn-block-user btn-sm" onclick="confirmBan('{{ $user->id }}')" style="margin-top: 10px !important;">
                                                 <i class="fa fa-ban" style="font-size: 18px;"></i>
@@ -199,7 +199,7 @@
                                         </button>
                                     </form>
                                 </td>
-                                
+
                                 <script>
                                     function confirmBan(userId) {
                                         Swal.fire({
@@ -217,7 +217,7 @@
                                             }
                                         });
                                     }
-                                
+
                                     function confirmDelete(userId) {
                                         Swal.fire({
                                             title: 'Apakah Anda yakin?',
@@ -234,7 +234,7 @@
                                             }
                                         });
                                     }
-                                </script>                                                             
+                                </script>
                             </tr>
                         @empty
                             <tr>
@@ -245,8 +245,8 @@
                 </table>
             </div>
         </div>
-    </div>   
-    
+    </div>
+
     <div class="d-flex justify-content-center mt-4">
         <nav aria-label="Page navigation">
             <ul class="pagination pagination-lg">
@@ -254,7 +254,7 @@
             </ul>
         </nav>
     </div>
-  
+
     <footer class="footer pt-3">
         <div class="container-fluid">
             <div class="row align-items-center justify-content-center">

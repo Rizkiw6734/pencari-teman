@@ -59,7 +59,6 @@ class BandingController extends Controller
         Banding::create([
             'users_id' => auth()->id(),
             'pinalti_id' => $request->pinalti_id,
-            'jenis_hukuman' => $pinalti->jenis_hukuman,
             'alasan_banding' => $request->alasan_banding,
             'status' => 'proses',
         ]);

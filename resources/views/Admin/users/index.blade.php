@@ -301,9 +301,8 @@
                                     <td>{{ $user->gender }}</td>
                                     <td>#</td>
                                     <td>
-                                        <span
-                                            class="badge align-items-center justify-content-center
-                                        {{ $user->status === 'banned' ? 'status-banned' : 'status-active' }}">
+                                        <span class="badge align-items-center justify-content-center
+                                            {{ $user->status === 'banned' ? 'status-banned' : 'status-active' }}">
                                             @if ($user->status === 'banned')
                                                 <i class="fa fa-ban me-1 mt-2"></i> Banned
                                             @else
@@ -313,70 +312,34 @@
                                     </td>
                                     <td>
                                         @if ($user->status !== 'banned')
+                                            <!-- Block Form -->
                                             <form action="{{ route('admin.users.block', $user->id) }}" method="POST"
                                                 class="d-inline" id="block-form-{{ $user->id }}">
                                                 @csrf
                                                 <button type="button" class="btn btn-block-user btn-sm"
-                                                    onclick="confirmBan('{{ $user->id }}')"
+                                                    onclick="confirmAction('block', '{{ $user->id }}')"
                                                     style="margin-top: 10px !important;">
                                                     <i class="fa fa-ban" style="font-size: 18px;"></i>
                                                 </button>
                                             </form>
-                                 
-                                    </span>
-                                </td>
-                                <td>
-                                    @if($user->status !== 'banned')
-                                        <form action="{{ route('admin.users.block', $user->id) }}" method="POST" class="d-inline" id="block-form-{{ $user->id }}">
+                                        @endif
+
+                                        <!-- Delete Form -->
+                                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
+                                            class="d-inline" id="delete-form-{{ $user->id }}">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" class="btn btn-delete-user btn-sm"
-                                                onclick="confirmDelete('{{ $user->id }}')"
+                                                onclick="confirmAction('delete', '{{ $user->id }}')"
                                                 style="margin-top: 10px !important;">
                                                 <i class="fa fa-trash" style="font-size: 18px;"></i>
                                             </button>
                                         </form>
                                     </td>
-
-                                    <script>
-                                        function confirmBan(userId) {
-                                            Swal.fire({
-                                                title: 'Apakah Anda yakin?',
-                                                text: "Pengguna ini akan diblokir.",
-                                                icon: 'warning',
-                                                showCancelButton: true,
-                                                confirmButtonColor: '#3085d6',
-                                                cancelButtonColor: '#d33',
-                                                confirmButtonText: 'Ya, blokir!',
-                                                cancelButtonText: 'Batal'
-                                            }).then((result) => {
-                                                if (result.isConfirmed) {
-                                                    document.getElementById('block-form-' + userId).submit();
-                                                }
-                                            });
-                                        }
-
-                                        function confirmDelete(userId) {
-                                            Swal.fire({
-                                                title: 'Apakah Anda yakin?',
-                                                text: "Pengguna ini akan dihapus.",
-                                                icon: 'warning',
-                                                showCancelButton: true,
-                                                confirmButtonColor: '#3085d6',
-                                                cancelButtonColor: '#d33',
-                                                confirmButtonText: 'Ya, hapus!',
-                                                cancelButtonText: 'Batal'
-                                            }).then((result) => {
-                                                if (result.isConfirmed) {
-                                                    document.getElementById('delete-form-' + userId).submit();
-                                                }
-                                            });
-                                        }
-                                    </script>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center">Tidak ada data pengguna.</td>
+                                    <td colspan="7" class="text-center">Tidak ada data pengguna.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -384,6 +347,41 @@
                 </div>
             </div>
         </div>
+
+        <script>
+            function confirmAction(action, userId) {
+                let messages = {
+                    block: {
+                        title: 'Apakah Anda yakin?',
+                        text: 'Pengguna ini akan diblokir.',
+                        confirmText: 'Ya, blokir!'
+                    },
+                    delete: {
+                        title: 'Apakah Anda yakin?',
+                        text: 'Pengguna ini akan dihapus.',
+                        confirmText: 'Ya, hapus!'
+                    }
+                };
+
+                let message = messages[action];
+
+                Swal.fire({
+                    title: message.title,
+                    text: message.text,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: message.confirmText,
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById(`${action}-form-${userId}`).submit();
+                    }
+                });
+            }
+        </script>
+
 
         <div class="d-flex justify-content-center mt-4">
             <nav aria-label="Page navigation">

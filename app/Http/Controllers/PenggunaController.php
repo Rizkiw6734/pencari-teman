@@ -125,7 +125,7 @@ class PenggunaController extends Controller
             redirect()->route('Pengguna.index')->with('error', 'pengguna adalah Admin');
         }
         $user->delete();
-        redirect()->route('Pengguna.index')->with('success', 'Pengguna ini berhasil di hapus');
+        return redirect()->route('admin.users.index')->with('success', 'Pengguna ini berhasil di hapus');
     }
 
     public function banned(Request $request)

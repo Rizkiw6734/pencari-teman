@@ -184,7 +184,7 @@
                                 </td>
                                 <td>
                                     @if($user->status !== 'banned')
-                                        <form action="{{ route('admin.users.block', $users->id) }}" method="POST" class="d-inline" id="block-form-{{ $user->id }}">
+                                        <form action="{{ route('admin.users.block', $user->id) }}" method="POST" class="d-inline" id="block-form-{{ $user->id }}">
                                             @csrf
                                             <button type="button" class="btn btn-block-user btn-sm" onclick="confirmBan('{{ $user->id }}')" style="margin-top: 10px !important;">
                                                 <i class="fa fa-ban" style="font-size: 18px;"></i>

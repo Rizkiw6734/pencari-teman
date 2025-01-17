@@ -86,7 +86,9 @@
                         <img src="./assets/img/map.svg" alt="">
                     </figure>
                     <div class="hero-content">
-                        <h1 class="h1 hero-title">Temukan <span class="highlight">Teman</span>di <span class="highlight">Sekitarmu</span>dengan Sekali Klik!.</h1>
+                        <h2 class="h2 hero-departments">Temukan<span class="highlight-2">Teman</span></h2>
+                        <h2 class="h2 hero-departments">di<span class="highlight-2">Sekitarmu</span></h2>
+                        <h2 class="h2 hero-departments">dengan sekali klik !</h2>
                         <p class="section-text">
                             Hadirkan pengalaman mencari teman yang seru dan mudah! Temukan orang-orang dengan minat yang sama dan bangun koneksi baru yang berarti.
                         </p>
@@ -115,12 +117,11 @@
                 </div>
             </section>
 
-            <!--- #FITUR -->
-
-            <section class="departments">
+            <!--- #KEUNGGULAN -->
+              <section class="departments">
                 <div class="container">
-                  <h2 class="h2 hero-title">
-                    Kenapa Memilih <span class="highlight">Around You?</span>
+                  <h2 class="h2 hero-departments">
+                    Kenapa Memilih <span class="highlight-2">Around You?</span>
                   </h2>
                   <p class="section-text">
                     AroundYou memudahkan Anda menemukan teman baru, berbagi momen, dan membangun koneksi yang relevan dengan kebutuhan Anda, dengan aman dan personal.
@@ -182,60 +183,59 @@
                 </div>
               </section>
 
-
-            <!--
-- #COMMENT-->
-
-            <section class="instructor">
-                <div class="container">
-                    <img src="./assets/img/instructor-vactor-1.svg" alt="Vector line art" class="vector-line">
-                    <div class="title-wrapper">
-                        <h2 class="h2 instructor-title">Apa Kata Pengguna?</h2>
+              <!-- #FITUR -->
+              <section class="about">
+                    <div class="wrapper">
+                        <div class="container2">
+                            <div class="fitur-content">
+                                <h2 class="h2 about-title">Kenali Beragam Fitur Unggulan dari AroundYou</h2>
+                                <p class="section-text">
+                                    AroundYou menghadirkan berbagai fitur yang dirancang untuk memudahkan Anda berinteraksi, berbagi momen, dan menjalin koneksi yang lebih berarti.
+                                </p>
+                            </div>
+                            <input type="radio" name="slide" id="c1" >
+                            <label for="c1" class="card2" >
+                                <div class="row">
+                                    <div class="description">
+                                        <h2></h2>
+                                        <p></p>
+                                    </div>
+                                </div>
+                            </label>
+                            <input type="radio" name="slide" id="c2">
+                            <label for="c2" class="card2" >
+                                <div class="row">
+                                    <div class="description">
+                                        <h2>Mencari Teman</h2>
+                                        <p>Aplikasi Around You memiliki fitur Cari Teman yang memudahkan Anda menemukan dan terhubung dengan orang-orang baru di sekitar Anda, memperluas jaringan secara cepat dan aman.</p>
+                                    </div>
+                                </div>
+                            </label>
+                            <input type="radio" name="slide" id="c3" checked>
+                            <label for="c3" class="card2" >
+                                <div class="row">
+                                    <div class="description">
+                                        <h2>Jalinan</h2>
+                                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. </p>
+                                    </div>
+                                </div>
+                            </label>
+                            <input type="radio" name="slide" id="c4" checked>
+                            <label for="c4" class="card2" >
+                                <div class="row">
+                                    <div class="description">
+                                        <h2>Chatting</h2>
+                                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. </p>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
                     </div>
-                    <ul class="instructor-list">
-                        <li>
-                            <div class="instructor-card">
-                                <figure class="card-banner">
-                                    <img src="./assets/img/instructor-1.png" alt="Shaapir Prio">
-                                </figure>
-                                <a href="#">
-                                    <h3 class="card-title">Shaapir Prio</h3>
-                                </a>
-                                <p class="card-subtitle">"Platform ini sangat membantu saya menemukan teman baru di
-                                    sekitar."</p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="instructor-card">
-                                <figure class="card-banner">
-                                    <img src="./assets/img/instructor-2.png" alt="Sellina">
-                                </figure>
-                                <a href="#">
-                                    <h3 class="card-title">Sellina</h3>
-                                </a>
-                                <p class="card-subtitle">"Sangat aman, saya merasa nyaman menggunakannya!"</p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="instructor-card">
-                                <figure class="card-banner">
-                                    <img src="./assets/img/instructor-3.png" alt="John Smith">
-                                </figure>
-                                <a href="#">
-                                    <h3 class="card-title">John Smith</h3>
-                                </a>
-                                <p class="card-subtitle">"Fitur-fiturnya memudahkan saya untuk berkomunikasi dengan
-                                    pengguna lain."</p>
-                            </div>
-                        </li>
-                    </ul>
-                    {{-- <img src="./assets/img/instructor-vactor-2.svg" alt="Vector line art" class="vector-line"> --}}
-                </div>
             </section>
 
+            <!--COMMENT-->
             <section class="hero">
                 <div class="container">
-
                     <div class="hero-content">
                         <h1 class="h1 hero-title">Apa Kata Pengguna</h1>
                         <p class="section-text">
@@ -243,9 +243,46 @@
                         </p>
                         <button class="btn btn-primary2">Lihat semua Komentar</button>
                     </div>
+                    <img src="./assets/img/ellipse.svg" alt="Vector line art" class="ellipse">
+
+                    {{-- <div class="slider-container">
+                        <div class="slider-wrapper">
+                            <div class="slider-card">
+                                <img src="./assets/img/team-1.jpg" alt="User" class="card-img">
+                                <h3>Andrew</h3>
+                                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officiis accusamus optio molestias, hic esse, incidunt eveniet ex commodi laudantium ipsum nemo aperiam a. Ex fugiat rem qui, ipsa enim architecto.</p>
+                                <div class="rating">⭐⭐⭐⭐4/5</div>
+                            </div>
+                            <div class="slider-card">
+                                <img src="./assets/img/team-1.jpg" alt="User" class="card-img">
+                                <h3>Sarah</h3>
+                                <p>Aplikasi ini membantu saya menemukan teman baru.</p>
+                                <div class="rating">⭐⭐⭐⭐⭐5/5</div>
+                            </div>
+                            <div class="slider-card">
+                                <img src="./assets/img/team-1.jpg" alt="User" class="card-img">
+                                <h3>Michael</h3>
+                                <p>Fitur-fiturnya sangat lengkap dan mudah digunakan!</p>
+                                <div class="rating">⭐⭐⭐⭐4/5</div>
+                            </div>
+                        </div>
+
+                        <!-- Navigasi Tombol dan Dots -->
+                        <div class="slider-navigation">
+                            <button class="slider-btn prev-btn">❮</button>
+                            <div class="slider-dots">
+                                <span class="dot active"></span>
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                            </div>
+                            <button class="slider-btn next-btn">❯</button>
+                        </div>
+                    </div> --}}
+
+
                 </div>
             </section>
-            <!--- #CTA -->
+
         </article>
     </main>
 
@@ -363,19 +400,16 @@
 
                 </div>
             </div>
+        </footer>
 
-            {{-- <div class="footer-bottom">
+
+ {{-- <div class="footer-bottom">
           <div class="container">
             <p class="copyright">
               &copy; 2022 <a href="">codewithsadee</a>. All right reserved
             </p>
           </div>
         </div> --}}
-
-        </footer>
-
-
-
 
 
 
@@ -401,6 +435,51 @@
   -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const sliderWrapper = document.querySelector(".slider-wrapper");
+            const cards = document.querySelectorAll(".slider-card");
+            const prevBtn = document.querySelector(".prev-btn");
+            const nextBtn = document.querySelector(".next-btn");
+            const dots = document.querySelectorAll(".dot");
+
+            let currentIndex = 0;
+
+            // Fungsi untuk memperbarui slider
+            function updateSlider() {
+                const offset = -currentIndex * 100; // Hitung posisi slide
+                sliderWrapper.style.transform = `translateX(${offset}%)`;
+
+                // Perbarui dot active
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle("active", index === currentIndex);
+                });
+            }
+
+            // Event listener tombol Next
+            nextBtn.addEventListener("click", function () {
+                currentIndex = (currentIndex + 1) % cards.length;
+                updateSlider();
+            });
+
+            // Event listener tombol Prev
+            prevBtn.addEventListener("click", function () {
+                currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+                updateSlider();
+            });
+
+            // Event listener untuk dots
+            dots.forEach((dot, index) => {
+                dot.addEventListener("click", function () {
+                    currentIndex = index;
+                    updateSlider();
+                });
+            });
+        });
+        </script>
+
+
 
 </body>
 

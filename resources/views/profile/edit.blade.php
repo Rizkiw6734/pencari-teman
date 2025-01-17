@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 @section('content')
 <div class="main-content position-relative max-height-vh-100 h-100">
     <div class="container-fluid">

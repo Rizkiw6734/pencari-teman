@@ -11,7 +11,7 @@
       <li class="nav-label">Dashboard</li>
       <li class="nav-item" style="position: relative;">
         <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-          <div class="fa fa-file-alt icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
+          <div class="fa fa-home icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
                style="background-color: {{ request()->routeIs('dashboard') ? '#3243fd' : '#ffffff' }} !important; color: {{ request()->routeIs('dashboard') ? '#ffffff' : '#000000' }} !important;">
           </div>
           <span class="nav-link-text ms-1">Dashboard</span>

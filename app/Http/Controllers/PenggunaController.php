@@ -141,7 +141,6 @@ class PenggunaController extends Controller
 
         return view('Admin.users.banned', compact('bannedUsers'));
     }
-
     public function getProvinsi()
     {
         $provinsis = Provinces::select('id', 'name')->get();

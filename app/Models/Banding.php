@@ -10,7 +10,6 @@ class Banding extends Model
     protected $fillable = [
         'users_id',
         'pinalti_id',
-        'jenis_hukuman',
         'alasan_banding',
         'status'
     ];

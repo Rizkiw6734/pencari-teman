@@ -10,48 +10,18 @@
                 </div>
 
                 <ul class="navbar-nav d-flex align-items-center" style="margin-left: -15px;">
-                <li class="nav-item dropdown pe-2 d-flex align-items-center justify-content-center"
-                    style="width: 45px; height: 45px; flex-grow: 0; margin: 3.2px 12px 0 0; padding: 7px; border-radius: 15px; background-color: rgba(45, 156, 219, 0.15);">
-                    <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center"
-                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa fa-bell cursor-pointer" style="font-size: 20px; color: #2970ff;"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
-                    <li class="mb-2">
-                        <a class="dropdown-item border-radius-md" href="/laporan/detail/1">
-                        <div class="d-flex py-1">
-                            <div class="my-auto">
-                            <img src="/assets/img/team-2.jpg" class="avatar avatar-sm me-3">
-                            </div>
-                            <div class="d-flex flex-column justify-content-center">
-                            <h6 class="text-sm font-weight-normal mb-1">
-                                <span class="font-weight-bold">New message</span> from Laur
-                            </h6>
-                            <p class="text-xs text-secondary mb-0">
-                                <i class="fa fa-clock me-1"></i>
-                                13 minutes ago
-                            </p>
-                            </div>
-                        </div>
+                    <li class="nav-item dropdown pe-2 d-flex align-items-center justify-content-center"
+                        style="width: 45px; height: 45px; flex-grow: 0; margin: 3.2px 12px 0 0; padding: 7px; border-radius: 15px; background-color: rgba(45, 156, 219, 0.15);">
+                        <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center"
+                           id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-bell cursor-pointer" style="font-size: 20px; color: #2970ff;"></i>
                         </a>
                     </li>
-                    </ul>
-                </li>
-                <div class="d-flex align-items-center">
-                    <li class="nav-item px-3 d-flex align-items-center justify-content-center"
-                        style="width: 45px; height: 45px; flex-grow: 0; padding: 9px; border-radius: 15px; background-color: rgba(255, 91, 91, 0.15);">
-                        <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center">
-                            <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer" style="font-size: 20px; color: #ff5b5b;"></i>
-                        </a>
-                    </li>
-
-                    <div style="width: 1px; height: 45px; background-color: #ddd; margin: 0 10px;"></div>
-
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link text-body font-weight-bold px-0 d-flex align-items-center"
-                            id="adminMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                           id="adminMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                             <img src="{{ Auth::user()->foto_profil ?? '/images/marie.jpg' }}"
-                                class="rounded-circle me-2" alt="Profile Image" width="45" height="45">
+                                 class="rounded-circle me-2" alt="Profile Image" width="45" height="45">
                             <span class="d-sm-inline d-none">{{ Auth::user()->name }}</span>
                             <i class="fa fa-chevron-down ms-2"></i>
                         </a>
@@ -68,7 +38,7 @@
                             </li>
                             <li>
                                 <a class="dropdown-item text-danger" href="{{ route('logout') }}"
-                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     <i class="fa fa-sign-out-alt me-2"></i> Logout
                                 </a>
                             </li>
@@ -77,7 +47,6 @@
                             @csrf
                         </form>
                     </li>
-                </div>
                 </ul>
             </div>
         </div>
@@ -140,14 +109,20 @@
                         @forelse($bandings as $banding)
                             <tr class="align-middle">
                                 <td>{{ optional($banding->user)->name ?? 'Pengguna tidak ditemukan' }}</td>
-                                <td>{{ $banding->jenis_hukuman }}</td>
+                                <td>{{ $banding->pinalti->jenis_hukuman }}</td>
                                 <td>{{ $banding->alasan_banding }}</td>
                                 <td>{{ $banding->status }}</td>
                                 <td>
-                                    <form action="{{ route('banding.tolak', $banding->id) }}" method="POST" class="d-inline" id="block-form-{{ $banding->id }}">
+                                    <form action="{{ route('banding.tolak', $banding->id) }}" method="POST" class="d-inline">
                                         @csrf
-                                        <button type="submit" class="btn btn-block-user btn-sm" style="margin-top: 10px !important;">
+                                        <button type="submit" class="btn btn-danger btn-sm" style="margin-top: 5px;">
                                             Tolak
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('banding.terima', $banding->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success btn-sm" style="margin-top: 5px;">
+                                            Terima
                                         </button>
                                     </form>
                                 </td>
@@ -163,14 +138,6 @@
         </div>
     </div>
 
-    {{-- <div class="d-flex justify-content-center mt-4">
-        <nav aria-label="Page navigation">
-            <ul class="pagination pagination-lg">
-                {{ $bandings->links('pagination::bootstrap-4') }}
-            </ul>
-        </nav>
-    </div> --}}
-
     <footer class="footer pt-3">
         <div class="container-fluid">
             <div class="row align-items-center justify-content-center">
@@ -178,7 +145,7 @@
                     <div class="copyright text-center text-sm text-muted">
                         <p>Copyright &copy; by around.you
                             <script>
-                            document.write(new Date().getFullYear())
+                                document.write(new Date().getFullYear())
                             </script>
                         </p>
                     </div>

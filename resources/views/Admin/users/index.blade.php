@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 @section('content')
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <nav class="navbar navbar-main navbar-expand-lg mt-3 px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur"
@@ -165,7 +165,7 @@
                             .then(data => {
                                 let provinsiSelect = document.getElementById('provinces');
                                 provinsiSelect.innerHTML =
-                                '<option value="">Pilih Provinsi</option>'; // Tambahkan opsi default
+                                '<option value="">Provinsi</option>'; // Tambahkan opsi default
                                 data.forEach(item => {
                                     provinsiSelect.innerHTML +=
                                     `<option value="${item.id}">${item.name}</option>`; // Gunakan `item.id` untuk value
@@ -197,7 +197,7 @@
                             })
                             .then(data => {
                                 let kabupatenSelect = document.getElementById('regencies');
-                                kabupatenSelect.innerHTML = '<option value="">Pilih Kabupaten</option>';
+                                kabupatenSelect.innerHTML = '<option value="">Kabupaten</option>';
                                 data.forEach(item => {
                                     kabupatenSelect.innerHTML += `<option value="${item.id}">${item.name}</option>`;
                                 });
@@ -231,7 +231,7 @@
                             })
                             .then(data => {
                                 let kecamatanSelect = document.getElementById('districts');
-                                kecamatanSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
+                                kecamatanSelect.innerHTML = '<option value="">Kecamatan</option>';
                                 data.forEach(item => {
                                     kecamatanSelect.innerHTML += `<option value="${item.id}">${item.name}</option>`;
                                 });
@@ -262,7 +262,7 @@
                             })
                             .then(data => {
                                 let desaSelect = document.getElementById('villages');
-                                desaSelect.innerHTML = '<option value="">Pilih Desa</option>';
+                                desaSelect.innerHTML = '<option value="">Desa</option>';
                                 data.forEach(item => {
                                     desaSelect.innerHTML += `<option value="${item.id}">${item.name}</option>`;
                                 });

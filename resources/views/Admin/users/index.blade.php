@@ -322,9 +322,12 @@
                                                     <i class="fa fa-ban" style="font-size: 18px;"></i>
                                                 </button>
                                             </form>
-                                        @endif
-                                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
-                                            class="d-inline" id="delete-form-{{ $user->id }}">
+                                 
+                                    </span>
+                                </td>
+                                <td>
+                                    @if($user->status !== 'banned')
+                                        <form action="{{ route('admin.users.block', $user->id) }}" method="POST" class="d-inline" id="block-form-{{ $user->id }}">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" class="btn btn-delete-user btn-sm"

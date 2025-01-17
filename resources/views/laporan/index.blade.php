@@ -104,9 +104,9 @@
                     <option value="20" {{ request('per_page') == 20 ? 'selected' : '' }}>20</option>
                     <option value="30" {{ request('per_page') == 30 ? 'selected' : '' }}>30</option>
                     <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                </select>                
-            </div>            
-    
+                </select>
+            </div>
+
             <script>
                 document.getElementById('data-count').addEventListener('change', function() {
                     var perPage = this.value;
@@ -114,7 +114,7 @@
                 });
             </script>
         </div>
-        
+
         <div class="container-fluid py-4" style="padding-left: 0; padding-right: 0;">
             <div class="row" style="padding-left: 0; padding-right: 0;">
                 @forelse ($laporans as $laporan)
@@ -137,21 +137,21 @@
                                     <i class="fa fa-eye fa-thin"></i>
                                 </span>
                             </div>
-                            <div class="badge-container mb-3 laporan-text" 
+                            <div class="badge-container mb-3 laporan-text"
                                 style="display: flex; justify-content: center; align-items: center; height: 100%; position: relative;">
-                                <span class="badge 
+                                <span class="badge
                                             text-{{ $laporan->status === 'diterima' ? 'success' : ($laporan->status === 'proses' ? 'warning' : 'danger') }}">
                                     <!-- Ikon dan Status -->
-                                    <i class="fa 
-                                                {{ $laporan->status === 'diterima' ? 'fa-check-circle' : 
-                                                    ($laporan->status === 'proses' ? 'fa-spinner' : 'fa-times-circle') }} 
+                                    <i class="fa
+                                                {{ $laporan->status === 'diterima' ? 'fa-check-circle' :
+                                                    ($laporan->status === 'proses' ? 'fa-spinner' : 'fa-times-circle') }}
                                                 me-2"></i>
                                     {{ ucfirst($laporan->status) }}
                                 </span>
-                            </div>                                             
+                            </div>
                         </div>
                     </div>
-        
+
                     <!-- Modal Detail Laporan -->
                     <div class="modal fade" id="laporanModal{{ $laporan->id }}" tabindex="-1" aria-labelledby="laporanModalLabel{{ $laporan->id }}" aria-hidden="true">
                         <div class="modal-dialog custom-modal-sm">
@@ -161,7 +161,7 @@
                                     <button type="button" class="btn-close" onclick="goBackToLaporan()" aria-label="Close">
                                         <i class="fa fa-times"></i>
                                     </button>
-                                    
+
                                     <script>
                                         function goBackToLaporan() {
                                             // Redirect ke halaman laporan
@@ -180,11 +180,11 @@
                                             <p class="text-dark text-bold">Alasan :</p>
                                             <p>{{ $laporan->alasan }}</p>
                                         </div>
-                                        
+
                                         <div class="col-1 text-center border-divider">
                                             <div class="vertical-line"></div>
                                         </div>
-                                        
+
                                         <!-- Bagian Bukti -->
                                         <div class="col-5 bukti-laporan">
                                             <p class="text-dark text-bold">Bukti :</p>
@@ -206,15 +206,17 @@
                                                 {{ $action['label'] }}
                                             </button>
                                         @endforeach
-                                        
+
                                         <!-- Tombol Banned User -->
-                                        <form id="form-banned-user-{{ $laporan->id }}" action="{{ route('user.banned', $laporan->id) }}" method="POST" class="d-inline">
+                                        <form id="form-banned-user-{{ $laporan->id }}" action="{{ route('laporan.hukuman', $laporan->id) }}" method="POST" class="d-inline">
                                             @csrf
+                                            <input type="hidden" name="jenis_hukuman" value="banned">
                                             <button type="button" class="btn btn-banned-user" style="background-color: #000000; color: white; margin-top: 3px !important;">
                                                 Banned User
                                             </button>
-                                        </form>                                    
-                                
+                                        </form>
+
+
                                         <!-- Tombol Tolak Laporan -->
                                         <form id="form-tolak-laporan-{{ $laporan->id }}" action="{{ route('laporan.tolak', $laporan->id) }}" method="POST" class="d-inline">
                                             @csrf
@@ -222,7 +224,7 @@
                                                 Tolak Laporan
                                             </button>
                                         </form>
-                                        
+
                                         <script>
                                             document.addEventListener('DOMContentLoaded', function () {
                                                 document.querySelectorAll('.btn-tolak-laporan').forEach(button => {
@@ -271,13 +273,13 @@
                                                 });
                                             });
                                         </script>
-                                
+
                                     @elseif ($laporan->status === 'diterima')
                                         <p class="text-success">Laporan telah diterima dan diproses.</p>
                                     @elseif ($laporan->status === 'ditolak')
                                         <p class="text-danger">Laporan telah ditolak.</p>
                                     @endif
-                                </div>                                
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -307,8 +309,8 @@
                                 </div>
                             </form>
                         </div>
-                    </div>                    
-                    
+                    </div>
+
                     <!-- Modal Suspend -->
                     <div class="modal fade" id="modalSuspend{{ $laporan->id }}" tabindex="-1" aria-labelledby="modalSuspendLabel{{ $laporan->id }}" aria-hidden="true">
                         <div class="modal-dialog">
@@ -330,7 +332,7 @@
                                                 if (modalBackdrop) {
                                                     modalBackdrop.remove();  // Menghapus backdrop agar tidak menghalangi tampilan
                                                 }
-                                                
+
                                                 // Menampilkan modal sebelumnya
                                                 var previousModal = document.querySelector('#laporanModal{{ $laporan->id }}');
                                                 if (previousModal) {
@@ -379,7 +381,7 @@
                                                 if (modalBackdrop) {
                                                     modalBackdrop.remove();  // Menghapus backdrop agar tidak menghalangi tampilan
                                                 }
-                                                
+
                                                 // Menampilkan modal sebelumnya
                                                 var previousModal = document.querySelector('#laporanModal{{ $laporan->id }}');
                                                 if (previousModal) {

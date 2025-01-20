@@ -54,7 +54,7 @@
                                                 <p><strong>Last Name:</strong> <br> {{ $user->last_name ?? 'Tidak tersedia' }}</p>
                                             </div>
                                         </div>
-                        
+
                                         <div class="row mb-3">
                                             <div class="col">
                                                 <p><strong>Gender:</strong> <br>
@@ -65,7 +65,7 @@
                                                 <p><strong>Umur:</strong> <br> {{ $user->umur ?? 'Tidak tersedia' }}</p>
                                             </div>
                                         </div>
-                        
+
                                         <div class="row mb-3">
                                             <div class="col">
                                                 <p><strong>Email:</strong> <br> {{ $user->email }}</p>
@@ -74,7 +74,7 @@
                                                 <p><strong>Hobi:</strong> <br> {{ $user->hobi ?? 'Tidak tersedia' }}</p>
                                             </div>
                                         </div>
-                        
+
                                         <div class="row">
                                             <div class="col">
                                                 <p><strong>Bio:</strong> <br> {{ $user->bio ?? 'Tidak tersedia' }}</p>
@@ -84,12 +84,12 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Modal Edit -->
                         <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
-                                    <form action="{{ route('user.update', $user->id) }}" method="POST">
+                                    {{-- <form action="{{ route('user.update', $user->id) }}" method="POST"> --}}
                                         @csrf
                                         @method('PUT')
                                         <div class="modal-header">
@@ -142,7 +142,7 @@
                                     </form>
                                 </div>
                             </div>
-                        </div>                                         
+                        </div>
 
                         <div>
                             <div class="card shadow-sm">
@@ -151,7 +151,7 @@
                                         <h6 class="font-weight-bold">Alamat</h6>
                                         <a href="#" class="btn btn-sm btn-rounded text-dark" style="background-color: transparent; border: 1px solid #84ADFF;">
                                             Edit <i class="fa fa-pencil ms-1" style="font-size: 14px"></i>
-                                        </a> 
+                                        </a>
                                     </div>
                                 </div>
                             </div>

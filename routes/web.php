@@ -100,6 +100,8 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
         // Rute untuk halaman banned
         Route::get('/banned', [UserStatusController::class, 'bannedPage'])->name('user.banned');
 
+        Route::get('/profile-user', [ProfileController::class, 'profile'])->name('user.profile');
+
         // Rute untuk halaman suspend
         Route::get('/suspend', [UserStatusController::class, 'suspendPage'])->name('user.suspend');
         Route::resource('banding', BandingController::class);

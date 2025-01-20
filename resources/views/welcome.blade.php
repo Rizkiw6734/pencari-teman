@@ -58,19 +58,19 @@
                         <a href="#" class="navbar-link">Beranda</a>
                     </li>
                     <li>
-                        <a href="#" class="navbar-link">Tentang</a>
+                        <a href="#about" class="navbar-link">Tentang</a>
                     </li>
                     <li>
-                        <a href="#" class="navbar-link">Keunggulan</a>
+                        <a href="#departments" class="navbar-link">Keunggulan</a>
                     </li>
                     <li>
-                        <a href="#" class="navbar-link">Fitur-fitur</a>
+                        <a href="#fitur" class="navbar-link">Fitur-fitur</a>
                     </li>
                     <li>
-                        <a href="#" class="navbar-link">Ulasan</a>
+                        <a href="#coment" class="navbar-link">Ulasan</a>
                     </li>
                     <li>
-                        <a href="#" class="navbar-link">Kontak</a>
+                        <a href="#footer" class="navbar-link">Kontak</a>
                     </li>
                 </ul>
             </nav>
@@ -93,7 +93,7 @@
                             Hadirkan pengalaman mencari teman yang seru dan mudah! Temukan orang-orang dengan minat yang sama dan bangun koneksi baru yang berarti.
                         </p>
                         <div class="button-container">
-                            <button class="btn btn-primary">Jelajahi</button>
+                            <a href="#about"><button class="btn btn-primary">Jelajahi</button></a>
                             <button class="btn btn-secondary" onclick="window.location.href='{{ route('login') }}'">Mulai Sekarang</button>
                         </div>
                     </div>
@@ -101,7 +101,7 @@
             </section>
 
             <!--- #ABOUT -->
-            <section class="about">
+            <section id="about" class="about">
                 <div class="container">
                     <div class="image-container">
                         <img src="./assets/img/handphone.svg" alt="Eduland students" class="image">
@@ -118,7 +118,7 @@
             </section>
 
             <!--- #KEUNGGULAN -->
-              <section class="departments">
+              <section id="departments" class="departments">
                 <div class="container">
                   <h2 class="h2 hero-departments">
                     Kenapa Memilih <span class="highlight-2">Around You?</span>
@@ -184,7 +184,7 @@
               </section>
 
               <!-- #FITUR -->
-              <section class="about">
+              <section id="fitur" class="about">
                     <div class="wrapper">
                         <div class="container2">
                             <div class="fitur-content">
@@ -234,7 +234,7 @@
             </section>
 
             <!--COMMENT-->
-            <section class="hero">
+            <section id="coment" class="hero">
                 <div class="container">
                     <div class="hero-content">
                         <h1 class="h1 hero-title">Apa Kata Pengguna</h1>
@@ -291,7 +291,7 @@
 
 
     <!--- #FOOTER -->
-        <footer class="footer">
+        <footer id="footer" class="footer">
 
             <div class="footer-top">
                 <div class="container">

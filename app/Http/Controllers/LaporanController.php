@@ -13,9 +13,21 @@ class LaporanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $laporans = Laporan::with(['pelapor', 'terlapor'])->paginate(10);
+        $query = Laporan::query();
+
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->whereHas('pelapor', function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%');
+            })->orWhereHas('terlapor', function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%');
+            })->orWhere('status', 'like', '%' . $search . '%')
+              ->orWhereDate('created_at', $search);
+        }
+
+        $laporans = $query->with(['pelapor', 'terlapor'])->paginate(10);
         return view('laporan.index', compact('laporans'));
     }
 
@@ -125,20 +137,23 @@ class LaporanController extends Controller
 
         switch ($jenisHukuman) {
             case 'peringatan':
-                $pesan = $request->validate([
+                $validated = $request->validate([
                     'pesan' => 'required|regex:/^[a-zA-Z\s]+$/',
                 ],[
                   'pesan.required' => 'Pesan Peringatan Tidak Boleh Kosong',
                   'pesan.regex' => 'Pesan Tidak Boleh Angka'
                 ]);
+                
+                $pesan = $validated['pesan']; // Ambil nilai pesan setelah validasi
+            
                 Pinalti::create([
                     'laporan_id' => $laporan->id,
                     'jenis_hukuman' => 'peringatan',
-                    'pesan' => $pesan,
+                    'pesan' => $pesan,  // Masukkan pesan sebagai string
                     'start_date' => now(),
                     'end_date' => null,
                 ]);
-                break;
+                break;            
 
             case 'suspend':
                 $request->validate([

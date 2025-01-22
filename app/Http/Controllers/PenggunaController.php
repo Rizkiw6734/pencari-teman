@@ -20,13 +20,14 @@ class PenggunaController extends Controller
         $kabupaten = $request->input('regencies');
         $kecamatan = $request->input('districts');
         $desa = $request->input('villages');
+        $search = $request->input('search');
         $perPage = $request->input('per_page', 10);
-
+    
         $query = User::where('status', '!=', 'banned')
             ->whereDoesntHave('roles', function ($query) {
                 $query->where('name', 'admin');
             });
-
+    
         if ($provinsi) {
             $query->where('provinces', $provinsi);
         }
@@ -39,16 +40,24 @@ class PenggunaController extends Controller
         if ($desa) {
             $query->where('villages', $desa);
         }
-
+    
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('email', 'like', '%' . $search . '%')
+                  ->orWhere('gender', 'like', '%' . $search . '%');
+            });
+        }
+    
         $users = $query->paginate($perPage);
-
+    
         $provinces = Provinces::all();
         $regencies = $provinsi ? Regencies::where('province_id', $provinsi)->get() : [];
         $districts = $kabupaten ? Districts::where('regency_id', $kabupaten)->get() : [];
         $villages = $kecamatan ? Villages::where('district_id', $kecamatan)->get() : [];
-
+    
         return view('Admin.users.index', compact('users', 'provinces', 'regencies', 'districts', 'villages'));
-    }
+    }    
 
     /**
      * Show the form for creating a new resource.
@@ -131,16 +140,25 @@ class PenggunaController extends Controller
     public function banned(Request $request)
     {
         $perPage = $request->input('per_page', 10);
+        $search = $request->input('search');
+    
         $query = User::where('status', '=', 'banned')
             ->whereDoesntHave('roles', function ($query) {
                 $query->where('name', 'admin');
             });
-
-        // Paginate hasilnya dengan jumlah data per halaman yang dipilih
+    
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('email', 'like', '%' . $search . '%');
+            });
+        }
+    
         $bannedUsers = $query->paginate($perPage);
-
+    
         return view('Admin.users.banned', compact('bannedUsers'));
     }
+
     public function getProvinsi()
     {
         $provinsis = Provinces::select('id', 'name')->get();

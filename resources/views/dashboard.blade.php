@@ -106,122 +106,73 @@
         <div class="row gx-3">
             <!-- Card Total Pengguna -->
             <div class="col-lg-4 col-md-6 col-12 mb-4">
-                <div class="card" style="width: 100%; height: 286px;">
-                    <span class="mask bg-white opacity-10 border-radius-lg"></span>
-                    <div class="card-body p-3 position-relative">
-                        <div style="position: relative; height: 120px;">
-                            <canvas id="totalUsersChart" data-total="{{ $totalUsers }}" data-sisa="{{ 50 - $totalUsers }}"></canvas>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-8 text-start">
-                                <h5 class="text-dark font-weight-bolder mb-0 mt-3">{{ $totalUsers }}</h5>
-                                <span class="text-dark text-sm">Total Pengguna</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              <div class="card" style="width: 100%; height: 286px;">
+                  <span class="mask bg-white opacity-10 border-radius-lg"></span>
+                  <div class="card-body p-3 position-relative">
+                      <div style="position: relative; height: 120px;">
+                          <canvas id="totalUsersChart" data-total="{{ $totalUsers }}" data-sisa="{{ 50 - $totalUsers }}" style="display: block; margin: 0 auto;"></canvas>
+                          <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                              <div style="width: 40px; height: 40px; background-color: #e9ecf3; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                  <i class="fa fa-users" style="color: #3243FD; font-size: 16px;"></i>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="row mt-3">
+                          <div class="col-8 text-start">
+                              <h5 class="text-dark font-weight-bolder mb-0 mt-3">{{ $totalUsers }}</h5>
+                              <span class="text-dark text-sm">Total Pengguna</span>
+                          </div>
+                      </div>
+                  </div>
+              </div>
             </div>
 
             <!-- Card Total Laporan -->
             <div class="col-lg-4 col-md-6 col-12 mb-4">
-                <div class="card" style="width: 100%; height: 286px;">
-                    <span class="mask bg-white opacity-10 border-radius-lg"></span>
-                    <div class="card-body p-3 position-relative">
-                        <div style="position: relative; height: 120px;">
-                            <canvas id="totalReportsChart" data-total="{{ $totalReports }}" data-sisa="{{ 50 - $totalReports }}"></canvas>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-8 text-start">
-                                <h5 class="text-dark font-weight-bolder mb-0 mt-3">{{ $totalReports }}</h5>
-                                <span class="text-dark text-sm">Total Laporan</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              <div class="card" style="width: 100%; height: 286px;">
+                  <span class="mask bg-white opacity-10 border-radius-lg"></span>
+                  <div class="card-body p-3 position-relative">
+                      <div style="position: relative; height: 120px;">
+                          <canvas id="totalReportsChart" data-total="{{ $totalReports }}" data-sisa="{{ 50 - $totalReports }}" style="display: block; margin: 0 auto;"></canvas>
+                          <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                              <div style="width: 40px; height: 40px; background-color: #e9ecf3; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                  <i class="fa fa-file-alt" style="color: #FF6600; font-size: 16px;"></i>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="row mt-3">
+                          <div class="col-8 text-start">
+                              <h5 class="text-dark font-weight-bolder mb-0 mt-3">{{ $totalReports }}</h5>
+                              <span class="text-dark text-sm">Total Laporan</span>
+                          </div>
+                      </div>
+                  </div>
+              </div>
             </div>
 
             <!-- Card Total Pinalti -->
             <div class="col-lg-4 col-md-6 col-12 mb-4">
-                <div class="card" style="width: 100%; height: 286px;">
-                    <span class="mask bg-white opacity-10 border-radius-lg"></span>
-                    <div class="card-body p-3 position-relative">
-                        <div style="position: relative; height: 120px;">
-                            <canvas id="totalPenaltiesChart" data-total="{{ $totalPenalties }}" data-sisa="{{ 50 - $totalPenalties }}"></canvas>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-8 text-start">
-                                <h5 class="text-dark font-weight-bolder mb-0 mt-3">{{ $totalPenalties }}</h5>
-                                <span class="text-dark text-sm">Total Pinalti</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              <div class="card" style="width: 100%; height: 286px;">
+                  <span class="mask bg-white opacity-10 border-radius-lg"></span>
+                  <div class="card-body p-3 position-relative">
+                      <div style="position: relative; height: 120px;">
+                          <canvas id="totalPenaltiesChart" data-total="{{ $totalPenalties }}" data-sisa="{{ 50 - $totalPenalties }}" style="display: block; margin: 0 auto;"></canvas>
+                          <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                              <div style="width: 40px; height: 40px; background-color: #e9ecf3; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                  <i class="fa fa-exclamation-triangle" style="color: #DC3545; font-size: 16px;"></i>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="row mt-3">
+                          <div class="col-8 text-start">
+                              <h5 class="text-dark font-weight-bolder mb-0 mt-3">{{ $totalPenalties }}</h5>
+                              <span class="text-dark text-sm">Total Pinalti</span>
+                          </div>
+                      </div>
+                  </div>
+              </div>
             </div>
         </div>
-
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                // Chart for Total Pengguna
-                var totalUsersCanvas = document.getElementById('totalUsersChart');
-                var totalUsers = totalUsersCanvas.getAttribute('data-total');
-                var totalUsersSisa = totalUsersCanvas.getAttribute('data-sisa');
-                var totalUsersChart = new Chart(totalUsersCanvas.getContext('2d'), {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Total Pengguna', 'Sisa'],
-                        datasets: [{
-                            data: [totalUsers, totalUsersSisa],
-                            backgroundColor: ['#3243fd', '#e9ecf3'],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        cutoutPercentage: 80
-                    }
-                });
-
-                // Chart for Total Laporan
-                var totalReportsCanvas = document.getElementById('totalReportsChart');
-                var totalReports = totalReportsCanvas.getAttribute('data-total');
-                var totalReportsSisa = totalReportsCanvas.getAttribute('data-sisa');
-                var totalReportsChart = new Chart(totalReportsCanvas.getContext('2d'), {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Total Laporan', 'Sisa'],
-                        datasets: [{
-                            data: [totalReports, totalReportsSisa],
-                            backgroundColor: ['#FF6600', '#e9ecf3'],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        cutoutPercentage: 80
-                    }
-                });
-
-                // Chart for Total Pinalti
-                var totalPenaltiesCanvas = document.getElementById('totalPenaltiesChart');
-                var totalPenalties = totalPenaltiesCanvas.getAttribute('data-total');
-                var totalPenaltiesSisa = totalPenaltiesCanvas.getAttribute('data-sisa');
-                var totalPenaltiesChart = new Chart(totalPenaltiesCanvas.getContext('2d'), {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Total Pinalti', 'Sisa'],
-                        datasets: [{
-                            data: [totalPenalties, totalPenaltiesSisa],
-                            backgroundColor: ['#DC3545', '#e9ecf3'],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        cutoutPercentage: 80
-                    }
-                });
-            });
-        </script>
       </div>
 
       <!-- Kolom Kanan -->
@@ -301,19 +252,89 @@
     </div>
   </div>  
 
-    <!-- Tambahkan CDN Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
+  <!-- Tambahkan CDN Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Chart for Total Pengguna
+      const totalUsersCanvas = document.getElementById('totalUsersChart');
+      const totalUsers = totalUsersCanvas.getAttribute('data-total');
+      const totalUsersSisa = totalUsersCanvas.getAttribute('data-sisa');
+      new Chart(totalUsersCanvas.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Total Pengguna', 'Sisa'],
+          datasets: [{
+            data: [totalUsers, totalUsersSisa],
+            backgroundColor: ['#3243FD', '#e9ecf3'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          cutout: '70%',
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+      
+      // Chart for Total Laporan
+      const totalReportsCanvas = document.getElementById('totalReportsChart');
+      const totalReports = totalReportsCanvas.getAttribute('data-total');
+      const totalReportsSisa = totalReportsCanvas.getAttribute('data-sisa');
+      new Chart(totalReportsCanvas.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Total Laporan', 'Sisa'],
+          datasets: [{
+            data: [totalReports, totalReportsSisa],
+            backgroundColor: ['#FF6600', '#e9ecf3'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          cutout: '70%',
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+      
+      // Chart for Total Pinalti
+      const totalPenaltiesCanvas = document.getElementById('totalPenaltiesChart');
+      const totalPenalties = totalPenaltiesCanvas.getAttribute('data-total');
+      const totalPenaltiesSisa = totalPenaltiesCanvas.getAttribute('data-sisa');
+      new Chart(totalPenaltiesCanvas.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Total Pinalti', 'Sisa'],
+          datasets: [{
+            data: [totalPenalties, totalPenaltiesSisa],
+            backgroundColor: ['#DC3545', '#e9ecf3'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          cutout: '70%',
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+      
       // Reviews Pengguna
       const reviewsCtx = document.getElementById('reviewsChart').getContext('2d');
-      const reviewsChart = new Chart(reviewsCtx, {
+      new Chart(reviewsCtx, {
         type: 'doughnut',
         data: {
           labels: ['Positive'],
           datasets: [{
             label: 'Reviews',
-            data: [80, 20], // 80% positif dan 20% sisa
-            backgroundColor: ['#0D6EFD', '#E9ECEF'], // Warna biru untuk positif dan abu-abu untuk sisa
+            data: [80, 20],
+            backgroundColor: ['#0D6EFD', '#E9ECEF'],
             hoverOffset: 4
           }]
         },
@@ -321,23 +342,22 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: {
-              display: false // Sembunyikan legenda
-            }
+            legend: { display: false }
           },
-          cutout: '70%' // Potongan tengah lebih besar
+          cutout: '70%'
         }
       });
-    
+      
+      // Chart for Neutral Reviews
       const neutralCtx = document.getElementById('neutralChart').getContext('2d');
-      const neutralChart = new Chart(neutralCtx, {
+      new Chart(neutralCtx, {
         type: 'doughnut',
         data: {
           labels: ['Neutral'],
           datasets: [{
             label: 'Reviews',
-            data: [17, 83], // 17% netral dan 83% sisa
-            backgroundColor: ['#FFC107', '#E9ECEF'], // Warna kuning untuk netral dan abu-abu untuk sisa
+            data: [17, 83],
+            backgroundColor: ['#FFC107', '#E9ECEF'],
             hoverOffset: 4
           }]
         },
@@ -345,23 +365,22 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: {
-              display: false // Sembunyikan legenda
-            }
+            legend: { display: false }
           },
-          cutout: '70%' // Potongan tengah lebih besar
+          cutout: '70%'
         }
       });
-    
+      
+      // Chart for Negative Reviews
       const negativeCtx = document.getElementById('negativeChart').getContext('2d');
-      const negativeChart = new Chart(negativeCtx, {
+      new Chart(negativeCtx, {
         type: 'doughnut',
         data: {
           labels: ['Negative'],
           datasets: [{
             label: 'Reviews',
-            data: [3, 97], // 3% negatif dan 97% sisa
-            backgroundColor: ['#DC3545', '#E9ECEF'], // Warna merah untuk negatif dan abu-abu untuk sisa
+            data: [3, 97],
+            backgroundColor: ['#DC3545', '#E9ECEF'],
             hoverOffset: 4
           }]
         },
@@ -369,14 +388,12 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: {
-              display: false // Sembunyikan legenda
-            }
+            legend: { display: false }
           },
-          cutout: '70%' // Potongan tengah lebih besar
+          cutout: '70%'
         }
       });
-    
+      
       // Data Pengguna Tahun 2024
       const penggunaCtx = document.getElementById('chart-line').getContext('2d');
       const data2024 = {
@@ -384,20 +401,20 @@
         datasets: [
           {
             label: 'Pengguna Laki-laki',
-            data: [70, 40, 42, 90, 31, 51, 43, 31, 85, 55, 82, 95], // Data laki-laki
-            borderColor: '#8979FF', // Warna garis
-            backgroundColor: 'rgba(137, 121, 255, 0.2)', // Warna area
-            tension: 0.5, // Kelengkungan garis
-            fill: true, // Isi area di bawah garis
+            data: [70, 40, 42, 90, 31, 51, 43, 31, 85, 55, 82, 95],
+            borderColor: '#8979FF',
+            backgroundColor: 'rgba(137, 121, 255, 0.2)',
+            tension: 0.5,
+            fill: true
           },
           {
             label: 'Pengguna Perempuan',
-            data: [35, 70, 85, 75, 50, 73, 16, 43, 22, 16, 30, 19], // Data perempuan
-            borderColor: '#FF928A', // Warna garis
-            backgroundColor: 'rgba(255, 146, 138, 0.2)', // Warna area
-            tension: 0.5, // Kelengkungan garis
-            fill: true, // Isi area di bawah garis
-          },
+            data: [35, 70, 85, 75, 50, 73, 16, 43, 22, 16, 30, 19],
+            borderColor: '#FF928A',
+            backgroundColor: 'rgba(255, 146, 138, 0.2)',
+            tension: 0.5,
+            fill: true
+          }
         ]
       };
 
@@ -407,41 +424,33 @@
         options: {
           responsive: true,
           plugins: {
-            legend: {
-              position: 'bottom', // Posisi legenda
-            },
+            legend: { position: 'bottom' },
             tooltip: {
               callbacks: {
-                label: (context) => `${context.dataset.label}: ${context.parsed.y} pengguna` // Tooltip kustom
+                label: (context) => `${context.dataset.label}: ${context.parsed.y} pengguna`
               }
             }
           },
           scales: {
             x: {
-              title: {
-                display: true,
-                text: 'Bulan' // Label sumbu X
-              }
+              title: { display: true, text: 'Bulan' }
             },
             y: {
-              title: {
-                display: true,
-                text: 'Jumlah Pengguna' // Label sumbu Y
-              },
-              beginAtZero: true, // Mulai dari 0
+              title: { display: true, text: 'Jumlah Pengguna' },
+              beginAtZero: true,
               ticks: {
-                stepSize: 20, // Langkah per 20
-                min: 0, // Nilai minimum
-                max: 100, // Nilai maksimum
+                stepSize: 20,
+                min: 0,
+                max: 100
               }
             }
           }
-        },
+        }
       };
 
-      // Render Grafik
       new Chart(penggunaCtx, config);
-    </script>  
+    });
+  </script>
 
   <footer class="footer pt-3  ">
     <div class="container-fluid">

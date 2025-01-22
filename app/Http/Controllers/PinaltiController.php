@@ -11,11 +11,23 @@ class PinaltiController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $pinalti = Pinalti::with('laporan.terlapor')->paginate(5);
+        $query = Pinalti::query(); // Inisialisasi query
+    
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+    
+            $query->orWhereHas('laporan.terlapor', function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%'); // Cari berdasarkan nama terlapor
+            })->orWhere('jenis_hukuman', 'like', '%' . $search . '%') // Cari berdasarkan jenis hukuman
+              ->orWhere('pesan', 'like', '%' . $search . '%'); // Cari berdasarkan pesan
+        }
+    
+        $pinalti = $query->with('laporan.terlapor')->paginate(10);
+    
         return view('pinalti.index', compact('pinalti'));
-    }
+    }    
 
     /**
      * Show the form for creating a new resource.

@@ -5,8 +5,12 @@
         <div class="container-fluid">
             <div class="d-flex justify-content-between align-items-center w-100" id="navbar">
                 <div class="input-group d-flex" style="width: 725px; height: 40px; box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.25); margin: 3.2px 37px 2px 0;">
-                    <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-                    <input type="text" class="form-control" placeholder="Mencari apa?">
+                    <form action="{{ route('pinalti.index') }}" method="GET" style="display: flex; width: 100%;">
+                        <div class="input-group">
+                            <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+                            <input type="text" name="search" class="form-control" placeholder="Mencari apa?" value="{{ request('search') }}">
+                        </div>
+                    </form>
                 </div>
 
                 <ul class="navbar-nav d-flex align-items-center" style="margin-left: -15px;">
@@ -119,6 +123,66 @@
                     window.location.search = '?per_page=' + perPage;
                 });
             </script>
+
+            <div class="d-flex align-items-center">
+                <div class="input-group" style="width: auto; align-items: center; position: relative; margin-right: 5px;">
+                    <span class="input-group-text" 
+                        style="background-color: transparent; border: 1px solid #C9C1FF; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 7px; padding: 10px 15px;">
+                        <i class="fa fa-calendar" style="font-size: 18.5px; margin-right: 10px;"></i>
+                        <i class="fa fa-caret-down" style="font-size: 18.5px;"></i>
+                    </span>
+                    <input type="date" id="dateFilter" class="form-control" 
+                        style="background-color: transparent; border: none; position: absolute; top: 0; left: 0; width: 100%; height: 40px; opacity: 0; cursor: pointer;">
+                </div>                
+                
+                <div class="input-group text-dark" style="width: auto; align-items: center; position: relative; margin-left: 5px;">
+                    <select id="jenisHukumanFilter" class="form-control"
+                        style="background-color: transparent; border: 1px solid #C9C1FF; cursor: pointer; appearance: none; -moz-appearance: none; -webkit-appearance: none; padding-right: 25px;">
+                        <option value="">Hukuman</option>
+                        <option value="peringatan">Peringatan</option>
+                        <option value="suspend">Suspend</option>
+                        <option value="banned">Banned</option>
+                    </select>
+                    <i class="fa fa-caret-down" style="font-size: 18.5px; position: absolute; right: 10px; pointer-events: none;"></i>
+                </div>              
+                
+                <script>
+                    document.getElementById('dateFilter').addEventListener('change', function() {
+                        var selectedDate = this.value; // Mendapatkan tanggal yang dipilih
+                        var rows = document.querySelectorAll('table tbody tr'); // Menemukan semua baris tabel
+                        rows.forEach(function(row) {
+                            var dateCell = row.cells[4].textContent.trim(); // Mengambil tanggal dari kolom ke-4 (Tanggal)
+                            var formattedDate = new Date(dateCell.split('-').reverse().join('-')).toISOString().split('T')[0]; // Format ulang tanggal ke YYYY-MM-DD
+                            
+                            if (formattedDate === selectedDate) {
+                                row.style.display = ''; // Tampilkan baris jika tanggal cocok
+                            } else {
+                                row.style.display = 'none'; // Sembunyikan baris jika tidak cocok
+                            }
+                        });
+                    });
+                </script>    
+                
+                <script>
+                    document.getElementById('jenisHukumanFilter').addEventListener('change', function () {
+                        var selectedHukuman = this.value; // Ambil nilai hukuman yang dipilih
+                        var rows = document.querySelectorAll('table tbody tr'); // Semua baris tabel
+                        
+                        rows.forEach(function (row) {
+                            var jenisHukumanCell = row.cells[1];
+                            var jenisHukumanText = jenisHukumanCell ? jenisHukumanCell.textContent.trim().toLowerCase() : ''; // Ambil teks dalam kolom
+                            
+                            // Tampilkan atau sembunyikan baris tergantung pada apakah jenis hukuman cocok
+                            if (selectedHukuman === '' || jenisHukumanText.includes(selectedHukuman)) {
+                                row.style.display = ''; // Tampilkan baris
+                            } else {
+                                row.style.display = 'none'; // Sembunyikan baris
+                            }
+                        });
+                    });
+                </script>
+                             
+            </div>
         </div>
     </div>
     
@@ -129,6 +193,7 @@
                        style="font-size: 15px; width: 100%; background-color: white;">
                     <thead>
                         <tr>
+                            <th>No</th>
                             <th>Nama</th>
                             <th>Jenis Hukuman</th>
                             <th>Pesan</th>
@@ -140,12 +205,13 @@
                     <tbody>
                         @foreach ($pinalti as $data)
                             <tr>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ optional($data->laporan->terlapor)->name ?? 'Pengguna tidak ditemukan' }}</td>
-                                <td>{{ $data->jenis_hukuman }}</td>
+                                <td>{{ ucwords($data->jenis_hukuman) }}</td>
                                 <td>{{ $data->pesan }}</td>
                                 <td>{{ $data->durasi }}</td>
-                                <td>{{ $data->start_date }}</td>
-                                <td>{{ $data->end_date ? $data->end_date : 'Belum selesai' }}</td>
+                                <td>{{ \Carbon\Carbon::parse($data->start_date)->format('d-m-Y') }}</td>
+                                <td>{{ $data->end_date ? \Carbon\Carbon::parse( $data->end_date)->format('d-m-Y') : 'Belum selesai' }}</td>
                             </tr>
                         @endforeach
                     </tbody>

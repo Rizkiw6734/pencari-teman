@@ -65,9 +65,8 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
 
     //Banding
     Route::resource('banding', BandingController::class);
-    Route::post('/banding/{id}/tolak', [BandingController::class, 'tolakBanding'])->name('banding.tolak');
-    Route::post('/banding/{id}/terima', 'BandingController@terimaBanding')->name('banding.terima');
-
+    Route::post('/banding/{id}/terima', [BandingController::class, 'terimaBanding'])->name('banding.terima');  
+    Route::post('/banding/{id}/tolak', [BandingController::class, 'tolakBanding'])->name('banding.tolak');  
 
     //pengguna
     Route::get('/admin/users', [PenggunaController::class, 'index'])->name('admin.users.index');
@@ -83,6 +82,7 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
 
     //profil (semua bisa akses tetapi harus login)
     Route::middleware('auth')->group(function () {
+        Route::get('/user/profile', [ProfileController::class, 'show'])->name('user.profile');
         Route::put('/profile/update-picture', [ProfileController::class, 'updatePicture'])->name('profile.update-picture');
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

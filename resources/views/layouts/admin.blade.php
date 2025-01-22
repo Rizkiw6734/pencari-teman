@@ -21,49 +21,6 @@
   </head>
 
   <style>
-    @media (min-width: 992px) {
-        .laporan-col {
-            flex: 0 0 20%;
-        }
-    }
-
-    .laporan-header {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    /* Mengatur agar ikon mata tetap berada di kanan */
-    .laporan-icon {
-        background-color: #d1e0ff;
-        padding: 3px 12px;
-        border-radius: 10px;
-        display: none;
-        position: absolute;
-        top: 8px;
-        right: 10px; /* Menempatkan ikon di kanan */
-        font-size: 1.2rem;
-        color: #3243FD;
-        cursor: pointer;
-        transition: opacity 0.3s ease; /* Menambahkan efek transisi untuk ikon */
-    }
-
-    /* Menampilkan ikon mata saat hover pada teks */
-        .laporan-header:hover .laporan-text {
-        transform: translateX(-20px); /* Menggeser teks ke kiri */
-    }
-
-    .laporan-header:hover .laporan-icon {
-        display: inline-block; /* Menampilkan ikon saat hover */
-        opacity: 1; /* Menampilkan ikon secara halus */
-    }
-
-    /* Mengatur tampilan teks laporan # */
-        .laporan-text {
-        transition: transform 0.3s ease; /* Efek transisi pada pergerakan teks */
-    }
-
     .custom-modal-sm {
         max-width: 600px; /* Ubah ukuran modal sesuai kebutuhan */
     }
@@ -159,6 +116,34 @@
         color: #fff; /* Teks putih saat hover */
     }
 
+    .btn-tlk {
+        background-color: #FFDEDE; /* Warna merah muda */
+        color: #dc3545; /* Merah teks */
+        border: 1px solid #dc3545; /* Border merah */
+        padding: 0;
+        width: 40px; /* Lebar tombol */
+        height: 30px; /* Tinggi tombol */
+    }
+
+    .btn-tlk:hover {
+        background-color: #dc3545; /* Warna merah saat hover */
+        color: #fff; /* Teks putih saat hover */
+    }
+
+    .btn-trm {
+        background-color: #F0FFF3; /* Hijau merah muda */
+        color: #00FF37; /* Hijau teks */
+        border: 1px solid #00FF37; /* Border hijau */
+        padding: 0;
+        width: 40px; /* Lebar tombol */
+        height: 30px; /* Tinggi tombol */
+    }
+
+    .btn-trm:hover {
+        background-color: #00FF37; /* Warna hijau saat hover */
+        color: #fff; /* Teks putih saat hover */
+    }
+
     .btn-delete-user {
         background-color: #FFF0DE; /* Warna oranye muda */
         color: #fd7e14; /* Oranye teks */
@@ -178,6 +163,28 @@
         justify-content: center;
         gap: 20px;
         align-items: center;
+    }
+
+    .status-proses {
+        background-color: #E9E9E9 !important;
+        color: #5D5D5D !important;
+        padding: 0;
+        width: 100px;
+        height: 30px;
+    }
+    .status-ditolak {
+        background-color: #FFF0F0 !important;
+        color: #FF0000 !important;
+        padding: 0;
+        width: 100px;
+        height: 30px;
+    }
+    .status-diterima {
+        background-color: #F0FFF3 !important;
+        color: #00FF37 !important;
+        padding: 0;
+        width: 100px;
+        height: 30px;
     }
 
     .pagination {

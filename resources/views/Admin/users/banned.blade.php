@@ -5,10 +5,13 @@
             navbar-scroll="true">
             <div class="container-fluid">
                 <div class="d-flex justify-content-between align-items-center w-100" id="navbar">
-                    <div class="input-group d-flex"
-                        style="width: 725px; height: 40px; box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.25); margin: 3.2px 37px 2px 0;">
-                        <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-                        <input type="text" class="form-control" placeholder="Mencari apa?">
+                    <div class="input-group d-flex" style="width: 725px; height: 40px; box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.25); margin: 3.2px 37px 2px 0;">
+                        <form action="{{ route('admin.users.banned') }}" method="GET" style="display: flex; width: 100%;">
+                            <div class="input-group">
+                                <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+                                <input type="text" name="search" class="form-control" placeholder="Mencari apa?" value="{{ request('search') }}">
+                            </div>
+                        </form>
                     </div>
 
                     <ul class="navbar-nav d-flex align-items-center" style="margin-left: -15px;">
@@ -284,6 +287,7 @@
                         style="font-size: 15px; width: 100%; background-color: white;">
                         <thead>
                             <tr>
+                                <th>No</th>
                                 <th>Nama</th>
                                 <th>Email</th>
                                 <th>Status</th>
@@ -294,6 +298,7 @@
                         <tbody>
                             @forelse($bannedUsers as $user)
                                 <tr class="align-middle">
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->email }}</td>
                                     <td>

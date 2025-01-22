@@ -134,6 +134,24 @@ class LaporanController extends Controller
     {
         $laporan = Laporan::findOrFail($id);
         $jenisHukuman = $request->input('jenis_hukuman');
+        $userId = $laporan->reported_id;
+        $jenisHukuman = $request->input('jenis_hukuman');
+
+        $suspend = Pinalti::where('id', $userId)
+                                ->where('jenis_hukuman', 'suspend')
+                                ->exists();
+
+        $banned = Pinalti::where('id', $userId)
+                                ->where('jenis_hukuman', 'banned')
+                                ->exists();
+
+        if ($suspend) {
+            return redirect('/laporan')->with('error', 'Pengguna ini sudah tersuspend');
+        }
+
+        if ($banned) {
+            return redirect('/laporan')->with('error', 'Pengguna ini sudah mendapat tindakan berat yakni banned');
+        }
 
         switch ($jenisHukuman) {
             case 'peringatan':
@@ -143,9 +161,9 @@ class LaporanController extends Controller
                   'pesan.required' => 'Pesan Peringatan Tidak Boleh Kosong',
                   'pesan.regex' => 'Pesan Tidak Boleh Angka'
                 ]);
-                
+
                 $pesan = $validated['pesan']; // Ambil nilai pesan setelah validasi
-            
+
                 Pinalti::create([
                     'laporan_id' => $laporan->id,
                     'jenis_hukuman' => 'peringatan',
@@ -153,7 +171,7 @@ class LaporanController extends Controller
                     'start_date' => now(),
                     'end_date' => null,
                 ]);
-                break;            
+                break;
 
             case 'suspend':
                 $request->validate([
@@ -180,6 +198,14 @@ class LaporanController extends Controller
                 $user = User::find($laporan->reported_id);
                 $user->status = 'suspend';
                 $user->save();
+
+                Laporan::where('reported_id', $userId)
+                   ->where('status', '!=', 'selesai')
+                   ->get()
+                   ->each(function($laporan) {
+                       $laporan->status = 'selesai';
+                       $laporan->save();
+                   });
                 break;
 
             case 'banned':
@@ -194,6 +220,16 @@ class LaporanController extends Controller
                 $user = User::find($laporan->reported_id);
                 $user->status = 'banned';
                 $user->save();
+
+                $lp = Laporan::where('reported_id', $userId)->get();
+
+                Laporan::where('reported_id', $userId)
+                ->where('status', '!=', 'selesai')
+                ->get()
+                ->each(function($laporan) {
+                    $laporan->status = 'selesai';
+                    $laporan->save();
+                });
                 break;
 
             default:

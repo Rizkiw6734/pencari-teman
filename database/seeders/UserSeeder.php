@@ -26,7 +26,14 @@ class UserSeeder extends Seeder
             'password' => bcrypt('coba2')
         ]);
 
+        $user3 = User::create([
+            'name' => 'coba3',
+            'email' => 'coba3@gmail.com',
+            'password' => bcrypt('coba3')
+        ]);
+
         $user1->assignRole('User');
         $user2->assignRole('User');
+        $user3->assignRole('User');
     }
 }

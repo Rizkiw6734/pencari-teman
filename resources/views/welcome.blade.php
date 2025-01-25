@@ -47,12 +47,7 @@
                 <a href="#" class="logo">
                     <img src="./assets/img/logo2.svg" alt="">
                 </a>
-                <div class="search-container">
-                    <div class="input-wrapper">
-                        <ion-icon name="search-sharp"></ion-icon>
-                        <input type="text" id="search-input" placeholder="Mencari apa?">
-                    </div>
-                </div>
+                
                 <ul class="navbar-list">
                     <li>
                         <a href="#" class="navbar-link">Beranda</a>

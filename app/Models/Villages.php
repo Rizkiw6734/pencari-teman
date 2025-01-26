@@ -15,4 +15,8 @@ class Villages extends Model
     public function districts() {
         return $this->belongsTo(Districts::class, 'district_id');
     }
+
+    public function users() {
+        return $this->hasMany(User::class, 'desa_id');
+    }
 }

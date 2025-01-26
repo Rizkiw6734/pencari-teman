@@ -18,16 +18,21 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'last_name',
         'email',
         'password',
         'bio',
-        'desa_id',
         'hobi',
-        'ktp',
         'umur',
         'gender',
         'foto_profil',
         'status',
+        'provinsi_id',
+        'kabupaten_id',
+        'kecamatan_id',
+        'desa_id',
+        'latitude',
+        'longitude'
     ];
 
     /**
@@ -126,5 +131,21 @@ class User extends Authenticatable
     public function banding()
     {
         return $this->hasone(Banding::class, 'users_id');
+    }
+
+    public function provinsis() {
+        return $this->belongsTo(Provinces::class, 'provinsi_id');
+    }
+
+    public function kabupatens() {
+        return $this->belongsTo(Regencies::class, 'kabupaten_id');
+    }
+
+    public function kecamatans() {
+        return $this->belongsTo(Districts::class, 'kecamatan_id');
+    }
+
+    public function desas() {
+        return $this->belongsTo(Villages::class, 'desa_id');
     }
 }

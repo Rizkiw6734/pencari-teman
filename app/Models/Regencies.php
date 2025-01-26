@@ -19,4 +19,8 @@ class Regencies extends Model
     public function districts() {
         return $this->hasMany(Districts::class, 'regency_id');
     }
+
+    public function users() {
+        return $this->hasMany(User::class, 'kabupaten_id');
+    }
 }

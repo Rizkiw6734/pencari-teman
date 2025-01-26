@@ -82,12 +82,4 @@ class ProfileController extends Controller
         return Redirect::to('/');
     }
 
-    public function profile()
-    {
-        // Ambil data user yang sedang login
-        $user = auth()->user();
-
-        // Tampilkan view profile dengan data user
-        return view('user.profile', compact('user'));
-    }
 }

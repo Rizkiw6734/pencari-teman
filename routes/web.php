@@ -12,17 +12,18 @@ use App\Http\Controllers\PinaltiController;
 use App\Http\Controllers\BandingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Api\JarakController;
+use App\Http\Controllers\JelajahiController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\UserStatusController;
-
-
+use App\Http\Controllers\ProfileUserController;
+use App\Http\Controllers\JelajahiControllerController;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Middleware\CheckExpiredSuspension;
 use App\Http\Middleware\CheckStatusUser;
 use App\Jobs\CheckExpiredSuspensionJob;
 
 // Memanggil job secara manual
-CheckExpiredSuspensionJob::dispatch();
+// CheckExpiredSuspensionJob::dispatch();
 
 require __DIR__.'/auth.php';
 Route::get('/', function () {
@@ -65,8 +66,8 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
 
     //Banding
     Route::resource('banding', BandingController::class);
-    Route::post('/banding/{id}/terima', [BandingController::class, 'terimaBanding'])->name('banding.terima');  
-    Route::post('/banding/{id}/tolak', [BandingController::class, 'tolakBanding'])->name('banding.tolak');  
+    Route::post('/banding/{id}/terima', [BandingController::class, 'terimaBanding'])->name('banding.terima');
+    Route::post('/banding/{id}/tolak', [BandingController::class, 'tolakBanding'])->name('banding.tolak');
 
     //pengguna
     Route::get('/admin/users', [PenggunaController::class, 'index'])->name('admin.users.index');
@@ -100,11 +101,15 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
         // Rute untuk halaman banned
         Route::get('/banned', [UserStatusController::class, 'bannedPage'])->name('user.banned');
 
-        Route::get('/profile-user', [ProfileController::class, 'profile'])->name('user.profile');
+        Route::get('/profile-user', [ProfileUserController::class, 'profile'])->name('user.profile');
+        Route::get('/profile-user/edit', [ProfileUserController::class, 'edit'])->name('user.edit');
+        Route::put('/profile-user', [ProfileUserController::class, 'update'])->name('user.update');
+        Route::put('/profile/update-foto-profile', [ProfileUserController::class, 'updateFotoProfile'])->name('user.profile.updateFotoProfile');
 
         // Rute untuk halaman suspend
         Route::get('/suspend', [UserStatusController::class, 'suspendPage'])->name('user.suspend');
         Route::resource('banding', BandingController::class);
+        Route::resource('jelajahi', JelajahiController::class);
 
     });
 

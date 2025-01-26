@@ -19,4 +19,8 @@ class Districts extends Model
     public function villages() {
         return $this->hasMany(Villages::class, 'district_id');
     }
+
+    public function users() {
+        return $this->hasMany(User::class, 'kecamatan_id');
+    }
 }

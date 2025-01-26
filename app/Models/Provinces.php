@@ -14,4 +14,8 @@ class Provinces extends Model
     public function regencies() {
         return $this->hasMany(Regencies::class, 'province_id');
     }
+
+    public function users() {
+        return $this->hasMany(User::class, 'provinsi_id');
+    }
 }

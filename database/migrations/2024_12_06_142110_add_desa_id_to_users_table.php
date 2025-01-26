@@ -12,7 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('desa_id')->nullable()->constrained('desa')->after('bio')->restrictOnDelete();
+            $table->char('provinsi_id', 10)->nullable();
+            $table->char('kabupaten_id', 10)->nullable();
+            $table->char('kecamatan_id', 10)->nullable();
+            $table->char('desa_id', 10)->nullable();
+            $table->decimal('latitude', 10, 8)->nullable();
+            $table->decimal('longitude', 11, 8)->nullable();
         });
     }
 
@@ -22,7 +27,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['desa_id']);
             $table->dropColumn('desa_id');
         });
     }

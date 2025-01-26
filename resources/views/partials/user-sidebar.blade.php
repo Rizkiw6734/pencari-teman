@@ -19,8 +19,8 @@
             @endif
           </a>
         </li>
-        {{-- <li class="nav-item" style="position: relative;">
-          <a class="nav-link {{ request()->routeIs('#') ? 'active' : '' }}" href="{{ route('#') }}">
+        <li class="nav-item" style="position: relative;">
+          <a class="nav-link {{ request()->routeIs('user.home') ? 'active' : '' }}" href="{{ route('user.home') }}">
             <div class="fa fa-search icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
                  style="background-color: {{ request()->routeIs('#') ? '#3243fd' : '#ffffff' }} !important; color: {{ request()->routeIs('#') ? '#ffffff' : '#000000' }} !important;">
             </div>
@@ -30,17 +30,6 @@
            @endif
           </a>
         </li>
-        <li class="nav-item" style="position: relative;">
-          <a class="nav-link {{ request()->routeIs('#') ? 'active' : '' }}" href="{{ route('#') }}">
-            <div class="fa fa-commenting icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
-                 style="background-color: {{ request()->routeIs('#') ? '#3243fd' : '#ffffff' }} !important; color: {{ request()->routeIs('#') ? '#ffffff' : '#000000' }} !important;">
-            </div>
-            <span class="nav-link-text ms-1">Chat</span>
-            @if(request()->routeIs('#'))
-              <div style="position: absolute; left: 0; top: 0; width: 4px; height: 100%; background-color: #3243fd; border-radius: 0 6px 6px 0;"></div>
-            @endif
-          </a>
-        </li> --}}
         <li class="nav-item" style="position: relative;">
           <a class="nav-link {{ request()->routeIs('user.profile') ? 'active' : '' }}" href="{{ route('user.profile') }}">
             <div class="fa fa-user icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"

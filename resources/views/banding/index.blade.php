@@ -203,7 +203,7 @@
                             var selectedStatus = this.value; // Mendapatkan status yang dipilih
                             var rows = document.querySelectorAll('table tbody tr'); // Menemukan semua baris tabel
                             rows.forEach(function(row) {
-                                var statusCell = row.cells[4]; // Menemukan kolom status (kolom ke-5)
+                                var statusCell = row.cells[5]; // Menemukan kolom status (kolom ke-5)
                                 var statusBadge = statusCell.querySelector('.badge'); // Menemukan elemen badge status
                                 var statusText = statusBadge ? statusBadge.textContent.trim().toLowerCase() : ''; // Mengambil status teks
                     
@@ -263,9 +263,10 @@
                                     <td>
                                         <form id="form-terima-{{ $banding->id }}" action="{{ route('banding.terima', $banding->id) }}" method="POST" class="d-inline">
                                             @csrf
+                                            <input type="hidden" name="action" id="action-{{ $banding->id }}" value="">
                                             <button type="button" class="btn btn-trm btn-sm" 
-                                                data-id="{{ $banding->id }}" style="margin-top: 10px !important;">
-                                                <i class="fa fa-check " style="font-size: 18px;"></i>
+                                                data-id="{{ $banding->id }}" data-jenis="{{ $banding->pinalti->jenis_hukuman }}" style="margin-top: 10px !important;">
+                                                <i class="fa fa-check" style="font-size: 18px;"></i>
                                             </button>
                                         </form>
                                         <form id="form-tolak-{{ $banding->id }}" action="{{ route('banding.tolak', $banding->id) }}" method="POST" class="d-inline">
@@ -282,23 +283,80 @@
                                             document.querySelectorAll('.btn-trm').forEach(button => {
                                                 button.addEventListener('click', function () {
                                                     const bandingId = this.getAttribute('data-id');
-                                                    Swal.fire({
-                                                        title: 'Apakah Anda yakin?',
-                                                        text: "Data akan diterima!",
-                                                        icon: 'warning',
-                                                        showCancelButton: true,
-                                                        confirmButtonColor: '#3085d6',
-                                                        cancelButtonColor: '#d33',
-                                                        confirmButtonText: 'Ya, Terima!',
-                                                        cancelButtonText: 'Batal'
-                                                    }).then((result) => {
-                                                        if (result.isConfirmed) {
-                                                            document.getElementById(`form-terima-${bandingId}`).submit();
-                                                        }
-                                                    });
+                                                    const jenisHukuman = this.getAttribute('data-jenis');
+
+                                                    if (jenisHukuman === 'suspend') {
+                                                        Swal.fire({
+                                                            title: 'Pilih Tindakan',
+                                                            text: "Hukuman suspend ini bisa dihapus atau dikurangi.",
+                                                            icon: 'question',
+                                                            showDenyButton: true,
+                                                            showCancelButton: true,
+                                                            confirmButtonText: 'Hapus Suspend',
+                                                            denyButtonText: 'Kurangi Suspend',
+                                                            cancelButtonText: 'Batal'
+                                                        }).then((result) => {
+                                                            if (result.isConfirmed) {
+                                                                // Set action menjadi "hapus"
+                                                                document.getElementById(`action-${bandingId}`).value = 'hapus';
+                                                                document.getElementById(`form-terima-${bandingId}`).submit();
+                                                            } else if (result.isDenied) {
+                                                                Swal.fire({
+                                                                    title: 'Kurangi Suspend',
+                                                                    text: "Masukkan durasi yang akan dikurangi (dalam hari):",
+                                                                    input: 'number',
+                                                                    inputAttributes: {
+                                                                        min: 1,
+                                                                        step: 1
+                                                                    },
+                                                                    inputPlaceholder: 'Masukkan jumlah hari',
+                                                                    showCancelButton: true,
+                                                                    confirmButtonText: 'Kurangi',
+                                                                    cancelButtonText: 'Batal',
+                                                                    preConfirm: (durasi) => {
+                                                                        if (!durasi || durasi <= 0) {
+                                                                            Swal.showValidationMessage('Durasi harus lebih dari 0');
+                                                                        }
+                                                                        return durasi;
+                                                                    }
+                                                                }).then((result) => {
+                                                                    if (result.isConfirmed) {
+                                                                        const durasi = result.value;
+                                                                        const form = document.getElementById(`form-terima-${bandingId}`);
+
+                                                                        // Tambahkan hidden input untuk durasi
+                                                                        const inputDurasi = document.createElement('input');
+                                                                        inputDurasi.type = 'hidden';
+                                                                        inputDurasi.name = 'durasi';
+                                                                        inputDurasi.value = durasi;
+                                                                        form.appendChild(inputDurasi);
+
+                                                                        // Set action menjadi "kurangi"
+                                                                        document.getElementById(`action-${bandingId}`).value = 'kurangi';
+                                                                        form.submit();
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
+                                                    } else {
+                                                        Swal.fire({
+                                                            title: 'Apakah Anda yakin?',
+                                                            text: "Data akan diterima!",
+                                                            icon: 'warning',
+                                                            showCancelButton: true,
+                                                            confirmButtonColor: '#3085d6',
+                                                            cancelButtonColor: '#d33',
+                                                            confirmButtonText: 'Ya, Terima!',
+                                                            cancelButtonText: 'Batal'
+                                                        }).then((result) => {
+                                                            if (result.isConfirmed) {
+                                                                document.getElementById(`form-terima-${bandingId}`).submit();
+                                                            }
+                                                        });
+                                                    }
                                                 });
                                             });
-
+                                            
                                             // Event untuk tombol "Tolak"
                                             document.querySelectorAll('.btn-tlk').forEach(button => {
                                                 button.addEventListener('click', function () {

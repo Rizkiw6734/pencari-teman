@@ -22,7 +22,7 @@ use App\Http\Middleware\CheckStatusUser;
 use App\Jobs\CheckExpiredSuspensionJob;
 
 // Memanggil job secara manual
-CheckExpiredSuspensionJob::dispatch();
+// CheckExpiredSuspensionJob::dispatch();
 
 require __DIR__.'/auth.php';
 Route::get('/', function () {
@@ -71,7 +71,10 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
     //pengguna
     Route::get('/admin/users', [PenggunaController::class, 'index'])->name('admin.users.index');
     Route::post('/admin/users/{id}/block', [PenggunaController::class, 'block'])->name('admin.users.block');
+    Route::post('/admin/users/{id}/disable', [PenggunaController::class, 'disable'])->name('admin.users.disable');
+    Route::post('/admin/users/{id}/enable', [PenggunaController::class, 'enable'])->name('admin.users.enable');
     Route::get('/users/banned',[PenggunaController::class, 'banned'])->name('admin.users.banned');
+    Route::get('/users/suspend',[PenggunaController::class, 'suspend'])->name('admin.users.suspend');
     Route::post('/users/{id}/unblock', [PenggunaController::class, 'unblock'])->name('admin.users.unblock');
 
     Route::get('/locations/provinsi', [PenggunaController::class, 'getProvinsi']);

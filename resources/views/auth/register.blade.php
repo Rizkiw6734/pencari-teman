@@ -56,7 +56,7 @@
                 @enderror
 
                 <input class="p-2 rounded-xl border" id="password_confirmation" type="password" name="password_confirmation" placeholder="Confirm Password">
-                @error('password_confirmationl')
+                @error('password_confirmation')
                     <div role="alert" class="bg-red-100 dark:bg-red-900 border-l-4 border-red-500 dark:border-red-700 text-red-900 dark:text-red-100 p-2 rounded-lg flex items-center transition duration-300 ease-in-out hover:bg-red-200 dark:hover:bg-red-800 transform hover:scale-105">
                         <svg stroke="currentColor" viewBox="0 0 24 24" fill="none" class="h-5 w-5 flex-shrink-0 mr-2 text-red-600" xmlns="http://www.w3.org/2000/svg">
                             <path

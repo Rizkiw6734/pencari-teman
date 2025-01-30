@@ -23,7 +23,7 @@ class PenggunaController extends Controller
         $search = $request->input('search');
         $perPage = $request->input('per_page', 10);
     
-        $query = User::where('status', '!=', 'banned')
+        $query = User::whereNotIn('status', ['banned', 'suspend'])
             ->whereDoesntHave('roles', function ($query) {
                 $query->where('name', 'admin');
             });
@@ -123,6 +123,30 @@ class PenggunaController extends Controller
         return redirect()->route('admin.users.banned')->with('success', 'Banned pengguna berhasil dicabut');
     }
 
+    public function disable($id)
+    {
+        $user = User::findOrFail($id);
+        if($user->hasRole('admin')){
+            redirect()->route('Pengguna.index')->with('error', 'pengguna adalah Admin');
+        }
+
+        $user->status = 'suspend';
+        $user->save();
+        return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil disuspend');
+    }
+
+    public function enable($id)
+    {
+        $user = User::findOrFail($id);
+        if($user->hasRole('admin')){
+            redirect()->route('Pengguna.index')->with('error', 'pengguna adalah Admin');
+        }
+
+        $user->status = 'aktif';
+        $user->save();
+        return redirect()->route('admin.users.suspend')->with('success', 'Suspend pengguna berhasil dicabut');
+    }
+
     /**
      * Remove the specified resource from storage.
      */
@@ -157,6 +181,28 @@ class PenggunaController extends Controller
         $bannedUsers = $query->paginate($perPage);
     
         return view('Admin.users.banned', compact('bannedUsers'));
+    }
+
+    public function suspend(Request $request)
+    {
+        $perPage = $request->input('per_page', 10);
+        $search = $request->input('search');
+    
+        $query = User::where('status', '=', 'suspend')
+            ->whereDoesntHave('roles', function ($query) {
+                $query->where('name', 'admin');
+            });
+    
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('email', 'like', '%' . $search . '%');
+            });
+        }
+    
+        $suspendUsers = $query->paginate($perPage);
+    
+        return view('Admin.users.suspend', compact('suspendUsers'));
     }
 
     public function getProvinsi()

@@ -152,16 +152,12 @@ class BandingController extends Controller
             return redirect('/banding')->with('error', 'Pengguna terkait pinalti tidak ditemukan.');
         }
     
+        // Pastikan `action` diterima dari form
+        $action = $request->input('action');
+    
         switch ($pinalti->jenis_hukuman) {
-            case 'peringatan':
-                $banding->status = 'diterima';
-                $banding->save();
-    
-                return redirect()->route('banding.index')->with('success', 'Banding diterima dan Peringatan berhasil dihapus.');
-                break;
-    
             case 'suspend':
-                if ($request->has('hapus_suspend') && $request->hapus_suspend == true) {
+                if ($action === 'hapus') {
                     $user->status = 'aktif';
                     $user->save();
     
@@ -169,9 +165,9 @@ class BandingController extends Controller
                     $banding->save();
     
                     return redirect()->route('banding.index')->with('success', 'Banding diterima dan Suspend berhasil dihapus.');
-                } else {
+                } elseif ($action === 'kurangi') {
                     $currentDurasi = $pinalti->durasi;
-                    $requestedDurasi = $request->durasi_suspend ?? 0;
+                    $requestedDurasi = $request->input('durasi', 0);
     
                     if ($requestedDurasi > $currentDurasi) {
                         return back()->with('error', 'Pengurangan durasi tidak boleh lebih dari durasi suspend saat ini.');
@@ -181,22 +177,26 @@ class BandingController extends Controller
                     $pinalti->end_date = now()->addDays($pinalti->durasi);
                     $pinalti->save();
     
+                    $banding->status = 'diterima';
+                    $banding->save();
+    
                     return back()->with('success', 'Durasi suspend berhasil diperbarui.');
+                } else {
+                    return back()->with('error', 'Pilihan tidak valid untuk jenis hukuman suspend.');
                 }
-                break;
     
+            case 'peringatan':
             case 'banned':
-                $user->status = 'aktif';
-                $user->save();
-    
                 $banding->status = 'diterima';
                 $banding->save();
     
-                return redirect()->route('banding.index')->with('success', 'Banding diterima dan Ban berhasil dihapus.');
-                break;
+                $user->status = 'aktif';
+                $user->save();
+    
+                return redirect()->route('banding.index')->with('success', 'Banding diterima dan hukuman berhasil dihapus.');
     
             default:
                 return redirect('/banding')->with('error', 'Jenis hukuman tidak dikenali.');
         }
-    }    
+    }
 }

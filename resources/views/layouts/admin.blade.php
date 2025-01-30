@@ -89,6 +89,14 @@
         height: 30px; /* Tinggi tombol */
     }
 
+    .status-suspend {
+        background-color: #FFF0DE; /* Warna orange muda */
+        color: #fd7e14; /* Orange teks */
+        padding: 0;
+        width: 100px; /* Lebar tombol */
+        height: 30px; /* Tinggi tombol */
+    }
+
     .status-banned {
         background-color: #FFF0F0; /* Warna merah muda */
         color: #FF0000; /* Merah teks */
@@ -98,6 +106,7 @@
     }
 
     .status-active i,
+    .status-suspend i,
     .status-banned i {
         font-size: 14px; /* Ukuran ikon */
     }

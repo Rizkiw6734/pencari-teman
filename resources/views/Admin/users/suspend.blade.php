@@ -6,7 +6,7 @@
             <div class="container-fluid">
                 <div class="d-flex justify-content-between align-items-center w-100" id="navbar">
                     <div class="input-group d-flex" style="width: 725px; height: 40px; box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.25); margin: 3.2px 37px 2px 0;">
-                        <form action="{{ route('admin.users.index') }}" method="GET" style="display: flex; width: 100%;">
+                        <form action="{{ route('admin.users.suspend') }}" method="GET" style="display: flex; width: 100%;">
                             <div class="input-group">
                                 <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
                                 <input type="text" name="search" class="form-control" placeholder="Mencari apa?" value="{{ request('search') }}">
@@ -101,7 +101,7 @@
                             <div style="flex: 1; text-indent: 20px;">
                                 <p class="mb-0 text-xs" style="color: #000000;">{{ Auth::user()->name }}, Kamu Sedang
                                     Dihalaman</p>
-                                <h4 class="mb-0">Pengguna</h4>
+                                <h4 class="mb-0">Suspend Pengguna</h4>
                             </div>
                             <div style="flex-shrink: 0;">
                                 <img src="{{ asset('images/header.svg') }}" alt="Welcome Image"
@@ -168,7 +168,7 @@
                             .then(data => {
                                 let provinsiSelect = document.getElementById('provinces');
                                 provinsiSelect.innerHTML =
-                                '<option value="">Provinsi</option>'; // Tambahkan opsi default
+                                '<option value="">Pilih Provinsi</option>'; // Tambahkan opsi default
                                 data.forEach(item => {
                                     provinsiSelect.innerHTML +=
                                     `<option value="${item.id}">${item.name}</option>`; // Gunakan `item.id` untuk value
@@ -200,7 +200,7 @@
                             })
                             .then(data => {
                                 let kabupatenSelect = document.getElementById('regencies');
-                                kabupatenSelect.innerHTML = '<option value="">Kabupaten</option>';
+                                kabupatenSelect.innerHTML = '<option value="">Pilih Kabupaten</option>';
                                 data.forEach(item => {
                                     kabupatenSelect.innerHTML += `<option value="${item.id}">${item.name}</option>`;
                                 });
@@ -234,7 +234,7 @@
                             })
                             .then(data => {
                                 let kecamatanSelect = document.getElementById('districts');
-                                kecamatanSelect.innerHTML = '<option value="">Kecamatan</option>';
+                                kecamatanSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
                                 data.forEach(item => {
                                     kecamatanSelect.innerHTML += `<option value="${item.id}">${item.name}</option>`;
                                 });
@@ -265,7 +265,7 @@
                             })
                             .then(data => {
                                 let desaSelect = document.getElementById('villages');
-                                desaSelect.innerHTML = '<option value="">Desa</option>';
+                                desaSelect.innerHTML = '<option value="">Pilih Desa</option>';
                                 data.forEach(item => {
                                     desaSelect.innerHTML += `<option value="${item.id}">${item.name}</option>`;
                                 });
@@ -279,87 +279,74 @@
             </div>
         </div>
 
+
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
                     <table class="table table-hover rounded-table text-center"
                         style="font-size: 15px; width: 100%; background-color: white;">
-                        <thead class="thead-light">
+                        <thead>
                             <tr>
                                 <th>No</th>
                                 <th>Nama</th>
                                 <th>Email</th>
-                                <th>Umur</th>
-                                <th>Gender</th>
-                                <th>Lokasi</th>
                                 <th>Status</th>
+                                <th>Lokasi</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($users as $user)
+                            @forelse($suspendUsers as $user)
                                 <tr class="align-middle">
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->email }}</td>
-                                    <td>{{ $user->umur }}</td>
-                                    <td>{{ $user->gender }}</td>
-                                    <td>#</td>
                                     <td>
-                                        <span class="badge align-items-center justify-content-center
-                                            {{ $user->status === 'banned' ? 'status-banned' : ($user->status === 'suspend' ? 'status-suspend' : 'status-active') }}">
-                                            @if ($user->status === 'banned')
-                                                <i class="fa fa-ban me-1 mt-2"></i> Banned
-                                            @elseif ($user->status === 'suspend')
+                                        <span
+                                            class="badge align-items-center justify-content-center
+                                        {{ $user->status === 'suspend' ? 'status-suspend' : 'status-active' }}">
+                                            @if ($user->status === 'suspend')
                                                 <i class="fa fa-stop-circle me-1 mt-2"></i> Suspend
                                             @else
                                                 <i class="fa fa-check-square me-1 mt-2"></i> Aktif
                                             @endif
-                                        </span>                                    
+                                        </span>
                                     </td>
+                                    <td>#</td>
                                     <td>
-                                        @if ($user->status !== 'banned')
-                                            <!-- Block Form -->
-                                            <form action="{{ route('admin.users.block', $user->id) }}" method="POST"
-                                                class="d-inline" id="block-form-{{ $user->id }}">
-                                                @csrf
-                                                <button type="button" class="btn btn-block-user btn-sm"
-                                                    onclick="confirmAction('block', '{{ $user->id }}')"
-                                                    style="margin-top: 10px !important;">
-                                                    <i class="fa fa-ban" style="font-size: 18px;"></i>
-                                                </button>
-                                            </form>
-                                        @endif
-
-                                        @if ($user->status !== 'suspend')
-                                            <!-- Suspend Form -->
-                                            <form action="{{ route('admin.users.disable', $user->id) }}" method="POST"
-                                                class="d-inline" id="suspend-form-{{ $user->id }}">
-                                                @csrf
-                                                <button type="button" class="btn btn-delete-user btn-sm"
-                                                    onclick="confirmAction('suspend', '{{ $user->id }}')"
-                                                    style="margin-top: 10px !important;">
-                                                    <i class="fa fa-stop-circle" style="font-size: 18px;"></i>
-                                                </button>
-                                            </form>
-                                        @endif
-
-                                        <!-- Delete Form -->
-                                        {{-- <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
-                                            class="d-inline" id="delete-form-{{ $user->id }}">
+                                        <form action="{{ route('admin.users.enable', $user->id) }}" method="POST"
+                                            class="d-inline" id="enable-form-{{ $user->id }}">
                                             @csrf
-                                            @method('DELETE')
-                                            <button type="button" class="btn btn-delete-user btn-sm"
-                                                onclick="confirmAction('delete', '{{ $user->id }}')"
-                                                style="margin-top: 10px !important;">
-                                                <i class="fa fa-trash" style="font-size: 18px;"></i>
+                                            <button type="button" class="btn btn-sm text-white"
+                                                style="background-color: #5D87FF; margin-top: 10px !important;"
+                                                onclick="confirmEnable('{{ $user->id }}')">
+                                                Buka Suspend
                                             </button>
-                                        </form> --}}
+                                        </form>
                                     </td>
+
+                                    <script>
+                                        function confirmEnable(userId) {
+                                            Swal.fire({
+                                                title: 'Apakah Anda yakin?',
+                                                text: "Pengguna ini akan dibuka suspend-nya.",
+                                                icon: 'warning',
+                                                showCancelButton: true,
+                                                confirmButtonColor: '#3085d6',
+                                                cancelButtonColor: '#d33',
+                                                confirmButtonText: 'Ya, buka suspend!',
+                                                cancelButtonText: 'Batal'
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    document.getElementById('enable-form-' + userId).submit();
+                                                }
+                                            });
+                                        }
+                                    </script>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center">Tidak ada data pengguna.</td>
+                                    <td colspan="7" class="text-center">Tidak ada pengguna yang disuspend.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -368,53 +355,13 @@
             </div>
         </div>
 
-        <script>
-            function confirmAction(action, userId) {
-                let messages = {
-                    block: {
-                        title: 'Apakah Anda yakin?',
-                        text: 'Pengguna ini akan diblokir.',
-                        confirmText: 'Ya, blokir!'
-                    },
-                    suspend: {
-                        title: 'Apakah Anda yakin?',
-                        text: 'Pengguna ini akan disuspend.',
-                        confirmText: 'Ya, suspend!'
-                    },
-                    delete: {
-                        title: 'Apakah Anda yakin?',
-                        text: 'Pengguna ini akan dihapus.',
-                        confirmText: 'Ya, hapus!'
-                    }
-                };
-
-                let message = messages[action];
-
-                Swal.fire({
-                    title: message.title,
-                    text: message.text,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: message.confirmText,
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById(`${action}-form-${userId}`).submit();
-                    }
-                });
-            }
-        </script>
-
-
-        <div class="d-flex justify-content-center mt-4">
-            <nav aria-label="Page navigation">
-                <ul class="pagination pagination-lg">
-                    {{ $users->links('pagination::bootstrap-4') }}
-                </ul>
-            </nav>
-        </div>
+        {{-- <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-lg">
+                {{ $users->links('pagination::bootstrap-4') }}
+            </ul>
+        </nav>
+    </div> --}}
 
         <footer class="footer pt-3">
             <div class="container-fluid">

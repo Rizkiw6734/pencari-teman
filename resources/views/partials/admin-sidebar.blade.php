@@ -67,6 +67,17 @@
         </a>
       </li>
       <li class="nav-item" style="position: relative;">
+        <a class="nav-link {{ request()->routeIs('admin.users.suspend') ? 'active' : '' }}" href="{{ route('admin.users.suspend') }}">
+          <div class="fa fa-stop-circle icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
+               style="background-color: {{ request()->routeIs('admin.users.suspend') ? '#3243fd' : '#ffffff' }} !important; color: {{ request()->routeIs('admin.users.suspend') ? '#ffffff' : '#000000' }} !important;">
+          </div>
+          <span class="nav-link-text ms-1">Suspend Pengguna</span>
+          @if(request()->routeIs('admin.users.suspend'))
+            <div style="position: absolute; left: 0; top: 0; width: 4px; height: 100%; background-color: #3243fd; border-radius: 0 6px 6px 0;"></div>
+          @endif
+        </a>
+      </li>
+      <li class="nav-item" style="position: relative;">
         <a class="nav-link {{ request()->routeIs('admin.users.banned') ? 'active' : '' }}" href="{{ route('admin.users.banned') }}">
           <div class="fa fa-ban icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
                style="background-color: {{ request()->routeIs('admin.users.banned') ? '#3243fd' : '#ffffff' }} !important; color: {{ request()->routeIs('admin.users.banned') ? '#ffffff' : '#000000' }} !important;">

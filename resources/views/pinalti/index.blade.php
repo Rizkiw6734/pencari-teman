@@ -151,7 +151,7 @@
                         var selectedDate = this.value; // Mendapatkan tanggal yang dipilih
                         var rows = document.querySelectorAll('table tbody tr'); // Menemukan semua baris tabel
                         rows.forEach(function(row) {
-                            var dateCell = row.cells[4].textContent.trim(); // Mengambil tanggal dari kolom ke-4 (Tanggal)
+                            var dateCell = row.cells[5].textContent.trim(); // Mengambil tanggal dari kolom ke-4 (Tanggal)
                             var formattedDate = new Date(dateCell.split('-').reverse().join('-')).toISOString().split('T')[0]; // Format ulang tanggal ke YYYY-MM-DD
                             
                             if (formattedDate === selectedDate) {
@@ -169,7 +169,7 @@
                         var rows = document.querySelectorAll('table tbody tr'); // Semua baris tabel
                         
                         rows.forEach(function (row) {
-                            var jenisHukumanCell = row.cells[1];
+                            var jenisHukumanCell = row.cells[2];
                             var jenisHukumanText = jenisHukumanCell ? jenisHukumanCell.textContent.trim().toLowerCase() : ''; // Ambil teks dalam kolom
                             
                             // Tampilkan atau sembunyikan baris tergantung pada apakah jenis hukuman cocok

@@ -16,6 +16,9 @@
     - custom css link
   -->
     <link rel="stylesheet" href="./assets/css/style.custom.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
     <!--
     - google font link
@@ -32,11 +35,8 @@
     - #HEADER
   -->
     <header class="header" data-header>
-        <div class="container">
+        <div class="container-nv">
             <div class="overlay" data-overlay></div>
-            <a href="#" class="logo">
-                <img src="./assets/img/logo-putih.svg" alt="">
-            </a>
             <button class="menu-open-btn" data-menu-open-btn>
                 <ion-icon name="menu-outline"></ion-icon>
             </button>
@@ -44,15 +44,9 @@
                 <button class="menu-close-btn" data-menu-close-btn>
                     <ion-icon name="close-outline"></ion-icon>
                 </button>
-                <a href="#" class="logo">
-                    <img src="./assets/img/logo2.svg" alt="">
+                <a href="#" class="logo-nv">
+                    <img src="./assets/img/logo-putih.svg" alt="">
                 </a>
-                <div class="search-container">
-                    <div class="input-wrapper">
-                        <ion-icon name="search-sharp"></ion-icon>
-                        <input type="text" id="search-input" placeholder="Mencari apa?">
-                    </div>
-                </div>
                 <ul class="navbar-list">
                     <li>
                         <a href="#" class="navbar-link">Beranda</a>
@@ -119,67 +113,67 @@
 
             <!--- #KEUNGGULAN -->
               <section id="departments" class="departments">
-                <div class="container">
-                  <h2 class="h2 hero-departments">
-                    Kenapa Memilih <span class="highlight-2">Around You?</span>
-                  </h2>
-                  <p class="section-text">
-                    AroundYou memudahkan Anda menemukan teman baru, berbagi momen, dan membangun koneksi yang relevan dengan kebutuhan Anda, dengan aman dan personal.
-                  </p>
-                  <ul class="departments-list">
-                    <li>
-                      <div class="departments-card">
-                        <div class="card-image">
-                          <img src="./assets/img/security.png" alt="Gambar 1">
-                        </div>
-                        <div class="card-content">
-                          <h3 class="h3 card-title">Mudah dan Cepat</h3>
-                          <p class="card-text">
-                            Temukan teman baru hanya dengan beberapa klik berdasarkan lokasi anda.
-                          </p>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="departments-card">
-                        <div class="card-image">
-                          <img src="./assets/img/security.png" alt="Gambar 2">
-                        </div>
-                        <div class="card-content">
-                          <h3 class="h3 card-title">Kesamaan Minat</h3>
-                          <p class="card-text">
-                            Filter pencarian yang canggih memastikan Anda terhubung dengan orang-orang yang memiliki hobi dan minat yang sama.
-                          </p>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="departments-card">
-                        <div class="card-image">
-                          <img src="./assets/img/security.png" alt="Gambar 3">
-                        </div>
-                        <div class="card-content">
-                          <h3 class="h3 card-title">Aman dan Terpercaya</h3>
-                          <p class="card-text">
-                            Kami menjaga privasi dan keamanan Anda dengan fitur verifikasi pengguna dan kontrol lokasi yang fleksibel.
-                          </p>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="departments-card">
-                        <div class="card-image">
-                          <img src="./assets/img/security.png" alt="Gambar 4">
-                        </div>
-                        <div class="card-content">
-                          <h3 class="h3 card-title">Komunitas dan Interaktif</h3>
-                          <p class="card-text">
-                            Bergabunglah dengan acara lokal dan kelompok komunitas yang sesuai dengan minat Anda.
-                          </p>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
+                <div class="container departments-content">
+                    <h2 class="h2 hero-departments">
+                        Kenapa Memilih <span class="highlight-2">Around You?</span>
+                    </h2>
+                    <p class="section-text mr-10">
+                        AroundYou memudahkan Anda menemukan teman baru, berbagi momen, dan membangun koneksi yang relevan dengan kebutuhan Anda, dengan aman dan personal.
+                    </p>
+                    <ul class="departments-list">
+                        <li>
+                            <div class="departments-card">
+                                <div class="card-image">
+                                    <img src="./assets/img/security.png" alt="Gambar 1">
+                                </div>
+                                <div class="card-content-dp">
+                                    <h3 class="h3 card-title">Mudah dan Cepat</h3>
+                                    <p class="card-text">
+                                        Temukan teman baru hanya dengan beberapa klik berdasarkan lokasi anda.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="departments-card">
+                                <div class="card-image">
+                                    <img src="./assets/img/security.png" alt="Gambar 2">
+                                </div>
+                                <div class="card-content-dp">
+                                    <h3 class="h3 card-title">Kesamaan Minat</h3>
+                                    <p class="card-text">
+                                        Filter pencarian yang canggih memastikan Anda terhubung dengan orang-orang yang memiliki hobi dan minat yang sama.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="departments-card">
+                                <div class="card-image">
+                                    <img src="./assets/img/security.png" alt="Gambar 3">
+                                </div>
+                                <div class="card-content-dp">
+                                    <h3 class="h3 card-title">Aman dan Terpercaya</h3>
+                                    <p class="card-text">
+                                        Kami menjaga privasi dan keamanan Anda dengan fitur verifikasi pengguna dan kontrol lokasi yang fleksibel.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="departments-card">
+                                <div class="card-image">
+                                    <img src="./assets/img/security.png" alt="Gambar 4">
+                                </div>
+                                <div class="card-content-dp">
+                                    <h3 class="h3 card-title">Komunitas dan Interaktif</h3>
+                                    <p class="card-text">
+                                        Bergabunglah dengan acara lokal dan kelompok komunitas yang sesuai dengan minat Anda.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
               </section>
 
@@ -194,7 +188,7 @@
                                 </p>
                             </div>
                             <input type="radio" name="slide" id="c1" >
-                            <label for="c1" class="card2" >
+                            <label for="c1" class="card2">
                                 <div class="row">
                                     <div class="description">
                                         <h2></h2>
@@ -216,7 +210,7 @@
                                 <div class="row">
                                     <div class="description">
                                         <h2>Jalinan</h2>
-                                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. </p>
+                                        <p>Aplikasi Around You menyediakan fitur Follow, Follback, dan Konfirmasi untuk menjalin koneksi dan memperluas relasi dengan teman baru secara mudah, cepat, dan aman.</p>
                                     </div>
                                 </div>
                             </label>
@@ -225,16 +219,28 @@
                                 <div class="row">
                                     <div class="description">
                                         <h2>Chatting</h2>
-                                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. </p>
+                                        <p>Aplikasi Around You menyediakan fitur chatting aman dan intuitif untuk berkomunikasi dengan teman baru. Pengiriman pesan instan memudahkan Anda berbicara dan berbagi.</p>
                                     </div>
                                 </div>
                             </label>
                         </div>
+                        <script>
+                            document.querySelectorAll('.container2 label').forEach((label) => {
+                                label.addEventListener('mouseover', () => {
+                                    const inputId = label.getAttribute('for');
+                                    const input = document.getElementById(inputId);
+                    
+                                    if (input) {
+                                        input.checked = true;
+                                    }
+                                });
+                            });
+                        </script>
                     </div>
             </section>
 
             <!--COMMENT-->
-            <section id="coment" class="hero">
+            <section id="coment" class="hero" style="margin-bottom: 150px;">
                 <div class="container">
                     <div class="hero-content">
                         <h1 class="h1 hero-title">Apa Kata Pengguna</h1>
@@ -245,25 +251,37 @@
                     </div>
                     <img src="./assets/img/ellipse.svg" alt="Vector line art" class="ellipse">
 
-                    {{-- <div class="slider-container">
+                    <div class="slider-container">
                         <div class="slider-wrapper">
                             <div class="slider-card">
-                                <img src="./assets/img/team-1.jpg" alt="User" class="card-img">
-                                <h3>Andrew</h3>
+                                <div class="card-content">
+                                    <img src="./assets/img/team-1.jpg" alt="User" class="card-img">
+                                    <div class="text-content">
+                                        <h3>Andrew</h3>
+                                        <div class="rating">⭐⭐⭐⭐4/5</div>
+                                    </div>
+                                </div>
                                 <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officiis accusamus optio molestias, hic esse, incidunt eveniet ex commodi laudantium ipsum nemo aperiam a. Ex fugiat rem qui, ipsa enim architecto.</p>
-                                <div class="rating">⭐⭐⭐⭐4/5</div>
-                            </div>
+                            </div>                            
                             <div class="slider-card">
-                                <img src="./assets/img/team-1.jpg" alt="User" class="card-img">
-                                <h3>Sarah</h3>
+                                <div class="card-content">
+                                    <img src="./assets/img/team-1.jpg" alt="User" class="card-img">
+                                    <div class="text-content">
+                                        <h3>Sarah</h3>
+                                        <div class="rating">⭐⭐⭐⭐⭐5/5</div>
+                                    </div>
+                                </div>
                                 <p>Aplikasi ini membantu saya menemukan teman baru.</p>
-                                <div class="rating">⭐⭐⭐⭐⭐5/5</div>
                             </div>
                             <div class="slider-card">
-                                <img src="./assets/img/team-1.jpg" alt="User" class="card-img">
-                                <h3>Michael</h3>
+                                <div class="card-content">
+                                    <img src="./assets/img/team-1.jpg" alt="User" class="card-img">
+                                    <div class="text-content">
+                                        <h3>Michael</h3>
+                                        <div class="rating">⭐⭐⭐⭐4/5</div>
+                                    </div>
+                                </div>
                                 <p>Fitur-fiturnya sangat lengkap dan mudah digunakan!</p>
-                                <div class="rating">⭐⭐⭐⭐4/5</div>
                             </div>
                         </div>
 
@@ -277,41 +295,126 @@
                             </div>
                             <button class="slider-btn next-btn">❯</button>
                         </div>
-                    </div> --}}
-
-
+                    </div>
                 </div>
             </section>
-
         </article>
     </main>
 
+    {{-- <section class="min-h-screen flex items-center justify-center relative">
+        <div class="bg-white flex rounded-2xl shadow-lg max-w-3xl p-5 items-center relative">     
+            <div class="md:w-1/2 px-8 md:px-16">
+                <h2 class="font-bold text-[#000000] mb-2" style="font-size: 25px">Kirim Pesan</h2>
 
+                <style>
+                    input::placeholder {
+                        color: #97B1F0 !important;
+                        opacity: 1;
+                    }
+                
+                    input::-webkit-input-placeholder {
+                        color: #97B1F0 !important;
+                    }
+                    input::-moz-placeholder {
+                        color: #97B1F0 !important;
+                    }
+                    input:-ms-input-placeholder {
+                        color: #97B1F0 !important;
+                    }
+                    input::-ms-input-placeholder {
+                        color: #97B1F0 !important;
+                    }
 
+                    textarea::placeholder {
+                        color: #97B1F0 !important;
+                        opacity: 1;
+                    }
+                </style>                
+        
+                <form action="{{ route('register') }}" method="post" class="flex flex-col gap-4">
+                    @csrf
 
+                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                        <label for="name" style="color: #528BFF">Nama</label>
+                        <input class="p-2 rounded-xl border" style="background-color: #F2F6FF; border-color: #F2F6FF;" id="name" type="text" name="name" value="{{ old('name') }}" placeholder="Masukkan Nama Anda">
+                        @error('name')
+                        <div role="alert" class="bg-red-100 dark:bg-red-900 border-l-4 border-red-500 dark:border-red-700 text-red-900 dark:text-red-100 p-2 rounded-lg flex items-center transition duration-300 ease-in-out hover:bg-red-200 dark:hover:bg-red-800 transform hover:scale-105">
+                            <svg stroke="currentColor" viewBox="0 0 24 24" fill="none" class="h-5 w-5 flex-shrink-0 mr-2 text-red-600" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    stroke-width="2"
+                                    stroke-linejoin="round"
+                                    stroke-linecap="round">
+                                </path>
+                            </svg>
+                            <p class="text-xs font-semibold">{{ $message }}</p>
+                        </div>
+                        @enderror
+                    </div>
+    
+                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                        <label for="email" style="color: #528BFF">Email</label>
+                        <input class="p-2 rounded-xl border" style="background-color: #F2F6FF; border-color: #F2F6FF;" id="email" type="email" name="email" value="{{ old('email') }}" placeholder="Masukkan Email Anda">
+                        @error('email')
+                            <div role="alert" class="bg-red-100 dark:bg-red-900 border-l-4 border-red-500 dark:border-red-700 text-red-900 dark:text-red-100 p-2 rounded-lg flex items-center transition duration-300 ease-in-out hover:bg-red-200 dark:hover:bg-red-800 transform hover:scale-105">
+                                <svg stroke="currentColor" viewBox="0 0 24 24" fill="none" class="h-5 w-5 flex-shrink-0 mr-2 text-red-600" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                        stroke-width="2"
+                                        stroke-linejoin="round"
+                                        stroke-linecap="round">
+                                    </path>
+                                </svg>
+                                <p class="text-xs font-semibold">{{ $message }}</p>
+                            </div>
+                        @enderror
+                    </div>                    
+    
+                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                        <label for="pesan" style="color: #528BFF">Pesan</label>
+                        <textarea rows="4" class="p-2 rounded-xl border" style="background-color: #F2F6FF; border-color: #F2F6FF;" id="pesan" name="pesan" placeholder="Masukkan Pesan Anda">{{ old('pesan') }}</textarea>
+                        @error('pesan')
+                            <div role="alert" class="bg-red-100 dark:bg-red-900 border-l-4 border-red-500 dark:border-red-700 text-red-900 dark:text-red-100 p-2 rounded-lg flex items-center transition duration-300 ease-in-out hover:bg-red-200 dark:hover:bg-red-800 transform hover:scale-105">
+                                <svg stroke="currentColor" viewBox="0 0 24 24" fill="none" class="h-5 w-5 flex-shrink-0 mr-2 text-red-600" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M13 16h-1v-4h1m0-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                        stroke-width="2"
+                                        stroke-linejoin="round"
+                                        stroke-linecap="round">
+                                    </path>
+                                </svg>
+                                <p class="text-xs font-semibold">{{ $message }}</p>
+                            </div>
+                        @enderror
+                    </div>                    
+
+                    <button class="bg-[#6569F6] rounded-xl text-white py-2 hover:scale-105 duration-300">Kirim</button>
+                </form>
+        
+                <div class="text-xs border-b border-[#FFFFFF] py-4 text-[#FFFFFF]"></div>
+            </div>
+    
+            <div class="md:block hidden w-1/2">
+                <img class="rounded-2xl" src="/images/pesan.svg" alt="Location Search">
+            </div>
+        </div>    
+    </section>    --}}
 
     <!--- #FOOTER -->
         <footer id="footer" class="footer">
-
             <div class="footer-top">
                 <div class="container">
-
                     <div class="footer-link-box">
-
                         <ul class="footer-list">
-
                             <li class="footer-link-tittle">
-                                <a href="#" class="logo">
+                                <a href="#" class="logo-ft">
                                     <img src="./assets/img/logo-putih.svg" alt="">
                                 </a>
                             </li>
-
                             <li>
                                 <a href="#" class="footer-link">Around You adalah platform untuk mencari teman dan berbagi cerita. Temukan orang-orang dengan minat yang sama di dekat anda.</a>
                             </li>
-
                         </ul>
-
                         <ul class="footer-list">
                             <li>
                                 <p class="footer-link-title">Informasi</p>
@@ -322,14 +425,12 @@
                                 <p class="footer-link">JL. Mawar Indah No. 123, Kecamatan Lawokwaru, Kota Malang, Jawa
                                     Timur</p>
                             </li>
-
                             <li class="contact-item">
                                 <span><ion-icon name="mail-sharp"></ion-icon></span>
                                 <p class="contact-link">E-mail</p>
                                 <a href="#" class="footer-link">guest@aroundyou.com</a>
                                 <a href="#" class="footer-link">testaccount@aroundyou.com</a>
                             </li>
-
                             <li class="contact-item">
                                 <span><ion-icon name="call-sharp"></ion-icon></span>
                                 <p class="contact-link">Telepon</p>
@@ -337,71 +438,48 @@
                                 <a href="tel:+628123456789" class="footer-link">08123456789</a>
                             </li>
                         </ul>
-
-
-
                         <ul class="footer-list">
-
                             <li>
                                 <p class="footer-link-title">Sosial Media</p>
                             </li>
-
                             <li class="contact-item">
                                 <span><ion-icon name="logo-instagram"></ion-icon></span>
-
                                 <a href="#" class="contact-link">arroundyou.official</a>
                             </li>
-
                             <li class="contact-item">
                                 <span><ion-icon name="logo-youtube"></ion-icon></span>
-
                                 <a href="#" class="contact-link">arroundyou.official</a>
                             </li>
-
                             <li class="contact-item">
                                 <span><ion-icon name="logo-facebook"></ion-icon></span>
-
                                 <a href="#" class="contact-link">arroundyou.official</a>
                             </li>
-
                             <li class="contact-item">
                                 <span><ion-icon name="logo-twitter"></ion-icon></span>
-
                                 <a href="#" class="contact-link">arroundyou.official</a>
                             </li>
-
                         </ul>
-
                         <ul class="footer-list">
-
                             <li>
                                 <p class="footer-link-title">Tentang</p>
                             </li>
-
                             <li>
                                 <a href="#" class="footer-link">Tentang Kami</a>
                             </li>
-
                             <li>
                                 <a href="#" class="footer-link">Kebijakan Privasi</a>
                             </li>
-
                             <li>
                                 <a href="#" class="footer-link">Syarat dan Ketentuan</a>
                             </li>
-
                             <li>
                                 <a href="#" class="footer-link">Bantuan</a>
                             </li>
-
                         </ul>
-
                     </div>
-
                 </div>
             </div>
         </footer>
-
 
  {{-- <div class="footer-bottom">
           <div class="container">

@@ -112,7 +112,7 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
         // Rute untuk halaman suspend
         Route::get('/suspend', [UserStatusController::class, 'suspendPage'])->name('user.suspend');
         Route::resource('banding', BandingController::class);
-        Route::resource('jelajahi', JelajahiController::class);
+        Route::get('/jelajahi', [JelajahiController::class, 'index'])->name('user.jelajahi');
 
     });
 

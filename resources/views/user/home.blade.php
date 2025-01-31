@@ -6,7 +6,7 @@
             <div style="max-width: auto; margin: 0 auto; margin-top: 37px;">
                 <div class="mt-4">
                     <div class="row">
-                        <div class="col-md-4" style="background-color: #F0F3F9; margin-left: -36px;">
+                        <div class="col-md-4" style="background-color: #F0F3F9; margin-left: -20px;">
                             <div class="mb-3">
                                 <div>
                                     <div class="mb-3 mt-3 d-flex justify-content-between align-items-center">
@@ -250,7 +250,7 @@
                         </div>
 
                         <div class="col-md-8">
-                            <div class="mb-3" style="position: relative; margin-left: -12px; margin-right: -60px;">
+                            <div class="mb-3" style="position: relative; margin-left: -12px; margin-right: -45px;">
                                 <div class="col-md-12">
                                     <div>
                                         <div class="chat-container d-flex flex-column"

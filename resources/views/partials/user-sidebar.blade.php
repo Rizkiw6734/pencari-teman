@@ -20,12 +20,12 @@
           </a>
         </li>
         <li class="nav-item" style="position: relative;">
-          <a class="nav-link {{ request()->routeIs('user.home') ? 'active' : '' }}" href="{{ route('user.home') }}">
+          <a class="nav-link {{ request()->routeIs('user.jelajahi') ? 'active' : '' }}" href="{{ route('user.jelajahi') }}">
             <div class="fa fa-search icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
-                 style="background-color: {{ request()->routeIs('#') ? '#3243fd' : '#ffffff' }} !important; color: {{ request()->routeIs('#') ? '#ffffff' : '#000000' }} !important;">
+                 style="background-color: {{ request()->routeIs('user.jelajahi') ? '#3243fd' : '#ffffff' }} !important; color: {{ request()->routeIs('user.jelajahi') ? '#ffffff' : '#000000' }} !important;">
             </div>
             <span class="nav-link-text ms-1">Jelajahi</span>
-            @if(request()->routeIs('#'))
+            @if(request()->routeIs('user.jelajahi'))
               <div style="position: absolute; left: 0; top: 0; width: 4px; height: 100%; background-color: #3243fd; border-radius: 0 6px 6px 0;"></div>
            @endif
           </a>

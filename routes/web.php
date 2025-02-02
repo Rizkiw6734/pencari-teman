@@ -16,7 +16,9 @@ use App\Http\Controllers\JelajahiController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\UserStatusController;
 use App\Http\Controllers\ProfileUserController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\JelajahiControllerController;
+use App\Http\Controllers\ActiveUserController;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Middleware\CheckExpiredSuspension;
 use App\Http\Middleware\CheckStatusUser;
@@ -94,27 +96,40 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
     });
 
     //PENGGUNA
+    // USER ROUTES (with additional status checks)
     Route::middleware(['auth', CheckStatusUser::class, CheckExpiredSuspension::class])->group(function () {
     Route::delete('/admin/users/{id}', [PenggunaController::class, 'destroy'])->name('admin.users.destroy');
 
-        Route::get('/home', function () {
-            return view('user.home');
-        })->name('user.home');
+    // User Home Page
+    Route::get('/home', function () {
+        return view('user.home');
+    })->name('user.home');
 
-        // Rute untuk halaman banned
-        Route::get('/banned', [UserStatusController::class, 'bannedPage'])->name('user.banned');
+    // Banned Page
+    Route::get('/banned', [UserStatusController::class, 'bannedPage'])->name('user.banned');
 
-        Route::get('/profile-user', [ProfileUserController::class, 'profile'])->name('user.profile');
-        Route::get('/profile-user/edit', [ProfileUserController::class, 'edit'])->name('user.edit');
-        Route::put('/profile-user', [ProfileUserController::class, 'update'])->name('user.update');
-        Route::put('/profile/update-foto-profile', [ProfileUserController::class, 'updateFotoProfile'])->name('user.profile.updateFotoProfile');
+    // Profile User Routes
+    Route::get('/profile-user', [ProfileUserController::class, 'profile'])->name('user.profile');
+    Route::get('/profile-user/edit', [ProfileUserController::class, 'edit'])->name('user.edit');
+    Route::put('/profile-user', [ProfileUserController::class, 'update'])->name('user.update');
+    Route::put('/profile/update-foto-profile', [ProfileUserController::class, 'updateFotoProfile'])->name('user.profile.updateFotoProfile');
 
-        // Rute untuk halaman suspend
-        Route::get('/suspend', [UserStatusController::class, 'suspendPage'])->name('user.suspend');
-        Route::resource('banding', BandingController::class);
-        Route::get('/jelajahi', [JelajahiController::class, 'index'])->name('user.jelajahi');
-
+    // Rute untuk halaman suspend
+    Route::resource('banding', BandingController::class);
+    Route::get('/jelajahi', [JelajahiController::class, 'index'])->name('user.jelajahi');
+    // Add the update-location route here
+    Route::middleware(['auth'])->post('/update-location', [ProfileUserController::class, 'updateLocation']);
+    Route::get('/active-users', [ActiveUserController::class, 'index']);
+    Route::get('/home', [ChatController::class, 'index'])->name('user.home'); // Menampilkan semua chat
+    Route::put('/home/{id}/status', [ChatController::class, 'updateStatus']);
+    Route::get('/user/status/{id}', [ChatController::class, 'getUserStatus']);
+    Route::middleware('auth')->get('/messages/{user}/{penerima_id}', [ChatController::class, 'getMessages']);
+    Route::post('/send-message', [ChatController::class, 'sendMessage']);
+    // Suspend Page
+    Route::get('/suspend', [UserStatusController::class, 'suspendPage'])->name('user.suspend');
     });
 
+
     Route::get('/hitung-jarak', [JarakController::class, 'hitungJarak']);
+
 

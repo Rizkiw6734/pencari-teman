@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Laravel\Sanctum\HasApiTokens;  //
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRoles; // Tambahkan HasRoles dari Spatie
+    use HasFactory, Notifiable, HasRoles, HasApiTokens; // Tambahkan HasRoles dari Spatie
 
     /**
      * The attributes that are mass assignable.
@@ -32,7 +33,8 @@ class User extends Authenticatable
         'kecamatan_id',
         'desa_id',
         'latitude',
-        'longitude'
+        'longitude',
+        'is_online'
     ];
 
     /**

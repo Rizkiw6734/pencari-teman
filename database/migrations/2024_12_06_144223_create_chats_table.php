@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('pengirim_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('penerima_id')->references('id')->on('users')->onDelete('cascade');
-            $table->unique(['pengirim_id', 'penerima_id']);
             $table->mediumText('konten');
+            $table->enum('status', ['sent_and_read', 'sent_and_unread', 'received'])->default('sent_and_unread');
             $table->timestamps();
         });
     }

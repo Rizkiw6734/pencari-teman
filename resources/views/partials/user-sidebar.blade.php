@@ -13,7 +13,7 @@
             <div class="fa fa-home icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
                  style="background-color: {{ request()->routeIs('user.home') ? '#3243fd' : '#ffffff' }} !important; color: {{ request()->routeIs('user.home') ? '#ffffff' : '#000000' }} !important;">
             </div>
-            <span class="nav-link-text ms-1">Home</span>
+            <span class="nav-link-text ms-1">Chat</span>
             @if(request()->routeIs('user.home'))
               <div style="position: absolute; left: 0; top: 0; width: 4px; height: 100%; background-color: #3243fd; border-radius: 0 6px 6px 0;"></div>
             @endif

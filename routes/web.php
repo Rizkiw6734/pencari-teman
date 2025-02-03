@@ -101,9 +101,7 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
     Route::delete('/admin/users/{id}', [PenggunaController::class, 'destroy'])->name('admin.users.destroy');
 
     // User Home Page
-    Route::get('/home', function () {
-        return view('user.home');
-    })->name('user.home');
+    Route::get('/home', [ChatController::class, 'index'])->name('user.home');
 
     // Banned Page
     Route::get('/banned', [UserStatusController::class, 'bannedPage'])->name('user.banned');
@@ -120,7 +118,6 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function ()
     // Add the update-location route here
     Route::middleware(['auth'])->post('/update-location', [ProfileUserController::class, 'updateLocation']);
     Route::get('/active-users', [ActiveUserController::class, 'index']);
-    Route::get('/home', [ChatController::class, 'index'])->name('user.home'); // Menampilkan semua chat
     Route::put('/home/{id}/status', [ChatController::class, 'updateStatus']);
     Route::get('/user/status/{id}', [ChatController::class, 'getUserStatus']);
     Route::middleware('auth')->get('/messages/{user}/{penerima_id}', [ChatController::class, 'getMessages']);

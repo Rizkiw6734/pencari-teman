@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Pinalti;
 use Illuminate\Support\Facades\Auth;
 
 class UserStatusController extends Controller
@@ -13,11 +14,12 @@ class UserStatusController extends Controller
     public function bannedPage()
     {
         $user = Auth::user();
+        $pinaltis = Pinalti::all();
 
         if ($user->status === 'aktif') {
             return redirect()->route('user.home');
         }
-        return view('user.banned');
+        return view('user.banned', compact('pinaltis'));
     }
 
     /**
@@ -26,10 +28,11 @@ class UserStatusController extends Controller
     public function suspendPage()
     {
         $user = Auth::user();
+        $pinaltis = Pinalti::all();
 
         if ($user->status === 'aktif') {
             return redirect()->route('user.home');
         }
-        return view('user.suspend');
+        return view('user.suspend', compact('pinaltis'));
     }
 }

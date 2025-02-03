@@ -1,10 +1,11 @@
 @extends('layouts.user')
 @section('content')
-<div class="main-content position-relative max-height-vh-100 h-100">
+<div class="main-content" style="max-width: 1200px; margin: 0 auto; margin-top: 0px; background-color: #F0F3F9;
+           padding: 20px; margin-left: 260px; position: relative;">
     <div class="container-fluid">
         <!-- Card Utama -->
-        <div style="max-width: 800px; margin: 0 auto;  margin-top: 37px;">
-            <header>
+        <div>
+            <header class="mt-3">
                 <h2 style="font-size: 32px;">
                     {{ __('Profil Saya') }}
                 </h2>
@@ -18,61 +19,37 @@
                                     <img src="{{ $user->foto_profil ? asset('storage/' . $user->foto_profil) : asset('images/marie.jpg') }}"
                                          alt="Foto Profil"
                                          class="w-100 border-radius-lg shadow-sm rounded-circle">
+                                        <label for="uploadProfilePhoto" class="position-absolute" style="bottom: -10px; right: 5px; background: white; padding: 6px; border-radius: 50%; box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); cursor: pointer;">
+                                            <i class="fa fa-camera" style="font-size: 18px; color: #000;"></i>
+                                        </label>
+                                    <input type="file" id="uploadProfilePhoto" class="d-none">
                                 </div>
                                 <div>
-                                    <h5 class="mb-2" style="font-family: 'Poppins', font-size: 30px; font-weight: 600; line-height: 45px; margin: 0; color:black;">
-                                        {{ $user['name'] }} {{ $user['last_name']}}
+                                    <h5 class="mb-2" style="font-size: 30px; font-weight: 600; line-height: 45px; margin: 0; color:black;">
+                                        {{ $user['name'] }} {{ $user['last_name'] }}
                                     </h5>
-                                    <p class="mb-4" style="font-family: 'Poppins', font-size: 15px; font-weight: 400; line-height: 22.5px; margin: 0; color:black;">
+                                    <p class="mb-4" style="font-size: 15px; font-weight: 400; line-height: 22.5px; margin: 0; color:black;">
                                         {{ $user->bio ?? 'Tidak tersedia' }}
                                     </p>
                                     <div class="row">
                                         <div class="col">
-                                            <p style="font-family: 'Poppins', font-size: 16px; font-weight: 400; line-height: 24px; margin: 0; color:black;">Pengikut <br>
-                                               <p style="font-family: 'Poppins', font-size: 16px; font-weight: 700; line-height: 24px; margin: 0; color:black;">
-                                                 4.567
-                                               </p>
+                                            <p style="font-size: 16px; font-weight: 400; line-height: 24px; margin: 0; color:black;">Pengikut <br>
+                                                <span style="font-weight: 700;">4.567</span>
                                             </p>
                                         </div>
                                         <div class="col">
-                                            <p style="font-family: 'Poppins', font-size: 16px; font-weight: 400; line-height: 24px; margin: 0; color:black;">Mengikuti <br>
-                                               <p style="font-family: 'Poppins', font-size: 16px; font-weight: 700; line-height: 24px; margin: 0; color:black;">
-                                                 4.567
-                                               </p>
+                                            <p style="font-size: 16px; font-weight: 400; line-height: 24px; margin: 0; color:black;">Mengikuti <br>
+                                                <span style="font-weight: 700;">4.567</span>
                                             </p>
                                         </div>
                                     </div>
-                                    <button type="button" class="btn btn-sm btn-rounded text-dark" data-bs-toggle="modal" data-bs-target="#editModalProfile"
-                                            style="background-color: transparent; border: 1px solid #84ADFF;">
-                                            Edit <i class="fa fa-pencil ms-1" style="font-size: 14px"></i>
-                                    </button>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal fade" id="editModalProfile" tabindex="-1" aria-labelledby="editModalProfileModal" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <form action="{{ route('user.profile.updateFotoProfile') }}" method="POST" enctype="multipart/form-data">
-                                    @csrf
-                                    @method('PUT')
-                                    <div class="form-group">
-                                        <label for="foto_profile">Foto Profil</label>
-                                        <input type="file" name="foto_profile" id="foto_profile" class="form-control-file">
-                                        @if ($user->foto_profile)
-                                            <img src="{{ Storage::url($user->foto_profile) }}" alt="Foto Profil" width="100" class="mt-2">
-                                        @endif
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Update Foto Profil</button>
-                                </form>
-
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-8">
-                        <div class="mb-">
+                        <div class="mb-4">
                             <div class="card shadow-sm">
                                 <div class="card-body">
                                     <div class="mb-3 d-flex justify-content-between align-items-center">
@@ -281,4 +258,115 @@
         </div>
     </footer>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    @auth
+        // Menyertakan token API dari session jika user login
+        const userToken = "{{ auth()->user()->createToken('PencariTeman')->plainTextToken }}";
+        console.log('User sedang login:', userToken);
+    @else
+        const userToken = null;  // Jika user belum login, tidak ada token
+        console.log('User belum login');
+    @endauth
+    if (!userToken) {
+    console.log('Token tidak ditemukan');
+    alert('Anda perlu login terlebih dahulu untuk memperbarui lokasi.');
+} else if (!navigator.geolocation) {
+    console.error('Geolocation tidak didukung oleh browser Anda.');
+    alert('Peramban Anda tidak mendukung fitur geolokasi.');
+} else {
+    // Mengambil lokasi pengguna secara otomatis menggunakan geolocation
+    navigator.geolocation.getCurrentPosition(
+        function (position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            console.log('Lokasi diperoleh:', latitude, longitude);
+
+            // Ambil CSRF token dari meta tag
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            // Kirim data latitude dan longitude ke API untuk diperbarui di backend
+            fetch('/update-location', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userToken}`,  // pastikan token yang valid ada di sini
+                    'X-CSRF-TOKEN': csrfToken  // Tambahkan CSRF token di sini
+                },
+                body: JSON.stringify({ latitude, longitude })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Lokasi berhasil diperbarui:', data);
+
+            })
+            .catch(error => {
+                console.error('Error saat mengupdate lokasi:', error);
+                alert('Terjadi kesalahan saat memperbarui lokasi: ' + error.message);
+            });
+        },
+        function (error) {
+            console.error('Gagal mendapatkan lokasi:', error);
+
+            let errorMessage = '';
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMessage = 'Akses lokasi ditolak oleh pengguna.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMessage = 'Informasi lokasi tidak tersedia.';
+                    break;
+                case error.TIMEOUT:
+                    errorMessage = 'Permintaan lokasi timeout.';
+                    break;
+                case error.UNKNOWN_ERROR:
+                    errorMessage = 'Terjadi kesalahan yang tidak diketahui.';
+                    break;
+            }
+
+            alert(errorMessage);
+
+            // Gunakan lokasi default jika gagal mendapatkan lokasi
+            const defaultLatitude = -6.2088; // Jakarta
+            const defaultLongitude = 106.8456;
+
+            // Ambil CSRF token dari meta tag
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            fetch('/update-location', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userToken}`,
+                    'X-CSRF-TOKEN': csrfToken  // Tambahkan CSRF token di sini
+                },
+                body: JSON.stringify({ latitude: defaultLatitude, longitude: defaultLongitude })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Menggunakan lokasi default:', data);
+                alert('Menggunakan lokasi default karena tidak dapat memperoleh lokasi.');
+            })
+            .catch(error => {
+                console.error('Gagal mengirim lokasi default:', error);
+                alert('Terjadi kesalahan saat mengirim lokasi default: ' + error.message);
+            });
+        }
+    );
+}
+
+</script>
 @endsection

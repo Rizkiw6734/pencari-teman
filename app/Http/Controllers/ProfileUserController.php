@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Pest\Arch\Objects\FunctionDescription;
+use App\Model\User;
 
 class ProfileUserController extends Controller
 {
@@ -75,4 +76,24 @@ class ProfileUserController extends Controller
     return Redirect::route('user.profile')->with('success', 'Foto profil berhasil diperbarui.');
     }
 
+    public function updateLocation(Request $request)
+{
+    // Validasi data yang diterima (latitude dan longitude)
+    $validated = $request->validate([
+        'latitude' => 'required|numeric',
+        'longitude' => 'required|numeric',
+    ]);
+
+    // Ambil user yang sedang login
+    $user = auth()->user();
+
+    // Perbarui lokasi pengguna
+    $user->latitude = $validated['latitude'];
+    $user->longitude = $validated['longitude'];
+
+    // Simpan perubahan ke database
+    $user->save();
+
+    return response()->json(['message' => 'Lokasi berhasil diperbarui!'], 200);
+}
 }

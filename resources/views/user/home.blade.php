@@ -1,183 +1,167 @@
 @extends('layouts.user')
 @section('content')
-    <div class="main-content position-fixed max-height-vh-100 h-100" style="position: relative; top:-40px">
-        <div class="container-fluid">
-            <!-- Konten Utama -->
-            <div style="max-width: auto; margin: 0 auto; margin-top: 37px;">
-                <div class="mt-4">
-                    <div class="row">
-                        <div class="col-md-4" style="background-color: #F0F3F9; margin-left: -20px;">
-                            <div class="mb-3">
-                                <div>
-                                    <div class="mb-3 mt-3 d-flex justify-content-between align-items-center">
-                                        <h5 class="font-weight-bold">Sedang Aktif</h5>
-                                    </div>
-                                    <!-- Sedang Aktif -->
-                                    <style>
-                                        div::-webkit-scrollbar {
-                                            display: none;
-                                        }
-                                    </style>
-                                    <div style="overflow-x: auto; white-space: nowrap; padding: 2px;">
-                                        <div class="active-users"
-                                            style="display: inline-block; text-align: center; margin-right: 16px;">
-
-                                        </div>
-                                    </div>
-                                    <div style="height: 1px; background-color: #ddd; margin: 2px 0;"></div>
-                                    <div class="mb-1 mt-3 d-flex justify-content-between align-items-center">
-                                        <h5 class="font-weight-bold">Pesan</h5>
-                                    </div>
-
-                                    <!-- Search Bar -->
-                                    <div
-                                        style="display: flex; align-items: center; border: 1px solid #EFF3F4; border-radius:20px; padding: 5px 10px; width: 100%; background-color: #f9f9f9;">
-                                        <span style="color: #757575; font-size: 16px; cursor: default;">
-                                            <i class="fa fa-search ms-1" style="font-size: 15px"></i>
-                                        </span>
-                                        <input type="text" placeholder="Mulai chat baru"
-                                            style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 5px;">
-                                    </div>
-
-                                    <!-- Chat -->
-                                    <div style="height: 300px; overflow-y: scroll; solid #ccc;">
-                                        <!-- Chat Dikirim dan sudah dibaca -->
-                                        @php
-                                            $userId = auth()->user()->id;
-                                        @endphp
-
-                                        @foreach ($latestChats as $chat)
-                                            @php
-                                                // Tentukan ID dan profil partner chat
-                                                $chatPartnerId =
-                                                    $chat->pengirim_id === $userId
-                                                        ? $chat->penerima_id
-                                                        : $chat->pengirim_id;
-                                                $chatPartner =
-                                                    $chat->pengirim_id === $userId ? $chat->penerima : $chat->pengirim;
-
-                                                // Tentukan ikon status pesan
-                                                $statusIcon = '';
-                                                if ($chat->status === 'sent_and_read') {
-                                                    $statusIcon = '<i class="fas fa-check-double text-primary"></i>'; // Centang 2 biru
-                                                } elseif ($chat->status === 'sent_and_unread') {
-                                                    $statusIcon = '<i class="fas fa-check text-secondary"></i>'; // Centang 1 abu-abu
-                                                } elseif ($chat->status === 'received') {
-                                                    $statusIcon = '<i class="fas fa-check-double text-secondary"></i>'; // Centang 2 abu-abu
-                                                }
-                                            @endphp
-
-                                            <div class="chat-item" onclick="selectChat(this, {{ $chatPartnerId }})"
-                                                data-user-id="{{ $chatPartnerId }}"
-                                                style="display: flex; align-items: center; background-color: #F0F3F9; padding: 10px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; transition: background 0.3s;">
-
-                                                {{-- Gambar profil --}}
-                                                <img src="{{ asset('assets/img/team-1.jpg') }}" alt="Avatar"
-                                                    style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px;">
-
-                                                <div class="chat-content" style="flex: 1;">
-                                                    <div class="chat-header"
-                                                        style="display: flex; justify-content: space-between; align-items: center;">
-                                                        <span class="name" style="font-weight: bold; font-size: 16px;">
-                                                            {{ $chatPartner->name }}
-                                                        </span>
-                                                        <span class="time" style="font-size: 12px; color: #888;">
-                                                            {{-- {{ $chat->created_at->format('H:i') }} --}}
-                                                        </span>
-                                                    </div>
-
-                                                    {{-- Preview pesan terakhir dan status --}}
-                                                    <div class="chat-message"
-                                                        style="font-size: 14px; color: #555; margin-top: 5px;">
-                                                        {!! Str::limit($chat->konten, 30) !!} {!! $statusIcon !!}
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {{-- Garis pemisah antar chat --}}
-                                            <div style="height: 1px; background-color: #ddd; margin: 2px 0;"></div>
-                                        @endforeach
-
-                                    </div>
-                                </div>
-                            </div>
+    <div class="main-content">
+        <div class="container" style="height: 100vh; overflow: hidden; background-color: #F0F3F9; position: relative;">
+            <div class="row">
+                <!-- Sidebar Chat -->
+                <div class="col-md-5" style="background-color: #F0F3F9; height: 100vh; overflow-y: auto;">
+                    <div class="mb-3">
+                        <div class="mb-2 mt-1 d-flex justify-content-between align-items-center">
+                            <h5 class="font-weight-bold">Sedang Aktif</h5>
                         </div>
-
-                        <div class="col-md-8">
-                            <div class="mb-3" style="position: relative; margin-left: -12px; margin-right: -45px;">
-                                <div class="col-md-12">
-                                    <div>
-                                        <div class="chat-container d-flex flex-column"
-                                            style="height: 100vh; overflow: hidden;">
-                                            <!-- Chat Header -->
-                                            <div class="chat-header p-1 d-flex align-items-center"
-                                                style="background-color: #F0F3F9; border-bottom: 0px solid #ddd;">
-                                                <!-- Avatar dan Info -->
-                                                <div class="chat-item d-flex align-items-center" style="flex: 1;">
-                                                    <img src="{{ asset('assets/img/team-1.jpg') }}" alt="Avatar"
-                                                        style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px;">
-                                                    <div class="chat-content"
-                                                        style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
-                                                        <div class="chat-header"
-                                                            style="display: flex; flex-direction: column; align-items: flex-start;">
-                                                            <span class="name" id="chat-name"
-                                                                style="font-weight: bold; font-size: 15px;">Loading...</span>
-                                                            <div class="notification-content d-flex align-items-center"
-                                                                id="chat-status"
-                                                                style="font-size: 14px; color: #555; margin-top: 5px;">
-                                                                <span class="icon"
-                                                                    style="margin-right: 5px; color: #888;"></span>Loading...
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                        
+                        <!-- Sedang Aktif -->
+                        <style>
+                            div::-webkit-scrollbar {
+                                display: none;
+                            }
+                        </style>
+                        
+                        <div style="overflow-x: auto; white-space: nowrap; padding: 2px;">
+                            <div class="active-users" style="display: inline-block; text-align: center; margin-right: 16px;"></div>
+                        </div>
+                        
+                        <div style="height: 1px; background-color: #ddd; margin: 2px 0;"></div>
+                        
+                        <div class="mb-1 mt-3 d-flex justify-content-between align-items-center">
+                            <h5 class="font-weight-bold">Pesan</h5>
+                        </div>
+            
+                        <!-- Search Bar -->
+                        <div style="display: flex; align-items: center; margin-bottom: 10px; border: 1px solid #EFF3F4; border-radius:20px; padding: 5px 10px; width: 100%; background-color: #f9f9f9;">
+                            <span style="color: #757575; font-size: 16px; cursor: default;">
+                                <i class="fa fa-search ms-1" style="font-size: 15px"></i>
+                            </span>
+                            <input type="text" placeholder="Mulai chat baru" style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 5px;">
+                        </div>
+            
+                        <!-- Chat -->
+                        <div style="height: 300px; overflow-y: scroll;">
+                            @php
+                                $userId = auth()->user()->id;
+                            @endphp
+            
+                            @foreach ($latestChats as $chat)
+                                @php
+                                    $chatPartnerId = $chat->pengirim_id === $userId ? $chat->penerima_id : $chat->pengirim_id;
+                                    $chatPartner = $chat->pengirim_id === $userId ? $chat->penerima : $chat->pengirim;
+            
+                                    $statusIcon = '';
+                                    if ($chat->status === 'sent_and_read') {
+                                        $statusIcon = '<i class="fas fa-check-double text-primary"></i>';
+                                    } elseif ($chat->status === 'sent_and_unread') {
+                                        $statusIcon = '<i class="fas fa-check text-secondary"></i>';
+                                    } elseif ($chat->status === 'received') {
+                                        $statusIcon = '<i class="fas fa-check-double text-secondary"></i>';
+                                    }
+                                @endphp
+            
+                                <div class="chat-item" onclick="selectChat(this, {{ $chatPartnerId }})"
+                                    data-user-id="{{ $chatPartnerId }}"
+                                    style="display: flex; align-items: center; background-color: #F0F3F9; padding: 10px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; transition: background 0.3s;">
+                                    
+                                    <img src="{{ asset('assets/img/team-1.jpg') }}" alt="Avatar"
+                                        style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px;">
+            
+                                    <div class="chat-content" style="flex: 1;">
+                                        <div class="chat-header" style="display: flex; justify-content: space-between; align-items: center;">
+                                            <span class="name" style="font-weight: bold; font-size: 16px;">
+                                                {{ $chatPartner->name }}
+                                            </span>
+                                            <span class="time" style="font-size: 12px; color: #888;"></span>
+                                        </div>
+            
+                                        <div class="chat-message" style="font-size: 14px; color: #555; margin-top: 5px;">
+                                            {!! Str::limit($chat->konten, 30) !!} {!! $statusIcon !!}
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <div style="height: 1px; background-color: #ddd; margin: 2px 0;"></div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Halaman Chat -->
+                <div class="col-md-7">
+                    <div class="mb-3" style="position: relative; margin-right: -25px;">
+                        <div class="chat-container d-flex flex-column" style="height: 100vh; overflow: hidden;">
+                            <!-- Chat Header -->
+                            <div id="chat-header" class="chat-header p-2 d-flex align-items-center" style="background-color: #F0F3F9; border-bottom: 0px solid #ddd;">
+                                <div class="chat-item d-flex align-items-start" style="flex: 1;">
+                                    <img src="{{ asset('assets/img/team-1.jpg') }}" alt="Avatar" 
+                                        style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-top: -3px;">
+                                    <div class="chat-content" style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                                        <div class="chat-header" style="display: flex; flex-direction: column; align-items: flex-start;">
+                                            <span class="name" id="chat-name" style="font-weight: bold; font-size: 15px; margin-top: -3px;"></span>
+                                            <div class="notification-content d-flex align-items-center" id="chat-status" 
+                                                style="font-size: 14px; color: #555; display: flex; flex-direction: column; margin-top: -12px;">
                                             </div>
-
-
-                                            <!-- Chat Body -->
-                                            <div class="chat-body flex-grow-1 p-3"
-                                                style="overflow-y: auto; background-color: #FFFFFF;">
-                                                <!-- Pesan akan dimuat di sini -->
-                                            </div>
-                                            <!-- Chat Footer -->
-                                            <div class="chat-footer p-2 d-flex align-items-center"
-                                                style="background-color: #F0F3F9; border-top: 1px solid #ddd;">
-
-                                                <!-- Avatar -->
-                                                <img src="/assets/img/team-2.jpg" alt="Avatar" class="rounded-circle me-3"
-                                                    style="width: 40px; height: 40px; object-fit: cover;">
-
-                                                <!-- Chat Input -->
-                                                <div class="d-flex align-items-center flex-grow-1"
-                                                    style="border: 1px solid #EFF3F4; border-radius: 10px; padding: 5px 10px; background-color: #f9f9f9;">
-
-                                                    <!-- Emoji & Attachment -->
-                                                    <span style="color: #757575; font-size: 16px; cursor: pointer;">
-                                                        <i class="fa fa-smile ms-1" style="font-size: 15px;"></i>
-                                                        <i class="fa fa-paperclip ms-2" style="font-size: 15px;"></i>
-                                                    </span>
-
-                                                    <!-- Input Chat -->
-                                                    <input type="text" id="chat-input" placeholder="Mulai chat baru"
-                                                        style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 2px 15px;">
-
-                                                    <!-- Tombol Kirim -->
-                                                    <span id="send-message"
-                                                        style="color: #757575; font-size: 16px; cursor: pointer;">
-                                                        <i class="fa fa-paper-plane ms-1" style="font-size: 15px;"></i>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <input type="hidden" id="penerima-id" value="">
-
                                         </div>
                                     </div>
                                 </div>
                             </div>
+            
+                            <!-- Chat Body -->
+                            <div class="chat-body flex-grow-1 p-3" style="overflow-y: auto; background-color: #FFFFFF; min-height: 400px; max-height: 600px;">
+                                <!-- Pesan Sambutan -->
+                                <div id="welcome-message" class="text-center" style="margin-top: 150px;">
+                                    <img src="{{ asset('assets/img/welcome-chat.svg') }}" alt="Welcome Image" style="max-width: 50%; height: auto;">
+                                    <h5 class="mt-3">Selamat datang di <b>AroundYou!</b></h5>
+                                    <p style="color: #777;">Ayo mulai berbicara, berbagi, dan menjalin pertemanan baru.</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Chat Footer -->
+                            <div id="chat-footer" class="chat-footer p-2 d-flex align-items-center"
+                                style="background-color: #F0F3F9; border-top: 1px solid #ddd; margin-bottom: -25px;">
+
+                                <!-- Chat Input -->
+                                <div class="d-flex align-items-center flex-grow-1 mb-4"
+                                    style="border: 1px solid #EFF3F4; border-radius: 10px; padding: 5px 10px; background-color: #f9f9f9;">
+
+                                    <!-- Emoji & Attachment -->
+                                    <span style="color: #757575; font-size: 16px; cursor: pointer;">
+                                        <i class="fa fa-smile ms-1" style="font-size: 15px;"></i>
+                                        <i class="fa fa-paperclip ms-2" style="font-size: 15px;"></i>
+                                    </span>
+
+                                    <!-- Input Chat -->
+                                    <input type="text" id="chat-input" placeholder="Mulai chat baru"
+                                        style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 2px 15px;">
+
+                                    <!-- Tombol Kirim -->
+                                    <span id="send-message"
+                                        style="color: #757575; font-size: 16px; cursor: pointer;">
+                                        <i class="fa fa-paper-plane ms-1" style="font-size: 15px;"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <input type="hidden" id="penerima-id" value="">
                         </div>
                     </div>
                 </div>
             </div>
+            
+            <script>
+                // Sembunyikan chat header dan footer saat pertama kali halaman dimuat
+                document.addEventListener("DOMContentLoaded", function() {
+                    document.getElementById("chat-header").setAttribute("style", "display: none !important");
+                    document.getElementById("chat-footer").setAttribute("style", "display: none !important");
+                });
+            
+                function selectChat(element, userId) {
+                    // Sembunyikan pesan sambutan dan tampilkan chat header/footer
+                    document.getElementById("welcome-message").setAttribute("style", "display: none !important");
+                    document.getElementById("chat-header").setAttribute("style", "display: flex !important");
+                    document.getElementById("chat-footer").setAttribute("style", "display: flex !important");
+
+                    // Menampilkan nama chat partner
+                    document.getElementById("chat-name").innerText = element.querySelector(".name").innerText;
+                    document.getElementById("penerima-id").value = userId;
+                }
+            </script>           
         </div>
     </div>
 @endsection

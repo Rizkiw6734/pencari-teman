@@ -11,38 +11,54 @@ use App\Models\User;
 class ChatController extends Controller
 {
     // Menampilkan chat terbaru antara dua user di sidebar
-    public function index()
-    {
-        $userId = Auth::id();
+    public function index(Request $request)
+{
+    $userId = Auth::id();
 
-        $latestChats = DB::table('chat as c')
-            ->join(DB::raw("(
-                SELECT
-                    LEAST(pengirim_id, penerima_id) AS user1,
-                    GREATEST(pengirim_id, penerima_id) AS user2,
-                    MAX(id) AS latest_chat_id
-                FROM chat
-                GROUP BY user1, user2
-            ) as latest_chats"), function ($join) {
-                $join->on(DB::raw('LEAST(c.pengirim_id, c.penerima_id)'), '=', 'latest_chats.user1')
-                    ->on(DB::raw('GREATEST(c.pengirim_id, c.penerima_id)'), '=', 'latest_chats.user2')
-                    ->on('c.id', '=', 'latest_chats.latest_chat_id');
-            })
-            ->where(function ($query) use ($userId) {
-                $query->where('c.pengirim_id', $userId)
-                      ->orWhere('c.penerima_id', $userId);
-            })
-            ->orderBy('c.created_at', 'DESC')
-            ->get();
+    // Ambil chat terbaru
+    $latestChats = DB::table('chat as c')
+        ->join(DB::raw("(
+            SELECT
+                LEAST(pengirim_id, penerima_id) AS user1,
+                GREATEST(pengirim_id, penerima_id) AS user2,
+                MAX(id) AS latest_chat_id
+            FROM chat
+            GROUP BY user1, user2
+        ) as latest_chats"), function ($join) {
+            $join->on(DB::raw('LEAST(c.pengirim_id, c.penerima_id)'), '=', 'latest_chats.user1')
+                 ->on(DB::raw('GREATEST(c.pengirim_id, c.penerima_id)'), '=', 'latest_chats.user2')
+                 ->on('c.id', '=', 'latest_chats.latest_chat_id');
+        })
+        ->where(function ($query) use ($userId) {
+            $query->where('c.pengirim_id', $userId)
+                  ->orWhere('c.penerima_id', $userId);
+        })
+        ->orderBy('c.created_at', 'DESC')
+        ->select('c.*', 'pengirim_id', 'penerima_id') // Ambil semua kolom chat dan id pengirim/penerima
+        ->get();
 
-        foreach ($latestChats as $chat) {
-            $chat->pengirim = User::find($chat->pengirim_id);
-            $chat->penerima = User::find($chat->penerima_id);
-        }
+    // Ambil pengirim dan penerima chat dalam satu query untuk efisiensi
+    $userIds = $latestChats->pluck('pengirim_id')->merge($latestChats->pluck('penerima_id'))->unique();
+    $users = User::whereIn('id', $userIds)->get()->keyBy('id'); // Ambil data pengguna yang terlibat
 
-        return view('user.home', compact('latestChats', 'userId'));
+    // Tambahkan data pengguna pengirim dan penerima ke dalam setiap chat
+    foreach ($latestChats as $chat) {
+        $chat->pengirim = $users->get($chat->pengirim_id);
+        $chat->penerima = $users->get($chat->penerima_id);
+
+        $chat->created_at = \Carbon\Carbon::parse($chat->created_at)->timezone('Asia/Jakarta');
     }
 
+    if ($request->ajax()) {
+        // Mengirim response dengan struktur JSON untuk AJAX
+        return response()->json([
+            'latestChats' => $latestChats,
+            'userId' => $userId
+        ], 200);
+    }
+    // Jika tidak AJAX, tampilkan halaman dengan data yang sudah diproses
+    return view('user.home', compact('latestChats', 'userId'));
+}
 
     // Menyimpan pesan baru
     public function store(Request $request)
@@ -96,7 +112,7 @@ class ChatController extends Controller
     // Kirimkan data yang dibutuhkan ke tampilan
     return response()->json([
         'name' => $user->name,
-        'avatar' => $user->avatar ?? '/assets/img/default-avatar.jpg',
+        'avatar' => $user->avatar ?? '/assets/img/team-1.jpg',
         'is_online' => $user->is_online
     ]);
 

@@ -1,5 +1,4 @@
 @extends('layouts.user')
-
 @section('content')
     <div class="main-content"
         style="max-width: 1200px; margin: 0 auto; margin-top: 0px; background-color: #F0F3F9;
@@ -31,7 +30,7 @@
                         <img src="{{ asset('assets/img/jelajahi.jpg') }}" class="card-img-top" alt="..."
                             style="object-fit: cover; height: 100%; width: 100%; z-index: 0;">
 
-                        <div class="position-absolute top-0 end-0 m-3">
+                        <div class="position-absolute top-0 end-0 m-2">
                             <i class="fa-solid fa-user-plus text-white p-2 rounded-circle"></i>
                         </div>
 
@@ -59,7 +58,7 @@
                         <img src="{{ asset('assets/img/jelajahi.jpg') }}" class="card-img-top" alt="..."
                             style="object-fit: cover; height: 100%; width: 100%; z-index: 0;">
 
-                        <div class="position-absolute top-0 end-0 m-3">
+                        <div class="position-absolute top-0 end-0 m-2">
                             <i class="fa-solid fa-user-plus text-white p-2 rounded-circle"></i>
                         </div>
 
@@ -86,7 +85,7 @@
                         <img src="{{ asset('assets/img/jelajahi.jpg') }}" class="card-img-top" alt="..."
                             style="object-fit: cover; height: 100%; width: 100%; z-index: 0;">
 
-                        <div class="position-absolute top-0 end-0 m-3">
+                        <div class="position-absolute top-0 end-0 m-2">
                             <i class="fa-solid fa-user-plus text-white p-2 rounded-circle"></i>
                         </div>
 
@@ -113,7 +112,7 @@
                         <img src="{{ asset('assets/img/jelajahi.jpg') }}" class="card-img-top" alt="..."
                             style="object-fit: cover; height: 100%; width: 100%; z-index: 0;">
 
-                        <div class="position-absolute top-0 end-0 m-3">
+                        <div class="position-absolute top-0 end-0 m-2">
                             <i class="fa-solid fa-user-plus text-white p-2 rounded-circle"></i>
                         </div>
 
@@ -140,7 +139,7 @@
                         <img src="{{ asset('assets/img/jelajahi.jpg') }}" class="card-img-top" alt="..."
                             style="object-fit: cover; height: 100%; width: 100%; z-index: 0;">
 
-                        <div class="position-absolute top-0 end-0 m-3">
+                        <div class="position-absolute top-0 end-0 m-2">
                             <i class="fa-solid fa-user-plus text-white p-2 rounded-circle"></i>
                         </div>
 
@@ -167,7 +166,7 @@
                         <img src="{{ asset('assets/img/jelajahi.jpg') }}" class="card-img-top" alt="..."
                             style="object-fit: cover; height: 100%; width: 100%; z-index: 0;">
 
-                        <div class="position-absolute top-0 end-0 m-3">
+                        <div class="position-absolute top-0 end-0 m-2">
                             <i class="fa-solid fa-user-plus text-white p-2 rounded-circle"></i>
                         </div>
 
@@ -194,7 +193,7 @@
                         <img src="{{ asset('assets/img/jelajahi.jpg') }}" class="card-img-top" alt="..."
                             style="object-fit: cover; height: 100%; width: 100%; z-index: 0;">
 
-                        <div class="position-absolute top-0 end-0 m-3">
+                        <div class="position-absolute top-0 end-0 m-2">
                             <i class="fa-solid fa-user-plus text-white p-2 rounded-circle"></i>
                         </div>
 
@@ -221,7 +220,7 @@
                         <img src="{{ asset('assets/img/jelajahi.jpg') }}" class="card-img-top" alt="..."
                             style="object-fit: cover; height: 100%; width: 100%; z-index: 0;">
 
-                        <div class="position-absolute top-0 end-0 m-3">
+                        <div class="position-absolute top-0 end-0 m-2">
                             <i class="fa-solid fa-user-plus text-white p-2 rounded-circle"></i>
                         </div>
 

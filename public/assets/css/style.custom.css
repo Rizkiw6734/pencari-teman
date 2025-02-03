@@ -1187,57 +1187,6 @@
 
     .overlay { display: none; }
 
-    .search-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: -px;
-      }
-
-      .input-wrapper {
-        position: relative;
-        width: 240px;
-      }
-
-      .input-wrapper ion-icon {
-        position: absolute;
-        left: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #417fe2;
-      }
-
-      #search-input {
-        width: 240px;
-        height: 30px;
-        border-radius: 10px;
-        padding: 10px 10px 10px 30px;
-        background-color: rgb(255, 255, 255);
-        border: none;
-        outline: none;
-      }
-
-      #search-button {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background-color: rgba(255, 255, 255, 0.15);
-        border: none;
-        outline: none;
-      }
-
-      #search-button:hover {
-        background-color: rgba(255, 255, 255, 0.3);
-      }
-
-      #search-input::placeholder {
-        color: #417fe2;
-      }
-
-
-
-
-
     /**
      * HERO
      */
@@ -1677,7 +1626,6 @@
         background-size: cover;
         background-position: center;
     }
-
 
   /**
    * responsive for larger than 1200px screen

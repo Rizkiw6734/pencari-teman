@@ -39,7 +39,7 @@ class BandingController extends Controller
     {
         $user = Auth::user();
         $pinaltis = Pinalti::whereHas('laporan', function ($query) use ($user) {
-            $query->where('reported_id', $user->id);
+            $query->where('reported_id', $user->id)->whereIn('jenis_hukuman', ['suspend', 'banned']);
         })->get();
 
         return view('banding.create', compact('user', 'pinaltis'));

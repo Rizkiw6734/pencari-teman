@@ -22,12 +22,12 @@ class PenggunaController extends Controller
         $desa = $request->input('villages');
         $search = $request->input('search');
         $perPage = $request->input('per_page', 10);
-    
+
         $query = User::whereNotIn('status', ['banned', 'suspend'])
             ->whereDoesntHave('roles', function ($query) {
                 $query->where('name', 'admin');
             });
-    
+
         if ($provinsi) {
             $query->where('provinces', $provinsi);
         }
@@ -40,7 +40,7 @@ class PenggunaController extends Controller
         if ($desa) {
             $query->where('villages', $desa);
         }
-    
+
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
@@ -48,16 +48,16 @@ class PenggunaController extends Controller
                   ->orWhere('gender', 'like', '%' . $search . '%');
             });
         }
-    
+
         $users = $query->paginate($perPage);
-    
+
         $provinces = Provinces::all();
         $regencies = $provinsi ? Regencies::where('province_id', $provinsi)->get() : [];
         $districts = $kabupaten ? Districts::where('regency_id', $kabupaten)->get() : [];
         $villages = $kecamatan ? Villages::where('district_id', $kecamatan)->get() : [];
-    
+
         return view('Admin.users.index', compact('users', 'provinces', 'regencies', 'districts', 'villages'));
-    }    
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -165,21 +165,21 @@ class PenggunaController extends Controller
     {
         $perPage = $request->input('per_page', 10);
         $search = $request->input('search');
-    
+
         $query = User::where('status', '=', 'banned')
             ->whereDoesntHave('roles', function ($query) {
                 $query->where('name', 'admin');
             });
-    
+
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
                   ->orWhere('email', 'like', '%' . $search . '%');
             });
         }
-    
+
         $bannedUsers = $query->paginate($perPage);
-    
+
         return view('Admin.users.banned', compact('bannedUsers'));
     }
 
@@ -187,21 +187,21 @@ class PenggunaController extends Controller
     {
         $perPage = $request->input('per_page', 10);
         $search = $request->input('search');
-    
+
         $query = User::where('status', '=', 'suspend')
             ->whereDoesntHave('roles', function ($query) {
                 $query->where('name', 'admin');
             });
-    
+
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
                   ->orWhere('email', 'like', '%' . $search . '%');
             });
         }
-    
+
         $suspendUsers = $query->paginate($perPage);
-    
+
         return view('Admin.users.suspend', compact('suspendUsers'));
     }
 

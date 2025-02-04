@@ -39,7 +39,7 @@ Route::middleware([ToSweetAlert::class])->group(function () {
 });
 
 //ADMIN
-Route::middleware(['auth', RoleMiddleware::class . ':Admin'])->group(function () {
+Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspension::class])->group(function () {
 
     //dasboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

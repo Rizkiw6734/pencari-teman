@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 @section('content')
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-        <nav class="navbar navbar-main navbar-expand-lg mt-3 px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" 
+        <nav class="navbar navbar-main navbar-expand-lg mt-3 px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur"
             navbar-scroll="true">
             <div class="container-fluid">
                 <div class="d-flex justify-content-between align-items-center w-100" id="navbar">
@@ -131,15 +131,15 @@
 
                 <div class="d-flex align-items-center">
                     <div class="input-group" style="width: auto; align-items: center; position: relative; margin-right: 5px;">
-                        <span class="input-group-text" 
+                        <span class="input-group-text"
                             style="background-color: transparent; border: 1px solid #C9C1FF; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 7px; padding: 10px 15px;">
                             <i class="fa fa-calendar" style="font-size: 18.5px; margin-right: 10px;"></i>
                             <i class="fa fa-caret-down" style="font-size: 18.5px;"></i>
                         </span>
-                        <input type="date" id="dateFilter" class="form-control" 
+                        <input type="date" id="dateFilter" class="form-control"
                             style="background-color: transparent; border: none; position: absolute; top: 0; left: 0; width: 100%; height: 40px; opacity: 0; cursor: pointer;">
-                    </div>   
-                    
+                    </div>
+
                     <div class="input-group text-dark" style="width: auto; align-items: center; position: relative; margin-left: 5px;">
                         <select id="jenisPinaltiFilter" class="form-control"
                             style="background-color: transparent; border: 1px solid #C9C1FF; cursor: pointer; appearance: none; -moz-appearance: none; -webkit-appearance: none; padding-right: 25px;">
@@ -149,8 +149,8 @@
                             <option value="banned">Banned</option>
                         </select>
                         <i class="fa fa-caret-down" style="font-size: 18.5px; position: absolute; right: 10px; pointer-events: none;"></i>
-                    </div>  
-                    
+                    </div>
+
                     <div class="input-group text-dark" style="width: auto; align-items: center; position: relative; margin-left: 5px;">
                         <select id="statusFilter" class="form-control"
                             style="background-color: transparent; border: 1px solid #C9C1FF; cursor: pointer; appearance: none; -moz-appearance: none; -webkit-appearance: none; padding-right: 25px;">
@@ -160,8 +160,8 @@
                             <option value="diterima">Diterima</option>
                         </select>
                         <i class="fa fa-caret-down" style="font-size: 18.5px; position: absolute; right: 10px; pointer-events: none;"></i>
-                    </div>                
-                    
+                    </div>
+
                     <script>
                         document.getElementById('dateFilter').addEventListener('change', function() {
                             var selectedDate = this.value; // Mendapatkan tanggal yang dipilih
@@ -169,7 +169,7 @@
                             rows.forEach(function(row) {
                                 var dateCell = row.cells[4].textContent.trim();
                                 var formattedDate = new Date(dateCell.split('-').reverse().join('-')).toISOString().split('T')[0]; // Format ulang tanggal ke YYYY-MM-DD
-                                
+
                                 if (formattedDate === selectedDate) {
                                     row.style.display = ''; // Tampilkan baris jika tanggal cocok
                                 } else {
@@ -177,17 +177,17 @@
                                 }
                             });
                         });
-                    </script>   
-                    
+                    </script>
+
                     <script>
                         document.getElementById('jenisPinaltiFilter').addEventListener('change', function () {
                             var selectedPinalti = this.value; // Ambil nilai Pinalti yang dipilih
                             var rows = document.querySelectorAll('table tbody tr'); // Semua baris tabel
-                            
+
                             rows.forEach(function (row) {
                                 var jenisPinaltiCell = row.cells[2];
                                 var jenisPinaltiText = jenisPinaltiCell ? jenisPinaltiCell.textContent.trim().toLowerCase() : ''; // Ambil teks dalam kolom
-                                
+
                                 // Tampilkan atau sembunyikan baris tergantung pada apakah jenis Pinalti cocok
                                 if (selectedPinalti === '' || jenisPinaltiText.includes(selectedPinalti)) {
                                     row.style.display = ''; // Tampilkan baris
@@ -197,7 +197,7 @@
                             });
                         });
                     </script>
-                    
+
                     <script>
                         document.getElementById('statusFilter').addEventListener('change', function() {
                             var selectedStatus = this.value; // Mendapatkan status yang dipilih
@@ -206,7 +206,7 @@
                                 var statusCell = row.cells[5]; // Menemukan kolom status (kolom ke-5)
                                 var statusBadge = statusCell.querySelector('.badge'); // Menemukan elemen badge status
                                 var statusText = statusBadge ? statusBadge.textContent.trim().toLowerCase() : ''; // Mengambil status teks
-                    
+
                                 // Menampilkan atau menyembunyikan baris tergantung pada apakah status cocok
                                 if (selectedStatus === '' || statusText.includes(selectedStatus)) {
                                     row.style.display = ''; // Tampilkan baris
@@ -215,7 +215,7 @@
                                 }
                             });
                         });
-                    </script>                
+                    </script>
                 </div>
             </div>
         </div>
@@ -241,7 +241,7 @@
                                 <tr class="align-middle">
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ optional($banding->user)->name ?? 'Pengguna tidak ditemukan' }}</td>
-                                    <td>{{ ucwords($banding->pinalti->jenis_hukuman) }}</td>
+                                    <td>{{ ucwords($banding->jenis_hukuman) }}</td>
                                     <td>{{ $banding->alasan_banding }}</td>
                                     <td>{{ \Carbon\Carbon::parse($banding->created_at)->format('d-m-Y') }}</td>
                                     <td>
@@ -259,19 +259,19 @@
                                             @endif
                                         </span>
                                     </td>
-                                    
+
                                     <td>
                                         <form id="form-terima-{{ $banding->id }}" action="{{ route('banding.terima', $banding->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             <input type="hidden" name="action" id="action-{{ $banding->id }}" value="">
-                                            <button type="button" class="btn btn-trm btn-sm" 
-                                                data-id="{{ $banding->id }}" data-jenis="{{ $banding->pinalti->jenis_hukuman }}" style="margin-top: 10px !important;">
+                                            <button type="button" class="btn btn-trm btn-sm"
+                                                data-id="{{ $banding->id }}" data-jenis="{{ $banding->jenis_hukuman }}" style="margin-top: 10px !important;">
                                                 <i class="fa fa-check" style="font-size: 18px;"></i>
                                             </button>
                                         </form>
                                         <form id="form-tolak-{{ $banding->id }}" action="{{ route('banding.tolak', $banding->id) }}" method="POST" class="d-inline">
                                             @csrf
-                                            <button type="button" class="btn btn-tlk btn-sm" 
+                                            <button type="button" class="btn btn-tlk btn-sm"
                                                 data-id="{{ $banding->id }}" style="margin-top: 10px !important;">
                                                 <i class="fa fa-times " style="font-size: 18px;"></i>
                                             </button>
@@ -324,14 +324,12 @@
                                                                         const durasi = result.value;
                                                                         const form = document.getElementById(`form-terima-${bandingId}`);
 
-                                                                        // Tambahkan hidden input untuk durasi
                                                                         const inputDurasi = document.createElement('input');
                                                                         inputDurasi.type = 'hidden';
                                                                         inputDurasi.name = 'durasi';
                                                                         inputDurasi.value = durasi;
                                                                         form.appendChild(inputDurasi);
 
-                                                                        // Set action menjadi "kurangi"
                                                                         document.getElementById(`action-${bandingId}`).value = 'kurangi';
                                                                         form.submit();
                                                                     }
@@ -356,7 +354,7 @@
                                                     }
                                                 });
                                             });
-                                            
+
                                             // Event untuk tombol "Tolak"
                                             document.querySelectorAll('.btn-tlk').forEach(button => {
                                                 button.addEventListener('click', function () {

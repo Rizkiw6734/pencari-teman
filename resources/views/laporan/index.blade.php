@@ -116,18 +116,18 @@
                     window.location.search = '?per_page=' + perPage;
                 });
             </script>
-            
+
             <div class="d-flex align-items-center">
                 <div class="input-group" style="width: auto; align-items: center; position: relative; margin-right: 5px;">
-                    <span class="input-group-text" 
+                    <span class="input-group-text"
                         style="background-color: transparent; border: 1px solid #C9C1FF; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 7px; padding: 10px 15px;">
                         <i class="fa fa-calendar" style="font-size: 18.5px; margin-right: 10px;"></i>
                         <i class="fa fa-caret-down" style="font-size: 18.5px;"></i>
                     </span>
-                    <input type="date" id="dateFilter" class="form-control" 
+                    <input type="date" id="dateFilter" class="form-control"
                         style="background-color: transparent; border: none; position: absolute; top: 0; left: 0; width: 100%; height: 40px; opacity: 0; cursor: pointer;">
-                </div>                
-                
+                </div>
+
                 <div class="input-group text-dark" style="width: auto; align-items: center; position: relative; margin-left: 5px;">
                     <select id="statusFilter" class="form-control"
                         style="background-color: transparent; border: 1px solid #C9C1FF; cursor: pointer; appearance: none; -moz-appearance: none; -webkit-appearance: none; padding-right: 25px;">
@@ -135,10 +135,11 @@
                         <option value="proses">Proses</option>
                         <option value="ditolak">Ditolak</option>
                         <option value="diterima">Diterima</option>
+                        <option value="selesai">Selesai</option>
                     </select>
                     <i class="fa fa-caret-down" style="font-size: 18.5px; position: absolute; right: 10px; pointer-events: none;"></i>
-                </div>                
-                
+                </div>
+
                 <script>
                     document.getElementById('dateFilter').addEventListener('change', function() {
                         var selectedDate = this.value; // Mendapatkan tanggal yang dipilih
@@ -146,7 +147,7 @@
                         rows.forEach(function(row) {
                             var dateCell = row.cells[3].textContent.trim(); // Mengambil tanggal dari kolom ke-4 (Tanggal)
                             var formattedDate = new Date(dateCell.split('-').reverse().join('-')).toISOString().split('T')[0]; // Format ulang tanggal ke YYYY-MM-DD
-                            
+
                             if (formattedDate === selectedDate) {
                                 row.style.display = ''; // Tampilkan baris jika tanggal cocok
                             } else {
@@ -154,8 +155,8 @@
                             }
                         });
                     });
-                </script>    
-                
+                </script>
+
                 <script>
                     document.getElementById('statusFilter').addEventListener('change', function() {
                         var selectedStatus = this.value; // Mendapatkan status yang dipilih
@@ -164,7 +165,7 @@
                             var statusCell = row.cells[4]; // Menemukan kolom status (kolom ke-5)
                             var statusBadge = statusCell.querySelector('.badge'); // Menemukan elemen badge status
                             var statusText = statusBadge ? statusBadge.textContent.trim().toLowerCase() : ''; // Mengambil status teks
-                
+
                             // Menampilkan atau menyembunyikan baris tergantung pada apakah status cocok
                             if (selectedStatus === '' || statusText.includes(selectedStatus)) {
                                 row.style.display = ''; // Tampilkan baris
@@ -173,7 +174,7 @@
                             }
                         });
                     });
-                </script>                
+                </script>
             </div>
         </div>
     </div>
@@ -205,6 +206,7 @@
                                         @if($laporan->status == 'proses') status-proses
                                         @elseif($laporan->status == 'ditolak') status-ditolak
                                         @elseif($laporan->status == 'diterima') status-diterima
+                                        @elseif($laporan->status == 'selesai') status-diterima
                                         @endif">
                                         @if($laporan->status == 'proses')
                                             <i class="fa fa-spinner me-1 mt-2"></i> Proses
@@ -212,6 +214,8 @@
                                             <i class="fa fa-times me-1 mt-2"></i> Ditolak
                                         @elseif($laporan->status == 'diterima')
                                             <i class="fa fa-check me-1 mt-2"></i> Diterima
+                                        @elseif($laporan->status == 'selesai')
+                                            <i class="fa fa-check me-1 mt-2"></i> Selesai
                                         @endif
                                     </span>
                                 </td>
@@ -251,7 +255,7 @@
                                                                 <p>{{ $laporan->terlapor->name }}</p>
                                                             </div>
                                                         </div>
-                                                    
+
                                                         <div class="row">
                                                             <div class="col-6">
                                                                 <p class="text-dark text-bold">Tanggal :</p>
@@ -262,7 +266,7 @@
                                                                 <p>{{ $laporan->alasan }}</p>
                                                             </div>
                                                         </div>
-                                                    </div>                                                                                                       
+                                                    </div>
 
                                                     <div class="col-1 text-center border-divider">
                                                         <div class="vertical-line"></div>
@@ -306,7 +310,7 @@
                                                             Tolak Laporan
                                                         </button>
                                                     </form>
-                                                    
+
                                                     <script>
                                                         function confirmBanned(id) {
                                                             Swal.fire({
@@ -342,12 +346,14 @@
                                                                 }
                                                             });
                                                         }
-                                                    </script>                                                    
+                                                    </script>
 
                                                 @elseif ($laporan->status === 'diterima')
                                                     <p class="text-success">Laporan telah diterima dan diproses.</p>
                                                 @elseif ($laporan->status === 'ditolak')
                                                     <p class="text-danger">Laporan telah ditolak.</p>
+                                                @elseif ($laporan->status === 'selesai')
+                                                    <p class="text-success">Laporan telah selesai.</p>
                                                 @endif
                                             </div>
                                         </div>

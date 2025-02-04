@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Pinalti;
+use App\Models\Laporan;
 use App\Models\User;
 use Carbon\Carbon;
 
@@ -24,10 +25,13 @@ class CheckExpiredSuspension
 
         foreach ($expiredSuspension as $suspend) {
             $user = User::find($suspend->laporan->reported_id);
+            $laporan = $suspend->laporan;
             if ($user) {
                 $user->status = 'aktif';
                 $user->save();
             }
+            $laporan->status = 'selesai';
+            $laporan->save();
             $suspend->delete();
         }
 

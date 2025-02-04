@@ -48,7 +48,7 @@ class LaporanController extends Controller
         $data = $request->validate([
             'report_id' => 'required|exists:users,id',
             'reported_id' => 'required|exists:users,id|different:report_id',
-            'bukti' => 'required|image|max:5280|mimes:jpeg,png,jpg',
+            'bukti' => 'image|max:5280|mimes:jpeg,png,jpg',
             'alasan' => 'required|string|max:255',
         ], [
             'report_id.required' => 'Pelapor harus ada',
@@ -56,20 +56,29 @@ class LaporanController extends Controller
             'reported_id.required' => 'terlapor harus ada',
             'reported_id.exists' => 'terlpor tidak valid',
             'reported_id.different' => 'terlapor harus berbeda dari Pelapor',
-            'bukti.required' => 'Cover buku harus di isi.',
             'bukti.image' => 'File harus berupa gambar.',
             'bukti.mimes' => 'Format gambar harus berupa jpeg, png, atau jpg.',
             'bukti.max' => 'Ukuran gambar tidak boleh lebih dari 5MB.',
             'alasan.required' => 'alasan laporan harus ada'
         ]);
 
-        $file = $request->file('bukti');
-        $filename = $file->getClientOriginalName();
-        if (Laporan::where('bukti', $filename)->exists()) {
-            return redirect()->back()->with('error', 'Gambar ini sudah ada. Silakan pilih gambar yang berbeda.');
+        $existingReport = Laporan::where('report_id', $request->report_id)
+        ->where('reported_id', $request->reported_id)
+        ->where('status', '!=', 'selesai' && 'status', '!=', 'ditolak')
+        ->exists();
+
+        if ($existingReport) {
+            return redirect()->back()->with('error', 'Anda sudah memiliki laporan terhadap pengguna ini. Tunggu hingga laporan selesai atau di tolak.');
         }
-        $file->move(public_path('assets/img/laporan'), $filename);
-        $data['bukti'] = $filename;
+
+        if($file = $request->file('bukti')) {
+            $filename = $file->getClientOriginalName();
+            if (Laporan::where('bukti', $filename)->exists()) {
+                return redirect()->back()->with('error', 'Gambar ini sudah ada. Silakan pilih gambar yang berbeda.');
+            }
+            $file->move(public_path('assets/img/laporan'), $filename);
+            $data['bukti'] = $filename;
+        }
 
         if (Laporan::create($data)) {
             return redirect('/laporan')->with('success', 'laporan berhasil ditambahkan.');
@@ -137,24 +146,37 @@ class LaporanController extends Controller
         $userId = $laporan->reported_id;
         $jenisHukuman = $request->input('jenis_hukuman');
 
-        $suspend = Pinalti::where('id', $userId)
-                                ->where('jenis_hukuman', 'suspend')
-                                ->exists();
+        $hukumanAktif = Pinalti::whereHas('laporan', function ($query) use ($userId) {
+            $query->where('reported_id', $userId);
+        })
+        ->where(function ($query) {
+            $query->where('jenis_hukuman', 'suspend')
+                  ->orWhere('jenis_hukuman', 'banned');
+        })
+        ->where(function ($query) {
+            $query->whereNull('end_date')
+                  ->orWhere('end_date', '>', now());
+        })
+        ->exists();
 
-        $banned = Pinalti::where('id', $userId)
-                                ->where('jenis_hukuman', 'banned')
-                                ->exists();
+        if ($hukumanAktif) {
+            $laporan->status = 'selesai';
+            $laporan->save();
+            return redirect('/laporan')->with('success', 'Pengguna sudah memiliki hukuman aktif. Laporan dianggap selesai.');
 
-        if ($suspend) {
-            return redirect('/laporan')->with('error', 'Pengguna ini sudah tersuspend');
-        }
-
-        if ($banned) {
-            return redirect('/laporan')->with('error', 'Pengguna ini sudah mendapat tindakan berat yakni banned');
         }
 
         switch ($jenisHukuman) {
             case 'peringatan':
+                $totalPeringatan = Pinalti::where('laporan_id', $laporan->id)
+                ->where('jenis_hukuman', 'peringatan')->count();
+
+                dd($totalPeringatan);
+
+                if ($totalPeringatan >= 3) {
+                    return redirect('/laporan')->with('error', 'Pengguna sudah menerima 3 peringatan. Hanya bisa diberikan suspend atau banned.');
+                }
+
                 $validated = $request->validate([
                     'pesan' => 'required|regex:/^[a-zA-Z\s]+$/',
                 ],[
@@ -162,15 +184,18 @@ class LaporanController extends Controller
                   'pesan.regex' => 'Pesan Tidak Boleh Angka'
                 ]);
 
-                $pesan = $validated['pesan']; // Ambil nilai pesan setelah validasi
+                $pesan = $validated['pesan'];
 
                 Pinalti::create([
                     'laporan_id' => $laporan->id,
                     'jenis_hukuman' => 'peringatan',
-                    'pesan' => $pesan,  // Masukkan pesan sebagai string
+                    'pesan' => $pesan,
                     'start_date' => now(),
                     'end_date' => null,
                 ]);
+
+                $laporan->status = 'selesai';
+                $laporan->save();
                 break;
 
             case 'suspend':
@@ -206,6 +231,9 @@ class LaporanController extends Controller
                        $laporan->status = 'selesai';
                        $laporan->save();
                    });
+
+                $laporan->status = 'diterima';
+                $laporan->save();
                 break;
 
             case 'banned':
@@ -230,14 +258,14 @@ class LaporanController extends Controller
                     $laporan->status = 'selesai';
                     $laporan->save();
                 });
+
+                $laporan->status = 'selesai';
+                $laporan->save();
                 break;
 
             default:
                 return back()->withErrors(['jenis_hukuman' => 'Jenis hukuman tidak valid.']);
         }
-
-        $laporan->status = 'diterima';
-        $laporan->save();
 
         return redirect()->route('laporan.index')->with('success', 'Hukuman berhasil diberikan dan status laporan diperbarui.');
     }

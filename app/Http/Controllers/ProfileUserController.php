@@ -48,33 +48,34 @@ class ProfileUserController extends Controller
     $user->update($validated);
 
     // Redirect ke halaman profil dengan pesan sukses
-    return Redirect::route('user.profile')->with('success', 'Profil berhasil diperbarui.');
+    return Redirect::route('profile.index')->with('success', 'Profil berhasil diperbarui.');
     }
 
-    public function updateFotoProfile(Request $request)
-    {
-    // Validasi input untuk foto_profile
+    public function updatePhoto(Request $request)
+{
+    // Validasi file
     $request->validate([
-        'foto_profile' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'foto_profil' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048',
     ]);
 
-    // Ambil data user yang sedang login
-    $user = auth()->user();
-
-    // Hapus file foto_profile lama jika ada
-    if ($user->foto_profile) {
-        Storage::delete($user->foto_profile);
+    // Cek apakah user sudah memiliki foto profil sebelumnya
+    if ($request->user()->foto_profil) {
+        // Hapus foto lama
+        Storage::disk('public')->delete($request->user()->foto_profil);
     }
 
-    // Simpan file foto_profile baru
-    $fotoProfilePath = $request->file('foto_profile')->store('foto_profiles');
+    // Simpan file baru
+    $path = $request->file('foto_profil')->store('profile_pictures', 'public');
 
-    // Update foto_profile di database
-    $user->update(['foto_profile' => $fotoProfilePath]);
+    // Update foto profil di database
+    $request->user()->update([
+        'foto_profil' => 'profile_pictures/' . basename($path),
+    ]);
 
-    // Redirect ke halaman profil dengan pesan sukses
-    return Redirect::route('user.profile')->with('success', 'Foto profil berhasil diperbarui.');
-    }
+    // Redirect dengan pesan sukses
+    return redirect()->route('profile.index')->with('success', 'Foto profil berhasil diupdate!');
+}
+
 
     public function updateLocation(Request $request)
 {

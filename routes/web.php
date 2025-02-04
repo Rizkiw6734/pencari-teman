@@ -105,12 +105,15 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
 
     // Banned Page
     Route::get('/banned', [UserStatusController::class, 'bannedPage'])->name('user.banned');
+    Route::get('/orang-lain', function() {
+        return view('user.profile_orang_lain');
+    });
 
     // Profile User Routes
-    Route::get('/profile-user', [ProfileUserController::class, 'profile'])->name('user.profile');
+    Route::get('/profile-user', [ProfileUserController::class, 'profile'])->name('profile.index');
     Route::get('/profile-user/edit', [ProfileUserController::class, 'edit'])->name('user.edit');
     Route::put('/profile-user', [ProfileUserController::class, 'update'])->name('user.update');
-    Route::put('/profile/update-foto-profile', [ProfileUserController::class, 'updateFotoProfile'])->name('user.profile.updateFotoProfile');
+    Route::put('/profile/update-photo', [ProfileUserController::class, 'updatePhoto'])->name('profile.update-photo');
 
     // Rute untuk halaman suspend
     Route::resource('banding', BandingController::class);

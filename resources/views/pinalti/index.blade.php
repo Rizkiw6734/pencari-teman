@@ -211,7 +211,7 @@
                                 <td>{{ $data->pesan }}</td>
                                 <td>{{ $data->durasi }}</td>
                                 <td>{{ \Carbon\Carbon::parse($data->start_date)->format('d-m-Y') }}</td>
-                                <td>{{ $data->end_date ? \Carbon\Carbon::parse( $data->end_date)->format('d-m-Y') : 'Belum selesai' }}</td>
+                                <td>{{ $data->end_date ? \Carbon\Carbon::parse( $data->end_date)->format('d-m-Y') : '-' }}</td>
                             </tr>
                         @endforeach
                     </tbody>

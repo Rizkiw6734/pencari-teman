@@ -168,10 +168,11 @@ class LaporanController extends Controller
 
         switch ($jenisHukuman) {
             case 'peringatan':
-                $totalPeringatan = Pinalti::where('laporan_id', $laporan->id)
-                ->where('jenis_hukuman', 'peringatan')->count();
-
-                dd($totalPeringatan);
+                $totalPeringatan = Pinalti::whereHas('laporan', function ($query) use ($laporan) {
+                    $query->where('reported_id', $laporan->reported_id);
+                })
+                ->where('jenis_hukuman', 'peringatan')
+                ->count();
 
                 if ($totalPeringatan >= 3) {
                     return redirect('/laporan')->with('error', 'Pengguna sudah menerima 3 peringatan. Hanya bisa diberikan suspend atau banned.');

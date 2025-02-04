@@ -225,143 +225,158 @@
                                     </button>
                                 </td>
                                 <!-- Modal Detail Laporan -->
-                                <div class="modal fade" id="laporanModal{{ $laporan->id }}" tabindex="-1" aria-labelledby="laporanModalLabel{{ $laporan->id }}" aria-hidden="true">
-                                    <div class="modal-dialog custom-modal-sm">
+                                <div class="modal fade" id="laporanModal{{ $laporan->id }}" data-bs-backdrop="false" tabindex="-1" aria-labelledby="laporanModalLabel{{ $laporan->id }}" aria-hidden="true" style="background-color: rgba(0, 0, 0, 0.5) !important;">
+                                    <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
-                                            <div class="modal-header">
+                                            <div class="modal-header d-flex align-items-center justify-content-between w-100">
                                                 <h5 class="modal-title" id="laporanModalLabel{{ $laporan->id }}">Detail Laporan</h5>
-                                                <button type="button" class="btn-close" onclick="goBackToLaporan()" aria-label="Close">
-                                                    <i class="fa fa-times"></i>
-                                                </button>
-
-                                                <script>
-                                                    function goBackToLaporan() {
-                                                        // Redirect ke halaman laporan
-                                                        window.location.href = '{{ route("laporan.index") }}';  // Ganti dengan route yang sesuai
-                                                    }
-                                                </script>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <!-- Bagian Detail -->
-                                                    <div class="col-6 mt-1 detail-laporan">
-                                                        <div class="row">
-                                                            <div class="col-6">
-                                                                <p class="text-dark text-bold">Pelapor :</p>
-                                                                <p>{{ $laporan->pelapor->name }}</p>
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <p class="text-dark text-bold">Terlapor :</p>
-                                                                <p>{{ $laporan->terlapor->name }}</p>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="row">
-                                                            <div class="col-6">
-                                                                <p class="text-dark text-bold">Tanggal :</p>
-                                                                <p>{{ \Carbon\Carbon::parse($laporan->created_at)->format('d-m-Y') }}</p>
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <p class="text-dark text-bold">Alasan :</p>
-                                                                <p>{{ $laporan->alasan }}</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-1 text-center border-divider">
-                                                        <div class="vertical-line"></div>
-                                                    </div>
-
-                                                    <!-- Bagian Bukti -->
-                                                    <div class="col-5 bukti-laporan">
-                                                        <p class="text-dark text-bold">Bukti :</p>
-                                                        @if ($laporan->bukti)
-                                                            <img src="{{ asset('assets/img/laporan/' . $laporan->bukti) }}" alt="Bukti Laporan" class="img-fluid rounded">
-                                                        @else
-                                                            <span class="text-muted">Tidak ada bukti</span>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer d-flex justify-content-center align-items-center">
-                                                @if ($laporan->status === 'proses')
-                                                    @foreach ([
-                                                        ['label' => 'Beri Peringatan', 'class' => 'btn', 'style' => 'background-color: #FF8800; color: white;', 'target' => "modalPeringatan{$laporan->id}"],
-                                                        ['label' => 'Suspend User', 'class' => 'btn', 'style' => 'background-color: #FF0000; color: white;', 'target' => "modalSuspend{$laporan->id}"],
-                                                    ] as $action)
-                                                        <button type="button" class="btn" style="{{ $action['style'] }}" data-bs-toggle="modal" data-bs-target="#{{ $action['target'] }}">
-                                                            {{ $action['label'] }}
-                                                        </button>
-                                                    @endforeach
-
-                                                    <!-- Tombol Banned User -->
+                                            
+                                                <div class="d-flex align-items-center gap-3">
                                                     <form id="bannedForm-{{ $laporan->id }}" action="{{ route('laporan.hukuman', $laporan->id) }}" method="POST">
                                                         @csrf
                                                         <input type="hidden" name="jenis_hukuman" value="banned">
-                                                        <button type="button" class="btn btn-dark" onclick="confirmBanned({{ $laporan->id }})">
-                                                            Banned User
+                                                        <button type="button" class="btn-link p-0 border-0 btn-ban text-dark" style="background-color: transparent !important; border: none;" onclick="confirmBanned({{ $laporan->id }})">
+                                                            <i class="fa fa-ban"></i>
                                                         </button>
                                                     </form>
+                                            
+                                                    <button type="button" class="btn-link p-0 border-0 btn-per text-warning" style="background-color: transparent !important; border: none;" data-bs-toggle="modal" data-bs-target="#modalPeringatan{{ $laporan->id }}">
+                                                        <i class="fa fa-exclamation-triangle"></i>
+                                                    </button>
+                                            
+                                                    <button type="button" class="btn-clos p-0 border-0 btn-per" style="background-color: transparent !important; border: none;" data-bs-dismiss="modal" aria-label="Close">
+                                                        <i class="fa fa-times fa-lg"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="modal-body">
+                                                <div class="col-lg-12 col-12">
+                                                    <div class="card">
+                                                        <div class="card-body">
+                                                            <div class="row">
+                                                                <!-- Bagian Detail -->
+                                                                <div class="col-6 mt-1 detail-laporan">
+                                                                    <div class="row">
+                                                                        <div class="col-6">
+                                                                            <p class="text-dark text-bold">Pelapor :</p>
+                                                                            <p>{{ $laporan->pelapor->name }}</p>
+                                                                        </div>
+                                                                        <div class="col-6">
+                                                                            <p class="text-dark text-bold">Terlapor :</p>
+                                                                            <p>{{ $laporan->terlapor->name }}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                
+                                                                    <div class="row">
+                                                                        <div class="col-6">
+                                                                            <p class="text-dark text-bold">Tanggal :</p>
+                                                                            <p>{{ \Carbon\Carbon::parse($laporan->created_at)->format('d-m-Y') }}</p>
+                                                                        </div>
+                                                                        <div class="col-6">
+                                                                            <p class="text-dark text-bold">Alasan :</p>
+                                                                            <p>{{ $laporan->alasan }}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>                                                                                                       
+            
+                                                                <div class="col-1 text-center border-divider">
+                                                                    <div class="vertical-line"></div>
+                                                                </div>
+            
+                                                                <!-- Bagian Bukti -->
+                                                                <div class="col-5 bukti-laporan">
+                                                                    <p class="text-dark text-bold">Bukti :</p>
+                                                                    @if ($laporan->bukti)
+                                                                        <img src="{{ asset('assets/img/laporan/' . $laporan->bukti) }}" alt="Bukti Laporan" class="img-fluid rounded">
+                                                                    @else
+                                                                        <span class="text-muted">Tidak ada bukti</span>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer d-flex justify-content-center align-items-center">
+                                                            @if ($laporan->status === 'proses')
+                                                                @foreach ([
+                                                                    ['label' => 'Suspend User', 'class' => 'btn', 'style' => 'border-radius: 12px; background-color: transparant; border: 1.5px solid #FF8800; color: #FF8800;', 'target' => "modalSuspend{$laporan->id}"],
+                                                                ] as $action)
+                                                                    <button type="button" class="btn" style="{{ $action['style'] }}" data-bs-toggle="modal" data-bs-target="#{{ $action['target'] }}">
+                                                                        {{ $action['label'] }}
+                                                                    </button>
+                                                                @endforeach
+            
+            
+                                                                <!-- Tombol Tolak Laporan -->
+                                                                <form id="tolakLaporanForm-{{ $laporan->id }}" action="{{ route('laporan.tolak', $laporan->id) }}" method="POST" style="display:inline;">
+                                                                    @csrf
+                                                                    <button type="button" class="btn" style="border-radius: 12px; background-color: transparant; border: 1.5px solid #FF0000; color: #FF0000; margin-top: 3px !important;" onclick="confirmTolakLaporan({{ $laporan->id }})">
+                                                                        Tolak Laporan
+                                                                    </button>
+                                                                </form>
+                                                                
+                                                                <script>
+                                                                    function confirmBanned(id) {
+                                                                        Swal.fire({
+                                                                            title: 'Banned Pengguna',
+                                                                            html: 'Apakah Anda yakin ingin Menghentikan Akses<br>Pengguna ini Secara Permanen?',
+                                                                            showCancelButton: true,
+                                                                            confirmButtonColor: '#d33',
+                                                                            cancelButtonColor: '#6c757d',
+                                                                            confirmButtonText: 'Ya',
+                                                                            cancelButtonText: 'Batal',
+                                                                            customClass: {
+                                                                                popup: 'rounded-lg shadow',
+                                                                                title: 'fw-bold',
+                                                                                confirmButton: 'btn btn-danger px-4',
+                                                                                cancelButton: 'btn btn-secondary px-4'
+                                                                            }
+                                                                        }).then((result) => {
+                                                                            if (result.isConfirmed) {
+                                                                                document.getElementById(`bannedForm-${id}`).submit();
+                                                                            }
+                                                                        });
+                                                                    }
 
-                                                    <!-- Tombol Tolak Laporan -->
-                                                    <form id="tolakLaporanForm-{{ $laporan->id }}" action="{{ route('laporan.tolak', $laporan->id) }}" method="POST" style="display:inline;">
-                                                        @csrf
-                                                        <button type="button" class="btn" style="background-color: #FFD900; color: white; margin-top: 3px !important;" onclick="confirmTolakLaporan({{ $laporan->id }})">
-                                                            Tolak Laporan
-                                                        </button>
-                                                    </form>
-
-                                                    <script>
-                                                        function confirmBanned(id) {
-                                                            Swal.fire({
-                                                                title: 'Apakah Anda yakin?',
-                                                            html: `<p>Apakah Anda yakin ingin membanned pengguna ini?</p>
-                                                                   <p class="text-danger"><strong>Catatan:</strong> Pengguna ini tidak akan bisa login setelah dibanned.</p>`,
-                                                            icon: 'warning',
-                                                            showCancelButton: true,
-                                                            confirmButtonColor: '#000000',
-                                                            cancelButtonColor: '#d33',
-                                                            confirmButtonText: 'Konfirmasi Banned',
-                                                            cancelButtonText: 'Batal'
-                                                            }).then((result) => {
-                                                                if (result.isConfirmed) {
-                                                                    document.getElementById(`bannedForm-${id}`).submit();
-                                                                }
-                                                            });
-                                                        }
-
-                                                        function confirmTolakLaporan(id) {
-                                                            Swal.fire({
-                                                                title: 'Apakah Anda yakin?',
-                                                                text: "Laporan ini akan ditolak.",
-                                                                icon: 'warning',
-                                                                showCancelButton: true,
-                                                                confirmButtonColor: '#3085d6',
-                                                                cancelButtonColor: '#d33',
-                                                                confirmButtonText: 'Ya, tolak!',
-                                                                cancelButtonText: 'Batal'
-                                                            }).then((result) => {
-                                                                if (result.isConfirmed) {
-                                                                    document.getElementById(`tolakLaporanForm-${id}`).submit();
-                                                                }
-                                                            });
-                                                        }
-                                                    </script>
-
-                                                @elseif ($laporan->status === 'diterima')
-                                                    <p class="text-success">Laporan telah diterima dan diproses.</p>
-                                                @elseif ($laporan->status === 'ditolak')
-                                                    <p class="text-danger">Laporan telah ditolak.</p>
-                                                @elseif ($laporan->status === 'selesai')
-                                                    <p class="text-success">Laporan telah selesai.</p>
-                                                @endif
+                                                                    function confirmTolakLaporan(id) {
+                                                                        Swal.fire({
+                                                                            title: 'Tolak Laporan',
+                                                                            html: 'Apakah Anda yakin ingin menolak laporan ini?<br>Tindakan ini tidak dapat dibatalkan dan laporan<br>akan dianggap tidak valid.',
+                                                                            showCancelButton: true,
+                                                                            confirmButtonColor: '#d33',
+                                                                            cancelButtonColor: '#6c757d',
+                                                                            confirmButtonText: 'Ya',
+                                                                            cancelButtonText: 'Batal',
+                                                                            customClass: {
+                                                                                popup: 'rounded-lg shadow',
+                                                                                title: 'fw-bold',
+                                                                                confirmButton: 'btn btn-danger px-4',
+                                                                                cancelButton: 'btn btn-secondary px-4'
+                                                                            }
+                                                                        }).then((result) => {
+                                                                            if (result.isConfirmed) {
+                                                                                document.getElementById(`tolakLaporanForm-${id}`).submit();
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                </script>                                                    
+            
+                                                            @elseif ($laporan->status === 'diterima')
+                                                                <p class="text-success">Laporan telah diterima dan diproses.</p>
+                                                            @elseif ($laporan->status === 'ditolak')
+                                                                <p class="text-danger">Laporan telah ditolak.</p>
+                                                                @elseif ($laporan->status === 'selesai')
+                                                                <p class="text-success">Laporan telah selesai.</p>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Modal Kirim Peringatan -->
-                                <div class="modal fade" id="modalPeringatan{{ $laporan->id }}" tabindex="-1" aria-labelledby="modalPeringatanLabel{{ $laporan->id }}" aria-hidden="true">
+                                <div class="modal fade" id="modalPeringatan{{ $laporan->id }}" data-bs-backdrop="false" tabindex="-1" aria-labelledby="modalPeringatanLabel{{ $laporan->id }}" aria-hidden="true" style="background-color: rgba(0, 0, 0, 0.5) !important;">
                                     <div class="modal-dialog">
                                         <form action="{{ route('laporan.hukuman', $laporan->id) }}" method="POST">
                                             @csrf
@@ -380,7 +395,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="submit" class="btn btn-warning">Kirim</button>
+                                                    <button type="submit" class="btn" style="background-color: #528BFF; color: #FFFFFF">Kirim</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -388,7 +403,7 @@
                                 </div>
 
                                 <!-- Modal Suspend -->
-                                <div class="modal fade" id="modalSuspend{{ $laporan->id }}" tabindex="-1" aria-labelledby="modalSuspendLabel{{ $laporan->id }}" aria-hidden="true">
+                                <div class="modal fade" id="modalSuspend{{ $laporan->id }}" data-bs-backdrop="false" tabindex="-1" aria-labelledby="modalSuspendLabel{{ $laporan->id }}" aria-hidden="true" style="background-color: rgba(0, 0, 0, 0.5) !important;">
                                     <div class="modal-dialog">
                                         <form action="{{ route('laporan.hukuman', $laporan->id) }}" method="POST">
                                             @csrf
@@ -429,7 +444,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="submit" class="btn btn-danger">Suspend</button>
+                                                    <button type="submit" class="btn" style="background-color: #528BFF; color: #FFFFFF">Suspend</button>
                                                 </div>
                                             </div>
                                         </form>

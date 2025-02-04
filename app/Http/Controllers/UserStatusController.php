@@ -28,7 +28,9 @@ class UserStatusController extends Controller
     public function suspendPage()
     {
         $user = Auth::user();
-        $pinaltis = Pinalti::all();
+        $pinaltis = Pinalti::whereHas('laporan', function ($query) use ($user) {
+            $query->where('reported_id', $user->id)->whereIn('jenis_hukuman', ['suspend', 'banned']);
+        })->get();
 
         if ($user->status === 'aktif') {
             return redirect()->route('user.home');

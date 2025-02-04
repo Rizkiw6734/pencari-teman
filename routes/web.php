@@ -116,6 +116,8 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     Route::put('/profile/update-photo', [ProfileUserController::class, 'updatePhoto'])->name('profile.update-photo');
 
     // Rute untuk halaman suspend
+    Route::get('/laporan/create', [LaporanController::class, 'create'])->name('laporan.create');
+    Route::post('/laporan', [LaporanController::class, 'store'])->name('laporan.store');
     Route::get('/banding/create', [BandingController::class, 'create'])->name('banding.create');
     Route::post('/banding', [BandingController::class, 'store'])->name('banding.store');
     Route::get('/jelajahi', [JelajahiController::class, 'index'])->name('user.jelajahi');

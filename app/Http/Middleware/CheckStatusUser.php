@@ -27,7 +27,7 @@ class CheckStatusUser
         return $next($request);
     }
 
-    if ($request->route('banding.create') || $request->route('banding.store')) {
+    if ($request->route()->named('banding.create') || $request->route()->named('banding.store')) {
         return $next($request);
     }
 

@@ -59,7 +59,7 @@ class BandingController extends Controller
             'alasan_banding.max' => 'alasan banding tidak bisa lebih dari 255 karakter.'
         ]);
 
-        $existingBanding = Banding::where('users_id', auth()->id())
+        $existingBanding = Banding::where('users_id', Auth::user()->id)
             ->where('pinalti_id', $request->pinalti_id)
             ->first();
 
@@ -70,7 +70,7 @@ class BandingController extends Controller
         $pinalti = Pinalti::findOrFail($request->pinalti_id);
 
         Banding::create([
-            'users_id' => auth()->id(),
+            'users_id' => Auth::user()->id,
             'pinalti_id' => $request->pinalti_id,
             'jenis_hukuman' => $pinalti->jenis_hukuman,
             'alasan_banding' => $request->alasan_banding,

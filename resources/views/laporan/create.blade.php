@@ -39,9 +39,10 @@
                                 <textarea name="alasan" id="alasan" rows="4" class="form-control"></textarea>
                             </div>
                             <div class="modal-footer d-flex justify-content-between border-0 mt-2 mx-2">
-                                <button type="button" class="btn btn-danger" style="font-size: 14px; padding: 10px 30px;">Laporkan</button>
-                                <button type="button" class="btn btn-secondary"
-                                data-bs-dismiss="modal" style="font-size: 14px; padding: 10px 30px; background-color: #BEB9B9; color: white;">Batal</button>
+                                <button type="submit" class="btn btn-danger" style="font-size: 14px; padding: 10px 30px;">Laporkan</button>
+                                <button type="button" class="btn btn-secondary" onclick="window.history.back();" style="font-size: 14px; padding: 10px 30px; background-color: #BEB9B9; color: white;">
+                                    Batal
+                                </button>
                             </div>
                         </div>
                     </div>

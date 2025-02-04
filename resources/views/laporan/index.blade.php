@@ -232,14 +232,10 @@
                                                 <h5 class="modal-title" id="laporanModalLabel{{ $laporan->id }}">Detail Laporan</h5>
                                             
                                                 <div class="d-flex align-items-center gap-3">
-                                                    <form id="bannedForm-{{ $laporan->id }}" action="{{ route('laporan.hukuman', $laporan->id) }}" method="POST">
-                                                        @csrf
-                                                        <input type="hidden" name="jenis_hukuman" value="banned">
-                                                        <button type="button" class="btn-link p-0 border-0 btn-ban text-dark" style="background-color: transparent !important; border: none;" onclick="confirmBanned({{ $laporan->id }})">
-                                                            <i class="fa fa-ban"></i>
-                                                        </button>
-                                                    </form>
-                                            
+                                                    <button type="button" class="btn-link p-0 border-0 btn-ban text-dark" style="background-color: transparent !important; border: none;" data-bs-toggle="modal" data-bs-target="#modalBanned{{ $laporan->id }}">
+                                                        <i class="fa fa-ban"></i>
+                                                    </button>
+
                                                     <button type="button" class="btn-link p-0 border-0 btn-per text-warning" style="background-color: transparent !important; border: none;" data-bs-toggle="modal" data-bs-target="#modalPeringatan{{ $laporan->id }}">
                                                         <i class="fa fa-exclamation-triangle"></i>
                                                     </button>
@@ -307,58 +303,9 @@
             
             
                                                                 <!-- Tombol Tolak Laporan -->
-                                                                <form id="tolakLaporanForm-{{ $laporan->id }}" action="{{ route('laporan.tolak', $laporan->id) }}" method="POST" style="display:inline;">
-                                                                    @csrf
-                                                                    <button type="button" class="btn" style="border-radius: 12px; background-color: transparant; border: 1.5px solid #FF0000; color: #FF0000; margin-top: 3px !important;" onclick="confirmTolakLaporan({{ $laporan->id }})">
-                                                                        Tolak Laporan
-                                                                    </button>
-                                                                </form>
-                                                                
-                                                                <script>
-                                                                    function confirmBanned(id) {
-                                                                        Swal.fire({
-                                                                            title: 'Banned Pengguna',
-                                                                            html: 'Apakah Anda yakin ingin Menghentikan Akses<br>Pengguna ini Secara Permanen?',
-                                                                            showCancelButton: true,
-                                                                            confirmButtonColor: '#d33',
-                                                                            cancelButtonColor: '#6c757d',
-                                                                            confirmButtonText: 'Ya',
-                                                                            cancelButtonText: 'Batal',
-                                                                            customClass: {
-                                                                                popup: 'rounded-lg shadow',
-                                                                                title: 'fw-bold',
-                                                                                confirmButton: 'btn btn-danger px-4',
-                                                                                cancelButton: 'btn btn-secondary px-4'
-                                                                            }
-                                                                        }).then((result) => {
-                                                                            if (result.isConfirmed) {
-                                                                                document.getElementById(`bannedForm-${id}`).submit();
-                                                                            }
-                                                                        });
-                                                                    }
-
-                                                                    function confirmTolakLaporan(id) {
-                                                                        Swal.fire({
-                                                                            title: 'Tolak Laporan',
-                                                                            html: 'Apakah Anda yakin ingin menolak laporan ini?<br>Tindakan ini tidak dapat dibatalkan dan laporan<br>akan dianggap tidak valid.',
-                                                                            showCancelButton: true,
-                                                                            confirmButtonColor: '#d33',
-                                                                            cancelButtonColor: '#6c757d',
-                                                                            confirmButtonText: 'Ya',
-                                                                            cancelButtonText: 'Batal',
-                                                                            customClass: {
-                                                                                popup: 'rounded-lg shadow',
-                                                                                title: 'fw-bold',
-                                                                                confirmButton: 'btn btn-danger px-4',
-                                                                                cancelButton: 'btn btn-secondary px-4'
-                                                                            }
-                                                                        }).then((result) => {
-                                                                            if (result.isConfirmed) {
-                                                                                document.getElementById(`tolakLaporanForm-${id}`).submit();
-                                                                            }
-                                                                        });
-                                                                    }
-                                                                </script>                                                    
+                                                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modalTolak{{ $laporan->id }}" style="border-radius: 12px; background-color: transparant; border: 1.5px solid #FF0000; color: #FF0000; margin-top: 3px !important;" onclick="confirmTolakLaporan({{ $laporan->id }})">
+                                                                    Tolak Laporan
+                                                                </button>                                             
             
                                                             @elseif ($laporan->status === 'diterima')
                                                                 <p class="text-success">Laporan telah diterima dan diproses.</p>
@@ -394,8 +341,9 @@
                                                         <textarea name="pesan" id="pesan{{ $laporan->id }}" class="form-control" rows="3" required></textarea>
                                                     </div>
                                                 </div>
-                                                <div class="modal-footer">
-                                                    <button type="submit" class="btn" style="background-color: #528BFF; color: #FFFFFF">Kirim</button>
+                                                <div class="modal-footer d-flex justify-content-between border-0 mx-4">
+                                                    <button type="submit" class="btn btn-primary" style="background-color: #528BFF; color: #FFFFFF; font-size: 14px; padding: 10px 30px;">Kirim</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="showPreviousModal()" style="background-color: ##BEB9B9; color: white; font-size: 14px; padding: 10px 30px;">Batal</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -411,27 +359,6 @@
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="modalSuspendLabel{{ $laporan->id }}">Suspend User</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="showPreviousModal()" aria-label="Close">
-                                                        <i class="fa fa-times"></i>
-                                                    </button>
-
-                                                    <script>
-                                                        function showPreviousModal() {
-                                                            // Menutup modal saat ini
-                                                            var modal = document.querySelector('#modalPeringatan{{ $laporan->id }}');
-                                                            var modalBackdrop = document.querySelector('.modal-backdrop');
-                                                            if (modalBackdrop) {
-                                                                modalBackdrop.remove();  // Menghapus backdrop agar tidak menghalangi tampilan
-                                                            }
-
-                                                            // Menampilkan modal sebelumnya
-                                                            var previousModal = document.querySelector('#laporanModal{{ $laporan->id }}');
-                                                            if (previousModal) {
-                                                                var modalBootstrap = new bootstrap.Modal(previousModal);
-                                                                modalBootstrap.show();
-                                                            }
-                                                        }
-                                                    </script>
                                                 </div>
                                                 <div class="modal-body">
                                                     <div class="form-group">
@@ -443,8 +370,76 @@
                                                         <textarea name="pesan" id="pesan" class="form-control" rows="3"></textarea>
                                                     </div>
                                                 </div>
-                                                <div class="modal-footer">
-                                                    <button type="submit" class="btn" style="background-color: #528BFF; color: #FFFFFF">Suspend</button>
+                                                <div class="modal-footer d-flex justify-content-between border-0 mx-4">
+                                                    <button type="submit" class="btn btn-primary" style="background-color: #528BFF; color: #FFFFFF; font-size: 14px; padding: 10px 30px;">Suspend</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="showPreviousModal()" style="background-color: ##BEB9B9; color: white; font-size: 14px; padding: 10px 30px;">Batal</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+    
+                                <!-- Modal Banned -->
+                                <div class="modal fade" id="modalBanned{{ $laporan->id }}" data-bs-backdrop="false" tabindex="-1" aria-labelledby="modalBannedLabel{{ $laporan->id }}" aria-hidden="true" style="background-color: rgba(0, 0, 0, 0.5) !important;">
+                                    <div class="modal-dialog">
+                                        <form action="{{ route('laporan.hukuman', $laporan->id) }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="jenis_hukuman" value="banned">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title w-100 text-center" id="modalBannedLabel{{ $laporan->id }}">Banned Pengguna</h5>
+                                                </div>
+                                                <div class="modal-body text-black text-center fs-5 mx-auto mt-0">
+                                                    Apakah Anda yakin ingin Menghentikan Akses<br>Pengguna ini Secara Permanen?
+                                                </div>
+                                                <div class="modal-footer d-flex justify-content-between border-0 mx-4">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="showPreviousModal()" style="background-color: #000000; color: white; font-size: 14px; padding: 10px 30px;">Batal</button>
+                                                    <button type="submit" class="btn btn-primary" style="background-color: #ffffff; color: rgb(0, 0, 0); font-size: 14px; padding: 10px 30px; border:#000000 solid 1px;">Ya</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <!-- Modal Banned -->
+                                <div class="modal fade" id="modalBanned{{ $laporan->id }}" data-bs-backdrop="false" tabindex="-1" aria-labelledby="modalBannedLabel{{ $laporan->id }}" aria-hidden="true" style="background-color: rgba(0, 0, 0, 0.5) !important;">
+                                    <div class="modal-dialog">
+                                        <form action="{{ route('laporan.hukuman', $laporan->id) }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="jenis_hukuman" value="banned">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title w-100 text-center" id="modalBannedLabel{{ $laporan->id }}">Banned Pengguna</h5>
+                                                </div>
+                                                <div class="modal-body text-black text-center fs-5 mx-auto mt-0">
+                                                    Apakah Anda yakin ingin Menghentikan Akses<br>Pengguna ini Secara Permanen?
+                                                </div>
+                                                <div class="modal-footer d-flex justify-content-between border-0 mx-4">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="showPreviousModal()" style="background-color: #000000; color: white; font-size: 14px; padding: 10px 30px;">Batal</button>
+                                                    <button type="submit" class="btn btn-primary" style="background-color: #ffffff; color: rgb(0, 0, 0); font-size: 14px; padding: 10px 30px; border:#000000 solid 1px;">Ya</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <!-- Modal Tolak Laporan -->
+                                <div class="modal fade" id="modalTolak{{ $laporan->id }}" data-bs-backdrop="false" tabindex="-1" aria-labelledby="modalTolakLabel{{ $laporan->id }}" aria-hidden="true" style="background-color: rgba(0, 0, 0, 0.5) !important;">
+                                    <div class="modal-dialog">
+                                        <form action="{{ route('laporan.tolak', $laporan->id) }}" method="POST">
+                                            @csrf
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title w-100 text-center" id="modalTolakLabel{{ $laporan->id }}">Tolak Laporan</h5>
+                                                </div>
+                                                <div class="modal-body text-black text-center fs-5 mx-auto mt-0">
+                                                    Apakah Anda yakin ingin menolak laporan ini?<br>
+                                                    Tindakan ini tidak dapat dibatalkan dan laporan<br>
+                                                    akan dianggap tidak valid.
+                                                </div>
+                                                <div class="modal-footer d-flex justify-content-between border-0 mx-4">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="showPreviousModal()" style="background-color: #000000; color: white; font-size: 14px; padding: 10px 30px;">Batal</button>
+                                                    <button type="submit" class="btn btn-primary" style="background-color: #ffffff; color: rgb(0, 0, 0); font-size: 14px; padding: 10px 30px; border:#000000 solid 1px;">Ya</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -461,6 +456,24 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function showPreviousModal() {
+            // Menutup modal saat ini
+            var modal = document.querySelector('#modalPeringatan{{ $laporan->id }}');
+            var modalBackdrop = document.querySelector('.modal-backdrop');
+            if (modalBackdrop) {
+                modalBackdrop.remove();  // Menghapus backdrop agar tidak menghalangi tampilan
+            }
+
+            // Menampilkan modal sebelumnya
+            var previousModal = document.querySelector('#laporanModal{{ $laporan->id }}');
+            if (previousModal) {
+                var modalBootstrap = new bootstrap.Modal(previousModal);
+                modalBootstrap.show();
+            }
+        }
+    </script>
 
     <div class="d-flex justify-content-center mt-4">
         <nav aria-label="Page navigation">

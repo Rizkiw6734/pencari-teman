@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Pinalti;
+use App\Models\Laporan;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -31,11 +32,14 @@ class CheckExpiredSuspensionJob implements ShouldQueue
 
         foreach ($expiredSuspension as $suspend) {
             $user = User::find($suspend->laporan->reported_id);
+            $laporan = $suspend->laporan;
             if ($user) {
                 $user->status = 'aktif';
                 $user->save();
             }
             $suspend->delete();
+            $laporan->status = 'selesai';
+            $laporan->save();
         }
     }
 }

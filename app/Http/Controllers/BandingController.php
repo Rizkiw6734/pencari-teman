@@ -16,21 +16,21 @@ class BandingController extends Controller
     public function index(Request $request)
     {
         $query = Banding::query(); // Inisialisasi query
-    
+
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-    
+
             $query->whereHas('user', function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%'); // Cari berdasarkan nama user
             })->orWhereHas('pinalti', function ($q) use ($search) {
                 $q->where('jenis_hukuman', 'like', '%' . $search . '%'); // Cari berdasarkan jenis hukuman
             })->orWhere('status', 'like', '%' . $search . '%'); // Cari berdasarkan status
         }
-    
+
         $bandings = $query->with(['user', 'pinalti'])->paginate(10);
-    
+
         return view('banding.index', compact('bandings'));
-    }    
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -72,6 +72,7 @@ class BandingController extends Controller
         Banding::create([
             'users_id' => auth()->id(),
             'pinalti_id' => $request->pinalti_id,
+            'jenis_hukuman' => $pinalti->jenis_hukuman,
             'alasan_banding' => $request->alasan_banding,
             'status' => 'proses',
         ]);
@@ -135,66 +136,71 @@ class BandingController extends Controller
     public function terimaBanding(Request $request, string $id)
     {
         $banding = Banding::with('pinalti')->findOrFail($id);
-    
+
         if ($banding->status === 'diterima' || $banding->status === 'ditolak') {
             return redirect('/banding')->with('error', 'Banding sudah selesai dan tidak dapat diubah.');
         }
-    
+
         $pinalti = $banding->pinalti;
-    
+
         if (!$pinalti) {
             return redirect('/banding')->with('error', 'Pinalti tidak ditemukan.');
         }
-    
+
         $user = User::find($pinalti->laporan->reported_id);
-    
+
         if (!$user) {
             return redirect('/banding')->with('error', 'Pengguna terkait pinalti tidak ditemukan.');
         }
-    
-        // Pastikan `action` diterima dari form
         $action = $request->input('action');
-    
+
         switch ($pinalti->jenis_hukuman) {
             case 'suspend':
                 if ($action === 'hapus') {
                     $user->status = 'aktif';
                     $user->save();
-    
+
                     $banding->status = 'diterima';
+                    $banding->pinalti_id = 0;
                     $banding->save();
-    
+
+                    $pinalti->delete();
+                    $laporan = $pinalti->laporan;
+
+                    $laporan->status = 'selesai';
+                    $laporan->save();
+
                     return redirect()->route('banding.index')->with('success', 'Banding diterima dan Suspend berhasil dihapus.');
                 } elseif ($action === 'kurangi') {
                     $currentDurasi = $pinalti->durasi;
                     $requestedDurasi = $request->input('durasi', 0);
-    
+
                     if ($requestedDurasi > $currentDurasi) {
                         return back()->with('error', 'Pengurangan durasi tidak boleh lebih dari durasi suspend saat ini.');
                     }
-    
+
                     $pinalti->durasi = $currentDurasi - $requestedDurasi;
                     $pinalti->end_date = now()->addDays($pinalti->durasi);
                     $pinalti->save();
-    
+
                     $banding->status = 'diterima';
                     $banding->save();
-    
+
                     return back()->with('success', 'Durasi suspend berhasil diperbarui.');
                 } else {
                     return back()->with('error', 'Pilihan tidak valid untuk jenis hukuman suspend.');
                 }
-    
+
             case 'peringatan':
             case 'banned':
                 $banding->status = 'diterima';
                 $banding->save();
-    
+
                 $user->status = 'aktif';
                 $user->save();
-    
+
                 return redirect()->route('banding.index')->with('success', 'Banding diterima dan hukuman berhasil dihapus.');
-    
+
             default:
                 return redirect('/banding')->with('error', 'Jenis hukuman tidak dikenali.');
         }

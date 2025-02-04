@@ -83,7 +83,7 @@
                                         style="background-color: #F0F3F9; border-bottom: 0px solid #ddd;">
                                         <div class="chat-item d-flex align-items-start" style="flex: 1;">
                                             <img id="chat-avatar" alt="Avatar"
-     style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-top: -3px; display: none;">
+                                                style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-top: -3px; display: none;">
 
                                             <div class="chat-content"
                                                 style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
@@ -298,7 +298,7 @@
                             method: 'GET',
                             success: function(response) {
                                 console.log("Response dari server:",
-                                response); // Pastikan struktur response sesuai yang diharapkan
+                                    response); // Pastikan struktur response sesuai yang diharapkan
 
                                 const chatContainer = $('#chat-container');
                                 chatContainer.empty(); // Menghapus chat yang lama
@@ -326,9 +326,13 @@
                                         }
 
                                         // Cek jika profile_image ada, jika tidak ada gunakan gambar default
-                                        const profileImage = chatPartner.profile_image ? '/storage/' +
-                                            chatPartner.profile_image :
-                                            '{{ asset('assets/img/team-1.jpg') }}'; // Menggunakan asset untuk gambar default
+                                        const profileImage = chatPartner?.foto_profile
+    ? `${window.location.origin}/storage/${encodeURIComponent(chatPartner.foto_profile)}`
+    : `${window.location.origin}/images/marie.jpg`;
+
+
+
+ // Menggunakan asset untuk gambar default
                                         const name = chatPartner.name ? chatPartner.name : 'No Name';
 
                                         // Buat tampilan pesan chat
@@ -372,7 +376,7 @@
                             },
                             error: function(xhr, status, error) {
                                 console.error("Error fetching chat data:", xhr.responseText ||
-                                error); // Log error jika request gagal
+                                    error); // Log error jika request gagal
                             }
                         });
                     }
@@ -399,7 +403,7 @@
 
                     // Ambil ID pengguna yang sedang login
                     var userId =
-                    {{ Auth::id() }}; // Pastikan ID pengguna yang sedang login dimasukkan dengan benar di blade template
+                        {{ Auth::id() }}; // Pastikan ID pengguna yang sedang login dimasukkan dengan benar di blade template
 
                     // Update input hidden penerima-id dengan ID penerima yang dipilih
                     $("#penerima-id").val(penerimaId);
@@ -417,33 +421,33 @@
 
                 // Fungsi untuk mengupdate status pengguna di header chat
                 function updateUserStatus(userId) {
-    $.ajax({
-        url: "/user/status/" + userId,
-        type: "GET",
-        success: function(response) {
-            $("#chat-name").text(response.name);
+                    $.ajax({
+                        url: "/user/status/" + userId,
+                        type: "GET",
+                        success: function(response) {
+                            $("#chat-name").text(response.name);
 
-            // Gunakan default avatar yang benar
-            var defaultAvatar = "/assets/img/team-1.jpg";
-            var avatar = response.avatar ? response.avatar : defaultAvatar;
+                            // Gunakan default avatar yang benar
+                            var defaultAvatar = "/assets/img/team-1.jpg";
+                            var avatar = response.avatar ? response.avatar : defaultAvatar;
 
-            console.log("Avatar URL:", avatar); // Debugging untuk cek URL
+                            console.log("Avatar URL:", avatar); // Debugging untuk cek URL
 
-            $("#chat-avatar").attr("src", avatar).fadeIn();
-            $("#chat-header").show();
+                            $("#chat-avatar").attr("src", avatar).fadeIn();
+                            $("#chat-header").show();
 
-            // Update status online atau offline
-            if (response.is_online) {
-                $("#chat-status").html('<span class="icon" style="color: #28a745;"></span> Online');
-            } else {
-                $("#chat-status").html('<span class="icon" style="color: #888;"></span> Offline');
-            }
-        },
-        error: function() {
-            console.log("Gagal mengambil data user.");
-        }
-    });
-}
+                            // Update status online atau offline
+                            if (response.is_online) {
+                                $("#chat-status").html('<span class="icon" style="color: #28a745;"></span> Online');
+                            } else {
+                                $("#chat-status").html('<span class="icon" style="color: #888;"></span> Offline');
+                            }
+                        },
+                        error: function() {
+                            console.log("Gagal mengambil data user.");
+                        }
+                    });
+                }
 
 
 
@@ -470,18 +474,18 @@
                                     let chatElement = `
                         <div class="chat-item ${isSender ? 'd-flex align-items-end justify-content-end' : 'd-flex align-items-start'} mb-3">
                             ${isSender ? `
-                                                <div class="chat-content text p-2 rounded" style="max-width: 60%; background-color: #9FB7FF; border-radius: 15px 15px 15px 15px;">
-                                                    <span style="font-size: 13px; color: #000000;">${chat.konten}</span>
-                                                    <div class="text-end text-black-50" style="font-size: 10px;">${new Date(new Date(chat.created_at).toLocaleString('en-US', { timeZone: 'Asia/Jakarta' })).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                                                </div>
-                                                <img src="/assets/img/team-2.jpg" alt="Avatar" class="rounded-circle ms-3" style="width: 50px; height: 50px; object-fit: cover;">
-                                            ` : `
-                                                <img src="/assets/img/team-1.jpg" alt="Avatar" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
-                                                <div class="chat-content text p-2 rounded" style="max-width: 50%; background-color: #F0F3F9; border-radius: 15px 15px 15px 0;">
-                                                    <span style="font-size: 13px; color: #000000;">${chat.konten}</span>
-                                                    <div class="text-end text-black-50" style="font-size: 10px;">${new Date(new Date(chat.created_at).toLocaleString('en-US', { timeZone: 'Asia/Jakarta' })).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                                                </div>
-                                            `}
+                                                            <div class="chat-content text p-2 rounded" style="max-width: 60%; background-color: #9FB7FF; border-radius: 15px 15px 15px 15px;">
+                                                                <span style="font-size: 13px; color: #000000;">${chat.konten}</span>
+                                                                <div class="text-end text-black-50" style="font-size: 10px;">${new Date(new Date(chat.created_at).toLocaleString('en-US', { timeZone: 'Asia/Jakarta' })).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                                            </div>
+                                                            <img src="/assets/img/team-2.jpg" alt="Avatar" class="rounded-circle ms-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                                        ` : `
+                                                            <img src="/assets/img/team-1.jpg" alt="Avatar" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                                            <div class="chat-content text p-2 rounded" style="max-width: 50%; background-color: #F0F3F9; border-radius: 15px 15px 15px 0;">
+                                                                <span style="font-size: 13px; color: #000000;">${chat.konten}</span>
+                                                                <div class="text-end text-black-50" style="font-size: 10px;">${new Date(new Date(chat.created_at).toLocaleString('en-US', { timeZone: 'Asia/Jakarta' })).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                                            </div>
+                                                        `}
                         </div>
                     `;
                                     chatBody.append(chatElement); // Menambahkan chat ke chat body

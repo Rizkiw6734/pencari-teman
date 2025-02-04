@@ -46,7 +46,19 @@ class ChatController extends Controller
         $chat->pengirim = $users->get($chat->pengirim_id);
         $chat->penerima = $users->get($chat->penerima_id);
 
+        // Mengubah format waktu
         $chat->created_at = \Carbon\Carbon::parse($chat->created_at)->timezone('Asia/Jakarta');
+
+        $chat->pengirim->foto_profil = isset($chat->pengirim) && !empty($chat->pengirim->foto_profil)
+    ? url('storage/' . $chat->pengirim->foto_profil)
+    : asset('images/marie.jpg');
+
+$chat->penerima->foto_profil = isset($chat->penerima) && !empty($chat->penerima->foto_profil)
+    ? url('storage/' . $chat->penerima->foto_profil)
+    : asset('images/marie.jpg');
+
+
+
     }
 
     if ($request->ajax()) {
@@ -56,9 +68,11 @@ class ChatController extends Controller
             'userId' => $userId
         ], 200);
     }
+
     // Jika tidak AJAX, tampilkan halaman dengan data yang sudah diproses
     return view('user.home', compact('latestChats', 'userId'));
 }
+
 
     // Menyimpan pesan baru
     public function store(Request $request)

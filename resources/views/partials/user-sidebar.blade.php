@@ -39,12 +39,12 @@
     <ul class="navbar-nav position-absolute w-100" style="bottom: 20px; left: 0;">
       <!-- Profile -->
       <li class="nav-item" style="position: relative;">
-        <a class="nav-link {{ request()->routeIs('user.profile') ? 'active' : '' }}" href="{{ route('user.profile') }}">
+        <a class="nav-link {{ request()->routeIs('profile.index') ? 'active' : '' }}" href="{{ route('profile.index') }}">
           <div class="fa fa-user icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
-               style="background-color: {{ request()->routeIs('user.profile') ? '#3243fd' : '#ffffff' }} !important; color: {{ request()->routeIs('user.profile') ? '#ffffff' : '#000000' }} !important;">
+               style="background-color: {{ request()->routeIs('profile.index') ? '#3243fd' : '#ffffff' }} !important; color: {{ request()->routeIs('profile.index') ? '#ffffff' : '#000000' }} !important;">
           </div>
           <span class="nav-link-text ms-1">Profile</span>
-          @if(request()->routeIs('user.profile'))
+          @if(request()->routeIs('profile.index'))
             <div style="position: absolute; left: 0; top: 0; width: 4px; height: 100%; background-color: #3243fd; border-radius: 0 6px 6px 0;"></div>
           @endif
         </a>

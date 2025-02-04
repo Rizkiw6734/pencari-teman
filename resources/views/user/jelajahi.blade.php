@@ -1,4 +1,4 @@
-{{-- @extends('layouts.user')
+@extends('layouts.user')
 @section('content')
     <div class="main-content"
         style="max-width: 1200px; margin: 0 auto; margin-top: 0px; background-color: #F0F3F9;
@@ -246,9 +246,9 @@
 
         </div>
     </div>
-@endsection  --}}
+@endsection
 
-@extends('layouts.user')
+{{-- @extends('layouts.user')
 @section('content')
     <div class="main-content position-relative min-vh-100" style="background-color: #F0F3F9;">
         <div class="container py-4">
@@ -615,4 +615,4 @@
     </div>
     </div>
     </div>
-@endsection
+@endsection --}}

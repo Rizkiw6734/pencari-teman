@@ -230,7 +230,7 @@
                                         <div class="modal-content">
                                             <div class="modal-header d-flex align-items-center justify-content-between w-100">
                                                 <h5 class="modal-title" id="laporanModalLabel{{ $laporan->id }}">Detail Laporan</h5>
-                                            
+
                                                 <div class="d-flex align-items-center gap-3">
                                                     <button type="button" class="btn-link p-0 border-0 btn-ban text-dark" style="background-color: transparent !important; border: none;" data-bs-toggle="modal" data-bs-target="#modalBanned{{ $laporan->id }}">
                                                         <i class="fa fa-ban"></i>
@@ -239,13 +239,13 @@
                                                     <button type="button" class="btn-link p-0 border-0 btn-per text-warning" style="background-color: transparent !important; border: none;" data-bs-toggle="modal" data-bs-target="#modalPeringatan{{ $laporan->id }}">
                                                         <i class="fa fa-exclamation-triangle"></i>
                                                     </button>
-                                            
+
                                                     <button type="button" class="btn-clos p-0 border-0 btn-per" style="background-color: transparent !important; border: none;" data-bs-dismiss="modal" aria-label="Close">
                                                         <i class="fa fa-times fa-lg"></i>
                                                     </button>
                                                 </div>
                                             </div>
-                                            
+
                                             <div class="modal-body">
                                                 <div class="col-lg-12 col-12">
                                                     <div class="card">
@@ -263,7 +263,7 @@
                                                                             <p>{{ $laporan->terlapor->name }}</p>
                                                                         </div>
                                                                     </div>
-                                                                
+
                                                                     <div class="row">
                                                                         <div class="col-6">
                                                                             <p class="text-dark text-bold">Tanggal :</p>
@@ -274,12 +274,12 @@
                                                                             <p>{{ $laporan->alasan }}</p>
                                                                         </div>
                                                                     </div>
-                                                                </div>                                                                                                       
-            
+                                                                </div>
+
                                                                 <div class="col-1 text-center border-divider">
                                                                     <div class="vertical-line"></div>
                                                                 </div>
-            
+
                                                                 <!-- Bagian Bukti -->
                                                                 <div class="col-5 bukti-laporan">
                                                                     <p class="text-dark text-bold">Bukti :</p>
@@ -300,13 +300,13 @@
                                                                         {{ $action['label'] }}
                                                                     </button>
                                                                 @endforeach
-            
-            
+
+
                                                                 <!-- Tombol Tolak Laporan -->
                                                                 <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modalTolak{{ $laporan->id }}" style="border-radius: 12px; background-color: transparant; border: 1.5px solid #FF0000; color: #FF0000; margin-top: 3px !important;" onclick="confirmTolakLaporan({{ $laporan->id }})">
                                                                     Tolak Laporan
-                                                                </button>                                             
-            
+                                                                </button>
+
                                                             @elseif ($laporan->status === 'diterima')
                                                                 <p class="text-success">Laporan telah diterima dan diproses.</p>
                                                             @elseif ($laporan->status === 'ditolak')
@@ -378,7 +378,7 @@
                                         </form>
                                     </div>
                                 </div>
-    
+
                                 <!-- Modal Banned -->
                                 <div class="modal fade" id="modalBanned{{ $laporan->id }}" data-bs-backdrop="false" tabindex="-1" aria-labelledby="modalBannedLabel{{ $laporan->id }}" aria-hidden="true" style="background-color: rgba(0, 0, 0, 0.5) !important;">
                                     <div class="modal-dialog">
@@ -460,14 +460,14 @@
     <script>
         function showPreviousModal() {
             // Menutup modal saat ini
-            var modal = document.querySelector('#modalPeringatan{{ $laporan->id }}');
+
             var modalBackdrop = document.querySelector('.modal-backdrop');
             if (modalBackdrop) {
                 modalBackdrop.remove();  // Menghapus backdrop agar tidak menghalangi tampilan
             }
 
             // Menampilkan modal sebelumnya
-            var previousModal = document.querySelector('#laporanModal{{ $laporan->id }}');
+            
             if (previousModal) {
                 var modalBootstrap = new bootstrap.Modal(previousModal);
                 modalBootstrap.show();

@@ -14,9 +14,9 @@
                 <div class="card-body mt-4">
                     <div class="row">
                         <div class="col-md-4">
-                            <div class="card shadow-sm h-100">
+                            <div class="card shadow-sm h-90">
                                 <div class="card-body text-center">
-                                    <div class="avatar avatar-xxl position-relative mb-3">
+                                    <div class="avatar avatar-xxl position-relative mb-3 mt-5">
                                         <img src="{{ $user->foto_profil ? asset('storage/' . $user->foto_profil) : asset('images/marie.jpg') }}"
                                             alt="Foto Profil" class="w-100 border-radius-lg shadow-sm rounded-circle">
 
@@ -27,15 +27,15 @@
                                         <input type="file" id="uploadProfilePhoto" class="d-none">
                                     </div>
                                     <div>
-                                        <h5 class="mb-2"
+                                        <h5 class="mb-0 mt-2"
                                             style="font-size: 30px; font-weight: 600; line-height: 45px; margin: 0; color:black;">
                                             {{ $user['name'] }} {{ $user['last_name'] }}
                                         </h5>
-                                        <p class="mb-4"
+                                        <p class="mb-5"
                                             style="font-size: 15px; font-weight: 400; line-height: 22.5px; margin: 0; color:black;">
                                             {{ $user->bio ?? 'Tidak tersedia' }}
                                         </p>
-                                        <div class="row">
+                                        <div class="row mb-2">
                                             <div class="col">
                                                 <p
                                                     style="font-size: 16px; font-weight: 400; line-height: 24px; margin: 0; color:black;">

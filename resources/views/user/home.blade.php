@@ -70,7 +70,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Halaman Chat -->
                 <div class="col-md-7">
                     <div class="mb-3" style="position: relative; margin-right: -25px;">
@@ -94,7 +93,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <!-- Chat Body -->
                             <div class="chat-body flex-grow-1 p-3"
                                 style="overflow-y: auto; background-color: #FFFFFF; min-height: 400px; max-height: 600px;">

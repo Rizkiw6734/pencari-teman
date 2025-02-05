@@ -10,9 +10,13 @@
                                 <img src="/assets/img/pp.jpg" alt="Foto Profil" class="profile-img"
                                     style="width: 150px; height: 110px; border-radius: 50%; object-fit: cover;">
                             </div>
+                            <div class="position-absolute top-0 start-0 m-3">
+                                <i class="fa-solid fa-arrow-left text-secondary p-2 rounded-circle"
+                                    style="font-size: 20px; margin-right: -10px;"></i>
+                            </div>
                             <div class="position-absolute top-0 end-0 m-3">
                                 <i class="fa-solid fa-comment-sms text-secondary p-2 rounded-circle"
-                                    style="font-size: 25px; margin-right: -10px;"></i>
+                                    style="font-size: 24px; margin-right: -10px;"></i>
                                 <i class="fa-solid fa-user-plus text-secondary p-2 rounded-circle"
                                     style="font-size: 20px;"></i>
                             </div>

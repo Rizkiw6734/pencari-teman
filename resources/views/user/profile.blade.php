@@ -160,8 +160,7 @@
                             </div>
 
                             <!-- Modal Edit -->
-                            <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel"
-                                aria-hidden="true">
+                            <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <form action="{{ route('user.update', $user->id) }}" method="POST">
@@ -176,55 +175,76 @@
                                                 <div class="row mb-3">
                                                     <div class="col">
                                                         <label for="name" class="form-label">First Name</label>
-                                                        <input type="text" class="form-control" id="name"
-                                                            name="name" value="{{ $user->name }}">
+                                                        <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $user->name) }}">
+                                                        @error('name')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
                                                     </div>
                                                     <div class="col">
                                                         <label for="last_name" class="form-label">Last Name</label>
-                                                        <input type="text" class="form-control" id="last_name"
-                                                            name="last_name" value="{{ $user->last_name }}">
+                                                        <input type="text" class="form-control @error('last_name') is-invalid @enderror" id="last_name" name="last_name" value="{{ old('last_name', $user->last_name) }}">
+                                                        @error('last_name')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
                                                     </div>
                                                 </div>
                                                 <div class="row mb-3">
                                                     <div class="col">
                                                         <label for="gender" class="form-label">Gender</label>
-                                                        <select class="form-control" id="gender" name="gender">
-                                                            <option value="L"
-                                                                {{ $user->gender == 'L' ? 'selected' : '' }}>Laki-laki
-                                                            </option>
-                                                            <option value="P"
-                                                                {{ $user->gender == 'P' ? 'selected' : '' }}>Perempuan
-                                                            </option>
+                                                        <select class="form-control @error('gender') is-invalid @enderror" id="gender" name="gender">
+                                                            <option value="L" {{ old('gender', $user->gender) == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                                                            <option value="P" {{ old('gender', $user->gender) == 'P' ? 'selected' : '' }}>Perempuan</option>
                                                         </select>
+                                                        @error('gender')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
                                                     </div>
                                                     <div class="col">
                                                         <label for="umur" class="form-label">Umur</label>
-                                                        <input type="number" class="form-control" id="umur"
-                                                            name="umur" value="{{ $user->umur }}">
+                                                        <input type="number" class="form-control @error('umur') is-invalid @enderror" id="umur" name="umur" value="{{ old('umur', $user->umur) }}">
+                                                        @error('umur')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
                                                     </div>
                                                 </div>
                                                 <div class="row mb-3">
                                                     <div class="col">
                                                         <label for="email" class="form-label">Email</label>
-                                                        <input type="email" class="form-control" id="email"
-                                                            name="email" value="{{ $user->email }}">
+                                                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email', $user->email) }}">
+                                                        @error('email')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
                                                     </div>
                                                     <div class="col">
                                                         <label for="hobi" class="form-label">Hobi</label>
-                                                        <input type="text" class="form-control" id="hobi"
-                                                            name="hobi" value="{{ $user->hobi }}">
+                                                        <input type="text" class="form-control @error('hobi') is-invalid @enderror" id="hobi" name="hobi" value="{{ old('hobi', $user->hobi) }}">
+                                                        @error('hobi')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror
                                                     </div>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="bio" class="form-label">Bio</label>
-                                                    <textarea class="form-control" id="bio" name="bio" rows="3">{{ $user->bio }}</textarea>
+                                                    <textarea class="form-control @error('bio') is-invalid @enderror" id="bio" name="bio" rows="3">{{ old('bio', $user->bio) }}</textarea>
+                                                    @error('bio')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
                                                 </div>
-                                            </div>
+                                            </div>                                            
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-bs-dismiss="modal">Batal</button>
-                                                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                                <button type="submit" id="submitModal" class="btn btn-primary">Simpan Perubahan</button>
                                             </div>
+
+                                            @if ($errors->any())
+                                            <script>
+                                                document.addEventListener("DOMContentLoaded", function () {
+                                                    var bandingModal = new bootstrap.Modal(document.getElementById('editModal'));
+                                                    bandingModal.show();
+                                                });
+                                            </script>
+                                            @endif
                                         </form>
                                     </div>
                                 </div>

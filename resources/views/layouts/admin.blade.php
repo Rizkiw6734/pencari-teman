@@ -287,7 +287,7 @@
             <p class="text-sm">Pilih di antara 2 jenis sidebar yang berbeda.</p>
           </div>
           <div class="d-flex">
-            <button class="btn btn-primary w-100 px-3 mb-2 active" style="background: #0D6EFD;" data-class="bg-transparent" onclick="sidebarType(this)">Transparent</button>
+            <button class="btn btn-primary w-100 px-3 mb-2" style="background: #0D6EFD;" data-class="bg-transparent" onclick="sidebarType(this)">Transparent</button>
             <button class="btn btn-primary w-100 px-3 mb-2 ms-2" style="background: #0D6EFD;" data-class="bg-white" onclick="sidebarType(this)">White</button>
           </div>
           <!-- Navbar Fixed -->
@@ -303,78 +303,49 @@
 
     <!-- JavaScript -->
     <script>
-      // Fungsi untuk mengubah warna sidebar
-      function sidebarColor(element) {
-          const color = element.getAttribute("data-color");
-          localStorage.setItem("sidebarColor", color);
-          applySidebarColor(color);
-      }
+        document.addEventListener("DOMContentLoaded", function () {
+            const isNavbarFixed = localStorage.getItem("navbarFixed") === "true";
+            applyNavbarFixed(isNavbarFixed);
+            document.getElementById("navbarFixed").checked = isNavbarFixed;
+        });
 
-      // Fungsi untuk mengubah jenis sidebar
-      function sidebarType(element) {
-          const sidebarClass = element.getAttribute("data-class");
-          localStorage.setItem("sidebarType", sidebarClass);
-          applySidebarType(sidebarClass);
-      }
+        function applyNavbarFixed(isFixed) {
+            const navbar = document.querySelector("nav");
+            if (!navbar) return;
 
-      // Fungsi untuk menyimpan status Navbar Tetap
-      function navbarFixed(element) {
-          const isChecked = element.checked;
-          localStorage.setItem("navbarFixed", isChecked);
-          applyNavbarFixed(isChecked);
-      }
+            if (isFixed) {
+                navbar.classList.add("fixed-top");
+            } else {
+                navbar.classList.remove("fixed-top");
+            }
+        }
 
-      // Fungsi untuk menerapkan konfigurasi dari Local Storage
-      document.addEventListener("DOMContentLoaded", function() {
-          const savedSidebarColor = localStorage.getItem("sidebarColor");
-          const savedSidebarType = localStorage.getItem("sidebarType");
-          const isNavbarFixed = localStorage.getItem("navbarFixed") === "true";
+        function navbarFixed(checkbox) {
+            const isFixed = checkbox.checked;
+            applyNavbarFixed(isFixed);
+            localStorage.setItem("navbarFixed", isFixed);
+        }
 
-          if (savedSidebarColor) {
-              applySidebarColor(savedSidebarColor);
-          }
-          if (savedSidebarType) {
-              applySidebarType(savedSidebarType);
-          }
-          if (isNavbarFixed) {
-              applyNavbarFixed(isNavbarFixed);
-              const navbarCheckbox = document.getElementById("navbarFixed");
-              if (navbarCheckbox) navbarCheckbox.checked = true;
-          }
-      });
+        // Fungsi untuk menerapkan warna sidebar
+        function applySidebarColor(color) {
+            const sidebar = document.querySelector(".sidebar");
+            if (!sidebar) return;
 
-      // Fungsi untuk menerapkan warna sidebar
-      function applySidebarColor(color) {
-          const sidebar = document.querySelector(".sidebar");
-          if (!sidebar) return;
+            document.querySelectorAll(".badge.filter").forEach(function(el) {
+                el.classList.remove("active");
+            });
+            const selectedColor = document.querySelector([data-color="${color}"]);
+            if (selectedColor) selectedColor.classList.add("active");
+            sidebar.setAttribute("data-color", color);
+        }
 
-          document.querySelectorAll(".badge.filter").forEach(function(el) {
-              el.classList.remove("active");
-          });
-          const selectedColor = document.querySelector([data-color="${color}"]);
-          if (selectedColor) selectedColor.classList.add("active");
-          sidebar.setAttribute("data-color", color);
-      }
+        // Fungsi untuk menerapkan jenis sidebar
+        function applySidebarType(sidebarClass) {
+            const sidebar = document.querySelector(".sidebar");
+            if (!sidebar) return;
 
-      // Fungsi untuk menerapkan jenis sidebar
-      function applySidebarType(sidebarClass) {
-          const sidebar = document.querySelector(".sidebar");
-          if (!sidebar) return;
-
-          sidebar.classList.remove("bg-transparent", "bg-white");
-          sidebar.classList.add(sidebarClass);
-      }
-
-      // Fungsi untuk menerapkan navbar tetap
-      function applyNavbarFixed(isFixed) {
-          const navbar = document.querySelector("nav");
-          if (!navbar) return;
-
-          if (isFixed) {
-              navbar.classList.add("fixed-top");
-          } else {
-              navbar.classList.remove("fixed-top");
-          }
+            sidebar.classList.remove("bg-transparent", "bg-white");
+            sidebar.classList.add(sidebarClass);
         }
     </script>
 

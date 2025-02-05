@@ -302,7 +302,7 @@
         </article>
     </main>
 
-    {{-- <section class="min-h-screen flex items-center justify-center relative">
+    <section class="min-h-screen flex items-center justify-center relative">
         <div class="bg-white flex rounded-2xl shadow-lg max-w-3xl p-5 items-center relative">     
             <div class="md:w-1/2 px-8 md:px-16">
                 <h2 class="font-bold text-[#000000] mb-2" style="font-size: 25px">Kirim Pesan</h2>
@@ -399,7 +399,7 @@
                 <img class="rounded-2xl" src="/images/pesan.svg" alt="Location Search">
             </div>
         </div>    
-    </section>    --}}
+    </section>   
 
     <!--- #FOOTER -->
         <footer id="footer" class="footer">

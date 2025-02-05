@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Laporan;
 use App\Models\User;
 use App\Models\Pinalti;
-use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class LaporanController extends Controller
@@ -40,7 +39,6 @@ class LaporanController extends Controller
      */
     public function create()
     {
-        $user = Auth::user();
         $users = User::role('User')->get();
         return view('laporan.create', compact('users'));
     }
@@ -51,29 +49,26 @@ class LaporanController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'reported_id' => 'required|exists:users,id',
+            'report_id' => 'required|exists:users,id',
+            'reported_id' => 'required|exists:users,id|different:report_id',
             'bukti' => 'image|max:5280|mimes:jpeg,png,jpg',
             'alasan' => 'required|string|max:255',
         ], [
+            'report_id.required' => 'Pelapor harus ada',
+            'report_id.exists' => 'Pelapor tidak valid',
             'reported_id.required' => 'terlapor harus ada',
             'reported_id.exists' => 'terlpor tidak valid',
+            'reported_id.different' => 'terlapor harus berbeda dari Pelapor',
             'bukti.image' => 'File harus berupa gambar.',
             'bukti.mimes' => 'Format gambar harus berupa jpeg, png, atau jpg.',
             'bukti.max' => 'Ukuran gambar tidak boleh lebih dari 5MB.',
             'alasan.required' => 'alasan laporan harus ada'
         ]);
 
-        $report_id = Auth::user()->id;
-        if ($report_id == $request->reported_id) {
-            return redirect()->back()->with('error', 'Anda tidak bisa melaporkan diri sendiri.');
-        }
-
-        $existingReport = Laporan::where('report_id', $report_id)
+        $existingReport = Laporan::where('report_id', $request->report_id)
         ->where('reported_id', $request->reported_id)
-        ->whereNotIn('status', ['selesai', 'ditolak']) // Perbaikan kondisi
+        ->where('status', '!=', 'selesai' && 'status', '!=', 'ditolak')
         ->exists();
-
-        $data['report_id'] = $report_id;
 
         if ($existingReport) {
             return redirect()->back()->with('error', 'Anda sudah memiliki laporan terhadap pengguna ini. Tunggu hingga laporan selesai atau di tolak.');
@@ -89,10 +84,10 @@ class LaporanController extends Controller
         }
 
         if (Laporan::create($data)) {
-            return redirect('/laporan/create')->with('success', 'laporan berhasil ditambahkan.');
+            return redirect('/laporan')->with('success', 'laporan berhasil ditambahkan.');
         }
 
-        return redirect('/laporan/create')->with('error', 'laporan gagal ditambahkan.');
+        return redirect('/laporan')->with('error', 'laporan gagal ditambahkan.');
     }
 
     /**

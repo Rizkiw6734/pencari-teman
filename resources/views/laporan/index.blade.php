@@ -360,7 +360,7 @@
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="modalSuspendLabel{{ $laporan->id }}">Suspend User</h5>
                                                 </div>
-                                                
+
                                                 <script>
                                                     function showPreviousModal() {
                                                         // Menutup modal saat ini
@@ -369,7 +369,7 @@
                                                         if (modalBackdrop) {
                                                             modalBackdrop.remove();  // Menghapus backdrop agar tidak menghalangi tampilan
                                                         }
-                                            
+
                                                         // Menampilkan modal sebelumnya
                                                         var previousModal = document.querySelector('#laporanModal{{ $laporan->id }}');
                                                         if (previousModal) {

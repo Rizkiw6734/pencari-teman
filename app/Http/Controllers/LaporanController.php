@@ -28,7 +28,10 @@ class LaporanController extends Controller
               ->orWhereDate('created_at', $search);
         }
 
-        $laporans = $query->with(['pelapor', 'terlapor'])->paginate(10);
+        $laporans = $query->with(['pelapor', 'terlapor'])
+        ->orderByRaw("FIELD(status, 'proses', 'diterima', 'selesai', 'ditolak')")
+        ->paginate(10);
+        
         return view('laporan.index', compact('laporans'));
     }
 

@@ -360,6 +360,25 @@
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="modalSuspendLabel{{ $laporan->id }}">Suspend User</h5>
                                                 </div>
+                                                
+                                                <script>
+                                                    function showPreviousModal() {
+                                                        // Menutup modal saat ini
+                                                        var modal = document.querySelector('#modalPeringatan{{ $laporan->id }}');
+                                                        var modalBackdrop = document.querySelector('.modal-backdrop');
+                                                        if (modalBackdrop) {
+                                                            modalBackdrop.remove();  // Menghapus backdrop agar tidak menghalangi tampilan
+                                                        }
+                                            
+                                                        // Menampilkan modal sebelumnya
+                                                        var previousModal = document.querySelector('#laporanModal{{ $laporan->id }}');
+                                                        if (previousModal) {
+                                                            var modalBootstrap = new bootstrap.Modal(previousModal);
+                                                            modalBootstrap.show();
+                                                        }
+                                                    }
+                                                </script>
+
                                                 <div class="modal-body">
                                                     <div class="form-group">
                                                         <label for="durasi">Durasi Suspend (Hari)</label>
@@ -373,28 +392,6 @@
                                                 <div class="modal-footer d-flex justify-content-between border-0 mx-4">
                                                     <button type="submit" class="btn btn-primary" style="background-color: #528BFF; color: #FFFFFF; font-size: 14px; padding: 10px 30px;">Suspend</button>
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="showPreviousModal()" style="background-color: ##BEB9B9; color: white; font-size: 14px; padding: 10px 30px;">Batal</button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-
-                                <!-- Modal Banned -->
-                                <div class="modal fade" id="modalBanned{{ $laporan->id }}" data-bs-backdrop="false" tabindex="-1" aria-labelledby="modalBannedLabel{{ $laporan->id }}" aria-hidden="true" style="background-color: rgba(0, 0, 0, 0.5) !important;">
-                                    <div class="modal-dialog">
-                                        <form action="{{ route('laporan.hukuman', $laporan->id) }}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="jenis_hukuman" value="banned">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title w-100 text-center" id="modalBannedLabel{{ $laporan->id }}">Banned Pengguna</h5>
-                                                </div>
-                                                <div class="modal-body text-black text-center fs-5 mx-auto mt-0">
-                                                    Apakah Anda yakin ingin Menghentikan Akses<br>Pengguna ini Secara Permanen?
-                                                </div>
-                                                <div class="modal-footer d-flex justify-content-between border-0 mx-4">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="showPreviousModal()" style="background-color: #000000; color: white; font-size: 14px; padding: 10px 30px;">Batal</button>
-                                                    <button type="submit" class="btn btn-primary" style="background-color: #ffffff; color: rgb(0, 0, 0); font-size: 14px; padding: 10px 30px; border:#000000 solid 1px;">Ya</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -456,24 +453,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function showPreviousModal() {
-            // Menutup modal saat ini
-
-            var modalBackdrop = document.querySelector('.modal-backdrop');
-            if (modalBackdrop) {
-                modalBackdrop.remove();  // Menghapus backdrop agar tidak menghalangi tampilan
-            }
-
-            // Menampilkan modal sebelumnya
-            
-            if (previousModal) {
-                var modalBootstrap = new bootstrap.Modal(previousModal);
-                modalBootstrap.show();
-            }
-        }
-    </script>
 
     <div class="d-flex justify-content-center mt-4">
         <nav aria-label="Page navigation">

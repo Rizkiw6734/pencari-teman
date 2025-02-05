@@ -33,7 +33,7 @@ class ProfileUserController extends Controller
 
 
     $validated = $request->validate([
-        'name'      => 'requiredp|max:255',
+        'name'      => 'required|max:255',
         'last_name' => 'required|string|max:255',
         'gender'    => 'required|in:male,female,other',
         'umur'      => 'required|integer|min:1|max:80',

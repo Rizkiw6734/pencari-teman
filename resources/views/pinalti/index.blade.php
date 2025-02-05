@@ -209,7 +209,7 @@
                                 <td>{{ optional($data->laporan->terlapor)->name ?? 'Pengguna tidak ditemukan' }}</td>
                                 <td>{{ ucwords($data->jenis_hukuman) }}</td>
                                 <td>{{ $data->pesan }}</td>
-                                <td>{{ $data->durasi }}</td>
+                                <td>{{ $data->durasi ? $data->durasi . ' hari' : '-' }}</td>
                                 <td>{{ \Carbon\Carbon::parse($data->start_date)->format('d-m-Y') }}</td>
                                 <td>{{ $data->end_date ? \Carbon\Carbon::parse( $data->end_date)->format('d-m-Y') : '-' }}</td>
                             </tr>

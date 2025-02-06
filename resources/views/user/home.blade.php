@@ -40,7 +40,6 @@
 
                         <!-- Chat -->
                         <div id="chat-container" style="height: 300px; overflow-y: scroll; solid #ccc;">
-                            <!-- Chat Dikirim dan sudah dibaca -->
                             @php
                                 $userId = auth()->user()->id;
                             @endphp
@@ -60,14 +59,16 @@
                                         $statusIcon = '<i class="fas fa-check text-secondary"></i>'; // Centang 1 abu-abu
                                     } elseif ($chat->status === 'received') {
                                         $statusIcon = '<i class="fas fa-check-double text-secondary"></i>'; // Centang 2 abu-abu
+                                    } elseif ($chat->is_seen) { // Status berdasarkan is_seen
+                                        $statusIcon = '<i class="fas fa-eye text-success"></i>'; // Mata hijau jika sudah dilihat
                                     }
                                 @endphp
 
-
-                                {{-- Garis pemisah antar chat --}}
                                 <div style="height: 1px; background-color: #ddd; margin: 2px 0;"></div>
                             @endforeach
                         </div>
+
+
                     </div>
                 </div>
                 <!-- Halaman Chat -->
@@ -296,121 +297,137 @@
 
             // Fungsi untuk memuat chat
             function fetchChats() {
-                $.ajax({
-                    url: '/home', // Pastikan URL ini sesuai dan sudah ditentukan
-                    method: 'GET',
-                    success: function(response) {
-                        console.log("Response dari server:",
-                        response); // Pastikan struktur response sesuai yang diharapkan
+    $.ajax({
+        url: '/home',
+        method: 'GET',
+        success: function(response) {
+            console.log("Response dari server:", response);
 
-                        const chatContainer = $('#chat-container');
-                        chatContainer.empty(); // Menghapus chat yang lama
+            const chatContainer = $('#chat-container');
+            chatContainer.empty();
 
-                        // Pastikan response.latestChats adalah array
-                        if (response.latestChats && Array.isArray(response.latestChats) && response
-                            .latestChats.length > 0) {
-                            response.latestChats.forEach(chat => {
-                                // Tentukan chat partner ID
-                                const chatPartnerId = chat.pengirim_id === response.userId ?
-                                    chat.penerima_id : chat.pengirim_id;
-                                const chatPartner = chat.pengirim_id === response.userId ? chat
-                                    .penerima : chat.pengirim;
+            if (response.latestChats && Array.isArray(response.latestChats) && response.latestChats.length > 0) {
+                response.latestChats.forEach(chat => {
+                    const penerimaId = chat.pengirim_id === response.userId ? chat.penerima_id : chat.pengirim_id;
+                    const chatPartner = chat.pengirim_id === response.userId ? chat.penerima : chat.pengirim;
 
-                                // Tentukan status icon berdasarkan status chat
-                                let statusIcon = '';
-                                if (chat.status === 'sent_and_read') {
-                                    statusIcon =
-                                        '<i class="fas fa-check-double text-primary"></i>';
-                                } else if (chat.status === 'sent_and_unread') {
-                                    statusIcon = '<i class="fas fa-check text-secondary"></i>';
-                                } else if (chat.status === 'received') {
-                                    statusIcon =
-                                        '<i class="fas fa-check-double text-secondary"></i>';
-                                }
+                    let statusIcon = '';
+                    if (chat.status === 'sent_and_read') {
+                        statusIcon = '<i class="fas fa-check-double text-primary"></i>';
+                    } else if (chat.status === 'sent_and_unread') {
+                        statusIcon = '<i class="fas fa-check text-secondary"></i>';
+                    } else if (chat.status === 'received') {
+                        statusIcon = '<i class="fas fa-check-double text-secondary"></i>';
+                    } else if (chat.is_seen) { // Status berdasarkan is_seen
+                        statusIcon = '<i class="fas fa-eye text-success"></i>';
+                    }
 
-                                // Cek jika profile_image ada, jika tidak ada gunakan gambar default
-                                const profileImage = chatPartner?.foto_profile ?
-                                    `${window.location.origin}/storage/${encodeURIComponent(chatPartner.foto_profile)}` :
-                                    `${window.location.origin}/images/marie.jpg`;
+                    const profileImage = chatPartner?.foto_profile ?
+                        `${window.location.origin}/storage/${encodeURIComponent(chatPartner.foto_profile)}` :
+                        `${window.location.origin}/images/marie.jpg`;
 
-                                // Menggunakan asset untuk gambar default
-                                const name = chatPartner.name ? chatPartner.name : 'No Name';
+                    const name = chatPartner.name ? chatPartner.name : 'No Name';
 
-                                // Buat tampilan pesan chat
-                                const chatMessage = `
-                            <div class="chat-item" onclick="selectChat(this, ${chatPartnerId})" data-user-id="${chatPartnerId}"
-                                 style="display: flex; align-items: center; background-color: #F0F3F9; padding: 10px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; transition: background 0.3s;">
-                                <!-- Gambar profil -->
-                                <img src="${profileImage}" alt="Avatar"
-                                     style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px;">
-                                <div class="chat-content" style="flex: 1;">
-                                    <div class="chat-header" style="display: flex; justify-content: space-between; align-items: center;">
-                                        <span class="name" style="font-weight: bold; font-size: 16px;">
-                                            ${name}
-                                        </span>
-                                        <span class="time" style="font-size: 12px; color: #888;">
-                                            ${new Date(new Date(chat.created_at).toLocaleString('en-US', { timeZone: 'Asia/Jakarta' })).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                        </span>
-                                    </div>
-                                    <!-- Preview pesan terakhir dan status -->
-                                    <div class="chat-message" style="font-size: 14px; color: #555; margin-top: 5px;">
-                                        ${chat.konten.substr(0, 30)} ${statusIcon}
-                                    </div>
+                    const chatMessage = `
+                        <div class="chat-item" onclick="selectChat(this, ${penerimaId}, '${chat.status}')" data-user-id="${penerimaId}" data-status="${chat.status}"
+                             style="display: flex; align-items: center; background-color: #F0F3F9; padding: 10px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; transition: background 0.3s;">
+                            <img src="${profileImage}" alt="Avatar"
+                                 style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px;">
+                            <div class="chat-content" style="flex: 1;">
+                                <div class="chat-header" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span class="name" style="font-weight: bold; font-size: 16px;">${name}</span>
+                                    <span class="time" style="font-size: 12px; color: #888;">
+                                        ${new Date(new Date(chat.created_at).toLocaleString('en-US', { timeZone: 'Asia/Jakarta' })).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </span>
+                                </div>
+                                <div class="chat-message" style="font-size: 14px; color: #555; margin-top: 5px;">
+                                    ${chat.konten.substr(0, 30)} ${statusIcon}
                                 </div>
                             </div>
-                            <div style="height: 1px; background-color: #ddd; margin: 2px 0;"></div>
-                        `;
+                        </div>
+                        <div style="height: 1px; background-color: #ddd; margin: 2px 0;"></div>
+                    `;
 
-                                // Menambahkan pesan ke dalam container
-                                chatContainer.append(chatMessage);
-
-                            });
-                        } else {
-                            console.log("No latest chats found");
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error fetching chat data:", xhr.responseText ||
-                        error); // Log error jika request gagal
-                    }
+                    chatContainer.append(chatMessage);
                 });
+            } else {
+                console.log("No latest chats found");
             }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error fetching chat data:", xhr.responseText || error);
+        }
+    });
+}
 
-            // Memanggil fetchChats setiap 3 detik
-            setInterval(fetchChats, 3000); // Anda bisa sesuaikan interval waktu sesuai kebutuhan
-        });
+setInterval(fetchChats, 3000);
+}); //Anda bisa sesuaikan interval waktu sesuai kebutuhan
+// Anda bisa sesuaikan interval waktu sesuai kebutuhan
+
 
 
 
         // Memanggil fetchChats setiap 3 detik (3000 ms)
 
         // Fungsi untuk memilih chat dan menampilkan footer chat
-        function selectChat(element, penerimaId) {
-            // Menyembunyikan latar belakang sebelumnya dan menyorot elemen yang dipilih
-            document.querySelectorAll('.chat-item').forEach(item => {
-                item.style.backgroundColor = '#F0F3F9'; // Reset background color semua item
-            });
-            element.style.backgroundColor = '#D6EAF8'; // Ganti warna sidebar yang dipilih
+        function selectChat(element, penerimaId, chatStatus) {
+    // Menyembunyikan latar belakang sebelumnya dan menyorot elemen yang dipilih
+    document.querySelectorAll('.chat-item').forEach(item => {
+        item.style.backgroundColor = '#F0F3F9'; // Reset background color semua item
+    });
+    element.style.backgroundColor = '#D6EAF8'; // Ganti warna sidebar yang dipilih
 
-            // Ambil ID pengguna yang sedang login
-            var userId =
-            {{ Auth::id() }}; // Pastikan ID pengguna yang sedang login dimasukkan dengan benar di blade template
+    // Ambil ID pengguna yang sedang login
+    var userId = {{ Auth::id() }}; // Pastikan ID pengguna yang sedang login dimasukkan dengan benar di blade template
 
-            // Update input hidden penerima-id dengan ID penerima yang dipilih
-            $("#penerima-id").val(penerimaId);
+    // Update input hidden penerima-id dengan ID penerima yang dipilih
+    $("#penerima-id").val(penerimaId);
 
-            // Debugging: Pastikan penerimaId sudah terupdate
-            console.log("ID Penerima yang dipilih:", penerimaId);
+    console.log("ID Penerima yang dipilih:", penerimaId);
 
-            // Tampilkan footer chat setelah pengguna memilih chat
-            document.getElementById('chat-footer').style.display = 'flex';
+    // Tampilkan footer chat setelah pengguna memilih chat
+    document.getElementById('chat-footer').style.display = 'flex';
 
-            // Lakukan AJAX untuk mengambil data pengguna dan update status di header chat
-            updateUserStatus(penerimaId);
+    // Lakukan AJAX untuk mengambil data pengguna dan update status di header chat
+    updateUserStatus(penerimaId);
 
-            // Memuat pesan untuk percakapan dengan penerima yang dipilih
-            loadMessages(userId, penerimaId);
+    // Memuat pesan untuk percakapan dengan penerima yang dipilih
+    loadMessages(userId, penerimaId);
+
+    // Cek apakah chat yang dipilih adalah chat yang dikirim oleh pengguna sendiri
+    if (chatStatus === 'sent_and_unread') {
+    $.ajax({
+        url: '/update-chat-status',
+        method: 'POST',
+        data: {
+            penerimaId: penerimaId,
+            status: 'sent_and_read', // Status yang ingin diperbarui
+            is_seen: true,           // Kirimkan is_seen sebagai true jika chat sudah dibaca
+            _token: '{{ csrf_token() }}'
+        },
+        success: function(response) {
+            console.log(response.message); // Menampilkan pesan dari server jika berhasil
+
+            // Update UI dengan status terbaru chat
+            if (response.chat && response.chat.is_seen !== undefined) {
+                // Misalnya kita update elemen dengan id chat-id
+                const chatElement = document.querySelector(`#chat-${response.chat.id}`);
+                if (chatElement) {
+                    chatElement.classList.add(response.chat.is_seen ? 'seen' : 'unseen'); // Menambahkan kelas berdasarkan status is_seen
+                }
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Gagal memperbarui status pesan:", xhr.responseText || error);
         }
+    });
+}
+
+}
+
+
+
+
 
 
 

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class ChatController extends Controller
 {
@@ -34,42 +35,40 @@ class ChatController extends Controller
                   ->orWhere('c.penerima_id', $userId);
         })
         ->orderBy('c.created_at', 'DESC')
-        ->select('c.*', 'pengirim_id', 'penerima_id') // Ambil semua kolom chat dan id pengirim/penerima
+        ->select('c.*', 'pengirim_id', 'penerima_id')
         ->get();
 
-    // Ambil pengirim dan penerima chat dalam satu query untuk efisiensi
+    // Ambil pengirim dan penerima chat
     $userIds = $latestChats->pluck('pengirim_id')->merge($latestChats->pluck('penerima_id'))->unique();
-    $users = User::whereIn('id', $userIds)->get()->keyBy('id'); // Ambil data pengguna yang terlibat
+    $users = User::whereIn('id', $userIds)->get()->keyBy('id');
 
-    // Tambahkan data pengguna pengirim dan penerima ke dalam setiap chat
+    // Tambahkan data pengguna dan format waktu
     foreach ($latestChats as $chat) {
         $chat->pengirim = $users->get($chat->pengirim_id);
         $chat->penerima = $users->get($chat->penerima_id);
 
-        // Mengubah format waktu
-        $chat->created_at = \Carbon\Carbon::parse($chat->created_at)->timezone('Asia/Jakarta');
+        // Format waktu ke Asia/Jakarta
+        $chat->created_at = \Carbon\Carbon::parse($chat->created_at)->timezone('Asia/Jakarta')->format('d M Y H:i');
 
-        $chat->pengirim->foto_profil = isset($chat->pengirim) && !empty($chat->pengirim->foto_profil)
-    ? url('storage/' . $chat->pengirim->foto_profil)
-    : asset('images/marie.jpg');
+        // Cek dan set gambar profil untuk pengirim dan penerima
+        $chat->pengirim->foto_profil = !empty($chat->pengirim->foto_profil)
+            ? url('storage/' . $chat->pengirim->foto_profil)
+            : asset('images/marie.jpg');
 
-$chat->penerima->foto_profil = isset($chat->penerima) && !empty($chat->penerima->foto_profil)
-    ? url('storage/' . $chat->penerima->foto_profil)
-    : asset('images/marie.jpg');
-
-
-
+        $chat->penerima->foto_profil = !empty($chat->penerima->foto_profil)
+            ? url('storage/' . $chat->penerima->foto_profil)
+            : asset('images/marie.jpg');
     }
 
     if ($request->ajax()) {
-        // Mengirim response dengan struktur JSON untuk AJAX
+        // Mengirim response JSON untuk AJAX
         return response()->json([
             'latestChats' => $latestChats,
             'userId' => $userId
         ], 200);
     }
 
-    // Jika tidak AJAX, tampilkan halaman dengan data yang sudah diproses
+    // Tampilkan halaman untuk non-AJAX
     return view('user.home', compact('latestChats', 'userId'));
 }
 
@@ -96,17 +95,49 @@ $chat->penerima->foto_profil = isset($chat->penerima) && !empty($chat->penerima-
     }
 
     // Mengubah status chat menjadi "dibaca"
-    public function updateStatus($id, Request $request)
-    {
-        $request->validate([
-            'status' => 'required|in:sent_and_read,sent_and_unread,received'
-        ]);
+    public function updateStatus(Request $request)
+{
+    $userId = auth()->id(); // Mendapatkan ID pengguna yang sedang login
+    $penerimaId = $request->input('penerimaId'); // Mendapatkan penerima ID yang dikirimkan
+    $isSeen = $request->input('is_seen', false); // Mendapatkan nilai is_seen (default false)
 
-        $chat = Chat::findOrFail($id);
-        $chat->update(['status' => $request->status]);
-
-        return response()->json(['message' => 'Status chat berhasil diperbarui']);
+    // Cek apakah penerimaId dan userId ada
+    if (!$userId || !$penerimaId) {
+        return response()->json(['message' => 'Invalid data received'], 400);
     }
+
+    // Mencari chat antara userId dan penerimaId dengan status 'sent_and_unread'
+    $chat = Chat::where(function($query) use ($userId, $penerimaId) {
+                        $query->where('pengirim_id', $userId)
+                              ->where('penerima_id', $penerimaId)
+                              ->orWhere(function($query) use ($userId, $penerimaId) {
+                                  $query->where('pengirim_id', $penerimaId)
+                                        ->where('penerima_id', $userId);
+                              });
+                    })
+                    ->where('status', 'sent_and_unread') // Mencari yang statusnya sent_and_unread
+                    ->first();
+
+    // Jika chat ditemukan, update status dan is_seen
+    if ($chat) {
+        // Jika status 'sent_and_unread' dan pengguna yang login adalah penerima, update menjadi 'sent_and_read'
+        if ($chat->status === 'sent_and_unread' && $chat->penerima_id == $userId) {
+            $chat->update([
+                'status' => 'sent_and_read',  // Update status menjadi 'sent_and_read'
+                'is_seen' => $isSeen         // Set is_seen sesuai nilai yang dikirim (true/false)
+            ]);
+            return response()->json(['message' => 'Status updated successfully']);
+        }
+
+        // Jika chat sudah 'sent_and_read', beri respons bahwa tidak ada pembaruan
+        return response()->json(['message' => 'No updates needed. Status already updated.']);
+    }
+
+    // Jika chat tidak ditemukan atau status sudah diperbarui, kirimkan response error
+    return response()->json(['message' => 'No updates made'], 400);
+}
+
+
 
     public function getUserStatus($id)
     {

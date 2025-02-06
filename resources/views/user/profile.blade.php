@@ -18,7 +18,7 @@
                                 <div class="card-body text-center">
                                     <div class="avatar avatar-xxl position-relative mb-3 mt-5">
                                         <img src="{{ $user->foto_profil ? asset('storage/' . $user->foto_profil) : asset('images/marie.jpg') }}"
-                                            alt="Foto Profil" class="w-100 border-radius-lg shadow-sm rounded-circle">
+                                            alt="Foto Profil" class="w-100 border-radius-lg shadow-sm rounded-circle" style="width: 150px; height: 110px; border-radius: 50%; object-fit: cover;">
 
                                         <label for="uploadProfilePhoto" class="position-absolute"
                                             style="bottom: -10px; right: 5px; background: white; padding: 6px; border-radius: 50%; box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); cursor: pointer;">
@@ -230,7 +230,7 @@
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
                                                 </div>
-                                            </div>                                            
+                                            </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-bs-dismiss="modal">Batal</button>

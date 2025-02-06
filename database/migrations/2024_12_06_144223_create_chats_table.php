@@ -13,11 +13,14 @@ return new class extends Migration
     {
         Schema::create('chat', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pengirim_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreignId('penerima_id')->references('id')->on('users')->onDelete('cascade');
-            $table->mediumText('konten');
-            $table->enum('status', ['sent_and_read', 'sent_and_unread', 'received'])->default('sent_and_unread');
-            $table->timestamps();
+        $table->foreignId('pengirim_id')->references('id')->on('users')->onDelete('cascade');
+        $table->foreignId('penerima_id')->references('id')->on('users')->onDelete('cascade');
+        $table->mediumText('konten');
+        $table->enum('status', ['sent_and_read', 'sent_and_unread', 'received'])->default('sent_and_unread');
+        $table->boolean('is_seen')->default(false);
+        $table->timestamps();
+
+        $table->index(['pengirim_id', 'penerima_id']);
         });
     }
 

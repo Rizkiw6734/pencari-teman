@@ -124,7 +124,7 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     // Add the update-location route here
     Route::middleware(['auth'])->post('/update-location', [ProfileUserController::class, 'updateLocation']);
     Route::get('/active-users', [ActiveUserController::class, 'index']);
-    Route::put('/home/{id}/status', [ChatController::class, 'updateStatus']);
+    Route::post('/update-chat-status', [ChatController::class, 'updateStatus'])->name('update-chat-status');
     Route::get('/user/status/{id}', [ChatController::class, 'getUserStatus']);
     Route::middleware('auth')->get('/messages/{user}/{penerima_id}', [ChatController::class, 'getMessages']);
     Route::post('/send-message', [ChatController::class, 'sendMessage']);

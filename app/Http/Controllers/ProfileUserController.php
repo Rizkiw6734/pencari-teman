@@ -38,7 +38,7 @@ class ProfileUserController extends Controller
         'gender'    => 'required|in:male,female,other',
         'umur'      => 'required|integer|min:1|max:80',
         'email'     => 'required|email|unique:users,email',
-        'hobi'      => 'nullable|string|max:255', 
+        'hobi'      => 'nullable|string|max:255',
         'bio'       => 'nullable|string|max:1000',
     ], [
         'name.required'      => 'Nama awal harus diisi.',

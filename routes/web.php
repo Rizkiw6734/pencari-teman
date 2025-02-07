@@ -120,7 +120,12 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     Route::post('/laporan', [LaporanController::class, 'store'])->name('laporan.store');
     Route::get('/banding/create', [BandingController::class, 'create'])->name('banding.create');
     Route::post('/banding', [BandingController::class, 'store'])->name('banding.store');
-    Route::get('/jelajahi', [JelajahiController::class, 'index'])->name('user.jelajahi');
+
+    Route::prefix('jelajahi')->group(function () {
+        Route::get('/', [JelajahiController::class, 'index'])->name('user.jelajahi');
+        Route::get('/terdekat', [JelajahiController::class, 'penggunaTerdekat'])->name('jelajahi.terdekat');
+        Route::get('/kota/{kabupaten_id}', [JelajahiController::class, 'penggunaByKota'])->name('jelajahi.kota');
+    });
     // Add the update-location route here
     Route::middleware(['auth'])->post('/update-location', [ProfileUserController::class, 'updateLocation']);
     Route::get('/active-users', [ActiveUserController::class, 'index']);

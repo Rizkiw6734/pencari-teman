@@ -257,10 +257,11 @@
                                             <p
                                                 style="font-family: 'Poppins', font-size: 20px; font-weight: 600; line-height: 30px; margin: 0; color:black;">
                                                 Alamat</p>
-                                            <a href="#" class="btn btn-sm btn-rounded text-dark"
-                                                style="background-color: transparent; border: 1px solid #84ADFF;">
+                                                <a href="#" class="btn btn-sm btn-rounded text-dark"
+                                                style="background-color: transparent; border: 1px solid #84ADFF;"
+                                                data-bs-toggle="modal" data-bs-target="#editAddressModal">
                                                 Edit <i class="fa fa-pencil ms-1" style="font-size: 14px"></i>
-                                            </a>
+                                             </a>
                                         </div>
                                         <!-- Alamat -->
                                         <div>
@@ -271,7 +272,7 @@
                                                         Provinsi <br>
                                                     <p
                                                         style="font-family: 'Poppins', font-size: 16px; font-weight: 500; line-height: 24px; margin: 0; color:black;">
-                                                        {{ $user->provinsi_id ?? 'Tidak tersedia' }}
+                                                        {{ $user->provinsis ? $user->provinsis->name : 'Tidak tersedia' }}
                                                     </p>
                                                     </p>
                                                 </div>
@@ -281,7 +282,7 @@
                                                         Kabupaten/Kota <br>
                                                     <p
                                                         style="font-family: 'Poppins', font-size: 16px; font-weight: 500; line-height: 24px; margin: 0; color:black;">
-                                                        {{ $user->kabupaten_id ?? 'Tidak tersedia' }}
+                                                        {{ $user->kabupatens ? $user->kabupatens->name : 'Tidak tersedia' }}
                                                     </p>
                                                     </p>
                                                 </div>
@@ -293,7 +294,7 @@
                                                         Kecamatan <br>
                                                     <p
                                                         style="font-family: 'Poppins', font-size: 16px; font-weight: 500; line-height: 24px; margin: 0; color:black;">
-                                                        {{ $user->kecamatan_id ?? 'Tidak tersedia' }}
+                                                        {{ $user->kecamatans ? $user->kecamatans->name : 'Tidak tersedia' }}
                                                     </p>
                                                     </p>
                                                 </div>
@@ -303,7 +304,7 @@
                                                         Desa <br>
                                                     <p
                                                         style="font-family: 'Poppins', font-size: 16px; font-weight: 500; line-height: 24px; margin: 0; color:black;">
-                                                        {{ $user->desa_id ?? 'Tidak tersedia' }}
+                                                        {{ $user->desas ? $user->desas->name : 'Tidak tersedia' }}
                                                     </p>
                                                     </p>
                                                 </div>
@@ -312,6 +313,81 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Modal Edit Alamat -->
+                                <div class="modal fade" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <form action="{{ route('user.update.address', $user->id) }}" method="POST">
+                                                @csrf
+                                                @method('PUT')
+
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="editAddressModalLabel">Edit Alamat</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                    <!-- Provinsi -->
+                                                    <div class="mb-3">
+                                                        <label for="provinsi_id" class="form-label">Provinsi</label>
+                                                        <select id="provinsi_id" name="provinsi_id" class="form-control">
+                                                            <option value="">Pilih Provinsi</option>
+                                                            @foreach ($provinces as $province)
+                                                                <option value="{{ $province->id }}" {{ $province->id == $user->provinsi_id ? 'selected' : '' }}>
+                                                                    {{ $province->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+
+                                                    <!-- Kabupaten -->
+                                                    <div class="mb-3">
+                                                        <label for="kabupaten_id" class="form-label">Kabupaten/Kota</label>
+                                                        <select id="kabupaten_id" name="kabupaten_id" class="form-control">
+                                                            <option value="">Pilih Kabupaten/Kota</option>
+                                                            @foreach ($regencies as $regency)
+                                                                <option value="{{ $regency->id }}" {{ $regency->id == $user->kabupaten_id ? 'selected' : '' }}>
+                                                                    {{ $regency->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+
+                                                    <!-- Kecamatan -->
+                                                    <div class="mb-3">
+                                                        <label for="kecamatan_id" class="form-label">Kecamatan</label>
+                                                        <select id="kecamatan_id" name="kecamatan_id" class="form-control">
+                                                            <option value="">Pilih Kecamatan</option>
+                                                            @foreach ($districts as $district)
+                                                                <option value="{{ $district->id }}" {{ $district->id == $user->kecamatan_id ? 'selected' : '' }}>
+                                                                    {{ $district->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+
+                                                    <!-- Desa -->
+                                                    <div class="mb-3">
+                                                        <label for="desa_id" class="form-label">Desa_id</label>
+                                                        <select id="desa_id" name="desa_id" class="form-control">
+                                                            <option value="">Pilih Desa</option>
+                                                            @foreach ($villages as $village)
+                                                                <option value="{{ $village->id }}" {{ $village->id == $user->desa_id ? 'selected' : '' }}>
+                                                                    {{ $village->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -366,5 +442,80 @@
 });
 
 
+    </script>
+    <script>
+        $(document).ready(function () {
+            // Saat provinsi dipilih
+            $('#provinsi_id').on('change', function () {
+                var provinceId = $(this).val();
+                $('#kabupaten_id').html('<option value="">Memuat...</option>');
+                $('#kecamatan_id').html('<option value="">Pilih Kecamatan</option>');
+                $('#desa_id').html('<option value="">Pilih Desa</option>');
+
+                if (provinceId) {
+                    $.ajax({
+                        url: "{{ route('getRegencies') }}",
+                        type: "GET",
+                        data: { province_id: provinceId },
+                        success: function (data) {
+                            $('#kabupaten_id').html('<option value="">Pilih Kabupaten/Kota</option>');
+                            $.each(data, function (key, value) {
+                                $('#kabupaten_id').append('<option value="' + value.id + '">' + value.name + '</option>');
+                            });
+                        },
+                        error: function (xhr) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                }
+            });
+
+            // Saat kabupaten dipilih
+            $('#kabupaten_id').on('change', function () {
+                var regencyId = $(this).val();
+                $('#kecamatan_id').html('<option value="">Memuat...</option>');
+                $('#desa_id').html('<option value="">Pilih Desa</option>');
+
+                if (regencyId) {
+                    $.ajax({
+                        url: "{{ route('getDistricts') }}",
+                        type: "GET",
+                        data: { regency_id: regencyId },
+                        success: function (data) {
+                            $('#kecamatan_id').html('<option value="">Pilih Kecamatan</option>');
+                            $.each(data, function (key, value) {
+                                $('#kecamatan_id').append('<option value="' + value.id + '">' + value.name + '</option>');
+                            });
+                        },
+                        error: function (xhr) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                }
+            });
+
+            // Saat kecamatan dipilih
+            $('#kecamatan_id').on('change', function () {
+                var districtId = $(this).val();
+                $('#desa_id').html('<option value="">Memuat...</option>');
+
+                if (districtId) {
+                    $.ajax({
+                        url: "{{ route('getVillages') }}",
+                        type: "GET",
+                        data: { district_id: districtId },
+                        success: function (data) {
+                            $('#desa_id').html('<option value="">Pilih Desa</option>');
+                            $.each(data, function (key, value) {
+                                $('#desa_id').append('<option value="' + value.id + '">' + value.name + '</option>');
+                            });
+                        },
+                        error: function (xhr) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                }
+            });
+        });
     </script>
 @endsection

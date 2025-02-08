@@ -10,22 +10,43 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Pest\Arch\Objects\FunctionDescription;
-use App\Model\User;
+use App\Models\User;
+use App\Models\Provinces;
+use App\Models\Regencies;
+use App\Models\Districts;
+use App\Models\Villages;
+use Illuminate\Validation\Rule;
 
 class ProfileUserController extends Controller
 {
     public function profile()
     {
         $user = auth()->user();
+        $provinsi = $user->provinsi_id ?? null;
+        $kabupaten = $user->kabupaten_id ?? null;
+        $kecamatan = $user->kecamatan_id ?? null;
 
-        return view('user.profile', compact('user'));
+        // Ambil semua provinsi
+        $provinces = Provinces::all();
+
+        // Ambil data berdasarkan relasi
+        $regencies = $provinsi ? Regencies::where('province_id', $provinsi)->get() : [];
+        $districts = $kabupaten ? Districts::where('regency_id', $kabupaten)->get() : [];
+        $villages = $kecamatan ? Villages::where('district_id', $kecamatan)->get() : [];
+
+        return view('user.profile', compact('user', 'provinces', 'regencies', 'districts', 'villages'));
     }
 
     public function edit() {
         $user = auth()->user();
+        $provinces = Provinces::all();
+        $regencies = Regencies::all();
+        $districts = Districts::all();
+        $villages = Villages::all();
 
-        return view('user.profile', compact('user'));
+        return view('user.profile', compact('user', 'provinces', 'regencies', 'districts', 'villages'));
     }
+
 
     public function update(ProfileUpdateRequest $request)
     {
@@ -35,9 +56,13 @@ class ProfileUserController extends Controller
     $validated = $request->validate([
         'name'      => 'required|max:255',
         'last_name' => 'required|string|max:255',
-        'gender'    => 'required|in:male,female,other',
+        'gender'    => ['nullable', Rule::in(['L', 'P'])], // Tidak wajib diubah
         'umur'      => 'required|integer|min:1|max:80',
-        'email'     => 'required|email|unique:users,email',
+        'email'     => [
+            'required',
+            'email',
+            Rule::unique('users', 'email')->ignore($user->id), // Abaikan email saat ini
+        ],
         'hobi'      => 'nullable|string|max:255',
         'bio'       => 'nullable|string|max:1000',
     ], [
@@ -46,7 +71,6 @@ class ProfileUserController extends Controller
         'last_name.required' => 'Nama belakang harus diisi.',
         'last_name.string'   => 'Nama belakang harus berupa teks.',
         'last_name.max'      => 'Nama belakang tidak boleh lebih dari 255 karakter.',
-        'gender.required'    => 'Jenis kelamin harus dipilih.',
         'gender.in'          => 'Jenis kelamin harus salah satu dari: male, female, atau other.',
         'umur.required'      => 'Umur harus diisi.',
         'umur.integer'       => 'Umur harus berupa angka.',
@@ -101,4 +125,47 @@ class ProfileUserController extends Controller
 
     return response()->json(['message' => 'Lokasi berhasil diperbarui!'], 200);
 }
+
+public function updateAddress(Request $request)
+    {
+        $validated = $request->validate([
+            'provinsi_id'  => 'required|exists:reg_provinces,id',
+            'kabupaten_id' => 'required|exists:reg_regencies,id',
+            'kecamatan_id' => 'required|exists:reg_districts,id',
+            'desa_id'      => 'required|exists:reg_villages,id',
+        ], [
+            'provinsi_id.required'  => 'Provinsi harus dipilih.',
+            'provinsi_id.exists'    => 'Provinsi yang dipilih tidak valid.',
+            'kabupaten_id.required' => 'Kabupaten harus dipilih.',
+            'kabupaten_id.exists'   => 'Kabupaten yang dipilih tidak valid.',
+            'kecamatan_id.required' => 'Kecamatan harus dipilih.',
+            'kecamatan_id.exists'   => 'Kecamatan yang dipilih tidak valid.',
+            'desa_id.required'      => 'Desa harus dipilih.',
+            'desa_id.exists'        => 'Desa yang dipilih tidak valid.',
+        ]);
+
+        $user = User::findOrFail($request->id);
+        $user->update($validated);
+
+        return redirect()->route('profile.index')->with('success', 'Alamat berhasil diperbarui!');
+    }
+
+    public function getRegencies(Request $request)
+{
+    $regencies = Regencies::where('province_id', $request->province_id)->get();
+    return response()->json($regencies);
+}
+
+public function getDistricts(Request $request)
+{
+    $districts = Districts::where('regency_id', $request->regency_id)->get();
+    return response()->json($districts);
+}
+
+public function getVillages(Request $request)
+{
+    $villages = Villages::where('district_id', $request->district_id)->get();
+    return response()->json($villages);
+}
+
 }

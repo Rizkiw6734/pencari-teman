@@ -23,6 +23,7 @@ use App\Http\Middleware\RoleMiddleware;
 use App\Http\Middleware\CheckExpiredSuspension;
 use App\Http\Middleware\CheckStatusUser;
 use App\Jobs\CheckExpiredSuspensionJob;
+use App\Http\Controllers\LocationController;
 
 // Memanggil job secara manual
 // CheckExpiredSuspensionJob::dispatch();
@@ -114,6 +115,13 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     Route::get('/profile-user/edit', [ProfileUserController::class, 'edit'])->name('user.edit');
     Route::put('/profile-user', [ProfileUserController::class, 'update'])->name('user.update');
     Route::put('/profile/update-photo', [ProfileUserController::class, 'updatePhoto'])->name('profile.update-photo');
+    Route::put('/user/{id}/update-address', [ProfileUserController::class, 'updateAddress'])->name('user.update.address');
+
+    // Ajax Lokasi
+    Route::get('/get-regencies', [ProfileUserController::class, 'getRegencies'])->name('getRegencies');
+    Route::get('/get-districts', [ProfileUserController::class, 'getDistricts'])->name('getDistricts');
+    Route::get('/get-villages', [ProfileUserController::class, 'getVillages'])->name('getVillages');
+
 
     // Rute untuk halaman suspend
     Route::get('/laporan/create', [LaporanController::class, 'create'])->name('laporan.create');

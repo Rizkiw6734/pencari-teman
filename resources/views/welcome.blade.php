@@ -229,7 +229,7 @@
                                 label.addEventListener('mouseover', () => {
                                     const inputId = label.getAttribute('for');
                                     const input = document.getElementById(inputId);
-                    
+
                                     if (input) {
                                         input.checked = true;
                                     }
@@ -263,7 +263,7 @@
                                     </div>
                                 </div>
                                 <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officiis accusamus optio molestias, hic esse, incidunt eveniet ex commodi laudantium ipsum nemo aperiam a. Ex fugiat rem qui, ipsa enim architecto.</p>
-                            </div>                            
+                            </div>
                             <div class="slider-card">
                                 <div class="card-content">
                                     <img src="./assets/img/team-1.jpg" alt="User" class="card-img">
@@ -303,7 +303,7 @@
     </main>
 
     <section class="min-h-screen flex items-center justify-center relative">
-        <div class="bg-white flex rounded-2xl shadow-lg max-w-3xl p-5 items-center relative">     
+        <div class="bg-white flex rounded-2xl shadow-lg max-w-3xl p-5 items-center relative">
             <div class="md:w-1/2 px-8 md:px-16">
                 <h2 class="font-bold text-[#000000] mb-2" style="font-size: 25px">Kirim Pesan</h2>
 
@@ -312,7 +312,7 @@
                         color: #97B1F0 !important;
                         opacity: 1;
                     }
-                
+
                     input::-webkit-input-placeholder {
                         color: #97B1F0 !important;
                     }
@@ -330,8 +330,8 @@
                         color: #97B1F0 !important;
                         opacity: 1;
                     }
-                </style>                
-        
+                </style>
+
                 <form action="{{ route('register') }}" method="post" class="flex flex-col gap-4">
                     @csrf
 
@@ -352,7 +352,7 @@
                         </div>
                         @enderror
                     </div>
-    
+
                     <div style="display: flex; flex-direction: column; gap: 5px;">
                         <label for="email" style="color: #528BFF">Email</label>
                         <input class="p-2 rounded-xl border" style="background-color: #F2F6FF; border-color: #F2F6FF;" id="email" type="email" name="email" value="{{ old('email') }}" placeholder="Masukkan Email Anda">
@@ -369,8 +369,8 @@
                                 <p class="text-xs font-semibold">{{ $message }}</p>
                             </div>
                         @enderror
-                    </div>                    
-    
+                    </div>
+
                     <div style="display: flex; flex-direction: column; gap: 5px;">
                         <label for="pesan" style="color: #528BFF">Pesan</label>
                         <textarea rows="4" class="p-2 rounded-xl border" style="background-color: #F2F6FF; border-color: #F2F6FF;" id="pesan" name="pesan" placeholder="Masukkan Pesan Anda">{{ old('pesan') }}</textarea>
@@ -387,19 +387,19 @@
                                 <p class="text-xs font-semibold">{{ $message }}</p>
                             </div>
                         @enderror
-                    </div>                    
+                    </div>
 
                     <button class="bg-[#6569F6] rounded-xl text-white py-2 hover:scale-105 duration-300">Kirim</button>
                 </form>
-        
+
                 <div class="text-xs border-b border-[#FFFFFF] py-4 text-[#FFFFFF]"></div>
             </div>
-    
+
             <div class="md:block hidden w-1/2">
                 <img class="rounded-2xl" src="/images/pesan.svg" alt="Location Search">
             </div>
-        </div>    
-    </section>   
+        </div>
+    </section>
 
     <!--- #FOOTER -->
         <footer id="footer" class="footer">

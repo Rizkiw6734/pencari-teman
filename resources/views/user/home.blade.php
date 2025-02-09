@@ -313,7 +313,7 @@
 
                     let statusIcon = '';
                     if (chat.status === 'sent_and_read') {
-                        statusIcon = '<i class="fas fa-check-double text-primary"></i>';
+                        statusIcon = '<i class="fas fa-check-double" style="color: #34B7F1; transform: rotate(-10deg);"></i>';
                     } else if (chat.status === 'sent_and_unread') {
                         statusIcon = '<i class="fas fa-check text-secondary"></i>';
                     } else if (chat.status === 'received') {
@@ -341,7 +341,7 @@
                                     </span>
                                 </div>
                                 <div class="chat-message" style="font-size: 14px; color: #555; margin-top: 5px;">
-                                    ${chat.konten.substr(0, 30)} ${statusIcon}
+                                   ${statusIcon} ${chat.konten.substr(0, 30)}
                                 </div>
                             </div>
                         </div>

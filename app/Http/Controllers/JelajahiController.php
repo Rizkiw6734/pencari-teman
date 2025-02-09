@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Regencies;
+use App\Models\Provinces;
 use Illuminate\Support\Facades\Auth;
 
 class JelajahiController extends Controller
@@ -14,9 +15,6 @@ class JelajahiController extends Controller
      */
     public function index()
     {
-        // Ambil semua kabupaten
-        $kabupatens = Regencies::all();
-
         // Ambil pengguna selain admin dan user yang sedang login
         $penggunaLain = User::where('id', '!=', Auth::id())
             ->whereDoesntHave('roles', function ($query) {
@@ -24,7 +22,7 @@ class JelajahiController extends Controller
             })
             ->get();
 
-        return view('user.jelajahi', compact('kabupatens', 'penggunaLain'));
+        return view('user.jelajahi', compact('penggunaLain'));
     }
 
     /**
@@ -83,30 +81,96 @@ class JelajahiController extends Controller
         return $angle * $earthRadius; // Hasil dalam kilometer
     }
 
-    /**
-     * Menampilkan pengguna berdasarkan kabupaten_id.
-     */
-    public function penggunaByKota($kabupaten_id)
+    public function getProvinsi()
     {
-        // Query pengguna berdasarkan kabupaten_id
-        $users = User::where('kabupaten_id', $kabupaten_id)
-            ->whereDoesntHave('roles', function ($query) {
-                $query->where('name', 'admin'); // Cek pengguna yang bukan admin
-            })
-            ->where('id', '!=', Auth::id())
-            ->get();
+        try {
+            $provinsi = Provinces::all();  // Ambil semua data provinsi
 
-        // Cek apakah pengguna ditemukan
-        if ($users->isEmpty()) {
+            if ($provinsi->isEmpty()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Tidak ada provinsi yang ditemukan'
+                ], 404);
+            }
+
             return response()->json([
-                'message' => 'Tidak ada pengguna di kota ini.',
-                'data' => []
-            ], 404);
+                'status' => 'success',
+                'data' => $provinsi
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
         }
-
-        return response()->json([
-            'message' => 'Pengguna ditemukan di kota ini.',
-            'data' => $users
-        ]);
     }
+
+    public function getKotaByProvinsi($provinsi_id)
+    {
+        try {
+            $kotas = Regencies::where('province_id', $provinsi_id)->get(['id', 'name']);
+
+            if ($kotas->isEmpty()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Tidak ada kota di provinsi ini.',
+                    'data' => []
+                ], 200);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Daftar kota ditemukan.',
+                'data' => $kotas
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function penggunaByKota($kabupaten_id)
+{
+    // Debug log untuk memastikan parameter diterima
+    \Log::info('Kabupaten ID diterima: ' . ($kabupaten_id ?? 'null'));
+
+    if (empty($kabupaten_id)) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'ID kabupaten tidak valid.',
+            'data' => []
+        ], 400);
+    }
+
+    // Query pengguna berdasarkan kabupaten_id, kecuali user login dan admin
+    $pengguna = User::with('kabupatens')
+        ->where('kabupaten_id', $kabupaten_id)
+        ->where('id', '!=', Auth::id())
+        ->whereDoesntHave('roles', function ($query) {
+            $query->where('name', 'admin');
+        })
+        ->get();
+
+    // Log jumlah pengguna yang ditemukan
+    \Log::info('Jumlah pengguna ditemukan: ' . $pengguna->count());
+
+    if ($pengguna->isEmpty()) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Tidak ada pengguna di kabupaten ini.',
+            'data' => []
+        ], 200);
+    }
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Pengguna ditemukan.',
+        'data' => $pengguna
+    ], 200);
+}
+
+
+
 }

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
 class ChatController extends Controller
@@ -67,6 +68,11 @@ class ChatController extends Controller
             'userId' => $userId
         ], 200);
     }
+    // return response()->json([
+    //     'latestChats' => $latestChats,
+    //     'userId' => $userId
+    // ], 200);
+
 
     // Tampilkan halaman untuk non-AJAX
     return view('user.home', compact('latestChats', 'userId'));
@@ -139,8 +145,8 @@ class ChatController extends Controller
 
 
 
-    public function getUserStatus($id)
-    {
+public function getUserStatus($id)
+{
     // Temukan pengguna berdasarkan ID
     $user = User::find($id);
 
@@ -154,43 +160,68 @@ class ChatController extends Controller
         return response()->json(['status' => 'Tidak dapat menampilkan status untuk Admin'], 403);
     }
 
+    // Pastikan foto profile menggunakan path yang benar
+    $fotoProfile = $user->foto_profil
+        ? url('storage/' . $user->foto_profil)
+        : asset('/images/marie.jpg');
+
     // Kirimkan data yang dibutuhkan ke tampilan
     return response()->json([
+        'id' => $user->id,
         'name' => $user->name,
-        'avatar' => $user->avatar ?? '/assets/img/team-1.jpg',
-        'is_online' => $user->is_online
+        'email' => $user->email,
+        'foto_profil' => $fotoProfile,
+        'is_online' => (bool) $user->is_online,
+        'created_at' => $user->created_at->format('Y-m-d H:i:s'),
     ]);
+}
 
+
+public function getMessages(Request $request, $userId, $penerimaId)
+{
+    if (!User::where('id', $penerimaId)->exists()) {
+        return response()->json(['status' => 'error', 'message' => 'Penerima tidak ditemukan'], 404);
     }
 
-    public function getMessages(Request $request, $userId, $penerimaId)
-    {
-        if (!User::where('id', $penerimaId)->exists()) {
-            return response()->json(['status' => 'error', 'message' => 'Penerima tidak ditemukan'], 404);
-        }
+    $lastTimestamp = $request->input('last_timestamp');
 
-        $lastTimestamp = $request->input('last_timestamp');
+    $messages = Chat::with(['pengirim', 'penerima'])
+        ->where(function ($query) use ($userId, $penerimaId) {
+            $query->where('pengirim_id', $userId)
+                  ->where('penerima_id', $penerimaId);
+        })
+        ->orWhere(function ($query) use ($userId, $penerimaId) {
+            $query->where('pengirim_id', $penerimaId)
+                  ->where('penerima_id', $userId);
+        })
+        ->when($lastTimestamp, function ($query) use ($lastTimestamp) {
+            return $query->where('created_at', '>', $lastTimestamp);
+        })
+        ->orderBy('created_at', 'asc')
+        ->get()
+        ->map(function ($chat) {
+            return [
+                'id' => $chat->id,
+                'pengirim_id' => $chat->pengirim_id,
+                'penerima_id' => $chat->penerima_id,
+                'konten' => $chat->konten,
+                'created_at' => $chat->created_at,
+                'pengirim_foto' => $chat->pengirim && $chat->pengirim->foto_profil
+                    ? url(Storage::url($chat->pengirim->foto_profil))
+                    : asset('/images/marie.jpg'),
+                'penerima_foto' => $chat->penerima && $chat->penerima->foto_profil
+                    ? url(Storage::url($chat->penerima->foto_profil))
+                    : asset('/images/marie.jpg'),
+            ];
+        });
 
-        $messages = Chat::where(function ($query) use ($userId, $penerimaId) {
-                $query->where('pengirim_id', $userId)
-                      ->where('penerima_id', $penerimaId);
-            })
-            ->orWhere(function ($query) use ($userId, $penerimaId) {
-                $query->where('pengirim_id', $penerimaId)
-                      ->where('penerima_id', $userId);
-            })
-            ->when($lastTimestamp, function ($query) use ($lastTimestamp) {
-                return $query->where('created_at', '>', $lastTimestamp);
-            })
-            ->orderBy('created_at', 'asc')
-            ->get();
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Pesan berhasil diambil',
+        'data' => $messages
+    ]);
+}
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Pesan berhasil diambil',
-            'data' => $messages
-        ]);
-    }
 
     public function sendMessage(Request $request)
 {

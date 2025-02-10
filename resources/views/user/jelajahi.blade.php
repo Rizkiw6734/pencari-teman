@@ -149,46 +149,49 @@
     }
 
     function renderUserList(users, emptyMessage) {
-        const userList = $('#userList');
-        userList.empty();
+    const userList = $('#userList');
+    userList.empty();
 
-        if (users.length === 0) {
-            userList.append('<p class="text-center">' + emptyMessage + '</p>');
-        } else {
-            users.forEach(user => {
-                const distanceOrLocation = user.distance
-                    ? `${user.distance.toFixed(1)} km`
-                    : (user.kabupatens && user.kabupatens.name ? user.kabupatens.name : 'Lokasi tidak tersedia');
+    if (users.length === 0) {
+        userList.append('<p class="text-center">' + emptyMessage + '</p>');
+    } else {
+        users.forEach(user => {
+            const distanceOrLocation = user.distance
+                ? `${user.distance.toFixed(1)} km`
+                : (user.kabupatens && user.kabupatens.name ? user.kabupatens.name : 'Lokasi tidak tersedia');
 
-                const userCard = `
-                    <div class="col">
-                        <div class="card position-relative overflow-hidden border-0 shadow-sm" style="height: 300px">
-                            <img src="${user.foto_profil ? `/storage/${user.foto_profil}` : '/images/marie.jpg'}" class="card-img-top" alt="Foto Profile" style="object-fit: cover; height: 100%; width: 100%; z-index: 0;">
-                            <div class="position-absolute top-0 end-0 m-2">
-                                <i class="fa-solid fa-user-plus text-white p-2 rounded-circle"></i>
-                            </div>
-                            <div class="card-img-overlay d-flex flex-column justify-content-end text-white p-3 rounded-bottom" style="background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h5 class="card-title mb-1">
+            const imageUrl = user.foto_profil ? `/storage/${user.foto_profil}` : '/images/marie.jpg';
+
+            const userCard = `
+                <div class="col">
+                    <div class="card position-relative overflow-hidden border-0 shadow-sm" style="height: 300px">
+                        <img src="${imageUrl}" class="card-img-top" alt="Foto Profile" style="object-fit: cover; height: 100%; width: 100%; z-index: 0;">
+                        <div class="position-absolute top-0 end-0 m-2">
+                            <i class="fa-solid fa-user-plus text-white p-2 rounded-circle"></i>
+                        </div>
+                        <div class="card-img-overlay d-flex flex-column justify-content-end text-white p-3 rounded-bottom" style="background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="card-title mb-1">
                                         <a href="/profile/${user.id}" class="text-white text-decoration-none">${user.name}</a>
                                     </h5>
-                                        <p class="card-text" style="font-size: 12px;">
-                                            <i class="fa-solid fa-location-dot"></i> ${distanceOrLocation}
-                                        </p>
-                                    </div>
-                                    <div class="position-absolute bottom-0 end-0 m-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: rgba(217, 217, 217, 0.5); border-radius: 50%;">
-                                        <i class="fa-regular fa-comment-dots" style="font-size: 25px;"></i>
-                                    </div>
+                                    <p class="card-text" style="font-size: 12px;">
+                                        <i class="fa-solid fa-location-dot"></i> ${distanceOrLocation}
+                                    </p>
+                                </div>
+                                <div class="position-absolute bottom-0 end-0 m-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: rgba(217, 217, 217, 0.5); border-radius: 50%;">
+                                    <i class="fa-regular fa-comment-dots" style="font-size: 25px;"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
-                `;
-                userList.append(userCard);
-            });
-        }
+                </div>
+            `;
+            userList.append(userCard);
+        });
     }
+}
+
 
     function restoreDropdownSelection() {
         const selectedProvinsi = localStorage.getItem('selectedProvinsi');

@@ -34,7 +34,10 @@ class ProfileUserController extends Controller
         $districts = $kabupaten ? Districts::where('regency_id', $kabupaten)->get() : [];
         $villages = $kecamatan ? Villages::where('district_id', $kecamatan)->get() : [];
 
-        return view('user.profile', compact('user', 'provinces', 'regencies', 'districts', 'villages'));
+        $followersCount = $user->followers()->count();
+        $followingCount = $user->following()->count();
+
+        return view('user.profile', compact('user', 'provinces', 'regencies', 'districts', 'villages','followersCount', 'followingCount'));
     }
 
     public function edit() {
@@ -167,5 +170,13 @@ public function getVillages(Request $request)
     $villages = Villages::where('district_id', $request->district_id)->get();
     return response()->json($villages);
 }
+
+public function show($id)
+    {
+        $user = User::findOrFail($id);  // Mengambil user berdasarkan ID
+        $followersCount = $user->followers()->count();
+        $followingCount = $user->following()->count();
+        return view('user.profile_orang_lain', compact('user','followersCount', 'followingCount'));  // Tampilkan ke view
+    }
 
 }

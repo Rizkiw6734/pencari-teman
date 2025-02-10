@@ -43,7 +43,6 @@ class JelajahiController extends Controller
 
         // Ambil data pengguna lain dari database beserta latitude dan longitude
         $penggunaLain = User::where('id', '!=', $userLogin->id)
-            ->select('id', 'name', 'latitude', 'longitude')
             ->get();
 
         // Hitung jarak menggunakan formula Haversine

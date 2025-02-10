@@ -34,8 +34,10 @@
                             <span style="color: #757575; font-size: 16px; cursor: default;">
                                 <i class="fa fa-search ms-1" style="font-size: 15px"></i>
                             </span>
-                            <input type="text" placeholder="Mulai chat baru"
-                                style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 5px;">
+                            <input type="text" id="searchInput" placeholder="Mulai chat baru"
+    style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 5px;"
+    onkeyup="searchChat()">
+
                         </div>
 
                         <!-- Chat -->
@@ -311,6 +313,7 @@
                     const penerimaId = chat.pengirim_id === response.userId ? chat.penerima_id : chat.pengirim_id;
                     const chatPartner = chat.pengirim_id === response.userId ? chat.penerima : chat.pengirim;
 
+
                     let statusIcon = '';
                     if (chat.status === 'sent_and_read') {
                         statusIcon = '<i class="fas fa-check-double" style="color: #34B7F1; transform: rotate(-10deg);"></i>';
@@ -322,9 +325,10 @@
                         statusIcon = '<i class="fas fa-eye text-success"></i>';
                     }
 
-                    const profileImage = chatPartner?.foto_profile ?
-                        `${window.location.origin}/storage/${encodeURIComponent(chatPartner.foto_profile)}` :
-                        `${window.location.origin}/images/marie.jpg`;
+                    const profileImage = chatPartner?.foto_profil
+    ? chatPartner.foto_profil
+    : '/images/marie.jpg';
+
 
                     const name = chatPartner.name ? chatPartner.name : 'No Name';
 
@@ -440,8 +444,14 @@ setInterval(fetchChats, 3000);
                     $("#chat-name").text(response.name);
 
                     // Gunakan default avatar yang benar
-                    var defaultAvatar = "/assets/img/team-1.jpg";
-                    var avatar = response.avatar ? response.avatar : defaultAvatar;
+                    var defaultAvatar = "/images/marie.jpg";
+
+// Gunakan foto_profil jika tersedia dan valid, jika tidak pakai default
+var avatar = response.foto_profil && response.foto_profil.startsWith("http")
+    ? response.foto_profil
+    : defaultAvatar;
+
+
 
                     console.log("Avatar URL:", avatar); // Debugging untuk cek URL
 
@@ -467,56 +477,70 @@ setInterval(fetchChats, 3000);
 
         // Fungsi untuk memuat pesan berdasarkan ID pengguna dan penerima
         function loadMessages(userId, penerimaId) {
-            $.ajax({
-                url: '/messages/' + userId + '/' + penerimaId, // Pastikan URL ini sesuai dengan route Anda
-                type: 'GET',
-                success: function(response) {
-                    console.log("Response:", response); // Cek respons server
-                    if (response.status === 'success') {
-                        let chats = response.data;
-                        let chatBody = $('.chat-body');
+    $.ajax({
+        url: '/messages/' + userId + '/' + penerimaId,
+        type: 'GET',
+        success: function(response) {
+            console.log("Response:", response);
 
-                        // Kosongkan chat body sebelumnya
-                        chatBody.empty();
+            if (response.status === 'success') {
+                let chats = response.data;
+                let chatBody = $('.chat-body');
+                chatBody.empty();
 
-                        // Iterasi chat dan tampilkan ke chat body
-                        chats.forEach(function(chat) {
-                            let isSender = chat.pengirim_id === userId;
-                            let chatElement = `
+                chats.forEach(function(chat) {
+                    let isSender = parseInt(chat.pengirim_id) === parseInt(userId);
+
+                    // Avatar sesuai pengirim dan penerima
+                    let senderAvatar = isSender
+                        ? `${chat.pengirim_foto}?nocache=${Date.now()}`
+                        : `${chat.penerima_foto}?nocache=${Date.now()}`;
+
+                    let receiverAvatar = !isSender
+                        ? `${chat.pengirim_foto}?nocache=${Date.now()}`
+                        : `${chat.penerima_foto}?nocache=${Date.now()}`;
+
+                    console.log(`Sender Avatar (${chat.pengirim_id}):`, senderAvatar);
+                    console.log(`Receiver Avatar (${chat.penerima_id}):`, receiverAvatar);
+
+                    let waktuPesan = chat.created_at
+                        ? new Date(chat.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+                        : '-';
+
+                    let chatElement = `
                         <div class="chat-item ${isSender ? 'd-flex align-items-end justify-content-end' : 'd-flex align-items-start'} mb-3">
                             ${isSender ? `
-                                    <div class="chat-content text p-2 rounded" style="max-width: 60%; background-color: #9FB7FF; border-radius: 15px;">
-                                        <span style="font-size: 13px; color: #000000;">${chat.konten}</span>
-                                        <div class="text-end text-black-50" style="font-size: 10px;">
-                                            ${new Date(new Date(chat.created_at).toLocaleString('en-US', { timeZone: 'Asia/Jakarta' })).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                        </div>
-                                    </div>
-                                    <img src="/assets/img/team-2.jpg" alt="Avatar" class="rounded-circle ms-3" style="width: 50px; height: 50px; object-fit: cover;">
-                                ` : `
-                                    <img src="/assets/img/team-1.jpg" alt="Avatar" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
-                                    <div class="chat-content text p-2 rounded" style="max-width: 50%; background-color: #F0F3F9; border-radius: 15px 15px 15px 0;">
-                                        <span style="font-size: 13px; color: #000000;">${chat.konten}</span>
-                                        <div class="text-end text-black-50" style="font-size: 10px;">
-                                            ${new Date(new Date(chat.created_at).toLocaleString('en-US', { timeZone: 'Asia/Jakarta' })).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                        </div>
-                                    </div>
-                                `}
+                                <div class="chat-content text p-2 rounded" style="max-width: 60%; background-color: #9FB7FF; border-radius: 15px;">
+                                    <span style="font-size: 13px; color: #000000;">${chat.konten}</span>
+                                    <div class="text-end text-black-50" style="font-size: 10px;">${waktuPesan}</div>
+                                </div>
+                                <img src="${senderAvatar}" class="sender-avatar rounded-circle ms-3" style="width: 50px; height: 50px; object-fit: cover;">
+                            ` : `
+                                <img src="${receiverAvatar}" class="receiver-avatar rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                <div class="chat-content text p-2 rounded" style="max-width: 50%; background-color: #F0F3F9; border-radius: 15px 15px 15px 0;">
+                                    <span style="font-size: 13px; color: #000000;">${chat.konten}</span>
+                                    <div class="text-end text-black-50" style="font-size: 10px;">${waktuPesan}</div>
+                                </div>
+                            `}
                         </div>
                     `;
-                            chatBody.append(chatElement);
-                        });
 
-                        // Tampilkan footer chat setelah pesan berhasil dimuat
-                        document.getElementById('chat-footer').style.display = 'flex';
-                    }
-                },
-                error: function(error) {
-                    console.log("Error:", error); // Debugging: Cek jika ada error dalam AJAX request
-                    // Sembunyikan footer chat jika gagal memuat pesan (opsional)
-                    document.getElementById('chat-footer').style.display = 'none';
-                }
-            });
+                    chatBody.append(chatElement);
+                });
+
+                document.getElementById('chat-footer').style.display = 'flex';
+            }
+        },
+        error: function(error) {
+            console.log("Error:", error);
+            document.getElementById('chat-footer').style.display = 'none';
         }
+    });
+}
+
+
+
+
 
 
         // Fungsi untuk memformat tanggal
@@ -575,5 +599,18 @@ setInterval(fetchChats, 3000);
                 });
             }
         });
+
+        function searchChat() {
+    let searchValue = document.getElementById("searchInput").value.toLowerCase();
+    $(".chat-item").each(function() {
+        let chatText = $(this).text().toLowerCase();
+        if (chatText.includes(searchValue)) {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    });
+}
+
     </script>
 @endsection

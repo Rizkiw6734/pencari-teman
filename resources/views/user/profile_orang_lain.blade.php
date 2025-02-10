@@ -7,12 +7,14 @@
                     <div class="card shadow-sm h-100">
                         <div class="card-body text-center" style="box-shadow: 0px 0px 5px 1px rgba(82, 139, 255, 0.25); border-radius: 12px;">
                             <div class="avatar avatar-xxl position-relative mb-3">
-                                <img src="/assets/img/pp.jpg" alt="Foto Profil" class="profile-img"
-                                    style="width: 150px; height: 110px; border-radius: 50%; object-fit: cover;">
+                                <img src="{{ $user->foto_profil ? asset('storage/' . $user->foto_profil) : asset('images/marie.jpg') }}"
+                                            alt="Foto Profil" class="w-100 border-radius-lg shadow-sm rounded-circle" style="width: 150px; height: 110px; border-radius: 50%; object-fit: cover;">
                             </div>
                             <div class="position-absolute top-0 start-0 m-3">
-                                <i class="fa-solid fa-arrow-left text-secondary p-2 rounded-circle"
-                                    style="font-size: 20px; margin-right: -10px;"></i>
+                                <a href="{{ url()->previous() }}">
+                                    <i class="fa-solid fa-arrow-left text-secondary p-2 rounded-circle"
+                                       style="font-size: 20px; margin-right: -10px;"></i>
+                                </a>
                             </div>
                             <div class="position-absolute top-0 end-0 m-3">
                                 <i class="fa-solid fa-comment-sms text-secondary p-2 rounded-circle"
@@ -23,11 +25,11 @@
                             <div>
                                 <h5 class="mb-2"
                                     style="font-size: 27px; font-weight: 600; line-height: 45px; margin: 5px; color:black;">
-                                    Alifio Galang F.
+                                    {{ $user['name'] }} {{ $user['last_name'] }}
                                 </h5>
                                 <p class="mb-4"
                                     style="font-size: 14px; font-weight: 400; line-height: 22.5px; margin: 5px; color:black;">
-                                    Kopi, film, dan perjalanan: tiga hal favorit saya.
+                                    {{ $user->bio ?? 'Tidak tersedia' }}
                                 </p>
                                 <div class="row">
                                     <div class="col">
@@ -37,7 +39,7 @@
                                         </p>
                                         <p
                                             style="font-size: 16px; font-weight: 700; line-height: 24px; margin: 10px; color:black;">
-                                            4.567
+                                            {{ $followersCount }}
                                         </p>
                                     </div>
                                     <div class="col">
@@ -46,7 +48,7 @@
                                             Mengikuti
                                         <p
                                             style="font-size: 16px; font-weight: 700; line-height: 24px; margin: 10px; color:black;">
-                                            4.567
+                                            {{ $followingCount }}
                                         </p>
                                     </div>
                                 </div>
@@ -169,7 +171,7 @@
                                             </p>
                                             <p
                                                 style="font-size: 14px; font-weight: 500; line-height: 24px; margin: 0; color:black;">
-                                                Laki - Laki
+                                                {{ $user->gender == 'L' ? 'Laki-laki' : ($user->gender == 'P' ? 'Perempuan' : 'Tidak tersedia') }}
                                             </p>
                                         </div>
                                         <div class="col">
@@ -178,7 +180,7 @@
                                             </p>
                                             <p
                                                 style="font-size: 14px; font-weight: 500; line-height: 24px; margin: 0; color:black;">
-                                                23
+                                                {{ $user->umur ?? 'Tidak tersedia' }}
                                             </p>
                                         </div>
                                     </div>
@@ -189,7 +191,7 @@
                                                 Hobi <br>
                                             <p
                                                 style="font-size: 14px; font-weight: 500; line-height: 24px; margin: 0; color:black;">
-                                                Coding + Rebahan
+                                                {{ $user->hobi ?? 'Tidak tersedia' }}
                                             </p>
                                             </p>
                                         </div>
@@ -207,7 +209,7 @@
                                                 Provinsi <br>
                                             <p
                                                 style="font-size: 14px; font-weight: 500; line-height: 24px; margin: 0; color:black;">
-                                                Jawa Timur
+                                                {{ $user->provinsis ? $user->provinsis->name : 'Tidak tersedia' }}
                                             </p>
                                             </p>
                                         </div>
@@ -216,7 +218,7 @@
                                                 Kecamatan <br>
                                             <p
                                                 style="font-size: 14px; font-weight: 500; line-height: 24px; margin: 0; color:black;">
-                                                Karang Ploso
+                                                {{ $user->kecamatans ? $user->kecamatans->name : 'Tidak tersedia' }}
                                             </p>
                                             </p>
                                         </div>
@@ -228,7 +230,7 @@
                                                 Kabupaten <br>
                                             <p
                                                 style="font-size: 14px; font-weight: 500; line-height: 24px; margin: 0; color:black;">
-                                                Malang
+                                                {{ $user->kabupatens ? $user->kabupatens->name : 'Tidak tersedia' }}
                                             </p>
                                             </p>
                                         </div>
@@ -238,7 +240,7 @@
                                                 Desa <br>
                                             <p
                                                 style="font-size: 14px; font-weight: 500; line-height: 24px; margin: 0; color:black;">
-                                                Ngijo
+                                                {{ $user->desas ? $user->desas->name : 'Tidak tersedia' }}
                                             </p>
                                             </p>
                                         </div>
@@ -268,97 +270,7 @@
                             Ikuti
                         </button>
                     </div>
-                    <div class="card text-center p-3"
-                        style="flex: 0 0 calc(100% / 8 - 10px); height: 160px; box-shadow: 0px 0px 10px 1px rgba(82, 139, 255, 0.25);">
-                        <img src="/assets/img/pp.jpg" class="rounded-circle mx-auto" alt="Avatar"
-                            style="width: 60px; height: 60px; object-fit: cover; margin-top: -8px;">
-                        <h6 class="mt-1 mb-0 text-dark" style="font-size: 13px;">Alexandra</h6>
-                        <p class="text-secondary small" style="font-size: 11px;">
-                            <i class="fa-solid fa-location-dot"></i> Malang
-                        </p>
-                        <button class="btn btn-primary btn-sm text-dark"
-                            style="font-size: 10px; padding: 3px 8px; background-color: #84ADFF; border-radius: 10px;">
-                            Ikuti
-                        </button>
-                    </div>
-                    <div class="card text-center p-3"
-                        style="flex: 0 0 calc(100% / 8 - 10px); height: 160px; box-shadow: 0px 0px 10px 1px rgba(82, 139, 255, 0.25);">
-                        <img src="/assets/img/pp.jpg" class="rounded-circle mx-auto" alt="Avatar"
-                            style="width: 60px; height: 60px; object-fit: cover; margin-top: -8px;">
-                        <h6 class="mt-1 mb-0 text-dark" style="font-size: 13px;">Alexandra</h6>
-                        <p class="text-secondary small" style="font-size: 11px;">
-                            <i class="fa-solid fa-location-dot"></i> Malang
-                        </p>
-                        <button class="btn btn-primary btn-sm text-dark"
-                            style="font-size: 10px; padding: 3px 8px; background-color: #84ADFF; border-radius: 10px;">
-                            Ikuti
-                        </button>
-                    </div>
-                    <div class="card text-center p-3"
-                        style="flex: 0 0 calc(100% / 8 - 10px); height: 160px; box-shadow: 0px 0px 10px 1px rgba(82, 139, 255, 0.25);">
-                        <img src="/assets/img/pp.jpg" class="rounded-circle mx-auto" alt="Avatar"
-                            style="width: 60px; height: 60px; object-fit: cover; margin-top: -8px;">
-                        <h6 class="mt-1 mb-0 text-dark" style="font-size: 13px;">Alexandra</h6>
-                        <p class="text-secondary small" style="font-size: 11px;">
-                            <i class="fa-solid fa-location-dot"></i> Malang
-                        </p>
-                        <button class="btn btn-primary btn-sm text-dark"
-                            style="font-size: 10px; padding: 3px 8px; background-color: #84ADFF; border-radius: 10px;">
-                            Ikuti
-                        </button>
-                    </div>
-                    <div class="card text-center p-3"
-                        style="flex: 0 0 calc(100% / 8 - 10px); height: 160px; box-shadow: 0px 0px 10px 1px rgba(82, 139, 255, 0.25);">
-                        <img src="/assets/img/pp.jpg" class="rounded-circle mx-auto" alt="Avatar"
-                            style="width: 60px; height: 60px; object-fit: cover; margin-top: -8px;">
-                        <h6 class="mt-1 mb-0 text-dark" style="font-size: 13px;">Alexandra</h6>
-                        <p class="text-secondary small" style="font-size: 11px;">
-                            <i class="fa-solid fa-location-dot"></i> Malang
-                        </p>
-                        <button class="btn btn-primary btn-sm text-dark"
-                            style="font-size: 10px; padding: 3px 8px; background-color: #84ADFF; border-radius: 10px;">
-                            Ikuti
-                        </button>
-                    </div>
-                    <div class="card text-center p-3"
-                        style="flex: 0 0 calc(100% / 8 - 10px); height: 160px; box-shadow: 0px 0px 10px 1px rgba(82, 139, 255, 0.25);">
-                        <img src="/assets/img/pp.jpg" class="rounded-circle mx-auto" alt="Avatar"
-                            style="width: 60px; height: 60px; object-fit: cover; margin-top: -8px;">
-                        <h6 class="mt-1 mb-0 text-dark" style="font-size: 13px;">Alexandra</h6>
-                        <p class="text-secondary small" style="font-size: 11px;">
-                            <i class="fa-solid fa-location-dot"></i> Malang
-                        </p>
-                        <button class="btn btn-primary btn-sm text-dark"
-                            style="font-size: 10px; padding: 3px 8px; background-color: #84ADFF; border-radius: 10px;">
-                            Ikuti
-                        </button>
-                    </div>
-                    <div class="card text-center p-3"
-                        style="flex: 0 0 calc(100% / 8 - 10px); height: 160px; box-shadow: 0px 0px 10px 1px rgba(82, 139, 255, 0.25);">
-                        <img src="/assets/img/pp.jpg" class="rounded-circle mx-auto" alt="Avatar"
-                            style="width: 60px; height: 60px; object-fit: cover; margin-top: -8px;">
-                        <h6 class="mt-1 mb-0 text-dark" style="font-size: 13px;">Alexandra</h6>
-                        <p class="text-secondary small" style="font-size: 11px;">
-                            <i class="fa-solid fa-location-dot"></i> Malang
-                        </p>
-                        <button class="btn btn-primary btn-sm text-dark"
-                            style="font-size: 10px; padding: 3px 8px; background-color: #84ADFF; border-radius: 10px;">
-                            Ikuti
-                        </button>
-                    </div>
-                    <div class="card text-center p-3"
-                        style="flex: 0 0 calc(100% / 8 - 10px); height: 160px; box-shadow: 0px 0px 10px 1px rgba(82, 139, 255, 0.25);">
-                        <img src="/assets/img/pp.jpg" class="rounded-circle mx-auto" alt="Avatar"
-                            style="width: 60px; height: 60px; object-fit: cover; margin-top: -8px;">
-                        <h6 class="mt-1 mb-0 text-dark" style="font-size: 13px;">Alexandra</h6>
-                        <p class="text-secondary small" style="font-size: 11px;">
-                            <i class="fa-solid fa-location-dot"></i> Malang
-                        </p>
-                        <button class="btn btn-primary btn-sm text-dark"
-                            style="font-size: 10px; padding: 3px 8px; background-color: #84ADFF; border-radius: 10px;">
-                            Ikuti
-                        </button>
-                    </div>
+
                 </div>
 
 

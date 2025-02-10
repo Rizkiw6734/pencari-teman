@@ -40,14 +40,14 @@
                                                 <p
                                                     style="font-size: 16px; font-weight: 400; line-height: 24px; margin: 0; color:black;">
                                                     Pengikut <br>
-                                                    <span style="font-weight: 700;">4.567</span>
+                                                    <span style="font-weight: 700;">{{ $followersCount }}</span>
                                                 </p>
                                             </div>
                                             <div class="col">
                                                 <p
                                                     style="font-size: 16px; font-weight: 400; line-height: 24px; margin: 0; color:black;">
                                                     Mengikuti <br>
-                                                    <span style="font-weight: 700;">4.567</span>
+                                                    <span style="font-weight: 700;">{{ $followingCount }}</span>
                                                 </p>
                                             </div>
                                         </div>

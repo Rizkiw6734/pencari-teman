@@ -22,6 +22,7 @@ use App\Http\Controllers\ActiveUserController;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Middleware\CheckExpiredSuspension;
 use App\Http\Middleware\CheckStatusUser;
+use APP\Http\Controllers\FollowerController;
 use App\Jobs\CheckExpiredSuspensionJob;
 use App\Http\Controllers\LocationController;
 
@@ -106,9 +107,6 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
 
     // Banned Page
     Route::get('/banned', [UserStatusController::class, 'bannedPage'])->name('user.banned');
-    Route::get('/orang-lain', function() {
-        return view('user.profile_orang_lain');
-    });
 
     // Profile User Routes
     Route::get('/profile-user', [ProfileUserController::class, 'profile'])->name('profile.index');
@@ -116,6 +114,7 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     Route::put('/profile-user', [ProfileUserController::class, 'update'])->name('user.update');
     Route::put('/profile/update-photo', [ProfileUserController::class, 'updatePhoto'])->name('profile.update-photo');
     Route::put('/user/{id}/update-address', [ProfileUserController::class, 'updateAddress'])->name('user.update.address');
+    Route::get('/profile/{id}', [ProfileUserController::class, 'show'])->name('profile.show');
 
     // Ajax Lokasi
     Route::get('/get-regencies', [ProfileUserController::class, 'getRegencies'])->name('getRegencies');
@@ -136,6 +135,10 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
         Route::get('/provinsi/{provinsi_id}', [JelajahiController::class, 'getKotaByProvinsi'])->name('jelajahi.kota');
         Route::get('/pengguna-by-kota/{kabupaten_id}', [JelajahiController::class, 'penggunaByKota'])->name('jelajahi.pengguna');
     });
+    Route::post('/follow/{user}', [FollowerController::class, 'follow'])->name('follow');
+    Route::delete('/unfollow/{user}', [FollowerController::class, 'unfollow'])->name('unfollow');
+    Route::get('/followers/{user}', [FollowerController::class, 'followers'])->name('followers.list');
+    Route::get('/following/{user}', [FollowerController::class, 'following'])->name('following.list');
     // Add the update-location route here
     Route::middleware(['auth'])->post('/update-location', [ProfileUserController::class, 'updateLocation']);
     Route::get('/active-users', [ActiveUserController::class, 'index']);

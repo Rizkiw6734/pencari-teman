@@ -150,4 +150,12 @@ class User extends Authenticatable
     public function desas() {
         return $this->belongsTo(Villages::class, 'desa_id');
     }
+
+    public function followers() {
+        return $this->hasMany(Follower::class, 'user_id');
+    }
+
+    public function following() {
+        return $this->hasMany(Follower::class, 'follower_id');
+    }
 }

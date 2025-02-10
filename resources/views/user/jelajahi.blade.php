@@ -38,6 +38,11 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
        $(document).ready(function() {
+    $('.nav-link').on('click', function() {
+        localStorage.removeItem('selectedProvinsi');
+        localStorage.removeItem('selectedKota');
+    });
+
     loadProvinsi();
 
     const lastFilter = localStorage.getItem('lastFilter');
@@ -56,14 +61,7 @@
         $('#judulTeman').text('Teman di Sekitar');
         getPenggunaTerdekat();
         localStorage.setItem('lastFilter', 'disekitar');
-
-        // Kosongkan dropdown provinsi dan kota
-        $('#provinsi').val('');
-        $('#kota').empty().append('<option value="">Pilih Kota</option>');
-
-        // Hapus data provinsi dan kota dari localStorage
-        localStorage.removeItem('selectedProvinsi');
-        localStorage.removeItem('selectedKota');
+        clearDropdown();
     });
 
     $('#btnByKota').on('click', function() {
@@ -71,8 +69,6 @@
         $('#judulTeman').text('Teman di Kota');
         $('#userList').empty();
         localStorage.setItem('lastFilter', 'kota');
-
-        // Pastikan dropdown memulihkan pilihan terakhir
         restoreDropdownSelection();
     });
 
@@ -80,26 +76,9 @@
         let provinsiId = $(this).val();
         localStorage.setItem('selectedProvinsi', provinsiId);
         if (provinsiId) {
-            $.ajax({
-                url: '/jelajahi/provinsi/' + provinsiId,
-                type: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    $('#kota').empty().append('<option value="">Pilih Kota</option>');
-                    if (response.status === 'success') {
-                        $.each(response.data, function(key, kota) {
-                            $('#kota').append('<option value="' + kota.id + '">' + kota.name + '</option>');
-                        });
-                        const selectedKota = localStorage.getItem('selectedKota');
-                        if (selectedKota) {
-                            $('#kota').val(selectedKota);
-                        }
-                    }
-                }
-            });
+            loadKota(provinsiId);
         } else {
-            $('#kota').empty().append('<option value="">Pilih Kota</option>');
-            localStorage.removeItem('selectedKota');
+            clearDropdown();
         }
     });
 
@@ -122,9 +101,26 @@
                     $.each(response.data, function(key, provinsi) {
                         $('#provinsi').append('<option value="' + provinsi.id + '">' + provinsi.name + '</option>');
                     });
-                    const selectedProvinsi = localStorage.getItem('selectedProvinsi');
-                    if (selectedProvinsi) {
-                        $('#provinsi').val(selectedProvinsi).trigger('change');
+                    restoreDropdownSelection();
+                }
+            }
+        });
+    }
+
+    function loadKota(provinsiId) {
+        $.ajax({
+            url: '/jelajahi/provinsi/' + provinsiId,
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                $('#kota').empty().append('<option value="">Pilih Kota</option>');
+                if (response.status === 'success') {
+                    $.each(response.data, function(key, kota) {
+                        $('#kota').append('<option value="' + kota.id + '">' + kota.name + '</option>');
+                    });
+                    const selectedKota = localStorage.getItem('selectedKota');
+                    if (selectedKota) {
+                        $('#kota').val(selectedKota);
                     }
                 }
             }
@@ -167,14 +163,16 @@
                 const userCard = `
                     <div class="col">
                         <div class="card position-relative overflow-hidden border-0 shadow-sm" style="height: 300px">
-                            <img src="${user.avatar || '/assets/img/jelajahi.jpg'}" class="card-img-top" alt="Avatar" style="object-fit: cover; height: 100%; width: 100%; z-index: 0;">
+                            <img src="${user.foto_profil ? `/storage/${user.foto_profil}` : '/images/marie.jpg'}" class="card-img-top" alt="Foto Profile" style="object-fit: cover; height: 100%; width: 100%; z-index: 0;">
                             <div class="position-absolute top-0 end-0 m-2">
                                 <i class="fa-solid fa-user-plus text-white p-2 rounded-circle"></i>
                             </div>
                             <div class="card-img-overlay d-flex flex-column justify-content-end text-white p-3 rounded-bottom" style="background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h5 class="card-title mb-1">${user.name}</h5>
+                                        <h5 class="card-title mb-1">
+                                        <a href="/profile/${user.id}" class="text-white text-decoration-none">${user.name}</a>
+                                    </h5>
                                         <p class="card-text" style="font-size: 12px;">
                                             <i class="fa-solid fa-location-dot"></i> ${distanceOrLocation}
                                         </p>
@@ -193,27 +191,31 @@
     }
 
     function restoreDropdownSelection() {
-    const selectedProvinsi = localStorage.getItem('selectedProvinsi');
-    const selectedKota = localStorage.getItem('selectedKota');
+        const selectedProvinsi = localStorage.getItem('selectedProvinsi');
+        const selectedKota = localStorage.getItem('selectedKota');
 
-    if (performance.navigation.type === 1) {  // Mengecek apakah halaman di-refresh
-        localStorage.removeItem('selectedProvinsi');
-        localStorage.removeItem('selectedKota');
-        $('#provinsi').val('');
-        $('#kota').empty().append('<option value="">Pilih Kota</option>');
-    } else {
-        if (selectedProvinsi) {
-            $('#provinsi').val(selectedProvinsi).trigger('change');
-            setTimeout(() => {
-                if (selectedKota) {
-                    $('#kota').val(selectedKota);
-                }
-            }, 500);
+        if (performance.navigation.type === 1) {  // Mengecek apakah halaman di-refresh
+            clearDropdown();
+        } else {
+            if (selectedProvinsi) {
+                $('#provinsi').val(selectedProvinsi).trigger('change');
+                setTimeout(() => {
+                    if (selectedKota) {
+                        $('#kota').val(selectedKota);
+                    }
+                }, 300);
+            }
         }
     }
-}
 
+    function clearDropdown() {
+        $('#provinsi').val('');
+        $('#kota').empty().append('<option value="">Pilih Kota</option>');
+        localStorage.removeItem('selectedProvinsi');
+        localStorage.removeItem('selectedKota');
+    }
 });
+
 
     </script>
 @endsection

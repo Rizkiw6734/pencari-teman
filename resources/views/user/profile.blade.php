@@ -1,4 +1,4 @@
-{{-- @extends('layouts.user')
+@extends('layouts.user')
 @section('content')
     <div class="main-content"
         style="max-width: 1200px; margin: 0 auto; margin-top: 0px; background-color: #F0F3F9;
@@ -517,6 +517,7 @@
             });
         });
     </script>
+<<<<<<< Updated upstream
 @endsection --}}
 
 @extends('layouts.user')
@@ -690,3 +691,4 @@
         </div>
     </div>
 @endsection
+

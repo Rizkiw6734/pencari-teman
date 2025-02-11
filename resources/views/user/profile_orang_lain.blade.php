@@ -103,18 +103,26 @@
                                                 <div class="modal-body">
                                                     <div class="card" style="box-shadow: 0px 0px 5px 1px rgba(82, 139, 255, 0.25);">
                                                         <div class="card-body" >
-                                                            <form>
+                                                            <form id="laporanForm" action="{{ route('laporan.store') }}" method="POST" enctype="multipart/form-data">
+                                                                @csrf
+                                                                <input type="hidden" name="reported_id" id="reported_id" value="{{ $user->id }}">
                                                                 <div class="mb-3 d-flex flex-column align-items-start">
                                                                     <label for="bukti" class="form-label first-circle fw-bold text-start" style="font-size: 15px;">
                                                                         Bukti <span class="text-muted fst-italic">(*optional)</span>
                                                                     </label>
                                                                     <img id="preview" src="" alt="Pratinjau Gambar" class="mb-2" style="max-width: 100px; display: none;">
-                                                                    <input type="file" class="form-control" id="bukti" accept="image/*" style="border: 0px solid #cecece; box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25);">
+                                                                    <input type="file" class="form-control" id="bukti" name="bukti" accept="image/*" style="border: 0px solid #cecece; box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25);">
+                                                                    @error('bukti')
+                                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                                    @enderror
                                                                 </div>
 
                                                                 <div class="mb-3 d-flex flex-column align-items-start">
                                                                     <label for="alasan" class="form-label fw-bold text-start" style="font-size: 15px;">Alasan Dilaporkan</label>
-                                                                    <textarea class="form-control" id="alasan" rows="3" placeholder="Masukkan Alasan Anda" style="border: 0px solid #ffffff; box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25)"></textarea>
+                                                                    <textarea class="form-control" id="alasan" name="alasan" rows="3" placeholder="Masukkan Alasan Anda" style="border: 0px solid #ffffff; box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25)"></textarea>
+                                                                    @error('alasan')
+                                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                                    @enderror
                                                                 </div>
                                                             </form>
 
@@ -134,11 +142,15 @@
                                                                         preview.style.display = "none";
                                                                     }
                                                                 });
+
+                                                                function submitLaporan() {
+                                                                    document.getElementById('laporanForm').submit();
+                                                                }
                                                             </script>
 
                                                         </div>
                                                         <div class="modal-footer d-flex justify-content-between border-0 mx-2" style="margin-bottom: -5px; margin-top: -20px;">
-                                                            <button type="button" class="btn btn-danger" style="font-size: 14px; padding: 10px 30px;">Laporkan</button>
+                                                            <button type="button" class="btn btn-danger" onclick="submitLaporan()" style="font-size: 14px; padding: 10px 30px;">Laporkan</button>
                                                             <button type="button" class="btn btn-secondary"
                                                             data-bs-dismiss="modal" style="font-size: 14px; padding: 10px 30px; background-color: #BEB9B9; color: white;">Batal</button>
                                                         </div>

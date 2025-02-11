@@ -59,12 +59,12 @@ class ProfileUserController extends Controller
     $validated = $request->validate([
         'name'      => 'required|max:255',
         'last_name' => 'required|string|max:255',
-        'gender'    => ['nullable', Rule::in(['L', 'P'])], // Tidak wajib diubah
+        'gender'    => ['nullable', Rule::in(['L', 'P'])], 
         'umur'      => 'required|integer|min:1|max:80',
         'email'     => [
             'required',
             'email',
-            Rule::unique('users', 'email')->ignore($user->id), // Abaikan email saat ini
+            Rule::unique('users', 'email')->ignore($user->id),
         ],
         'hobi'      => 'nullable|string|max:255',
         'bio'       => 'nullable|string|max:1000',

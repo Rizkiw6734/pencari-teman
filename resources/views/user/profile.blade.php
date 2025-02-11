@@ -521,34 +521,172 @@
 
 @extends('layouts.user')
 @section('content')
-<div class="main-content"
+    <div class="main-content"
         style="max-width: 1200px; margin: 0 auto; margin-top: 0px; background-color: #F0F3F9;
            padding: 20px; margin-left: 260px; position: relative;">
         <div class="container-fluid">
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    Launch demo modal
-  </button>
+            <!-- Pengikut -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pengikutModal">
+                Pengikut
+            </button>
 
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <div id="chat-container" style="height: 300px; overflow-y: scroll; solid #ccc;">
-                <div style="display: flex; align-items: center; margin-bottom: 20px;">
-                    <img src="/assets/img/pp.jpg" alt="Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px;">
-                    <span style="font-size: 15px; font-weight: 600; color:#000000;">Christ</span>
+            <!-- Modal -->
+            <div class="modal fade" id="pengikutModal" tabindex="-1" aria-labelledby="pengikutModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5 text-center w-100" id="pengikutModalLabel">Pengikut</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div
+                                style="display: flex; align-items: center; margin-bottom: 10px; border: 1px solid #3243FD80; border-radius:20px; padding: 3px 10px; width: 100%; background-color: #ffffff;">
+                                <span style="color: #757575; font-size: 16px; cursor: default;">
+                                    <i class="fa fa-search ms-1" style="font-size: 15px"></i>
+                                </span>
+                                <input type="text" id="searchInput" placeholder="Cari"
+                                    style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 5px;">
+                            </div>
+                            <div id="chat-container" style="height: 300px; overflow-y: scroll; solid #ccc;">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <img src="/assets/img/pp.jpg" alt="Avatar" class="rounded-circle me-2"
+                                            style="width: 50px; height: 50px; object-fit: cover;">
+                                        <div>
+                                            <span class="d-block fw-bold"
+                                                style="color: #000000; font-size: 15px;">Christ</span>
+                                            <p class="m-0 font-small">@cassain</p>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3"
+                                        style="background-color: #BEB9B9">Hapus</button>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <img src="/assets/img/pp.jpg" alt="Avatar" class="rounded-circle me-2"
+                                            style="width: 50px; height: 50px; object-fit: cover;">
+                                        <div>
+                                            <span class="d-block fw-bold"
+                                                style="color: #000000; font-size: 15px;">Christ</span>
+                                            <p class="m-0 font-small">@cassain</p>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3"
+                                        style="background-color: #BEB9B9">Hapus</button>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <img src="/assets/img/pp.jpg" alt="Avatar" class="rounded-circle me-2"
+                                            style="width: 50px; height: 50px; object-fit: cover;">
+                                        <div>
+                                            <span class="d-block fw-bold"
+                                                style="color: #000000; font-size: 15px;">Christ</span>
+                                            <p class="m-0 font-small">@cassain</p>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3"
+                                        style="background-color: #BEB9B9">Hapus</button>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <img src="/assets/img/pp.jpg" alt="Avatar" class="rounded-circle me-2"
+                                            style="width: 50px; height: 50px; object-fit: cover;">
+                                        <div>
+                                            <span class="d-block fw-bold"
+                                                style="color: #000000; font-size: 15px;">Christ</span>
+                                            <p class="m-0 font-small">@cassain</p>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3"
+                                        style="background-color: #BEB9B9">Hapus</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Mengikuti -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mengikutiModal">
+                Mengikuti
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="mengikutiModal" tabindex="-1" aria-labelledby="mengikutiModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5 text-center w-100" id="mengikutiModalLabel">Mengikuti</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div
+                                style="display: flex; align-items: center; margin-bottom: 10px; border: 1px solid #3243FD80; border-radius:20px; padding: 3px 10px; width: 100%; background-color: #ffffff;">
+                                <span style="color: #757575; font-size: 16px; cursor: default;">
+                                    <i class="fa fa-search ms-1" style="font-size: 15px"></i>
+                                </span>
+                                <input type="text" id="searchInput" placeholder="Cari"
+                                    style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 5px;">
+                            </div>
+                            <div id="chat-container" style="height: 300px; overflow-y: scroll; solid #ccc;">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <img src="/assets/img/pp.jpg" alt="Avatar" class="rounded-circle me-2"
+                                            style="width: 50px; height: 50px; object-fit: cover;">
+                                        <div>
+                                            <span class="d-block fw-bold"
+                                                style="color: #000000; font-size: 15px;">Christ</span>
+                                            <p class="m-0 font-small">@cassain</p>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3"
+                                        style="background-color: #528BFF">Kirim Pesan</button>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <img src="/assets/img/pp.jpg" alt="Avatar" class="rounded-circle me-2"
+                                            style="width: 50px; height: 50px; object-fit: cover;">
+                                        <div>
+                                            <span class="d-block fw-bold"
+                                                style="color: #000000; font-size: 15px;">Christ</span>
+                                            <p class="m-0 font-small">@cassain</p>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3"
+                                        style="background-color: #528BFF">Kirim Pesan</button>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <img src="/assets/img/pp.jpg" alt="Avatar" class="rounded-circle me-2"
+                                            style="width: 50px; height: 50px; object-fit: cover;">
+                                        <div>
+                                            <span class="d-block fw-bold"
+                                                style="color: #000000; font-size: 15px;">Christ</span>
+                                            <p class="m-0 font-small">@cassain</p>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3"
+                                        style="background-color: #528BFF">Kirim Pesan</button>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <img src="/assets/img/pp.jpg" alt="Avatar" class="rounded-circle me-2"
+                                            style="width: 50px; height: 50px; object-fit: cover;">
+                                        <div>
+                                            <span class="d-block fw-bold"
+                                                style="color: #000000; font-size: 15px;">Christ</span>
+                                            <p class="m-0 font-small">@cassain</p>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3"
+                                        style="background-color: #528BFF">Kirim Pesan</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-      </div>
     </div>
-  </div>
-</div>
-</div>
 @endsection

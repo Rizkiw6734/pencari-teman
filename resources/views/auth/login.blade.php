@@ -1,18 +1,19 @@
 @extends('layouts.temp')
 @section('content')
-<section class="min-h-screen flex items-center justify-center relative bg-cover bg-center" style="background-image: url('/images/bg1.svg');">
-    <div class="bg-white flex rounded-2xl shadow-lg max-w-3xl p-5 items-center relative bg-cover bg-center" style="background-image: url('/images/vector-log.svg');">
-        <div class="md:block hidden w-1/2">
-            <img class="rounded-2xl transform scale-x-[-1]" src="/images/bg.svg" alt="Location Search">
+<section class="min-h-screen flex items-center justify-center relative bg-cover bg-center p-10" style="background-image: url('/images/bg1.svg');">
+
+    <div class="bg-white flex w-full flex-1 rounded-3xl shadow-2xl max-w-6xl p-10 items-center relative bg-cover bg-center" style="background-image: url('/images/vector-log.svg');">
+        <div class="md:block hidden w-2/3">
+            <img class="rounded-3xl transform scale-x-[-1]" src="/images/bg.svg" alt="Location Search">
         </div>
 
-        <div class="md:w-1/2 px-8 md:px-16">
-            <p class="text-[#FFFFFF]">Selamat Datang!</p>
-            <h2 class="font-bold text-[#FFFFFF]" style="font-size: 19px">Masuk untuk Melanjutkan</h2>
+        <div class="md:w-2/3 px-12 md:px-24 ml-12">
+            <p class="text-[#FFFFFF]" style="font-size: 18px;">Selamat Datang!</p>
+            <h2 class="font-bold text-[#FFFFFF]" style="font-size: 28px">Masuk untuk Melanjutkan</h2>
 
-            <form action="{{ route('login') }}" method="post" class="flex flex-col gap-4">
+            <form action="{{ route('login') }}" method="post" class="flex flex-col gap-5">
                 @csrf
-                <input class="p-2 mt-8 rounded-xl border" id="email" type="email" name="email" value="{{ old('email') }}" placeholder="Email">
+                <input class="p-2 mt-8 rounded-2xl border text-lg" id="email" type="email" name="email" value="{{ old('email') }}" placeholder="Email">
                 @error('email')
                 <div role="alert" class="bg-red-100 dark:bg-red-900 border-l-4 border-red-500 dark:border-red-700 text-red-900 dark:text-red-100 p-2 rounded-lg flex items-center transition duration-300 ease-in-out hover:bg-red-200 dark:hover:bg-red-800 transform hover:scale-105">
                     <svg stroke="currentColor" viewBox="0 0 24 24" fill="none" class="h-5 w-5 flex-shrink-0 mr-2 text-red-600" xmlns="http://www.w3.org/2000/svg">
@@ -28,7 +29,7 @@
                 @enderror
 
                 <div x-data="{ show: false }" class="relative">
-                    <input :type="show ? 'text' : 'password'" class="p-2 rounded-xl border w-full" name="password" placeholder="Password">
+                    <input :type="show ? 'text' : 'password'" class="p-2 rounded-2xl border w-full text-lg" name="password" placeholder="Password">
 
                     <svg @click="show = !show" :class="{'hidden': !show, 'block': show}"
                         class="h-4 text-purple-700 absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
@@ -60,7 +61,7 @@
                 </div>
                 @enderror
 
-                <button class="bg-[#2970FF] rounded-xl text-white py-2 hover:scale-105 duration-300">Login</button>
+                <button class="bg-[#2970FF] rounded-3xl text-white py-2 hover:scale-105 duration-300">Login</button>
             </form>
 
             <div class="mt-5 text-xs border-b border-[#FFFFFF] py-4 text-[#FFFFFF]">
@@ -75,53 +76,55 @@
             </div>
         </div>
     </div>
-    <script>
-        @auth
-            // Menyertakan token API dari session jika user login
-            const userToken = "{{ auth()->user()->createToken('PencariTeman')->plainTextToken }}";
-            console.log('User sedang login:', userToken);
-        @else
-            const userToken = null;  // Jika user belum login, tidak ada token
-            console.log('User belum login');
-        @endauth
 
-        // Jika ada token dan pengguna login
-        if (userToken) {
-            navigator.geolocation.getCurrentPosition(
-                function (position) {
-                    const latitude = position.coords.latitude;
-                    const longitude = position.coords.longitude;
-
-                    // Kirim data ke backend untuk memperbarui lokasi user
-                    fetch('/update-location', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${userToken}`  // Menggunakan token yang telah diambil
-                        },
-                        body: JSON.stringify({ latitude, longitude })
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Gagal memperbarui lokasi');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log('Lokasi diperbarui:', data);
-                        // Anda bisa menambahkan sesuatu setelah lokasi diperbarui
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Terjadi kesalahan saat memperbarui lokasi.');
-                    });
-                },
-                function (error) {
-                    console.error('Error mendapatkan lokasi:', error);
-                    alert('Tidak dapat memperoleh lokasi Anda.');
-                }
-            );
-        }
-    </script>
 </section>
 @endsection
+
+<script>
+    @auth
+        // Menyertakan token API dari session jika user login
+        const userToken = "{{ auth()->user()->createToken('PencariTeman')->plainTextToken }}";
+        console.log('User sedang login:', userToken);
+    @else
+        const userToken = null;  // Jika user belum login, tidak ada token
+        console.log('User belum login');
+    @endauth
+
+    // Jika ada token dan pengguna login
+    if (userToken) {
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+
+                // Kirim data ke backend untuk memperbarui lokasi user
+                fetch('/update-location', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userToken}`  // Menggunakan token yang telah diambil
+                    },
+                    body: JSON.stringify({ latitude, longitude })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Gagal memperbarui lokasi');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Lokasi diperbarui:', data);
+                    // Anda bisa menambahkan sesuatu setelah lokasi diperbarui
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat memperbarui lokasi.');
+                });
+            },
+            function (error) {
+                console.error('Error mendapatkan lokasi:', error);
+                alert('Tidak dapat memperoleh lokasi Anda.');
+            }
+        );
+    }
+</script>

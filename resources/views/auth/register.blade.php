@@ -1,11 +1,11 @@
 @extends('layouts.temp')
 @section('content')
 <section class="min-h-screen flex items-center justify-center relative bg-cover bg-center" style="background-image: url('/images/bg1.svg');">
-    <div class="bg-white flex rounded-2xl shadow-lg max-w-3xl p-5 items-center relative bg-cover bg-center" style="background-image: url('/images/vector-reg.svg');">     
-        <div class="md:w-1/2 px-8 md:px-16">
+    <div class="bg-white flex w-full flex-1 rounded-3xl shadow-2xl max-w-6xl p-5 items-center relative bg-cover bg-center" style="background-image: url('/images/vector-reg.svg');">
+        <div class="md:w-1/2 px-8 md:px-16 mr-10">
             <p class="text-[#FFFFFF]">Selamat Datang!</p>
             <h2 class="font-bold text-[#FFFFFF]" style="font-size: 19px">Silahkan Daftar Akun</h2>
-    
+
             <form action="{{ route('register') }}" method="post" class="flex flex-col gap-4">
                 @csrf
                 <input class="p-2 mt-8 rounded-xl border" id="name" type="text" name="name" value="{{ old('name') }}" placeholder="Full Name">
@@ -70,11 +70,11 @@
                     </div>
                 @enderror
 
-                <button class="bg-[#2970FF] rounded-xl text-white py-2 hover:scale-105 duration-300">Daftar</button>
+                <button class="bg-[#2970FF] rounded-3xl text-white py-2 hover:scale-105 duration-300">Daftar</button>
             </form>
-    
+
             <div class="text-xs border-b border-[#FFFFFF] py-4 text-[#FFFFFF]"></div>
-    
+
             <div class="mt-3 text-xs flex justify-between items-center">
                 <p class="text-[#FFFFFF]">Sudah Punya Akun?</p>
                 <a href="{{ route('login') }}" class="py-2 px-5 bg-white border rounded-xl hover:scale-110 duration-300 text-[#1E1E1E]">
@@ -86,6 +86,6 @@
         <div class="md:block hidden w-1/2">
             <img class="rounded-2xl" src="/images/bg.svg" alt="Location Search">
         </div>
-    </div>    
+    </div>
 </section>
 @endsection

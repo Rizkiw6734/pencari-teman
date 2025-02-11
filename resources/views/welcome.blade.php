@@ -124,7 +124,7 @@
                         <li>
                             <div class="departments-card">
                                 <div class="card-image">
-                                    <img src="./assets/img/security.png" alt="Gambar 1">
+                                    <img src="./assets/img/mudah-cepat.png" alt="Gambar 1">
                                 </div>
                                 <div class="card-content-dp">
                                     <h3 class="h3 card-title">Mudah dan Cepat</h3>
@@ -137,7 +137,7 @@
                         <li>
                             <div class="departments-card">
                                 <div class="card-image">
-                                    <img src="./assets/img/security.png" alt="Gambar 2">
+                                    <img src="./assets/img/kesamaan-minat.jpg" alt="Gambar 2">
                                 </div>
                                 <div class="card-content-dp">
                                     <h3 class="h3 card-title">Kesamaan Minat</h3>
@@ -163,7 +163,7 @@
                         <li>
                             <div class="departments-card">
                                 <div class="card-image">
-                                    <img src="./assets/img/security.png" alt="Gambar 4">
+                                    <img src="./assets/img/komunitas.jpg" alt="Gambar 4">
                                 </div>
                                 <div class="card-content-dp">
                                     <h3 class="h3 card-title">Komunitas dan Interaktif</h3>

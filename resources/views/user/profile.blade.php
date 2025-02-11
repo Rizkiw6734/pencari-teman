@@ -1,4 +1,4 @@
-@extends('layouts.user')
+{{-- @extends('layouts.user')
 @section('content')
     <div class="main-content"
         style="max-width: 1200px; margin: 0 auto; margin-top: 0px; background-color: #F0F3F9;
@@ -18,7 +18,7 @@
                                 <div class="card-body text-center">
                                     <div class="avatar avatar-xxl position-relative mb-3 mt-5">
                                         <img src="{{ $user->foto_profil ? asset('storage/' . $user->foto_profil) : asset('images/marie.jpg') }}"
-                                            alt="Foto Profil" class="w-100 border-radius-lg shadow-sm rounded-circle" style="width: 150px; height: 110px; border-radius: 50%; object-fit: cover;">
+                                            alt="Foto Profil" class="w-100 border-radius-lg shadow-sm rounded-circle" style="width: 140px; height: 110px; border-radius: 50%; object-fit: cover;">
 
                                         <label for="uploadProfilePhoto" class="position-absolute"
                                             style="bottom: -10px; right: 5px; background: white; padding: 6px; border-radius: 50%; box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); cursor: pointer;">
@@ -518,4 +518,38 @@
             });
         });
     </script>
+@endsection --}}
+
+@extends('layouts.user')
+@section('content')
+<div class="main-content"
+        style="max-width: 1200px; margin: 0 auto; margin-top: 0px; background-color: #F0F3F9;
+           padding: 20px; margin-left: 260px; position: relative;">
+        <div class="container-fluid">
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Launch demo modal
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div id="chat-container" style="height: 300px; overflow-y: scroll; solid #ccc;">
+                <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                    <img src="/assets/img/pp.jpg" alt="Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px;">
+                    <span style="font-size: 15px; font-weight: 600; color:#000000;">Christ</span>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
 @endsection

@@ -271,11 +271,16 @@
                         if (Array.isArray(users)) {
                             users.forEach(user => {
                                 userContainer.innerHTML += `
-                            <div style="display: inline-block; text-align: center; margin-right: 16px;">
-                                <img src="${user.foto_profil ? '/storage/' + user.foto_profil : '/images/marie.jpg'}" alt="Foto Profil"
-                                    style="width: 55px; height: 55px; object-fit: cover; border-radius: 50%; border: 2px solid #ddd;">
-                                <p>${user.name}</p>
-                            </div>
+                            <div style="display: inline-block; text-align: center; margin-right: 16px; position: relative;">
+    <div style="width: 55px; height: 55px; border-radius: 50%; position: relative;">
+        <img src="${user.foto_profil ? '/storage/' + user.foto_profil : '/images/marie.jpg'}" alt="Foto Profil"
+            style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 2px solid #ddd;">
+        <!-- Indikator hijau lebih besar -->
+        <div style="width: 16px; height: 16px; background-color: #1abc9c; border-radius: 50%; position: absolute; bottom: 0px; right: 0px; border: 2px solid white;"></div>
+    </div>
+    <p style="margin-top: 8px; font-weight: bold;">${user.name}</p>
+</div>
+
                         `;
                             });
                         } else {

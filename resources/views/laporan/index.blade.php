@@ -1,16 +1,17 @@
 @extends('layouts.admin')
 @section('content')
-<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-    <nav class="navbar navbar-main navbar-expand-lg mt-3 px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
+{{-- <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+  <nav class="navbar navbar-main navbar-expand-lg mt-3 px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true"> --}}
+<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg" style="padding-top: 80px;">
+    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-sm border-radius-xl"
+        id="navbarBlur" navbar-scroll="true"
+        style="position: fixed; top: 15px; width: 74.9%; background-color: white; z-index: 100; height: 70px;">
         <div class="container-fluid">
             <div class="d-flex justify-content-between align-items-center w-100" id="navbar">
-                <div class="input-group d-flex" style="width: 725px; height: 40px; box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.25); margin: 3.2px 37px 2px 0;">
-                    <form action="{{ route('laporan.index') }}" method="GET" style="display: flex; width: 100%;">
-                        <div class="input-group">
-                            <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-                            <input type="text" name="search" class="form-control" placeholder="Mencari apa?" value="{{ request('search') }}">
-                        </div>
-                    </form>
+                <div class="nav-control d-flex align-items-center" style="width: 725px; height: 40px; margin: 3.2px 37px 2px 0;">
+                    <div class="hamburger">
+                      <span class="toggle-icon" style="cursor: pointer;"><i class="fas fa-bars fa-lg"></i></span>
+                    </div>
                 </div>
 
                 <ul class="navbar-nav d-flex align-items-center" style="marqgin-left: -15px;">
@@ -100,14 +101,25 @@
         </div>
 
         <div class="d-flex justify-content-between">
-            <div class="d-flex align-items-center">
-                <label for="data-count" style="margin-right: 10px;">Show</label>
-                <select id="data-count" class="form-select" style="background-color: #d1e0ff; width: auto; padding-right: 25px; cursor: pointer;">
-                    <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
-                    <option value="20" {{ request('per_page') == 20 ? 'selected' : '' }}>20</option>
-                    <option value="30" {{ request('per_page') == 30 ? 'selected' : '' }}>30</option>
-                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                </select>
+            <div class="d-flex justify-content-between align-items-center" style="gap: 20px;">
+                <div class="d-flex align-items-center">
+                    <label for="data-count" style="margin-right: 10px;">Show</label>
+                    <select id="data-count" class="form-select" style="background-color: #d1e0ff; width: auto; padding-right: 25px; cursor: pointer;">
+                        <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                        <option value="20" {{ request('per_page') == 20 ? 'selected' : '' }}>20</option>
+                        <option value="30" {{ request('per_page') == 30 ? 'selected' : '' }}>30</option>
+                        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                    </select>
+                </div>
+            
+                <div class="input-group" style="width: 300px;">
+                    <form action="{{ route('laporan.index') }}" method="GET" style="display: flex; width: 100%;">
+                        <div class="input-group">
+                            <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+                            <input type="text" name="search" class="form-control" placeholder="Mencari apa?" value="{{ request('search') }}">
+                        </div>
+                    </form>
+                </div>
             </div>
 
             <script>
@@ -232,14 +244,6 @@
                                                 <h5 class="modal-title" id="laporanModalLabel{{ $laporan->id }}">Detail Laporan</h5>
 
                                                 <div class="d-flex align-items-center gap-3">
-                                                    <button type="button" class="btn-link p-0 border-0 btn-ban text-dark" style="background-color: transparent !important; border: none;" data-bs-toggle="modal" data-bs-target="#modalBanned{{ $laporan->id }}">
-                                                        <i class="fa fa-ban"></i>
-                                                    </button>
-
-                                                    <button type="button" class="btn-link p-0 border-0 btn-per text-warning" style="background-color: transparent !important; border: none;" data-bs-toggle="modal" data-bs-target="#modalPeringatan{{ $laporan->id }}">
-                                                        <i class="fa fa-exclamation-triangle"></i>
-                                                    </button>
-
                                                     <button type="button" class="btn-clos p-0 border-0 btn-per" style="background-color: transparent !important; border: none;" data-bs-dismiss="modal" aria-label="Close">
                                                         <i class="fa fa-times fa-lg"></i>
                                                     </button>
@@ -255,22 +259,18 @@
                                                                 <div class="col-6 mt-1 detail-laporan">
                                                                     <div class="row">
                                                                         <div class="col-6">
-                                                                            <p class="text-dark text-bold">Pelapor :</p>
+                                                                            <p class="text-dark text-bold">Pelapor</p>
                                                                             <p>{{ $laporan->pelapor->name }}</p>
                                                                         </div>
                                                                         <div class="col-6">
-                                                                            <p class="text-dark text-bold">Terlapor :</p>
+                                                                            <p class="text-dark text-bold">Terlapor</p>
                                                                             <p>{{ $laporan->terlapor->name }}</p>
                                                                         </div>
                                                                     </div>
 
                                                                     <div class="row">
                                                                         <div class="col-6">
-                                                                            <p class="text-dark text-bold">Tanggal :</p>
-                                                                            <p>{{ \Carbon\Carbon::parse($laporan->created_at)->format('d-m-Y') }}</p>
-                                                                        </div>
-                                                                        <div class="col-6">
-                                                                            <p class="text-dark text-bold">Alasan :</p>
+                                                                            <p class="text-dark text-bold">Alasan</p>
                                                                             <p>{{ $laporan->alasan }}</p>
                                                                         </div>
                                                                     </div>
@@ -282,39 +282,99 @@
 
                                                                 <!-- Bagian Bukti -->
                                                                 <div class="col-5 bukti-laporan">
-                                                                    <p class="text-dark text-bold">Bukti :</p>
-                                                                    @if ($laporan->bukti)
-                                                                        <img src="{{ asset('assets/img/laporan/' . $laporan->bukti) }}" alt="Bukti Laporan" class="img-fluid rounded">
-                                                                    @else
-                                                                        <span class="text-muted">Tidak ada bukti</span>
-                                                                    @endif
+                                                                    <div class="d-flex justify-content-between align-items-center gap-3">
+                                                                        <p class="text-dark text-bold mb-0">Bukti</p>
+                                                                        <p class="mb-0">{{ \Carbon\Carbon::parse($laporan->created_at)->format('d-m-Y') }}</p>
+                                                                    </div>
+                                                                    
+                                                                    <div class="d-flex justify-content-center mt-4">
+                                                                        @if ($laporan->bukti)
+                                                                            <div class="position-relative">
+                                                                                <img src="{{ asset('assets/img/laporan/' . $laporan->bukti) }}" alt="Bukti Laporan" class="img-fluid rounded bukti-laporan">
+                                                            
+                                                                                <span class="position-absolute bottom-0 end-0 mb-2 me-2 text-dark" style="font-size: 18px; cursor: pointer; background-color: #FEFEFEE5; border-radius: 50%; padding: 8px; width: 35px; height: 35px; display: flex; justify-content: center; align-items: center;">
+                                                                                    <i class="fa fa-expand bukti-laporan" data-id="{{ $laporan->id }}"></i>
+                                                                                </span>
+                                                                            </div>                                                                        
+                                                                        @else
+                                                                            <span class="text-muted">Tidak ada bukti</span>
+                                                                        @endif
+                                                                    </div>                                                                    
                                                                 </div>
+                                                                
+                                                                <!-- Modal Pop-up -->
+                                                                @if ($laporan->bukti)
+                                                                    <div class="modal fade" id="buktiModal{{ $laporan->id }}" data-bs-backdrop="false" tabindex="-1" aria-labelledby="modalBuktiLabel{{ $laporan->id }}" aria-hidden="true" style="background-color: rgba(0, 0, 0, 0.5) !important;">
+                                                                        <div class="modal-dialog modal-dialog-centered">
+                                                                            <div class="modal-content bg-transparent border-0">
+                                                                                <div class="modal-body text-center">
+                                                                                    <div class="position-relative d-inline-block">
+                                                                                        <span class="position-absolute top-0 end-0 mt-2 me-2 text-dark" 
+                                                                                              data-bs-dismiss="modal" aria-label="Close" 
+                                                                                              style="font-size: 18px; cursor: pointer; background-color: #FEFEFEE5; border-radius: 50%; padding: 6px; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center;">
+                                                                                            <i class="fa fa-times fa-lg"></i>
+                                                                                        </span>
+                                                                        
+                                                                                        <img src="{{ asset('assets/img/laporan/' . $laporan->bukti) }}" 
+                                                                                             alt="Bukti Laporan" class="img-fluid rounded" style="width: 100%; height: 100%; object-fit: cover; overflow: hidden;">
+                                                                                    </div>
+                                                                                </div> 
+                                                                            </div>                                                                           
+                                                                        </div>
+                                                                    </div>
+                                                                @endif  
+                                                                
+                                                                <script>
+                                                                    document.addEventListener("DOMContentLoaded", function () {
+                                                                        document.querySelectorAll(".bukti-laporan").forEach(img => {
+                                                                            img.addEventListener("click", function () {
+                                                                                let modalId = "buktiModal" + this.getAttribute("data-id");
+                                                                                let modalElement = document.getElementById(modalId);
+                                                                                if (modalElement) {
+                                                                                    let modal = new bootstrap.Modal(modalElement);
+                                                                                    modal.show();
+                                                                                }
+                                                                            });
+                                                                        });
+                                                                    });
+                                                                </script>
                                                             </div>
                                                         </div>
-                                                        <div class="modal-footer d-flex justify-content-center align-items-center">
-                                                            @if ($laporan->status === 'proses')
-                                                                @foreach ([
-                                                                    ['label' => 'Suspend User', 'class' => 'btn', 'style' => 'border-radius: 12px; background-color: transparant; border: 1.5px solid #FF8800; color: #FF8800;', 'target' => "modalSuspend{$laporan->id}"],
-                                                                ] as $action)
-                                                                    <button type="button" class="btn" style="{{ $action['style'] }}" data-bs-toggle="modal" data-bs-target="#{{ $action['target'] }}">
-                                                                        {{ $action['label'] }}
+                                                        <div class="modal-footer d-flex justify-content-between align-items-center">
+                                                            <div>
+                                                                @if ($laporan->status === 'proses')
+                                                                    <button type="button" class="btn" style="border-radius: 12px; background-color: transparent; border: 1.5px solid #151515; color: #151515; margin-right: 20px; margin-top: 3px !important;" data-bs-toggle="modal" data-bs-target="#modalBanned{{ $laporan->id }}">
+                                                                        Banned User
                                                                     </button>
-                                                                @endforeach
-
-
-                                                                <!-- Tombol Tolak Laporan -->
-                                                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modalTolak{{ $laporan->id }}" style="border-radius: 12px; background-color: transparant; border: 1.5px solid #FF0000; color: #FF0000; margin-top: 3px !important;" onclick="confirmTolakLaporan({{ $laporan->id }})">
-                                                                    Tolak Laporan
-                                                                </button>
-
-                                                            @elseif ($laporan->status === 'diterima')
-                                                                <p class="text-success">Laporan telah diterima dan diproses.</p>
-                                                            @elseif ($laporan->status === 'ditolak')
-                                                                <p class="text-danger">Laporan telah ditolak.</p>
+                                                        
+                                                                    <button type="button" class="btn" style="border-radius: 12px; background-color: transparent; border: 1.5px solid #FFC300; color: #FFC300; margin-top: 3px !important;" data-bs-toggle="modal" data-bs-target="#modalPeringatan{{ $laporan->id }}">
+                                                                        Beri Peringatan
+                                                                    </button>
+                                                                @endif
+                                                            </div>
+                                                        
+                                                            <div>
+                                                                @if ($laporan->status === 'proses')
+                                                                    @foreach ([
+                                                                        ['label' => 'Suspend User', 'class' => 'btn', 'style' => 'border-radius: 12px; background-color: transparent; border: 1.5px solid #FF8800; color: #FF8800; margin-top: 3px !important', 'target' => "modalSuspend{$laporan->id}"],
+                                                                    ] as $action)
+                                                                        <button type="button" class="btn" style="{{ $action['style'] }}" data-bs-toggle="modal" data-bs-target="#{{ $action['target'] }}">
+                                                                            {{ $action['label'] }}
+                                                                        </button>
+                                                                    @endforeach
+                                                        
+                                                                    <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modalTolak{{ $laporan->id }}" style="border-radius: 12px; background-color: transparent; border: 1.5px solid #FF0000; color: #FF0000; margin-left: 20px; margin-top: 3px !important;" onclick="confirmTolakLaporan({{ $laporan->id }})">
+                                                                        Tolak Laporan
+                                                                    </button>
+                                                                @elseif ($laporan->status === 'diterima')
+                                                                    <p class="text-success">Laporan telah diterima dan diproses.</p>
+                                                                @elseif ($laporan->status === 'ditolak')
+                                                                    <p class="text-danger">Laporan telah ditolak.</p>
                                                                 @elseif ($laporan->status === 'selesai')
-                                                                <p class="text-success">Laporan telah selesai.</p>
-                                                            @endif
-                                                        </div>
+                                                                    <p class="text-success">Laporan telah selesai.</p>
+                                                                @endif
+                                                            </div>
+                                                        </div>                                                        
                                                     </div>
                                                 </div>
                                             </div>

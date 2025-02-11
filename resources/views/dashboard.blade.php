@@ -1,12 +1,17 @@
 @extends('layouts.admin')
 @section('content')
-<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-  <nav class="navbar navbar-main navbar-expand-lg mt-3 px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
+{{-- <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+  <nav class="navbar navbar-main navbar-expand-lg mt-3 px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true"> --}}
+<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg" style="padding-top: 80px;">
+  <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-sm border-radius-xl"
+      id="navbarBlur" navbar-scroll="true"
+      style="position: fixed; top: 15px; width: 74.9%; background-color: white; z-index: 100; height: 70px;">
     <div class="container-fluid">
       <div class="d-flex justify-content-between align-items-center w-100" id="navbar">
-        <div class="input-group d-flex" style="width: 725px; height: 40px; box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.25); margin: 3.2px 37px 2px 0;">
-          <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-          <input type="text" class="form-control" placeholder="Mencari apa?">
+        <div class="nav-control d-flex align-items-center" style="width: 725px; height: 40px; margin: 3.2px 37px 2px 0;">
+          <div class="hamburger">
+            <span class="toggle-icon" style="cursor: pointer;"><i class="fas fa-bars fa-lg"></i></span>
+          </div>
         </div>
 
         <ul class="navbar-nav d-flex align-items-center" style="margin-left: -15px;">

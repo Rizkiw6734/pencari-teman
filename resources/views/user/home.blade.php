@@ -314,53 +314,68 @@
             chatContainer.empty();
 
             if (response.latestChats && Array.isArray(response.latestChats) && response.latestChats.length > 0) {
+                const unreadCountMap = {};
+
                 response.latestChats.forEach(chat => {
-                    const penerimaId = chat.pengirim_id === response.userId ? chat.penerima_id : chat.pengirim_id;
-                    const chatPartner = chat.pengirim_id === response.userId ? chat.penerima : chat.pengirim;
+                    const isPengirim = chat.pengirim_id === response.userId;
+                    const chatPartner = isPengirim ? chat.penerima : chat.pengirim;
+                    const penerimaId = isPengirim ? chat.penerima_id : chat.pengirim_id;
+
+                    // Hitung unreadCount hanya jika bukan pengirim dan pesan belum dibaca
+                    if (!isPengirim && !chat.is_seen) {  // Tampilkan unread badge hanya jika is_seen: false
+    if (!unreadCountMap[penerimaId]) unreadCountMap[penerimaId] = 0;
+    unreadCountMap[penerimaId]++;
+}
 
 
                     let statusIcon = '';
-                    if (chat.status === 'sent_and_read') {
-                        statusIcon = '<i class="fas fa-check-double" style="color: #34B7F1; transform: rotate(-10deg);"></i>';
-                    } else if (chat.status === 'sent_and_unread') {
-                        statusIcon = '<i class="fas fa-check text-secondary"></i>';
-                    } else if (chat.status === 'received') {
-                        statusIcon = '<i class="fas fa-check-double text-secondary"></i>';
-                    } else if (chat.is_seen) { // Status berdasarkan is_seen
-                        statusIcon = '<i class="fas fa-eye text-success"></i>';
+                    if (isPengirim) {
+                        if (chat.status === 'sent_and_read') {
+                            statusIcon = '<i class="fas fa-check-double" style="color: #34B7F1; transform: rotate(-10deg);"></i>';
+                        } else if (chat.status === 'sent_and_unread') {
+                            statusIcon = '<i class="fas fa-check text-secondary"></i>';
+                        } else if (chat.status === 'received') {
+                            statusIcon = '<i class="fas fa-check-double text-secondary"></i>';
+                        }
+                    } else if (chat.is_seen) {
+                        statusIcon = '';
                     }
 
-                    const profileImage = chatPartner?.foto_profil
-    ? chatPartner.foto_profil
-    : '/images/marie.jpg';
-
-
+                    const profileImage = chatPartner?.foto_profil ? chatPartner.foto_profil : '/images/marie.jpg';
                     const name = chatPartner.name ? chatPartner.name : 'No Name';
+                    const time = new Date(chat.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                    const unreadCount = chat.unread_count;
+    const unreadCountBadge = unreadCount > 0 ? `
+        <span class="notification-badge"
+              style="margin-left: auto; background-color: #528BFF; color: white; font-size: 12px; border-radius: 50%; width: 25px; height: 25px; display: flex; justify-content: center; align-items: center; font-weight: bold;">
+            ${unreadCount}
+        </span>
+    ` : '';
 
                     const chatMessage = `
-                        <div class="chat-item" onclick="selectChat(this, ${penerimaId}, '${chat.status}')" data-user-id="${penerimaId}" data-status="${chat.status}"
-                             style="display: flex; align-items: center; background-color: #F0F3F9; padding: 10px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; transition: background 0.3s;">
+                        <div class="chat-item" onclick="selectChat(this, ${penerimaId}, '${chat.status}')"
+                             data-user-id="${penerimaId}" style="display: flex; align-items: center; background-color: #F0F3F9; padding: 10px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; transition: background 0.3s;">
                             <img src="${profileImage}" alt="Avatar"
                                  style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px;">
                             <div class="chat-content" style="flex: 1;">
                                 <div class="chat-header" style="display: flex; justify-content: space-between; align-items: center;">
                                     <span class="name" style="font-weight: bold; font-size: 16px;">${name}</span>
-                                    <span class="time" style="font-size: 12px; color: #888;">
-                                        ${new Date(new Date(chat.created_at).toLocaleString('en-US', { timeZone: 'Asia/Jakarta' })).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                    </span>
+                                    <span class="time" style="font-size: 12px; color: #888;">${time}</span>
+                                    ${unreadCountBadge}
                                 </div>
                                 <div class="chat-message" style="font-size: 14px; color: #555; margin-top: 5px;">
-                                   ${statusIcon} ${chat.konten.substr(0, 30)}
+                                    ${statusIcon} ${chat.konten.substr(0, 30)}
                                 </div>
                             </div>
+
                         </div>
-                        <div style="height: 1px; background-color: #ddd; margin: 2px 0;"></div>
                     `;
 
                     chatContainer.append(chatMessage);
                 });
             } else {
-                console.log("No latest chats found");
+                chatContainer.append('<p style="text-align: center; color: #888;">Tidak ada pesan terbaru.</p>');
             }
         },
         error: function(xhr, status, error) {
@@ -373,72 +388,52 @@ setInterval(fetchChats, 3000);
 }); //Anda bisa sesuaikan interval waktu sesuai kebutuhan
 // Anda bisa sesuaikan interval waktu sesuai kebutuhan
 
-
-
-
-        // Memanggil fetchChats setiap 3 detik (3000 ms)
-
         // Fungsi untuk memilih chat dan menampilkan footer chat
-        function selectChat(element, penerimaId, chatStatus) {
-    // Menyembunyikan latar belakang sebelumnya dan menyorot elemen yang dipilih
+        async function selectChat(element, penerimaId, chatStatus) {
+    // Reset background color semua chat item
     document.querySelectorAll('.chat-item').forEach(item => {
-        item.style.backgroundColor = '#F0F3F9'; // Reset background color semua item
+        item.style.backgroundColor = '#F0F3F9';
     });
-    element.style.backgroundColor = '#D6EAF8'; // Ganti warna sidebar yang dipilih
 
-    // Ambil ID pengguna yang sedang login
-    var userId = {{ Auth::id() }}; // Pastikan ID pengguna yang sedang login dimasukkan dengan benar di blade template
+    // Ubah warna background chat yang dipilih
+    element.style.backgroundColor = '#D6EAF8';
 
-    // Update input hidden penerima-id dengan ID penerima yang dipilih
+    // Set penerimaId dan tampilkan chat-footer
     $("#penerima-id").val(penerimaId);
-
     console.log("ID Penerima yang dipilih:", penerimaId);
-
-    // Tampilkan footer chat setelah pengguna memilih chat
     document.getElementById('chat-footer').style.display = 'flex';
 
-    // Lakukan AJAX untuk mengambil data pengguna dan update status di header chat
+    // Update status pengguna dan muat pesan
     updateUserStatus(penerimaId);
+    loadMessages({{ Auth::id() }}, penerimaId);
 
-    // Memuat pesan untuk percakapan dengan penerima yang dipilih
-    loadMessages(userId, penerimaId);
+    // Hapus badge unread jika ada
+    const badgeElement = element.querySelector('.notification-badge');
+    if (badgeElement) {
+        badgeElement.remove();
+    }
 
-    // Cek apakah chat yang dipilih adalah chat yang dikirim oleh pengguna sendiri
+    // Perbarui status chat jika masih sent_and_unread
     if (chatStatus === 'sent_and_unread') {
-    $.ajax({
-        url: '/update-chat-status',
-        method: 'POST',
-        data: {
-            penerimaId: penerimaId,
-            status: 'sent_and_read', // Status yang ingin diperbarui
-            is_seen: true,           // Kirimkan is_seen sebagai true jika chat sudah dibaca
-            _token: '{{ csrf_token() }}'
-        },
-        success: function(response) {
-            console.log(response.message); // Menampilkan pesan dari server jika berhasil
-
-            // Update UI dengan status terbaru chat
-            if (response.chat && response.chat.is_seen !== undefined) {
-                // Misalnya kita update elemen dengan id chat-id
-                const chatElement = document.querySelector(`#chat-${response.chat.id}`);
-                if (chatElement) {
-                    chatElement.classList.add(response.chat.is_seen ? 'seen' : 'unseen'); // Menambahkan kelas berdasarkan status is_seen
+        try {
+            const response = await $.ajax({
+                url: '/update-chat-status',
+                method: 'POST',
+                data: {
+                    penerimaId: penerimaId,
+                    userId: {{ Auth::id() }},
+                    status: 'sent_and_read',
+                    is_seen: true,
+                    _token: '{{ csrf_token() }}'
                 }
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error("Gagal memperbarui status pesan:", xhr.responseText || error);
+            });
+            console.log(response.message);
+            element.setAttribute('data-status', 'sent_and_read');
+        } catch (error) {
+            console.error("Gagal memperbarui status pesan:", error.responseText || error);
         }
-    });
+    }
 }
-
-}
-
-
-
-
-
-
 
         // Fungsi untuk mengupdate status pengguna di header chat
         function updateUserStatus(userId) {
@@ -542,10 +537,6 @@ var avatar = response.foto_profil && response.foto_profil.startsWith("http")
         }
     });
 }
-
-
-
-
 
 
         // Fungsi untuk memformat tanggal

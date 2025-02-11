@@ -14,69 +14,72 @@ class ChatController extends Controller
 {
     // Menampilkan chat terbaru antara dua user di sidebar
     public function index(Request $request)
-{
-    $userId = Auth::id();
+    {
+        $userId = Auth::id();
 
-    // Ambil chat terbaru
-    $latestChats = DB::table('chat as c')
-        ->join(DB::raw("(
-            SELECT
-                LEAST(pengirim_id, penerima_id) AS user1,
-                GREATEST(pengirim_id, penerima_id) AS user2,
-                MAX(id) AS latest_chat_id
-            FROM chat
-            GROUP BY user1, user2
-        ) as latest_chats"), function ($join) {
-            $join->on(DB::raw('LEAST(c.pengirim_id, c.penerima_id)'), '=', 'latest_chats.user1')
-                 ->on(DB::raw('GREATEST(c.pengirim_id, c.penerima_id)'), '=', 'latest_chats.user2')
-                 ->on('c.id', '=', 'latest_chats.latest_chat_id');
-        })
-        ->where(function ($query) use ($userId) {
-            $query->where('c.pengirim_id', $userId)
-                  ->orWhere('c.penerima_id', $userId);
-        })
-        ->orderBy('c.created_at', 'DESC')
-        ->select('c.*', 'pengirim_id', 'penerima_id')
-        ->get();
+        // Ambil chat terbaru dengan unread_count
+        $latestChats = DB::table('chat as c')
+            ->select(
+                'c.id', 'c.pengirim_id', 'c.penerima_id', 'c.konten', 'c.status', 'c.is_seen', 'c.created_at',
+                DB::raw("(
+                    SELECT COUNT(*)
+                    FROM chat
+                    WHERE penerima_id = $userId
+                      AND is_seen = 0
+                      AND LEAST(pengirim_id, penerima_id) = LEAST(c.pengirim_id, c.penerima_id)
+                      AND GREATEST(pengirim_id, penerima_id) = GREATEST(c.pengirim_id, c.penerima_id)
+                ) as unread_count")
+            )
+            ->join(DB::raw("(
+                SELECT
+                    LEAST(pengirim_id, penerima_id) AS user1,
+                    GREATEST(pengirim_id, penerima_id) AS user2,
+                    MAX(id) AS latest_chat_id
+                FROM chat
+                GROUP BY user1, user2
+            ) as latest_chats"), function ($join) {
+                $join->on(DB::raw('LEAST(c.pengirim_id, c.penerima_id)'), '=', 'latest_chats.user1')
+                     ->on(DB::raw('GREATEST(c.pengirim_id, c.penerima_id)'), '=', 'latest_chats.user2')
+                     ->on('c.id', '=', 'latest_chats.latest_chat_id');
+            })
+            ->where(function ($query) use ($userId) {
+                $query->where('c.pengirim_id', $userId)
+                      ->orWhere('c.penerima_id', $userId);
+            })
+            ->orderBy('c.created_at', 'DESC')
+            ->get();
 
-    // Ambil pengirim dan penerima chat
-    $userIds = $latestChats->pluck('pengirim_id')->merge($latestChats->pluck('penerima_id'))->unique();
-    $users = User::whereIn('id', $userIds)->get()->keyBy('id');
+        $userIds = $latestChats->pluck('pengirim_id')->merge($latestChats->pluck('penerima_id'))->unique();
+        $users = User::whereIn('id', $userIds)->get()->keyBy('id');
 
-    // Tambahkan data pengguna dan format waktu
-    foreach ($latestChats as $chat) {
-        $chat->pengirim = $users->get($chat->pengirim_id);
-        $chat->penerima = $users->get($chat->penerima_id);
-
-        // Format waktu ke Asia/Jakarta
-        $chat->created_at = \Carbon\Carbon::parse($chat->created_at)->timezone('Asia/Jakarta')->format('d M Y H:i');
-
-        // Cek dan set gambar profil untuk pengirim dan penerima
-        $chat->pengirim->foto_profil = !empty($chat->pengirim->foto_profil)
+        foreach ($latestChats as $chat) {
+            $chat->pengirim = $users->get($chat->pengirim_id);
+            $chat->penerima = $users->get($chat->penerima_id);
+            $chat->created_at = \Carbon\Carbon::parse($chat->created_at)->timezone('Asia/Jakarta')->format('d M Y H:i');
+            $chat->pengirim->foto_profil = !empty($chat->pengirim->foto_profil)
             ? url('storage/' . $chat->pengirim->foto_profil)
             : asset('images/marie.jpg');
 
         $chat->penerima->foto_profil = !empty($chat->penerima->foto_profil)
             ? url('storage/' . $chat->penerima->foto_profil)
             : asset('images/marie.jpg');
+        }
+
+        if ($request->ajax()) {
+            return response()->json(['latestChats' => $latestChats, 'userId' => $userId], 200);
+        }
+
+        // return response()->json([
+        //     'latestChats' => $latestChats,
+        //     'userId' => $userId
+        // ], 200);
+
+
+        return view('user.home', compact('latestChats', 'userId'));
     }
 
-    if ($request->ajax()) {
-        // Mengirim response JSON untuk AJAX
-        return response()->json([
-            'latestChats' => $latestChats,
-            'userId' => $userId
-        ], 200);
-    }
-    // return response()->json([
-    //     'latestChats' => $latestChats,
-    //     'userId' => $userId
-    // ], 200);
 
 
-    // Tampilkan halaman untuk non-AJAX
-    return view('user.home', compact('latestChats', 'userId'));
-}
 
 
     // Menyimpan pesan baru
@@ -103,45 +106,39 @@ class ChatController extends Controller
     // Mengubah status chat menjadi "dibaca"
     public function updateStatus(Request $request)
 {
-    $userId = auth()->id(); // Mendapatkan ID pengguna yang sedang login
-    $penerimaId = $request->input('penerimaId'); // Mendapatkan penerima ID yang dikirimkan
-    $isSeen = $request->input('is_seen', false); // Mendapatkan nilai is_seen (default false)
+    $userId = auth()->id(); // ID user yang sedang login
+    $penerimaId = $request->input('penerimaId');
 
-    // Cek apakah penerimaId dan userId ada
     if (!$userId || !$penerimaId) {
         return response()->json(['message' => 'Invalid data received'], 400);
     }
 
-    // Mencari chat antara userId dan penerimaId dengan status 'sent_and_unread'
-    $chat = Chat::where(function($query) use ($userId, $penerimaId) {
-                        $query->where('pengirim_id', $userId)
-                              ->where('penerima_id', $penerimaId)
-                              ->orWhere(function($query) use ($userId, $penerimaId) {
-                                  $query->where('pengirim_id', $penerimaId)
-                                        ->where('penerima_id', $userId);
-                              });
-                    })
-                    ->where('status', 'sent_and_unread') // Mencari yang statusnya sent_and_unread
-                    ->first();
+    // Hitung jumlah pesan yang belum dibaca sebelum di-update
+    $unreadCount = Chat::where('pengirim_id', $penerimaId)
+                      ->where('penerima_id', $userId)
+                      ->where('status', 'sent_and_unread')
+                      ->where('is_seen', 0)
+                      ->count();
 
-    // Jika chat ditemukan, update status dan is_seen
-    if ($chat) {
-        // Jika status 'sent_and_unread' dan pengguna yang login adalah penerima, update menjadi 'sent_and_read'
-        if ($chat->status === 'sent_and_unread' && $chat->penerima_id == $userId) {
-            $chat->update([
-                'status' => 'sent_and_read',  // Update status menjadi 'sent_and_read'
-                'is_seen' => $isSeen         // Set is_seen sesuai nilai yang dikirim (true/false)
-            ]);
-            return response()->json(['message' => 'Status updated successfully']);
-        }
+    // Update status semua pesan yang belum dibaca
+    $updated = Chat::where('pengirim_id', $penerimaId)
+                  ->where('penerima_id', $userId)
+                  ->where('status', 'sent_and_unread')
+                  ->where('is_seen', 0)
+                  ->update([
+                      'status' => 'sent_and_read',
+                      'is_seen' => 1,
+                      'updated_at' => now()
+                  ]);
 
-        // Jika chat sudah 'sent_and_read', beri respons bahwa tidak ada pembaruan
-        return response()->json(['message' => 'No updates needed. Status already updated.']);
-    }
-
-    // Jika chat tidak ditemukan atau status sudah diperbarui, kirimkan response error
-    return response()->json(['message' => 'No updates made'], 400);
+    return response()->json([
+        'message' => 'Status updated successfully',
+        'updated_count' => $updated,
+        'unread_count' => $unreadCount
+    ], 200);
 }
+
+
 
 
 

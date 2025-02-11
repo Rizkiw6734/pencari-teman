@@ -589,7 +589,9 @@
             });
         });
     </script>
+
 @endsection
+
 
 {{-- @extends('layouts.user')
 @section('content')
@@ -761,4 +763,5 @@
             </div>
         </div>
     </div>
-@endsection --}}
+@endsection
+

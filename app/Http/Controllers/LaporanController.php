@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Laporan;
 use App\Models\User;
 use App\Models\Pinalti;
+use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class LaporanController extends Controller
@@ -30,7 +31,7 @@ class LaporanController extends Controller
         $laporans = $query->with(['pelapor', 'terlapor'])
         ->orderByRaw("FIELD(status, 'proses', 'diterima', 'selesai', 'ditolak')")
         ->paginate(10);
-        
+
         return view('laporan.index', compact('laporans'));
     }
 
@@ -49,13 +50,10 @@ class LaporanController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'report_id' => 'required|exists:users,id',
-            'reported_id' => 'required|exists:users,id|different:report_id',
+            'reported_id' => 'required|exists:users,id',
             'bukti' => 'image|max:5280|mimes:jpeg,png,jpg',
             'alasan' => 'required|string|max:255',
         ], [
-            'report_id.required' => 'Pelapor harus ada',
-            'report_id.exists' => 'Pelapor tidak valid',
             'reported_id.required' => 'terlapor harus ada',
             'reported_id.exists' => 'terlpor tidak valid',
             'reported_id.different' => 'terlapor harus berbeda dari Pelapor',
@@ -64,6 +62,8 @@ class LaporanController extends Controller
             'bukti.max' => 'Ukuran gambar tidak boleh lebih dari 5MB.',
             'alasan.required' => 'alasan laporan harus ada'
         ]);
+
+        $data['report_id'] = Auth::id();
 
         $existingReport = Laporan::where('report_id', $request->report_id)
         ->where('reported_id', $request->reported_id)

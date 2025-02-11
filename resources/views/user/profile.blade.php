@@ -236,14 +236,13 @@
                                                     data-bs-dismiss="modal">Batal</button>
                                                 <button type="submit" id="submitModal" class="btn btn-primary">Simpan Perubahan</button>
                                             </div>
-
-                                            @if ($errors->any())
-                                            <script>
-                                                document.addEventListener("DOMContentLoaded", function () {
-                                                    var bandingModal = new bootstrap.Modal(document.getElementById('editModal'));
-                                                    bandingModal.show();
-                                                });
-                                            </script>
+                                            @if ($errors->any() && old('name'))
+                                                <script>
+                                                    document.addEventListener("DOMContentLoaded", function () {
+                                                        var editModal = new bootstrap.Modal(document.getElementById('editModal'));
+                                                        editModal.show();
+                                                    });
+                                                </script>
                                             @endif
                                         </form>
                                     </div>

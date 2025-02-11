@@ -370,22 +370,23 @@
                                         <div class="card" style="box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25);">
                                             <div class="card-body">
                                                 <!-- Provinsi -->
-                                                <div class="mb-3">
-                                                    <label for="provinsi_id" class="form-label">Provinsi</label>
-                                                    <select id="provinsi_id" name="provinsi_id" class="form-control"
-                                                        style="border: 0px solid #ffffff; box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25)">
-                                                        <option value="">Pilih Provinsi</option>
-                                                        @foreach ($provinces as $province)
+                                                <div class="row mb-3">
+                                                    <div class="col">
+                                                        <label for="provinsi_id" class="form-label">Provinsi</label>
+                                                        <select id="provinsi_id" name="provinsi_id" class="form-control"
+                                                            style="border: 0px solid #ffffff; box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25)">
+                                                            <option value="">Pilih Provinsi</option>
+                                                            @foreach ($provinces as $province)
                                                             <option value="{{ $province->id }}"
                                                                 {{ $province->id == $user->provinsi_id ? 'selected' : '' }}>
                                                                 {{ $province->name }}
                                                             </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
 
-                                                <!-- Kabupaten -->
-                                                <div class="mb-3">
+                                                     <!-- Kabupaten -->
+                                                <div class="col">
                                                     <label for="kabupaten_id" class="form-label">Kabupaten/Kota</label>
                                                     <select id="kabupaten_id" name="kabupaten_id" class="form-control"
                                                         style="border: 0px solid #ffffff; box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25)">
@@ -398,9 +399,13 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
+                                                </div>
 
-                                                <!-- Kecamatan -->
-                                                <div class="mb-3">
+
+
+                                                <div class="row mb-3">
+                                                    <!-- Kecamatan -->
+                                                <div class="col">
                                                     <label for="kecamatan_id" class="form-label">Kecamatan</label>
                                                     <select id="kecamatan_id" name="kecamatan_id" class="form-control"
                                                         style="border: 0px solid #ffffff; box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25)">
@@ -415,7 +420,7 @@
                                                 </div>
 
                                                 <!-- Desa -->
-                                                <div class="mb-3">
+                                                <div class="col">
                                                     <label for="desa_id" class="form-label">Desa_id</label>
                                                     <select id="desa_id" name="desa_id" class="form-control"
                                                         style="border: 0px solid #ffffff; box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25)">
@@ -427,6 +432,7 @@
                                                             </option>
                                                         @endforeach
                                                     </select>
+                                                </div>
                                                 </div>
                                             </div>
 

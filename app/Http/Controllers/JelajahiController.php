@@ -13,14 +13,24 @@ class JelajahiController extends Controller
     /**
      * Tampilkan halaman jelajahi dengan daftar kabupaten dan pengguna selain admin serta user yang sedang login.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Ambil pengguna selain admin dan user yang sedang login
-        $penggunaLain = User::where('id', '!=', Auth::id())
+        $query = User::where('id', '!=', Auth::id())
             ->whereDoesntHave('roles', function ($query) {
-                $query->where('name', 'admin'); // Cek pengguna yang bukan admin
-            })
-            ->get();
+                $query->where('name', 'admin');
+            });
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        $penggunaLain = $query->get();
+
+        // Cek apakah request berasal dari AJAX
+        if ($request->ajax()) {
+            return response()->json(['users' => $penggunaLain]);
+        }
 
         return view('user.jelajahi', compact('penggunaLain'));
     }

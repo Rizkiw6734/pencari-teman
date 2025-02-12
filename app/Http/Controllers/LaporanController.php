@@ -65,9 +65,9 @@ class LaporanController extends Controller
 
         $data['report_id'] = Auth::id();
 
-        $existingReport = Laporan::where('report_id', $request->report_id)
-        ->where('reported_id', $request->reported_id)
-        ->where('status', '!=', 'selesai' && 'status', '!=', 'ditolak')
+        $existingReport = Laporan::where('report_id', $data['report_id'])
+        ->where('reported_id', $data['reported_id'])
+        ->whereNotIn('status', ['selesai', 'ditolak'])
         ->exists();
 
         if ($existingReport) {
@@ -84,10 +84,10 @@ class LaporanController extends Controller
         }
 
         if (Laporan::create($data)) {
-            return redirect('/laporan')->with('success', 'laporan berhasil ditambahkan.');
+            return redirect()->back()->with('success', 'Laporan berhasil ditambahkan.');
         }
 
-        return redirect('/laporan')->with('error', 'laporan gagal ditambahkan.');
+        return redirect()->back()->with('error', 'Laporan gagal ditambahkan.');
     }
 
     /**
@@ -171,6 +171,7 @@ class LaporanController extends Controller
 
         switch ($jenisHukuman) {
             case 'peringatan':
+
                 $totalPeringatan = Pinalti::whereHas('laporan', function ($query) use ($laporan) {
                     $query->where('reported_id', $laporan->reported_id);
                 })

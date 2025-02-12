@@ -288,6 +288,20 @@
                         </div>
                     </div>
 
+                    @if (session('success'))
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Sukses!',
+                                    text: "{{ session('success') }}",
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'OK'
+                                });
+                            });
+                        </script>
+                    @endif
+                    
                     <div>
                         <div class="card shadow-sm">
                             <div class="card-body">
@@ -373,66 +387,74 @@
                                                 <div class="row mb-3">
                                                     <div class="col">
                                                         <label for="provinsi_id" class="form-label">Provinsi</label>
-                                                        <select id="provinsi_id" name="provinsi_id" class="form-control"
+                                                        <select id="provinsi_id" name="provinsi_id" class="form-control @error('provinsi_id') is-invalid @enderror"
                                                             style="border: 0px solid #ffffff; box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25)">
                                                             <option value="">Pilih Provinsi</option>
                                                             @foreach ($provinces as $province)
-                                                            <option value="{{ $province->id }}"
-                                                                {{ $province->id == $user->provinsi_id ? 'selected' : '' }}>
-                                                                {{ $province->name }}
-                                                            </option>
+                                                                <option value="{{ $province->id }}" {{ old('provinsi_id', $user->provinsi_id) == $province->id ? 'selected' : '' }}>
+                                                                    {{ $province->name }}
+                                                                </option>
                                                             @endforeach
                                                         </select>
+                                                        @error('provinsi_id')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror                                                    
                                                     </div>
 
                                                      <!-- Kabupaten -->
-                                                <div class="col">
-                                                    <label for="kabupaten_id" class="form-label">Kabupaten/Kota</label>
-                                                    <select id="kabupaten_id" name="kabupaten_id" class="form-control"
-                                                        style="border: 0px solid #ffffff; box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25)">
-                                                        <option value="">Pilih Kabupaten/Kota</option>
-                                                        @foreach ($regencies as $regency)
-                                                            <option value="{{ $regency->id }}"
-                                                                {{ $regency->id == $user->kabupaten_id ? 'selected' : '' }}>
-                                                                {{ $regency->name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
+                                                    <div class="col">
+                                                        <label for="kabupaten_id" class="form-label">Kabupaten/Kota</label>
+                                                        <select id="kabupaten_id" name="kabupaten_id" class="form-control @error('kabupaten_id') is-invalid @enderror"
+                                                            style="border: 0px solid #ffffff; box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25)">
+                                                            <option value="">Pilih Kabupaten/Kota</option>
+                                                            @foreach ($regencies as $regency)
+                                                                <option value="{{ $regency->id }}" {{ old('kabupaten_id', $user->kabupaten_id) == $regency->id ? 'selected' : '' }}>
+                                                                    {{ $regency->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                        @error('kabupaten_id')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror 
+                                                    </div>
                                                 </div>
 
 
 
                                                 <div class="row mb-3">
                                                     <!-- Kecamatan -->
-                                                <div class="col">
-                                                    <label for="kecamatan_id" class="form-label">Kecamatan</label>
-                                                    <select id="kecamatan_id" name="kecamatan_id" class="form-control"
-                                                        style="border: 0px solid #ffffff; box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25)">
-                                                        <option value="">Pilih Kecamatan</option>
-                                                        @foreach ($districts as $district)
-                                                            <option value="{{ $district->id }}"
-                                                                {{ $district->id == $user->kecamatan_id ? 'selected' : '' }}>
-                                                                {{ $district->name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
+                                                    <div class="col">
+                                                        <label for="kecamatan_id" class="form-label">Kecamatan</label>
+                                                        <select id="kecamatan_id" name="kecamatan_id" class="form-control @error('kecamatan_id') is-invalid @enderror"
+                                                            style="border: 0px solid #ffffff; box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25)">
+                                                            <option value="">Pilih Kecamatan</option>
+                                                            @foreach ($districts as $district)
+                                                                <option value="{{ $district->id }}" {{ old('kecamatan_id', $user->kecamatan_id) == $district->id ? 'selected' : '' }}>
+                                                                    {{ $district->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                        @error('kecamatan_id')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror 
+                                                    </div>
 
-                                                <!-- Desa -->
-                                                <div class="col">
-                                                    <label for="desa_id" class="form-label">Desa_id</label>
-                                                    <select id="desa_id" name="desa_id" class="form-control"
-                                                        style="border: 0px solid #ffffff; box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25)">
-                                                        <option value="">Pilih Desa</option>
-                                                        @foreach ($villages as $village)
-                                                            <option value="{{ $village->id }}"
-                                                                {{ $village->id == $user->desa_id ? 'selected' : '' }}>
-                                                                {{ $village->name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
+                                                    <!-- Desa -->
+                                                    <div class="col">
+                                                        <label for="desa_id" class="form-label">Desa</label>
+                                                        <select id="desa_id" name="desa_id" class="form-control @error('desa_id') is-invalid @enderror"
+                                                            style="border: 0px solid #ffffff; box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25)">
+                                                            <option value="">Pilih Desa</option>
+                                                            @foreach ($villages as $village)
+                                                                <option value="{{ $village->id }}" {{ old('desa_id', $user->desa_id) == $village->id ? 'selected' : '' }}>
+                                                                    {{ $village->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                        @error('desa_id')
+                                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                        @enderror 
+                                                    </div>
                                                 </div>
                                             </div>
 
@@ -443,6 +465,15 @@
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                                                     style="background-color: #BEB9B9; padding: 10px 30px;">Batal</button>
                                             </div>
+
+                                            @if ($errors->has('provinsi_id') || $errors->has('kabupaten_id') || $errors->has('kecamatan_id') || $errors->has('desa_id'))
+                                                <script>
+                                                    document.addEventListener("DOMContentLoaded", function() {
+                                                        var editAddressModal = new bootstrap.Modal(document.getElementById('editAddressModal'));
+                                                        editAddressModal.show();
+                                                    });
+                                                </script>
+                                            @endif
                                 </form>
                             </div>
                         </div>
@@ -451,27 +482,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    </div>
-    </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer pt-3">
-        <div class="container-fluid">
-            <div class="row align-items-center justify-content-center">
-                <div class="col-lg-6 mb-lg-0 mb-4">
-                    <div class="copyright text-center text-sm text-muted">
-                        <p>Copyright &copy; <i class="fa fa-heart"></i> by around.you
-                            <script>
-                                document.write(new Date().getFullYear())
-                            </script>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
     </div>
 @endsection
 
@@ -502,8 +512,7 @@
                     alert(error.message);
                 });
         });
-    </script>
-    <script>
+
         $(document).ready(function() {
             // Saat provinsi dipilih
             $('#provinsi_id').on('change', function() {
@@ -589,7 +598,6 @@
             });
         });
     </script>
-
 @endsection
 
 
@@ -763,5 +771,5 @@
             </div>
         </div>
     </div>
-@endsection
+@endsection --}}
 

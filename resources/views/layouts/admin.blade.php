@@ -9,6 +9,7 @@
     <title>Around You</title>
     <link href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,800" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
     <link href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-icons.css" rel="stylesheet" />
     <link href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-svg.css" rel="stylesheet" />
@@ -21,6 +22,13 @@
   </head>
 
   <style>
+    select {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 250px;
+    }
+
     .custom-modal-sm {
         max-width: 600px; /* Ubah ukuran modal sesuai kebutuhan */
     }
@@ -291,40 +299,40 @@
             <button class="btn btn-primary w-100 px-3 mb-2 ms-2" style="background: #0D6EFD;" data-class="bg-white" onclick="sidebarType(this)">White</button>
           </div>
           <!-- Navbar Fixed -->
-          <div class="mt-3">
+          {{-- <div class="mt-3">
             <h6 class="mb-0">Navbar Tetap</h6>
           </div>
           <div class="form-check form-switch ps-0">
             <input class="form-check-input mt-1 ms-auto" type="checkbox" id="navbarFixed" onclick="navbarFixed(this)">
-          </div>
+          </div> --}}
         </div>
       </div>
     </div>
 
     <!-- JavaScript -->
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const isNavbarFixed = localStorage.getItem("navbarFixed") === "true";
-            applyNavbarFixed(isNavbarFixed);
-            document.getElementById("navbarFixed").checked = isNavbarFixed;
-        });
+        // document.addEventListener("DOMContentLoaded", function () {
+        //     const isNavbarFixed = localStorage.getItem("navbarFixed") === "true";
+        //     applyNavbarFixed(isNavbarFixed);
+        //     document.getElementById("navbarFixed").checked = isNavbarFixed;
+        // });
 
-        function applyNavbarFixed(isFixed) {
-            const navbar = document.querySelector("nav");
-            if (!navbar) return;
+        // function applyNavbarFixed(isFixed) {
+        //     const navbar = document.querySelector("nav");
+        //     if (!navbar) return;
 
-            if (isFixed) {
-                navbar.classList.add("fixed-top");
-            } else {
-                navbar.classList.remove("fixed-top");
-            }
-        }
+        //     if (isFixed) {
+        //         navbar.classList.add("fixed-top");
+        //     } else {
+        //         navbar.classList.remove("fixed-top");
+        //     }
+        // }
 
-        function navbarFixed(checkbox) {
-            const isFixed = checkbox.checked;
-            applyNavbarFixed(isFixed);
-            localStorage.setItem("navbarFixed", isFixed);
-        }
+        // function navbarFixed(checkbox) {
+        //     const isFixed = checkbox.checked;
+        //     applyNavbarFixed(isFixed);
+        //     localStorage.setItem("navbarFixed", isFixed);
+        // }
 
         // Fungsi untuk menerapkan warna sidebar
         function applySidebarColor(color) {

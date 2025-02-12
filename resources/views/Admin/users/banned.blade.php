@@ -1,17 +1,17 @@
 @extends('layouts.admin')
 @section('content')
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-        <nav class="navbar navbar-main navbar-expand-lg mt-3 px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur"
-            navbar-scroll="true">
+{{-- <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+  <nav class="navbar navbar-main navbar-expand-lg mt-3 px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true"> --}}
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg" style="padding-top: 80px;">
+        <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-sm border-radius-xl"
+            id="navbarBlur" navbar-scroll="true"
+            style="position: fixed; top: 15px; width: 74.9%; background-color: white; z-index: 100; height: 70px;">
             <div class="container-fluid">
                 <div class="d-flex justify-content-between align-items-center w-100" id="navbar">
-                    <div class="input-group d-flex" style="width: 725px; height: 40px; box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.25); margin: 3.2px 37px 2px 0;">
-                        <form action="{{ route('admin.users.banned') }}" method="GET" style="display: flex; width: 100%;">
-                            <div class="input-group">
-                                <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-                                <input type="text" name="search" class="form-control" placeholder="Mencari apa?" value="{{ request('search') }}">
-                            </div>
-                        </form>
+                    <div class="nav-control d-flex align-items-center" style="width: 725px; height: 40px; margin: 3.2px 37px 2px 0;">
+                        <div class="hamburger">
+                          <span class="toggle-icon" style="cursor: pointer;"><i class="fas fa-bars fa-lg"></i></span>
+                        </div>
                     </div>
 
                     <ul class="navbar-nav d-flex align-items-center" style="margin-left: -15px;">
@@ -113,17 +113,27 @@
             </div>
 
             <div class="d-flex justify-content-between">
-                <div class="d-flex align-items-center">
-                    <label for="data-count" style="margin-right: 10px;">Show</label>
-                    <select id="data-count" class="form-select"
-                        style="background-color: #d1e0ff; width: auto; padding-right: 25px;">
-                        <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
-                        <option value="20" {{ request('per_page') == 20 ? 'selected' : '' }}>20</option>
-                        <option value="30" {{ request('per_page') == 30 ? 'selected' : '' }}>30</option>
-                        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                    </select>
+                <div class="d-flex justify-content-between align-items-center" style="gap: 20px;">
+                    <div class="d-flex align-items-center">
+                        <label for="data-count" style="margin-right: 10px;">Show</label>
+                        <select id="data-count" class="form-select" style="background-color: #d1e0ff; width: auto; padding-right: 25px; cursor: pointer;">
+                            <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                            <option value="20" {{ request('per_page') == 20 ? 'selected' : '' }}>20</option>
+                            <option value="30" {{ request('per_page') == 30 ? 'selected' : '' }}>30</option>
+                            <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                        </select>
+                    </div>
+                
+                    <div class="input-group" style="width: 300px;">
+                        <form action="{{ route('admin.users.banned') }}" method="GET" style="display: flex; width: 100%;">
+                            <div class="input-group">
+                                <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+                                <input type="text" name="search" class="form-control" placeholder="Mencari apa?" value="{{ request('search') }}">
+                            </div>
+                        </form>
+                    </div>
                 </div>
-
+    
                 <script>
                     document.getElementById('data-count').addEventListener('change', function() {
                         var perPage = this.value;
@@ -157,125 +167,94 @@
                     </select>
                 </div>
                 <script>
-                    // Mengisi dropdown Provinsi saat halaman dimuat
                     document.addEventListener('DOMContentLoaded', function() {
-                        // Mengisi dropdown Provinsi saat halaman dimuat
                         fetch('/locations/provinsi')
-                            .then(response => {
-                                if (!response.ok) throw new Error('Gagal memuat data provinsi');
-                                return response.json();
-                            })
+                            .then(response => response.json())
                             .then(data => {
                                 let provinsiSelect = document.getElementById('provinces');
-                                provinsiSelect.innerHTML =
-                                '<option value="">Pilih Provinsi</option>'; // Tambahkan opsi default
-                                data.forEach(item => {
-                                    provinsiSelect.innerHTML +=
-                                    `<option value="${item.id}">${item.name}</option>`; // Gunakan `item.id` untuk value
-                                });
+                                updateDropdown(provinsiSelect, data, "Provinsi");
                             })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert('Gagal memuat data provinsi');
-                            });
+                            .catch(error => console.error('Error:', error));
                     });
-
-                    // Ketika dropdown Provinsi berubah
+                
                     document.getElementById('provinces').addEventListener('change', function() {
                         let provinsiId = this.value;
-
-                        if (!provinsiId) {
-                            // Reset dropdown jika tidak ada provinsi yang dipilih
-                            document.getElementById('regencies').innerHTML = '<option value="">Kabupaten</option>';
-                            document.getElementById('districts').innerHTML = '<option value="">Kecamatan</option>';
-                            document.getElementById('villages').innerHTML = '<option value="">Desa</option>';
-                            return;
-                        }
-
-                        fetch(
-                            `/locations/kabupaten?provinsi_id=${provinsiId}`) // Gunakan `provinsi_id` sesuai dengan controller
-                            .then(response => {
-                                if (!response.ok) throw new Error('Gagal memuat data kabupaten');
-                                return response.json();
-                            })
-                            .then(data => {
-                                let kabupatenSelect = document.getElementById('regencies');
-                                kabupatenSelect.innerHTML = '<option value="">Pilih Kabupaten</option>';
-                                data.forEach(item => {
-                                    kabupatenSelect.innerHTML += `<option value="${item.id}">${item.name}</option>`;
-                                });
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert('Gagal memuat data kabupaten');
-                            });
-
-                        // Reset dropdown berikutnya
-                        document.getElementById('districts').innerHTML = '<option value="">Kecamatan</option>';
-                        document.getElementById('villages').innerHTML = '<option value="">Desa</option>';
+                        let regenciesSelect = document.getElementById('regencies');
+                        let districtsSelect = document.getElementById('districts');
+                        let villagesSelect = document.getElementById('villages');
+                
+                        resetDropdown(regenciesSelect, "Kabupaten");
+                        resetDropdown(districtsSelect, "Kecamatan");
+                        resetDropdown(villagesSelect, "Desa");
+                
+                        if (!provinsiId) return;
+                
+                        fetch(`/locations/kabupaten?provinsi_id=${provinsiId}`)
+                            .then(response => response.json())
+                            .then(data => updateDropdown(regenciesSelect, data, "Kabupaten"))
+                            .catch(error => console.error('Error:', error));
                     });
-
-                    // Ketika dropdown Kabupaten berubah
+                
                     document.getElementById('regencies').addEventListener('change', function() {
                         let kabupatenId = this.value;
-
-                        if (!kabupatenId) {
-                            // Reset dropdown jika tidak ada kabupaten yang dipilih
-                            document.getElementById('districts').innerHTML = '<option value="">Kecamatan</option>';
-                            document.getElementById('villages').innerHTML = '<option value="">Desa</option>';
-                            return;
-                        }
-
-                        fetch(
-                            `/locations/kecamatan?kabupaten_id=${kabupatenId}`) // Gunakan `kabupaten_id` sesuai dengan controller
-                            .then(response => {
-                                if (!response.ok) throw new Error('Gagal memuat data kecamatan');
-                                return response.json();
-                            })
-                            .then(data => {
-                                let kecamatanSelect = document.getElementById('districts');
-                                kecamatanSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
-                                data.forEach(item => {
-                                    kecamatanSelect.innerHTML += `<option value="${item.id}">${item.name}</option>`;
-                                });
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert('Gagal memuat data kecamatan');
-                            });
-
-                        // Reset dropdown berikutnya
-                        document.getElementById('villages').innerHTML = '<option value="">Desa</option>';
+                        let districtsSelect = document.getElementById('districts');
+                        let villagesSelect = document.getElementById('villages');
+                
+                        resetDropdown(districtsSelect, "Kecamatan");
+                        resetDropdown(villagesSelect, "Desa");
+                
+                        if (!kabupatenId) return;
+                
+                        fetch(`/locations/kecamatan?kabupaten_id=${kabupatenId}`)
+                            .then(response => response.json())
+                            .then(data => updateDropdown(districtsSelect, data, "Kecamatan"))
+                            .catch(error => console.error('Error:', error));
                     });
-
-                    // Ketika dropdown Kecamatan berubah
+                
                     document.getElementById('districts').addEventListener('change', function() {
                         let kecamatanId = this.value;
-
-                        if (!kecamatanId) {
-                            // Reset dropdown jika tidak ada kecamatan yang dipilih
-                            document.getElementById('villages').innerHTML = '<option value="">Desa</option>';
-                            return;
-                        }
-
-                        fetch(`/locations/desa?kecamatan_id=${kecamatanId}`) // Gunakan `kecamatan_id` sesuai dengan controller
-                            .then(response => {
-                                if (!response.ok) throw new Error('Gagal memuat data desa');
-                                return response.json();
-                            })
-                            .then(data => {
-                                let desaSelect = document.getElementById('villages');
-                                desaSelect.innerHTML = '<option value="">Pilih Desa</option>';
-                                data.forEach(item => {
-                                    desaSelect.innerHTML += `<option value="${item.id}">${item.name}</option>`;
-                                });
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert('Gagal memuat data desa');
-                            });
+                        let villagesSelect = document.getElementById('villages');
+                
+                        resetDropdown(villagesSelect, "Desa");
+                
+                        if (!kecamatanId) return;
+                
+                        fetch(`/locations/desa?kecamatan_id=${kecamatanId}`)
+                            .then(response => response.json())
+                            .then(data => updateDropdown(villagesSelect, data, "Desa"))
+                            .catch(error => console.error('Error:', error));
                     });
-                </script>
+                
+                    function updateDropdown(selectElement, data, defaultText) {
+                        let width = window.getComputedStyle(selectElement).width; // Ambil lebar sebelum di-update
+                        resetDropdown(selectElement, defaultText);
+                        selectElement.style.width = width; // Set lebar agar tidak berubah
+
+                        data.forEach(item => {
+                            let option = document.createElement('option');
+                            option.value = item.id;
+                            option.textContent = item.name;
+                            option.title = item.name; // Tambahkan tooltip
+                            selectElement.appendChild(option);
+                        });
+                    }
+
+                    document.querySelectorAll('select').forEach(select => {
+                        select.addEventListener('mouseover', function () {
+                            this.title = this.options[this.selectedIndex].text;
+                        });
+                    });
+                
+                    function resetDropdown(selectElement, defaultText) {
+                        while (selectElement.firstChild) {
+                            selectElement.removeChild(selectElement.firstChild);
+                        }
+                        let defaultOption = document.createElement('option');
+                        defaultOption.value = "";
+                        defaultOption.textContent = defaultText;
+                        selectElement.appendChild(defaultOption);
+                    }
+                </script>   
             </div>
         </div>
 
@@ -312,7 +291,14 @@
                                             @endif
                                         </span>
                                     </td>
-                                    <td>#</td>
+                                    <td style="max-width: 200px; word-wrap: break-word; white-space: normal;">
+                                        {!! collect([
+                                            $user->provinsis ? 'Provinsi ' . $user->provinsis->name : null,
+                                            $user->kabupatens ? 'Kabupaten ' . $user->kabupatens->name : null,
+                                            $user->kecamatans ? 'Kecamatan ' . $user->kecamatans->name : null,
+                                            $user->desas ? 'Desa ' . $user->desas->name : null,
+                                        ])->filter()->implode(',<br>') !!}
+                                    </td>  
                                     <td>
                                         <form action="{{ route('admin.users.unblock', $user->id) }}" method="POST"
                                             class="d-inline" id="unblock-form-{{ $user->id }}">

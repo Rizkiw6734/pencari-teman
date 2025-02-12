@@ -15,6 +15,12 @@
                         style="background-color: #6C757D; font-size: 13px;">Teman Berdasarkan Kota</button>
                 </div>
             </div>
+            <div style="display: flex; align-items: center; margin-bottom: 10px; border: 1px solid #EFF3F4; border-radius:20px; padding: 5px 10px; width: 100%; background-color: #f9f9f9;">
+                <span style="color: #757575; font-size: 16px; cursor: default;">
+                    <i class="fa fa-search ms-1" style="font-size: 15px"></i>
+                </span>
+                <input type="text" id="searchInput" placeholder="Cari teman seru disekitar anda" style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 5px;">
+            </div>
 
             <div id="filterByKota" class="mt-3" style="display: none;">
                 <div class="dropdown d-flex">

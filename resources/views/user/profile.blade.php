@@ -171,7 +171,7 @@
                                             <div class="modal-header border-0">
                                                 <h5 class="modal-title" id="editModalLabel">Edit Informasi Pribadi</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
+                                                    aria-label="Close" style="background-color: #000000;"></button>
                                             </div>
                                             <div class="modal-body">
                                                 <div class="card"
@@ -301,7 +301,7 @@
                             });
                         </script>
                     @endif
-                    
+
                     <div>
                         <div class="card shadow-sm">
                             <div class="card-body">
@@ -377,7 +377,7 @@
                                     <div class="modal-header border-0">
                                         <h5 class="modal-title" id="editAddressModalLabel">Edit Alamat</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
+                                            aria-label="Close" style="background-color: #000000;"></button>
                                     </div>
 
                                     <div class="modal-body">
@@ -398,7 +398,7 @@
                                                         </select>
                                                         @error('provinsi_id')
                                                             <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror                                                    
+                                                        @enderror
                                                     </div>
 
                                                      <!-- Kabupaten -->
@@ -415,7 +415,7 @@
                                                         </select>
                                                         @error('kabupaten_id')
                                                             <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror 
+                                                        @enderror
                                                     </div>
                                                 </div>
 
@@ -436,7 +436,7 @@
                                                         </select>
                                                         @error('kecamatan_id')
                                                             <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror 
+                                                        @enderror
                                                     </div>
 
                                                     <!-- Desa -->
@@ -453,7 +453,7 @@
                                                         </select>
                                                         @error('desa_id')
                                                             <div class="invalid-feedback">{{ $message }}</div>
-                                                        @enderror 
+                                                        @enderror
                                                     </div>
                                                 </div>
                                             </div>

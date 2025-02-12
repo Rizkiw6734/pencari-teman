@@ -6,8 +6,59 @@
                 <!-- Sidebar Chat -->
                 <div class="col-md-5" style="background-color: #F0F3F9; height: 100vh; overflow-y: auto;">
                     <div class="mb-3">
-                        <div class="mb-2 mt-1 d-flex justify-content-between align-items-center">
+                        <div class="mb-2 mt-3 d-flex justify-content-between align-items-center">
                             <h5 class="font-weight-bold">Sedang Aktif</h5>
+                        <li class="nav-item dropdown pe-2 d-flex align-items-center justify-content-center">
+                            <a href="javascript:;"
+                                class="nav-link text-body p-0 d-flex align-items-center justify-content-center"
+                                id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-regular fa-bell" style="color: #2970e1; font-size: 20px;"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4"
+                                aria-labelledby="dropdownMenuButton">
+                                <li class="mb-2">
+                                    <div style="border-bottom: 1px solid #ccc; padding-bottom: 10px;" class="mb-3">
+                                        <div class="d-flex flex-column">
+                                            <h5 class="mb-0">Notifikasi</h5>
+                                            <small class="text-muted">Kamu mendapatkan <span style="color: #2970ff;">10 Notifikasi</span> terbaru.</small>
+                                        </div>
+                                    </div>
+                                    <a class="dropdown-item border-radius-md" href="#">
+
+                                        <div style="height: 200px; overflow-y: scroll; solid #ccc;">
+                                            <div class="d-flex py-1 mb-3">
+                                                <div class="my-auto">
+                                                    <img src="/assets/img/team-2.jpg" class="avatar avatar-sm me-3" style="width: 50px; height: 50px; border-radius: 50%;">
+                                                </div>
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="text-sm font-weight-normal mb-1" style="font-size: 10px;">
+                                                        <span class="font-weight-bold">Alifio</span> Mengirim Ajubanding
+                                                    </h6>
+                                                    <p class="text-xs text-secondary mb-0">
+                                                        <i class="fa fa-clock me-1"></i>
+                                                        1 jam yang lalu
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex py-1 mb-3">
+                                                <div class="my-auto">
+                                                    <img src="/assets/img/team-2.jpg" class="avatar avatar-sm me-3" style="width: 50px; height: 50px; border-radius: 50%;">
+                                                </div>
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="text-sm font-weight-normal mb-1" style="font-size: 10px;">
+                                                        <span class="font-weight-bold">Alifio</span> Mengirim Ajubanding
+                                                    </h6>
+                                                    <p class="text-xs text-secondary mb-0">
+                                                        <i class="fa fa-clock me-1"></i>
+                                                        1 jam yang lalu
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                         </div>
 
                         <!-- Sedang Aktif -->
@@ -34,10 +85,7 @@
                             <span style="color: #757575; font-size: 16px; cursor: default;">
                                 <i class="fa fa-search ms-1" style="font-size: 15px"></i>
                             </span>
-                            <input type="text" id="searchInput" placeholder="Mulai chat baru"
-    style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 5px;"
-    onkeyup="searchChat()">
-
+                            <input type="text" id="searchInput" placeholder="Mulai chat baru"style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 5px;" onkeyup="searchChat()">
                         </div>
 
                         <!-- Chat -->

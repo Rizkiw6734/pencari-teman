@@ -39,56 +39,61 @@ class JelajahiController extends Controller
      * Menampilkan pengguna di sekitar (radius 50 km) berdasarkan latitude dan longitude user yang login.
      */
     public function penggunaTerdekat()
-    {
-        // Ambil latitude dan longitude user yang sedang login
-        $userLogin = Auth::user();
-        $latitudeUser = $userLogin->latitude;
-        $longitudeUser = $userLogin->longitude;
+{
+    // Ambil latitude dan longitude user yang sedang login
+    $userLogin = Auth::user();
+    $latitudeUser = $userLogin->latitude;
+    $longitudeUser = $userLogin->longitude;
 
-        if (is_null($latitudeUser) || is_null($longitudeUser)) {
-            return response()->json([
-                'message' => 'Lokasi pengguna tidak tersedia.'
-            ], 400);
-        }
+    if (is_null($latitudeUser) || is_null($longitudeUser)) {
+        return response()->json([
+            'message' => 'Lokasi pengguna tidak tersedia.'
+        ], 400);
+    }
 
-        // Ambil data pengguna lain dari database beserta latitude dan longitude
-        $penggunaLain = User::where('id', '!=', $userLogin->id)
-            ->get();
+    // Ambil data pengguna lain dari database beserta latitude dan longitude
+    $penggunaLain = User::where('id', '!=', $userLogin->id)
+        ->get();
 
-        // Hitung jarak menggunakan formula Haversine
-        foreach ($penggunaLain as $pengguna) {
+    // Hitung jarak menggunakan formula Haversine
+    foreach ($penggunaLain as $pengguna) {
+        if (!is_null($pengguna->latitude) && !is_null($pengguna->longitude)) {
             $distance = $this->haversineGreatCircleDistance(
                 $latitudeUser,
                 $longitudeUser,
                 $pengguna->latitude,
                 $pengguna->longitude
             );
-            $pengguna->distance = $distance; // Simpan jarak di properti sementara
+            $pengguna->distance = round($distance, 2); // Simpan jarak dengan 2 desimal
+        } else {
+            $pengguna->distance = null; // Jika tidak ada lokasi, beri nilai null
         }
-
-        // Urutkan berdasarkan jarak terdekat dan filter dalam radius 50 km
-        $penggunaTerdekat = $penggunaLain->filter(function ($pengguna) {
-            return $pengguna->distance <= 50;
-        })->sortBy('distance')->values();
-
-        return response()->json($penggunaTerdekat);
     }
 
-    private function haversineGreatCircleDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371)
-    {
-        $latFrom = deg2rad($latitudeFrom);
-        $lonFrom = deg2rad($longitudeFrom);
-        $latTo = deg2rad($latitudeTo);
-        $lonTo = deg2rad($longitudeTo);
+    // Urutkan berdasarkan jarak terdekat dan filter dalam radius 50 km (termasuk jarak 0 km)
+    $penggunaTerdekat = $penggunaLain->filter(function ($pengguna) {
+        return $pengguna->distance !== null && $pengguna->distance <= 50;
+    })->sortBy('distance')->values();
 
-        $latDelta = $latTo - $latFrom;
-        $lonDelta = $lonTo - $lonFrom;
+    return response()->json($penggunaTerdekat);
+}
 
-        $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
-            cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+private function haversineGreatCircleDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371)
+{
+    $latFrom = deg2rad($latitudeFrom);
+    $lonFrom = deg2rad($longitudeFrom);
+    $latTo = deg2rad($latitudeTo);
+    $lonTo = deg2rad($longitudeTo);
 
-        return $angle * $earthRadius; // Hasil dalam kilometer
-    }
+    $latDelta = $latTo - $latFrom;
+    $lonDelta = $lonTo - $lonFrom;
+
+    $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+        cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+
+    return $angle * $earthRadius; // Hasil dalam kilometer
+}
+
 
     public function getProvinsi()
     {

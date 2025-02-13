@@ -22,9 +22,10 @@ use App\Http\Controllers\ActiveUserController;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Middleware\CheckExpiredSuspension;
 use App\Http\Middleware\CheckStatusUser;
-use APP\Http\Controllers\FollowerController;
+use App\Http\Controllers\FollowerController;
 use App\Jobs\CheckExpiredSuspensionJob;
 use App\Http\Controllers\LocationController;
+use App\Models\Chat;
 
 // Memanggil job secara manual
 // CheckExpiredSuspensionJob::dispatch();
@@ -142,10 +143,11 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     // Add the update-location route here
     Route::middleware(['auth'])->post('/update-location', [ProfileUserController::class, 'updateLocation']);
     Route::get('/active-users', [ActiveUserController::class, 'index']);
-    Route::post('/update-chat-status', [ChatController::class, 'updateStatus'])->name('update-chat-status');
+    Route::post('/update-chat-status', [ChatController::class, 'updateStatus']);
     Route::get('/user/status/{id}', [ChatController::class, 'getUserStatus']);
     Route::middleware('auth')->get('/messages/{user}/{penerima_id}', [ChatController::class, 'getMessages']);
     Route::post('/send-message', [ChatController::class, 'sendMessage']);
+    Route::get('/messages/status/{userId}/{penerimaId}', [ChatController::class, 'getStatus']);
     // Suspend Page
     Route::get('/suspend', [UserStatusController::class, 'suspendPage'])->name('user.suspend');
     });

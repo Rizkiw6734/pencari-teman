@@ -90,32 +90,10 @@
 
                         <!-- Chat -->
                         <div id="chat-container" style="height: 300px; overflow-y: scroll; solid #ccc;">
-                            @php
-                                $userId = auth()->user()->id;
-                            @endphp
 
-                            @foreach ($latestChats as $chat)
-                                @php
-                                    // Tentukan ID dan profil partner chat
-                                    $chatPartnerId =
-                                        $chat->pengirim_id === $userId ? $chat->penerima_id : $chat->pengirim_id;
-                                    $chatPartner = $chat->pengirim_id === $userId ? $chat->penerima : $chat->pengirim;
-
-                                    // Tentukan ikon status pesan
-                                    $statusIcon = '';
-                                    if ($chat->status === 'sent_and_read') {
-                                        $statusIcon = '<i class="fas fa-check-double text-primary"></i>'; // Centang 2 biru
-                                    } elseif ($chat->status === 'sent_and_unread') {
-                                        $statusIcon = '<i class="fas fa-check text-secondary"></i>'; // Centang 1 abu-abu
-                                    } elseif ($chat->status === 'received') {
-                                        $statusIcon = '<i class="fas fa-check-double text-secondary"></i>'; // Centang 2 abu-abu
-                                    } elseif ($chat->is_seen) { // Status berdasarkan is_seen
-                                        $statusIcon = '<i class="fas fa-eye text-success"></i>'; // Mata hijau jika sudah dilihat
-                                    }
-                                @endphp
 
                                 <div style="height: 1px; background-color: #ddd; margin: 2px 0;"></div>
-                            @endforeach
+
                         </div>
 
 
@@ -303,137 +281,135 @@
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            function loadActiveUsers() {
-                fetch('/active-users')
-                    .then(response => response.json())
-                    .then(data => {
-                        let userContainer = document.querySelector('.active-users');
-                        if (!userContainer) return;
+    function loadActiveUsers() {
+        fetch('/active-users')
+            .then(response => response.json())
+            .then(data => {
+                let userContainer = document.querySelector('.active-users');
+                if (!userContainer) return;
 
-                        userContainer.innerHTML = '';
+                userContainer.innerHTML = '';
 
-                        // Ubah objek menjadi array menggunakan Object.values()
-                        const users = Object.values(data);
+                // Ubah objek menjadi array menggunakan Object.values()
+                const users = Object.values(data);
 
-                        // Pastikan data yang diterima adalah array
-                        if (Array.isArray(users)) {
-                            users.forEach(user => {
-                                userContainer.innerHTML += `
-                            <div style="display: inline-block; text-align: center; margin-right: 16px; position: relative;">
-    <div style="width: 55px; height: 55px; border-radius: 50%; position: relative;">
-        <img src="${user.foto_profil ? '/storage/' + user.foto_profil : '/images/marie.jpg'}" alt="Foto Profil"
-            style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 2px solid #ddd;">
-        <!-- Indikator hijau lebih besar -->
-        <div style="width: 16px; height: 16px; background-color: #1abc9c; border-radius: 50%; position: absolute; bottom: 0px; right: 0px; border: 2px solid white;"></div>
-    </div>
-    <p style="margin-top: 8px; font-weight: bold;">${user.name}</p>
-</div>
-
+                // Pastikan data yang diterima adalah array
+                if (Array.isArray(users)) {
+                    users.forEach(user => {
+                        const userElement = document.createElement('div');
+                        userElement.style.cssText = 'display: inline-block; text-align: center; margin-right: 16px; position: relative; cursor: pointer;';
+                        userElement.innerHTML = `
+                            <div style="width: 55px; height: 55px; border-radius: 50%; position: relative;">
+                                <img src="${user.foto_profil ? '/storage/' + user.foto_profil : '/images/marie.jpg'}" alt="Foto Profil"
+                                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 2px solid #ddd;">
+                                <!-- Indikator hijau lebih besar -->
+                                <div style="width: 16px; height: 16px; background-color: #1abc9c; border-radius: 50%; position: absolute; bottom: 0px; right: 0px; border: 2px solid white;"></div>
+                            </div>
+                            <p style="margin-top: 8px; font-weight: bold;">${user.name}</p>
                         `;
-                            });
-                        } else {
-                            console.error('Data yang diterima bukan array:', users);
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
-            }
 
-            // Panggil setiap 5 detik untuk update real-time
-            setInterval(loadActiveUsers, 5000);
-            loadActiveUsers();
-        });
+                        // Tambahkan event listener untuk memanggil fungsi selectChat saat diklik
+                        userElement.addEventListener('click', function() {
+                            selectChat(userElement, user.id,);  // Panggil selectChat dengan user.id
+                        });
+
+                        userContainer.appendChild(userElement);
+                    });
+                } else {
+                    console.error('Data yang diterima bukan array:', users);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Panggil setiap 5 detik untuk update real-time
+    setInterval(loadActiveUsers, 5000);
+    loadActiveUsers();
+});
+
 
 
         // Fetch chat messages from API
         $(document).ready(function() {
-            $(document).ready(function() {
-                $('#chat-footer').hide(); // Menyembunyikan footer chat saat halaman dimuat
-            });
+    $('#chat-footer').hide(); // Menyembunyikan footer chat saat halaman dimuat
 
-            // Fungsi untuk memuat chat
-            function fetchChats() {
-    $.ajax({
-        url: '/home',
-        method: 'GET',
-        success: function(response) {
-            console.log("Response dari server:", response);
+    // Fungsi untuk memuat chat
+    function fetchChats() {
+        $.ajax({
+            url: '/home',
+            method: 'GET',
+            success: function(response) {
+                console.log("Response dari server:", response);
 
-            const chatContainer = $('#chat-container');
-            chatContainer.empty();
+                const chatContainer = $('#chat-container');
+                chatContainer.empty();
 
-            if (response.latestChats && Array.isArray(response.latestChats) && response.latestChats.length > 0) {
-                const unreadCountMap = {};
+                if (response.latestChats && Array.isArray(response.latestChats) && response.latestChats.length > 0) {
+                    response.latestChats.forEach(chat => {
+                        const isPengirim = chat.pengirim_id === response.userId;
+                        const chatPartner = isPengirim ? chat.penerima : chat.pengirim;
+                        const penerimaId = isPengirim ? chat.penerima_id : chat.pengirim_id;
 
-                response.latestChats.forEach(chat => {
-                    const isPengirim = chat.pengirim_id === response.userId;
-                    const chatPartner = isPengirim ? chat.penerima : chat.pengirim;
-                    const penerimaId = isPengirim ? chat.penerima_id : chat.pengirim_id;
-
-                    // Hitung unreadCount hanya jika bukan pengirim dan pesan belum dibaca
-                    if (!isPengirim && !chat.is_seen) {  // Tampilkan unread badge hanya jika is_seen: false
-    if (!unreadCountMap[penerimaId]) unreadCountMap[penerimaId] = 0;
-    unreadCountMap[penerimaId]++;
-}
-
-
-                    let statusIcon = '';
-                    if (isPengirim) {
-                        if (chat.status === 'sent_and_read') {
-                            statusIcon = '<i class="fas fa-check-double" style="color: #34B7F1; transform: rotate(-10deg);"></i>';
-                        } else if (chat.status === 'sent_and_unread') {
-                            statusIcon = '<i class="fas fa-check text-secondary"></i>';
-                        } else if (chat.status === 'received') {
-                            statusIcon = '<i class="fas fa-check-double text-secondary"></i>';
+                        // Menentukan status ikon hanya untuk pengirim
+                        let statusIcon = '';
+                        if (isPengirim) {
+                            if (chat.status === 'sent_and_read') {
+                                statusIcon = '<i class="fas fa-check-double" style="color: #34B7F1; transform: rotate(-10deg);"></i>';
+                            } else if (chat.status === 'received') {
+                                statusIcon = '<i class="fas fa-check-double text-secondary"></i>';
+                            } else {
+                                statusIcon = '<i class="fas fa-check text-secondary"></i>';
+                            }
                         }
-                    } else if (chat.is_seen) {
-                        statusIcon = '';
-                    }
 
-                    const profileImage = chatPartner?.foto_profil ? chatPartner.foto_profil : '/images/marie.jpg';
-                    const name = chatPartner.name ? chatPartner.name : 'No Name';
-                    const time = new Date(chat.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        const profileImage = chatPartner?.foto_profil ? chatPartner.foto_profil : '/images/marie.jpg';
+                        const name = chatPartner.name ? chatPartner.name : 'No Name';
+                        const time = new Date(chat.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                    const unreadCount = chat.unread_count;
-    const unreadCountBadge = unreadCount > 0 ? `
-        <span class="notification-badge"
-              style="margin-left: auto; background-color: #528BFF; color: white; font-size: 12px; border-radius: 50%; width: 25px; height: 25px; display: flex; justify-content: center; align-items: center; font-weight: bold;">
-            ${unreadCount}
-        </span>
-    ` : '';
+                        const unreadCount = chat.unread_count;
+                        const unreadCountBadge = unreadCount > 0 ? `
+                            <span class="notification-badge"
+                                  style="margin-left: auto; background-color: #528BFF; color: white; font-size: 12px; border-radius: 50%; width: 25px; height: 25px; display: flex; justify-content: center; align-items: center; font-weight: bold;">
+                                ${unreadCount}
+                            </span>
+                        ` : '';
 
-                    const chatMessage = `
-                        <div class="chat-item" onclick="selectChat(this, ${penerimaId}, '${chat.status}')"
-                             data-user-id="${penerimaId}" style="display: flex; align-items: center; background-color: #F0F3F9; padding: 10px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; transition: background 0.3s;">
-                            <img src="${profileImage}" alt="Avatar"
-                                 style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px;">
-                            <div class="chat-content" style="flex: 1;">
-                                <div class="chat-header" style="display: flex; justify-content: space-between; align-items: center;">
-                                    <span class="name" style="font-weight: bold; font-size: 16px;">${name}</span>
-                                    <span class="time" style="font-size: 12px; color: #888;">${time}</span>
-                                    ${unreadCountBadge}
-                                </div>
-                                <div class="chat-message" style="font-size: 14px; color: #555; margin-top: 5px;">
-                                    ${statusIcon} ${chat.konten.substr(0, 30)}
+                        const chatMessage = `
+                            <div class="chat-item" data-status="${chat.status}" onclick="selectChat(this, ${penerimaId}, '${chat.status}')"
+                                 data-user-id="${penerimaId}" style="display: flex; align-items: center; background-color: #F0F3F9; padding: 10px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; transition: background 0.3s;">
+                                <img src="${profileImage}" alt="Avatar"
+                                     style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px;">
+                                <div class="chat-content" style="flex: 1;">
+                                    <div class="chat-header" style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span class="name" style="font-weight: bold; font-size: 16px;">${name}</span>
+                                        <span class="info" style="font-size: 12px; color: #888;">
+        ${unreadCountBadge ? unreadCountBadge : time}
+    </span>
+                                    </div>
+                                    <div class="chat-message" style="font-size: 14px; color: #555; margin-top: 5px;">
+                                        ${statusIcon} ${chat.konten.substr(0, 30)}
+                                    </div>
                                 </div>
                             </div>
+                        `;
 
-                        </div>
-                    `;
-
-                    chatContainer.append(chatMessage);
-                });
-            } else {
-                chatContainer.append('<p style="text-align: center; color: #888;">Tidak ada pesan terbaru.</p>');
+                        chatContainer.append(chatMessage);
+                    });
+                } else {
+                    chatContainer.append('<p style="text-align: center; color: #888;">Tidak ada pesan terbaru.</p>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching chat data:", xhr.responseText || error);
             }
-        },
-        error: function(xhr, status, error) {
-            console.error("Error fetching chat data:", xhr.responseText || error);
-        }
-    });
-}
+        });
+    }
 
-setInterval(fetchChats, 3000);
-}); //Anda bisa sesuaikan interval waktu sesuai kebutuhan
+    // Perbarui chat setiap 3 detik
+    setInterval(fetchChats, 3000);
+});
+
+//Anda bisa sesuaikan interval waktu sesuai kebutuhan
 // Anda bisa sesuaikan interval waktu sesuai kebutuhan
 
         // Fungsi untuk memilih chat dan menampilkan footer chat
@@ -461,8 +437,8 @@ setInterval(fetchChats, 3000);
         badgeElement.remove();
     }
 
-    // Perbarui status chat jika masih sent_and_unread
-    if (chatStatus === 'sent_and_unread') {
+    // Perbarui status chat jika statusnya masih 'received'
+    if (chatStatus === 'received') {
         try {
             const response = await $.ajax({
                 url: '/update-chat-status',
@@ -473,15 +449,26 @@ setInterval(fetchChats, 3000);
                     status: 'sent_and_read',
                     is_seen: true,
                     _token: '{{ csrf_token() }}'
-                }
+                },
+                dataType: 'json'
             });
-            console.log(response.message);
-            element.setAttribute('data-status', 'sent_and_read');
+
+            if (response.message === 'Status updated successfully') {
+                console.log(response.message);
+                element.setAttribute('data-status', 'sent_and_read');
+            } else {
+                console.warn("Status update gagal:", response.message);
+            }
         } catch (error) {
-            console.error("Gagal memperbarui status pesan:", error.responseText || error);
+            console.error("Gagal memperbarui status pesan:", error.responseJSON?.message || error.statusText || error);
         }
     }
 }
+
+
+
+
+
 
         // Fungsi untuk mengupdate status pengguna di header chat
         function updateUserStatus(userId) {
@@ -525,12 +512,26 @@ var avatar = response.foto_profil && response.foto_profil.startsWith("http")
 
         // Fungsi untuk memuat pesan berdasarkan ID pengguna dan penerima
         function loadMessages(userId, penerimaId) {
+    if (!document.getElementById('scroll-to-bottom')) {
+        let scrollButton = document.createElement('div');
+        scrollButton.id = 'scroll-to-bottom';
+        scrollButton.style.position = 'fixed';
+        scrollButton.style.bottom = '20px';
+        scrollButton.style.right = '20px';
+        scrollButton.style.display = 'none';
+        scrollButton.style.zIndex = '1000';
+        scrollButton.innerHTML = `
+            <button class="btn btn-primary rounded-circle shadow" style="width: 50px; height: 50px; background-color: #25D366; border: none;">
+                <i class="fas fa-chevron-down" style="color: white; font-size: 20px;"></i>
+            </button>
+        `;
+        document.body.appendChild(scrollButton);
+    }
+
     $.ajax({
         url: '/messages/' + userId + '/' + penerimaId,
         type: 'GET',
         success: function(response) {
-            console.log("Response:", response);
-
             if (response.status === 'success') {
                 let chats = response.data;
                 let chatBody = $('.chat-body');
@@ -538,8 +539,8 @@ var avatar = response.foto_profil && response.foto_profil.startsWith("http")
 
                 chats.forEach(function(chat) {
                     let isSender = parseInt(chat.pengirim_id) === parseInt(userId);
+                    let statusIcon = getStatusIcon(chat.status); // Fungsi untuk menentukan status icon
 
-                    // Avatar sesuai pengirim dan penerima
                     let senderAvatar = isSender
                         ? `${chat.pengirim_foto}?nocache=${Date.now()}`
                         : `${chat.penerima_foto}?nocache=${Date.now()}`;
@@ -548,19 +549,18 @@ var avatar = response.foto_profil && response.foto_profil.startsWith("http")
                         ? `${chat.pengirim_foto}?nocache=${Date.now()}`
                         : `${chat.penerima_foto}?nocache=${Date.now()}`;
 
-                    console.log(`Sender Avatar (${chat.pengirim_id}):`, senderAvatar);
-                    console.log(`Receiver Avatar (${chat.penerima_id}):`, receiverAvatar);
-
                     let waktuPesan = chat.created_at
                         ? new Date(chat.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
                         : '-';
 
                     let chatElement = `
-                        <div class="chat-item ${isSender ? 'd-flex align-items-end justify-content-end' : 'd-flex align-items-start'} mb-3">
+                        <div class="chat-item ${isSender ? 'd-flex align-items-end justify-content-end' : 'd-flex align-items-start'} mb-3" id="chat-${chat.id}">
                             ${isSender ? `
                                 <div class="chat-content text p-2 rounded" style="max-width: 60%; background-color: #9FB7FF; border-radius: 15px;">
                                     <span style="font-size: 13px; color: #000000;">${chat.konten}</span>
-                                    <div class="text-end text-black-50" style="font-size: 10px;">${waktuPesan}</div>
+                                    <div class="text-end text-black-50" style="font-size: 10px;">
+                                        ${waktuPesan} <span class="status-icon">${statusIcon}</span>
+                                    </div>
                                 </div>
                                 <img src="${senderAvatar}" class="sender-avatar rounded-circle ms-3" style="width: 50px; height: 50px; object-fit: cover;">
                             ` : `
@@ -572,16 +572,75 @@ var avatar = response.foto_profil && response.foto_profil.startsWith("http")
                             `}
                         </div>
                     `;
-
                     chatBody.append(chatElement);
                 });
 
+                if (chats.length > 0) {
+                    chatBody[0].scrollTo({
+                        top: chatBody[0].scrollHeight,
+                        behavior: 'smooth',
+                        block: 'end'
+                    });
+                }
+
+                let scrollToBottomBtn = $('#scroll-to-bottom');
+                chatBody.on('scroll', function() {
+                    if (chatBody.scrollTop() < chatBody[0].scrollHeight - chatBody.height() - 50) {
+                        scrollToBottomBtn.fadeIn();
+                    } else {
+                        scrollToBottomBtn.fadeOut();
+                    }
+                });
+
+                scrollToBottomBtn.on('click', function() {
+                    chatBody.animate({ scrollTop: chatBody[0].scrollHeight }, 500, function() {
+                        scrollToBottomBtn.fadeOut();
+                    });
+                });
+
                 document.getElementById('chat-footer').style.display = 'flex';
+
+                // Update statusIcon secara realtime setiap 5 detik
+                setInterval(function() {
+                    updateStatusIcon(userId, penerimaId);
+                }, 5000);
             }
         },
         error: function(error) {
             console.log("Error:", error);
             document.getElementById('chat-footer').style.display = 'none';
+        }
+    });
+}
+
+function getStatusIcon(status) {
+    if (status === 'sent_and_read') {
+        return '<i class="fas fa-check-double" style="color: #34B7F1; transform: rotate(-10deg);"></i>';
+    } else if (status === 'received') {
+        return '<i class="fas fa-check-double text-secondary"></i>';
+    } else if (status === 'sent_and_unread') {
+        return '<i class="fas fa-check text-secondary"></i>';
+    } else {
+        return '<i class="fas fa-question-circle text-muted"></i>';
+    }
+}
+
+function updateStatusIcon(userId, penerimaId) {
+    $.ajax({
+        url: '/messages/status/' + userId + '/' + penerimaId,
+        type: 'GET',
+        success: function(response) {
+            if (response.status === 'success') {
+                let chats = response.data;
+                chats.forEach(function(chat) {
+                    let statusIcon = getStatusIcon(chat.status);
+                    let statusElement = $('#chat-' + chat.id + ' .status-icon');
+                    statusElement.html(statusIcon);
+                });
+            }
+        },
+        error: function(error) {
+            console.log("Error updating status icon:", error);
         }
     });
 }

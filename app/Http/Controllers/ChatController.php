@@ -227,33 +227,13 @@ public function getMessages(Request $request, $userId, $penerimaId)
         })
         ->orderBy('created_at', 'asc')
         ->get()
-        ->map(function ($chat) use ($userId) {
-            // Jika penerima adalah user yang meminta pesan dan statusnya 'sent_and_unread'
-            if ($chat->penerima_id == $userId && $chat->status === 'sent_and_unread') {
-                // Cek status online penerima
-                $isOnline = $chat->penerima->is_online ?? false; // Pastikan ada kolom `is_online` di tabel pengguna
-                if ($isOnline) {
-                    DB::table('chats')->where('id', $chat->id)->update(['status' => 'received']);
-                    $chat->status = 'received';
-                }
-            }
-
-            // Jika penerima membuka chat dan statusnya 'received'
-            if ($chat->penerima_id == $userId && $chat->status === 'received') {
-                $isChatOpened = request()->input('is_seen', false); // Pastikan frontend mengirimkan nilai ini
-                if ($isChatOpened) {
-                    DB::table('chats')->where('id', $chat->id)->update(['status' => 'sent_and_read', 'is_seen' => true]);
-                    $chat->status = 'sent_and_read';
-                    $chat->is_seen = true;
-                }
-            }
-
+        ->map(function ($chat) {
             return [
                 'id' => $chat->id,
                 'pengirim_id' => $chat->pengirim_id,
                 'penerima_id' => $chat->penerima_id,
                 'konten' => $chat->konten,
-                'created_at' => $chat->created_at,
+                'created_at' => $chat->created_at->timezone('Asia/Jakarta')->format('d M Y H:i'),
                 'pengirim_foto' => $chat->pengirim && $chat->pengirim->foto_profil
                     ? url(Storage::url($chat->pengirim->foto_profil))
                     : asset('/images/marie.jpg'),
@@ -267,9 +247,11 @@ public function getMessages(Request $request, $userId, $penerimaId)
     return response()->json([
         'status' => 'success',
         'message' => 'Pesan berhasil diambil',
-        'data' => $messages
+        'data' => $messages,
     ]);
 }
+
+
 
 
     public function sendMessage(Request $request)
@@ -296,30 +278,63 @@ public function getMessages(Request $request, $userId, $penerimaId)
     ]);
 }
 
+// PR
 public function getStatus($userId, $penerimaId)
-    {
-        try {
-            $chats = Chat::where(function($query) use ($userId, $penerimaId) {
-                        $query->where('pengirim_id', $userId)
-                              ->where('penerima_id', $penerimaId);
-                    })
-                    ->orWhere(function($query) use ($userId, $penerimaId) {
-                        $query->where('pengirim_id', $penerimaId)
-                              ->where('penerima_id', $userId);
-                    })
-                    ->orderBy('created_at', 'asc')
-                    ->get(['id', 'status']);  // Mengambil hanya `id` dan `status`
+{
+    try {
+        $chats = Chat::with(['penerima:id,is_online'])
+                ->where(function ($query) use ($userId, $penerimaId) {
+                    $query->where('pengirim_id', $userId)
+                          ->where('penerima_id', $penerimaId);
+                })
+                ->orWhere(function ($query) use ($userId, $penerimaId) {
+                    $query->where('pengirim_id', $penerimaId)
+                          ->where('penerima_id', $userId);
+                })
+                ->orderBy('created_at', 'asc')
+                ->get(['id', 'pengirim_id', 'penerima_id', 'status']);
 
+        if ($chats->isEmpty()) {
             return response()->json([
                 'status' => 'success',
-                'data' => $chats
+                'message' => 'No chats found',
+                'data' => []
             ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ], 500);
         }
+
+        // Update semua pesan 'received' menjadi 'sent_and_read'
+        $updatedCount = Chat::where('pengirim_id', $penerimaId)
+                           ->where('penerima_id', $userId)
+                           ->where('status', 'received')
+                           ->update([
+                               'status' => 'sent_and_read',
+                               'is_seen' => true,
+                               'updated_at' => now()
+                           ]);
+
+        // Jika penerima sedang online, update semua 'sent_and_unread' menjadi 'received'
+        $isOnline = $chats->first()->penerima->is_online ?? false;
+        if ($isOnline) {
+            Chat::where('pengirim_id', $penerimaId)
+                ->where('penerima_id', $userId)
+                ->where('status', 'sent_and_unread')
+                ->update(['status' => 'received', 'updated_at' => now()]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Status updated successfully',
+            'updatedCount' => $updatedCount,
+            'data' => $chats
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Something went wrong. Please try again.',
+            'error' => $e->getMessage()
+        ], 500);
     }
+}
+
 
 }

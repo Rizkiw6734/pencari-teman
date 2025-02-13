@@ -14,5 +14,6 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         '/update-location',
         '/send-message',
+        '/update-chat-status',
     ];
 }

@@ -228,9 +228,10 @@
         userList.append('<p class="text-center">' + emptyMessage + '</p>');
     } else {
         users.forEach(user => {
-            const distanceOrLocation = user.distance
-                ? `${user.distance.toFixed(1)} km`
-                : (user.kabupatens && user.kabupatens.name ? user.kabupatens.name : 'Lokasi tidak tersedia');
+            const distanceOrLocation = (user.distance !== null && user.distance !== undefined)
+    ? `${user.distance.toFixed(1)} km`
+    : (user.kabupatens && user.kabupatens.name ? user.kabupatens.name : 'Lokasi tidak tersedia');
+
 
             const imageUrl = user.foto_profil ? `/storage/${user.foto_profil}` : '/images/marie.jpg';
 

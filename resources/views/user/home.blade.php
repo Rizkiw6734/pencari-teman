@@ -108,7 +108,7 @@
                                 style="background-color: #F0F3F9; border-bottom: 0px solid #ddd;">
                                 <div class="chat-item d-flex align-items-start" style="flex: 1;">
                                     <img id="chat-avatar" alt="Avatar"
-                                        style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-top: -3px; display: none;">
+                                        style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-top: 3px; display: none;">
                                     <div class="chat-content"
                                         style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
                                         <div class="chat-header"
@@ -116,7 +116,7 @@
                                             <span class="name" id="chat-name"
                                                 style="font-weight: bold; font-size: 15px; margin-top: -3px;"></span>
                                             <div class="notification-content d-flex align-items-center" id="chat-status"
-                                                style="font-size: 14px; color: #555; display: flex; flex-direction: column; margin-top: -12px;">
+                                                style="font-size: 12px; color: #555; display: flex; flex-direction: column; margin-top: -12px;">
                                             </div>
                                         </div>
                                     </div>
@@ -140,15 +140,10 @@
                                 <!-- Chat Input -->
                                 <div class="d-flex align-items-center flex-grow-1 mb-4"
                                     style="border: 1px solid #EFF3F4; border-radius: 10px; padding: 5px 10px; background-color: #f9f9f9;">
-                                    <!-- Emoji & Attachment -->
-                                    <span style="color: #757575; font-size: 16px; cursor: pointer;">
-                                        <i class="fa fa-smile ms-1" style="font-size: 15px;"></i>
-                                        <i class="fa fa-paperclip ms-2" style="font-size: 15px;"></i>
-                                    </span>
 
                                     <!-- Input Chat -->
                                     <input type="text" id="chat-input" placeholder="Mulai chat baru"
-                                        style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 2px 15px;">
+                                        style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 2px 15px; max-width: 100%;">
 
                                     <!-- Tombol Kirim -->
                                     <span id="send-message" style="color: #757575; font-size: 16px; cursor: pointer;">
@@ -521,8 +516,8 @@ var avatar = response.foto_profil && response.foto_profil.startsWith("http")
         scrollButton.style.display = 'none';
         scrollButton.style.zIndex = '1000';
         scrollButton.innerHTML = `
-            <button class="btn btn-primary rounded-circle shadow" style="width: 50px; height: 50px; background-color: #25D366; border: none;">
-                <i class="fas fa-chevron-down" style="color: white; font-size: 20px;"></i>
+            <button class="btn btn-primary shadow rounded-circle p-1" style="background-color: #155EEF; border: none; margin-bottom: 50px; position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+                <i class="fas fa-chevron-down" style="color: white; font-size: 13px;"></i>
             </button>
         `;
         document.body.appendChild(scrollButton);
@@ -556,16 +551,16 @@ var avatar = response.foto_profil && response.foto_profil.startsWith("http")
                     let chatElement = `
                         <div class="chat-item ${isSender ? 'd-flex align-items-end justify-content-end' : 'd-flex align-items-start'} mb-3" id="chat-${chat.id}">
                             ${isSender ? `
-                                <div class="chat-content text p-2 rounded" style="max-width: 60%; background-color: #9FB7FF; border-radius: 15px;">
+                                <div class="chat-content text p-2 rounded" style="max-width: 60%; background-color: #D1E0FF; border-radius: 15px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">
                                     <span style="font-size: 13px; color: #000000;">${chat.konten}</span>
                                     <div class="text-end text-black-50" style="font-size: 10px;">
                                         ${waktuPesan} <span class="status-icon">${statusIcon}</span>
                                     </div>
                                 </div>
-                                <img src="${senderAvatar}" class="sender-avatar rounded-circle ms-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                <img src="${senderAvatar}" class="sender-avatar rounded-circle ms-3" style="width: 40px; height: 40px; object-fit: cover;">
                             ` : `
                                 <img src="${receiverAvatar}" class="receiver-avatar rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
-                                <div class="chat-content text p-2 rounded" style="max-width: 50%; background-color: #F0F3F9; border-radius: 15px 15px 15px 0;">
+                                <div class="chat-content text p-2 rounded" style="max-width: 50%; background-color: #EFF4FF; border-radius: 15px 15px 15px 0; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">
                                     <span style="font-size: 13px; color: #000000;">${chat.konten}</span>
                                     <div class="text-end text-black-50" style="font-size: 10px;">${waktuPesan}</div>
                                 </div>

@@ -99,9 +99,8 @@
                         <div class="card-header" style="background: inherit; border: none; padding: 0;"></div>
                         <div style="display: flex; align-items: center;">
                             <div style="flex: 1; text-indent: 20px;">
-                                <p class="mb-0 text-xs" style="color: #000000;">{{ Auth::user()->name }}, Kamu Sedang
-                                    Dihalaman</p>
-                                <h4 class="mb-0">Suspend Pengguna</h4>
+                                <p class="mb-0 text-xs" style="color: #000000;">{{ Auth::user()->name }}, Kamu Sedang Dihalaman</p>
+                                <h4 class="mb-0">Log Aktivitas</h4>
                             </div>
                             <div style="flex-shrink: 0;">
                                 <img src="{{ asset('images/header.svg') }}" alt="Welcome Image"
@@ -125,7 +124,7 @@
                     </div>
                 
                     <div class="input-group" style="width: 300px;">
-                        <form action="{{ route('admin.users.banned') }}" method="GET" style="display: flex; width: 100%;">
+                        <form action="{{ route('admin.log') }}" method="GET" style="display: flex; width: 100%;">
                             <div class="input-group">
                                 <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
                                 <input type="text" name="search" class="form-control" placeholder="Mencari apa?" value="{{ request('search') }}">
@@ -133,7 +132,7 @@
                         </form>
                     </div>
                 </div>
-    
+
                 <script>
                     document.getElementById('data-count').addEventListener('change', function() {
                         var perPage = this.value;
@@ -141,199 +140,91 @@
                     });
                 </script>
 
-                <div class="d-flex align-items-center" style="gap: 10px;">
-                    <!-- Dropdown untuk Provinsi -->
-                    <select id="provinces" class="form-select"
-                        style="background-color: transparent; width: auto; padding-right: 33px; border: 1px solid #C9C1FF;">
-                        <option value="">Provinsi</option>
-                    </select>
+                <div class="d-flex align-items-center">
+                    <div class="input-group" style="width: auto; align-items: center; position: relative; margin-right: 5px;">
+                        <span class="input-group-text"
+                            style="background-color: transparent; border: 1px solid #C9C1FF; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 7px; padding: 10px 15px;">
+                            <i class="fa fa-calendar" style="font-size: 18.5px; margin-right: 10px;"></i>
+                            <i class="fa fa-caret-down" style="font-size: 18.5px;"></i>
+                        </span>
+                        <input type="date" id="dateFilter" class="form-control"
+                            style="background-color: transparent; border: none; position: absolute; top: 0; left: 0; width: 100%; height: 40px; opacity: 0; cursor: pointer;">
+                    </div>
 
-                    <!-- Dropdown untuk Kabupaten -->
-                    <select id="regencies" class="form-select"
-                        style="background-color: transparent; width: auto; padding-right: 33px; border: 1px solid #C9C1FF;">
-                        <option value="">Kabupaten</option>
-                    </select>
+                    <div class="input-group text-dark" style="width: auto; align-items: center; position: relative; margin-left: 5px;">
+                        <select id="jenisPinaltiFilter" class="form-control"
+                            style="background-color: transparent; border: 1px solid #C9C1FF; cursor: pointer; appearance: none; -moz-appearance: none; -webkit-appearance: none; padding-right: 25px;">
+                            <option value="">Pinalti</option>
+                            <option value="peringatan">Peringatan</option>
+                            <option value="suspend">Suspend</option>
+                            <option value="banned">Banned</option>
+                        </select>
+                        <i class="fa fa-caret-down" style="font-size: 18.5px; position: absolute; right: 10px; pointer-events: none;"></i>
+                    </div>
 
-                    <!-- Dropdown untuk Kecamatan -->
-                    <select id="districts" class="form-select"
-                        style="background-color: transparent; width: auto; padding-right: 33px; border: 1px solid #C9C1FF;">
-                        <option value="">Kecamatan</option>
-                    </select>
+                    <script>
+                        document.getElementById('dateFilter').addEventListener('change', function() {
+                            var selectedDate = this.value; // Mendapatkan tanggal yang dipilih
+                            var rows = document.querySelectorAll('table tbody tr'); // Menemukan semua baris tabel
+                            rows.forEach(function(row) {
+                                var dateCell = row.cells[3].textContent.trim();
+                                var formattedDate = new Date(dateCell.split('-').reverse().join('-')).toISOString().split('T')[0]; // Format ulang tanggal ke YYYY-MM-DD
 
-                    <!-- Dropdown untuk Desa -->
-                    <select id="villages" class="form-select"
-                        style="background-color: transparent; width: auto; padding-right: 33px; border: 1px solid #C9C1FF;">
-                        <option value="">Desa</option>
-                    </select>
+                                if (formattedDate === selectedDate) {
+                                    row.style.display = ''; // Tampilkan baris jika tanggal cocok
+                                } else {
+                                    row.style.display = 'none'; // Sembunyikan baris jika tidak cocok
+                                }
+                            });
+                        });
+                    </script>
+
+                    <script>
+                        document.getElementById('jenisPinaltiFilter').addEventListener('change', function () {
+                            var selectedPinalti = this.value; // Ambil nilai Pinalti yang dipilih
+                            var rows = document.querySelectorAll('table tbody tr'); // Semua baris tabel
+
+                            rows.forEach(function (row) {
+                                var jenisPinaltiCell = row.cells[2];
+                                var jenisPinaltiText = jenisPinaltiCell ? jenisPinaltiCell.textContent.trim().toLowerCase() : ''; // Ambil teks dalam kolom
+
+                                // Tampilkan atau sembunyikan baris tergantung pada apakah jenis Pinalti cocok
+                                if (selectedPinalti === '' || jenisPinaltiText.includes(selectedPinalti)) {
+                                    row.style.display = ''; // Tampilkan baris
+                                } else {
+                                    row.style.display = 'none'; // Sembunyikan baris
+                                }
+                            });
+                        });
+                    </script>
                 </div>
-                
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        fetch('/locations/provinsi')
-                            .then(response => response.json())
-                            .then(data => {
-                                let provinsiSelect = document.getElementById('provinces');
-                                updateDropdown(provinsiSelect, data, "Provinsi");
-                            })
-                            .catch(error => console.error('Error:', error));
-                    });
-                
-                    document.getElementById('provinces').addEventListener('change', function() {
-                        let provinsiId = this.value;
-                        let regenciesSelect = document.getElementById('regencies');
-                        let districtsSelect = document.getElementById('districts');
-                        let villagesSelect = document.getElementById('villages');
-                
-                        resetDropdown(regenciesSelect, "Kabupaten");
-                        resetDropdown(districtsSelect, "Kecamatan");
-                        resetDropdown(villagesSelect, "Desa");
-                
-                        if (!provinsiId) return;
-                
-                        fetch(`/locations/kabupaten?provinsi_id=${provinsiId}`)
-                            .then(response => response.json())
-                            .then(data => updateDropdown(regenciesSelect, data, "Kabupaten"))
-                            .catch(error => console.error('Error:', error));
-                    });
-                
-                    document.getElementById('regencies').addEventListener('change', function() {
-                        let kabupatenId = this.value;
-                        let districtsSelect = document.getElementById('districts');
-                        let villagesSelect = document.getElementById('villages');
-                
-                        resetDropdown(districtsSelect, "Kecamatan");
-                        resetDropdown(villagesSelect, "Desa");
-                
-                        if (!kabupatenId) return;
-                
-                        fetch(`/locations/kecamatan?kabupaten_id=${kabupatenId}`)
-                            .then(response => response.json())
-                            .then(data => updateDropdown(districtsSelect, data, "Kecamatan"))
-                            .catch(error => console.error('Error:', error));
-                    });
-                
-                    document.getElementById('districts').addEventListener('change', function() {
-                        let kecamatanId = this.value;
-                        let villagesSelect = document.getElementById('villages');
-                
-                        resetDropdown(villagesSelect, "Desa");
-                
-                        if (!kecamatanId) return;
-                
-                        fetch(`/locations/desa?kecamatan_id=${kecamatanId}`)
-                            .then(response => response.json())
-                            .then(data => updateDropdown(villagesSelect, data, "Desa"))
-                            .catch(error => console.error('Error:', error));
-                    });
-                
-                    function updateDropdown(selectElement, data, defaultText) {
-                        let width = window.getComputedStyle(selectElement).width; // Ambil lebar sebelum di-update
-                        resetDropdown(selectElement, defaultText);
-                        selectElement.style.width = width; // Set lebar agar tidak berubah
-
-                        data.forEach(item => {
-                            let option = document.createElement('option');
-                            option.value = item.id;
-                            option.textContent = item.name;
-                            option.title = item.name; // Tambahkan tooltip
-                            selectElement.appendChild(option);
-                        });
-                    }
-
-                    document.querySelectorAll('select').forEach(select => {
-                        select.addEventListener('mouseover', function () {
-                            this.title = this.options[this.selectedIndex].text;
-                        });
-                    });
-                
-                    function resetDropdown(selectElement, defaultText) {
-                        while (selectElement.firstChild) {
-                            selectElement.removeChild(selectElement.firstChild);
-                        }
-                        let defaultOption = document.createElement('option');
-                        defaultOption.value = "";
-                        defaultOption.textContent = defaultText;
-                        selectElement.appendChild(defaultOption);
-                    }
-                </script>
             </div>
         </div>
-
 
         <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
                     <table class="table table-hover rounded-table text-center"
                         style="font-size: 15px; width: 100%; background-color: white;">
-                        <thead>
+                        <thead class="thead-light">
                             <tr>
                                 <th>No</th>
                                 <th>Nama</th>
-                                <th>Email</th>
-                                <th>Status</th>
-                                <th>Lokasi</th>
-                                <th>Aksi</th>
+                                <th>Aktivitas Hukuman</th>
+                                <th>Tanggal</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($suspendUsers as $user)
+                            @forelse($logs as $log)
                                 <tr class="align-middle">
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $user->name }}</td>
-                                    <td>{{ $user->email }}</td>
-                                    <td>
-                                        <span
-                                            class="badge align-items-center justify-content-center
-                                        {{ $user->status === 'suspend' ? 'status-suspend' : 'status-active' }}">
-                                            @if ($user->status === 'suspend')
-                                                <i class="fa fa-stop-circle me-1 mt-2"></i> Suspend
-                                            @else
-                                                <i class="fa fa-check-square me-1 mt-2"></i> Aktif
-                                            @endif
-                                        </span>
-                                    </td>
-                                    <td style="max-width: 200px; word-wrap: break-word; white-space: normal;">
-                                        {!! collect([
-                                            $user->provinsis ? 'Provinsi ' . $user->provinsis->name : null,
-                                            $user->kabupatens ? 'Kabupaten ' . $user->kabupatens->name : null,
-                                            $user->kecamatans ? 'Kecamatan ' . $user->kecamatans->name : null,
-                                            $user->desas ? 'Desa ' . $user->desas->name : null,
-                                        ])->filter()->implode(',<br>') !!}
-                                    </td>   
-                                    <td>
-                                        <form action="{{ route('admin.users.enable', $user->id) }}" method="POST"
-                                            class="d-inline" id="enable-form-{{ $user->id }}">
-                                            @csrf
-                                            <button type="button" class="btn btn-sm text-white"
-                                                style="background-color: #5D87FF; margin-top: 10px !important;"
-                                                onclick="confirmEnable('{{ $user->id }}')">
-                                                Buka Suspend
-                                            </button>
-                                        </form>
-                                    </td>
-
-                                    <script>
-                                        function confirmEnable(userId) {
-                                            Swal.fire({
-                                                title: 'Apakah Anda yakin?',
-                                                text: "Pengguna ini akan dibuka suspend-nya.",
-                                                icon: 'warning',
-                                                showCancelButton: true,
-                                                confirmButtonColor: '#3085d6',
-                                                cancelButtonColor: '#d33',
-                                                confirmButtonText: 'Ya, buka suspend!',
-                                                cancelButtonText: 'Batal'
-                                            }).then((result) => {
-                                                if (result.isConfirmed) {
-                                                    document.getElementById('enable-form-' + userId).submit();
-                                                }
-                                            });
-                                        }
-                                    </script>
+                                    <td>{{ optional($log->user)->name ?? 'Pengguna tidak ditemukan' }}</td>
+                                    <td>{{ ucwords($log->pinalti?->jenis_hukuman ?? 'Tidak ada hukuman') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($log->created_at)->format('d-m-Y') }}</td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center">Tidak ada pengguna yang disuspend.</td>
+                                    <td colspan="6" class="text-center">Data tidak ditemukan.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -341,14 +232,6 @@
                 </div>
             </div>
         </div>
-
-        {{-- <div class="d-flex justify-content-center mt-4">
-        <nav aria-label="Page navigation">
-            <ul class="pagination pagination-lg">
-                {{ $users->links('pagination::bootstrap-4') }}
-            </ul>
-        </nav>
-    </div> --}}
 
         <footer class="footer pt-3">
             <div class="container-fluid">

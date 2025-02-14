@@ -19,6 +19,7 @@ use App\Http\Controllers\ProfileUserController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\JelajahiControllerController;
 use App\Http\Controllers\ActiveUserController;
+use App\Http\Controllers\AdminLogController;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Middleware\CheckExpiredSuspension;
 use App\Http\Middleware\CheckStatusUser;
@@ -82,6 +83,9 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     Route::get('/users/banned',[PenggunaController::class, 'banned'])->name('admin.users.banned');
     Route::get('/users/suspend',[PenggunaController::class, 'suspend'])->name('admin.users.suspend');
     Route::post('/users/{id}/unblock', [PenggunaController::class, 'unblock'])->name('admin.users.unblock');
+
+    //log
+    Route::get('/admin', [AdminLogController::class, 'index'])->name('admin.log');
 
     Route::get('/locations/provinsi', [PenggunaController::class, 'getProvinsi']);
     Route::get('/locations/kabupaten', [PenggunaController::class, 'getKabupaten']);
@@ -152,6 +156,8 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     Route::get('/suspend', [UserStatusController::class, 'suspendPage'])->name('user.suspend');
     });
 
+    // Pengaturan
+    Route::get('/pengaturan', [PenggunaController::class, 'pengaturan'])->name('user.pengaturan');
 
     Route::get('/hitung-jarak', [JarakController::class, 'hitungJarak']);
 

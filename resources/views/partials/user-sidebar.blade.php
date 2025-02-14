@@ -35,8 +35,20 @@
       </li>
     </ul>
 
-    <!-- Profile & Logout (Dibuat tetap di bawah) -->
     <ul class="navbar-nav position-absolute w-100" style="bottom: 20px; left: 0;">
+      <!-- Pengaturan -->
+      <li class="nav-item" style="position: relative;">
+        <a class="nav-link {{ request()->routeIs('user.pengaturan') ? 'active' : '' }}" href="{{ route('user.pengaturan') }}">
+          <div class="fa-solid fa-gear icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
+               style="background-color: {{ request()->routeIs('user.pengaturan') ? '#3243fd' : '#ffffff' }} !important; color: {{ request()->routeIs('user.pengaturan') ? '#ffffff' : '#000000' }} !important;">
+          </div>
+          <span class="nav-link-text ms-1">Pengaturan</span>
+          @if(request()->routeIs('user.pengaturan'))
+            <div style="position: absolute; left: 0; top: 0; width: 4px; height: 100%; background-color: #3243fd; border-radius: 0 6px 6px 0;"></div>
+          @endif
+        </a>
+      </li>
+      
       <!-- Profile -->
       <li class="nav-item" style="position: relative;">
         <a class="nav-link {{ request()->routeIs('profile.index') ? 'active' : '' }}" href="{{ route('profile.index') }}">

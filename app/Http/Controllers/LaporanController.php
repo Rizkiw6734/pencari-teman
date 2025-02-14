@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Laporan;
+use App\Models\AdminLog;
 use App\Models\User;
 use App\Models\Pinalti;
 use Illuminate\Support\Facades\Auth;
@@ -189,14 +190,18 @@ class LaporanController extends Controller
                   'pesan.regex' => 'Pesan Tidak Boleh Angka'
                 ]);
 
-                $pesan = $validated['pesan'];
-
-                Pinalti::create([
+                $pinalti = Pinalti::create([
                     'laporan_id' => $laporan->id,
                     'jenis_hukuman' => 'peringatan',
-                    'pesan' => $pesan,
+                    'pesan' => $validated['pesan'],
                     'start_date' => now(),
                     'end_date' => null,
+                ]);
+
+                AdminLog::create([
+                    'users_id' => $laporan->reported_id,
+                    'pinalti_id' => $pinalti->id,
+                    'jenis_hukuman' => 'peringatan',
                 ]);
 
                 $laporan->status = 'selesai';
@@ -215,16 +220,21 @@ class LaporanController extends Controller
                     'durasi.max' => 'Max waktu suspend adalah 6 hari.'
                 ]);
 
-                $durasi = (int) $request->durasi;
-
-                Pinalti::create([
+                $pinalti = Pinalti::create([
                     'laporan_id' => $laporan->id,
                     'jenis_hukuman' => 'suspend',
                     'pesan' => $request->pesan,
-                    'durasi' => $durasi,
+                    'durasi' => (int) $request->durasi,
                     'start_date' => now(),
-                    'end_date' => now()->addDays($durasi),
+                    'end_date' => now()->addDays((int) $request->durasi),
                 ]);
+
+                AdminLog::create([
+                    'users_id' => $laporan->reported_id,
+                    'pinalti_id' => $pinalti->id,
+                    'jenis_hukuman' => 'suspend',
+                ]);
+
                 $user = User::find($laporan->reported_id);
                 $user->status = 'suspend';
                 $user->save();
@@ -242,12 +252,18 @@ class LaporanController extends Controller
                 break;
 
             case 'banned':
-                Pinalti::create([
+                $pinalti = Pinalti::create([
                     'laporan_id' => $laporan->id,
                     'jenis_hukuman' => 'banned',
                     'pesan' => 'Pengguna dibanned.',
                     'start_date' => now(),
                     'end_date' => null,
+                ]);
+
+                AdminLog::create([
+                    'users_id' => $laporan->reported_id,
+                    'pinalti_id' => $pinalti->id,
+                    'jenis_hukuman' => 'banned',
                 ]);
 
                 $user = User::find($laporan->reported_id);
@@ -272,7 +288,7 @@ class LaporanController extends Controller
                 return back()->withErrors(['jenis_hukuman' => 'Jenis hukuman tidak valid.']);
         }
 
-        return redirect()->route('laporan.index')->with('success', 'Hukuman berhasil diberikan dan status laporan diperbarui.');
+        return redirect()->route('laporan.index')->with('success', 'Hukuman berhasil diberikan, status laporan diperbarui dan log dicatat.');
     }
 
 

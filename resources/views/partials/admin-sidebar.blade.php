@@ -88,6 +88,17 @@
           @endif
         </a>
       </li>
+      <li class="nav-item" style="position: relative;">
+        <a class="nav-link {{ request()->routeIs('admin.log') ? 'active' : '' }}" href="{{ route('admin.log') }}">
+          <div class="fa fa-history icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
+               style="background-color: {{ request()->routeIs('admin.log') ? '#3243fd' : '#ffffff' }} !important; color: {{ request()->routeIs('admin.log') ? '#ffffff' : '#000000' }} !important;">
+          </div>
+          <span class="nav-link-text ms-1">Log Aktivitas</span>
+          @if(request()->routeIs('admin.log'))
+            <div style="position: absolute; left: 0; top: 0; width: 4px; height: 100%; background-color: #3243fd; border-radius: 0 6px 6px 0;"></div>
+          @endif
+        </a>
+      </li>
     </ul>
   </div>
 </aside>

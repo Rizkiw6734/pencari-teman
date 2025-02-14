@@ -9,18 +9,34 @@ use App\Models\User;
 class FollowerController extends Controller
 {
     public function follow(User $user)
-    {
-        if (!auth()->user()->following()->where('user_id', $user->id)->exists()) {
-            auth()->user()->following()->create(['user_id' => $user->id]);
-        }
-        return redirect()->back()->with('success', 'Berhasil mengikuti user.');
+{
+    $currentUser = auth()->user();
+
+    if (!$currentUser->following()->where('user_id', $user->id)->exists()) {
+        $currentUser->following()->create(['user_id' => $user->id]);
     }
 
-    public function unfollow(User $user)
-    {
-        auth()->user()->following()->where('user_id', $user->id)->delete();
-        return redirect()->back()->with('success', 'Berhenti mengikuti user.');
+    // Cek apakah user yang di-follow juga mengikuti balik
+    if ($user->following()->where('user_id', $currentUser->id)->exists()) {
+        // Update status menjadi "teman" (opsional: bisa tambahkan tabel pivot untuk status pertemanan)
+        return redirect()->back()->with('success', 'Sekarang kalian berteman.');
     }
+
+    return redirect()->back()->with('success', 'Berhasil mengikuti user.');
+}
+
+
+public function unfollow(User $user)
+{
+    $currentUser = auth()->user();
+
+    // Hapus data follow
+    $currentUser->following()->where('user_id', $user->id)->delete();
+
+    // Opsional: Hapus status pertemanan jika ada tabel khusus untuk pertemanan
+    return redirect()->back()->with('success', 'Berhenti mengikuti user.');
+}
+
 
     public function followers(User $user)
     {

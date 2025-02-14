@@ -135,6 +135,11 @@ class User extends Authenticatable
         return $this->hasone(Banding::class, 'users_id');
     }
 
+    public function adminLog()
+    {
+        return $this->hasOne(AdminLog::class, 'user_id');
+    }
+
     public function provinsis() {
         return $this->belongsTo(Provinces::class, 'provinsi_id');
     }

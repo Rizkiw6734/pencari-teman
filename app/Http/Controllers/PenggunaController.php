@@ -233,4 +233,9 @@ class PenggunaController extends Controller
         return response()->json($desa);
     }
 
+    public function pengaturan()
+    {
+        return view('user.pengaturan');
+    }
+
 }

@@ -141,31 +141,32 @@
                     });
                 </script>
 
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center" style="gap: 10px;">
                     <!-- Dropdown untuk Provinsi -->
-                    <select id="provinces" class="form-select me-2"
-                        style="background-color: #d1e0ff; width: auto; padding-right: 33px;">
+                    <select id="provinces" class="form-select"
+                        style="background-color: transparent; width: auto; padding-right: 33px; border: 1px solid #C9C1FF;">
                         <option value="">Provinsi</option>
                     </select>
 
                     <!-- Dropdown untuk Kabupaten -->
-                    <select id="regencies" class="form-select me-2"
-                        style="background-color: #d1e0ff; width: auto; padding-right: 33px;">
+                    <select id="regencies" class="form-select"
+                        style="background-color: transparent; width: auto; padding-right: 33px; border: 1px solid #C9C1FF;">
                         <option value="">Kabupaten</option>
                     </select>
 
                     <!-- Dropdown untuk Kecamatan -->
-                    <select id="districts" class="form-select me-2"
-                        style="background-color: #d1e0ff; width: auto; padding-right: 33px;">
+                    <select id="districts" class="form-select"
+                        style="background-color: transparent; width: auto; padding-right: 33px; border: 1px solid #C9C1FF;">
                         <option value="">Kecamatan</option>
                     </select>
 
                     <!-- Dropdown untuk Desa -->
                     <select id="villages" class="form-select"
-                        style="background-color: #d1e0ff; width: auto; padding-right: 33px;">
+                        style="background-color: transparent; width: auto; padding-right: 33px; border: 1px solid #C9C1FF;">
                         <option value="">Desa</option>
                     </select>
                 </div>
+                
                 <script>
                     document.addEventListener('DOMContentLoaded', function() {
                         fetch('/locations/provinsi')
@@ -289,8 +290,13 @@
                                             $user->kabupatens ? 'Kabupaten ' . $user->kabupatens->name : null,
                                             $user->kecamatans ? 'Kecamatan ' . $user->kecamatans->name : null,
                                             $user->desas ? 'Desa ' . $user->desas->name : null,
+                                        ])->filter()->isEmpty() ? '-' : collect([
+                                            $user->provinsis ? 'Provinsi ' . $user->provinsis->name : null,
+                                            $user->kabupatens ? 'Kabupaten ' . $user->kabupatens->name : null,
+                                            $user->kecamatans ? 'Kecamatan ' . $user->kecamatans->name : null,
+                                            $user->desas ? 'Desa ' . $user->desas->name : null,
                                         ])->filter()->implode(',<br>') !!}
-                                    </td>                                    
+                                    </td>                                                                     
                                     <td>
                                         <span class="badge align-items-center justify-content-center
                                             {{ $user->status === 'banned' ? 'status-banned' : ($user->status === 'suspend' ? 'status-suspend' : 'status-active') }}">

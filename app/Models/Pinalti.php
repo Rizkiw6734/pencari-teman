@@ -24,4 +24,9 @@ class Pinalti extends Model {
     public function banding() {
         return $this->hasOne(Banding::class, 'pinalti_id');
     }
+
+    public function adminLog()
+    {
+        return $this->hasOne(AdminLog::class, 'pinalti_id');
+    }
 }

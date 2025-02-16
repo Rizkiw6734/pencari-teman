@@ -123,17 +123,13 @@
                             <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
                         </select>
                     </div>
-                
-                    <div class="input-group" style="width: 300px;">
-                        <form action="{{ route('admin.users.banned') }}" method="GET" style="display: flex; width: 100%;">
-                            <div class="input-group">
-                                <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-                                <input type="text" name="search" class="form-control" placeholder="Mencari apa?" value="{{ request('search') }}">
-                            </div>
-                        </form>
+
+                    <div class="input-group " style="width: 300px;">
+                        <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+                        <input type="text" id="search" class="form-control" placeholder="Mencari apa?">
                     </div>
                 </div>
-    
+
                 <script>
                     document.getElementById('data-count').addEventListener('change', function() {
                         var perPage = this.value;
@@ -153,116 +149,13 @@
                         style="background-color: transparent; width: auto; padding-right: 33px; border: 1px solid #C9C1FF;">
                         <option value="">Kabupaten</option>
                     </select>
-
-                    <!-- Dropdown untuk Kecamatan -->
-                    <select id="districts" class="form-select"
-                        style="background-color: transparent; width: auto; padding-right: 33px; border: 1px solid #C9C1FF;">
-                        <option value="">Kecamatan</option>
-                    </select>
-
-                    <!-- Dropdown untuk Desa -->
-                    <select id="villages" class="form-select"
-                        style="background-color: transparent; width: auto; padding-right: 33px; border: 1px solid #C9C1FF;">
-                        <option value="">Desa</option>
-                    </select>
-                </div>
-                
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        fetch('/locations/provinsi')
-                            .then(response => response.json())
-                            .then(data => {
-                                let provinsiSelect = document.getElementById('provinces');
-                                updateDropdown(provinsiSelect, data, "Provinsi");
-                            })
-                            .catch(error => console.error('Error:', error));
-                    });
-                
-                    document.getElementById('provinces').addEventListener('change', function() {
-                        let provinsiId = this.value;
-                        let regenciesSelect = document.getElementById('regencies');
-                        let districtsSelect = document.getElementById('districts');
-                        let villagesSelect = document.getElementById('villages');
-                
-                        resetDropdown(regenciesSelect, "Kabupaten");
-                        resetDropdown(districtsSelect, "Kecamatan");
-                        resetDropdown(villagesSelect, "Desa");
-                
-                        if (!provinsiId) return;
-                
-                        fetch(`/locations/kabupaten?provinsi_id=${provinsiId}`)
-                            .then(response => response.json())
-                            .then(data => updateDropdown(regenciesSelect, data, "Kabupaten"))
-                            .catch(error => console.error('Error:', error));
-                    });
-                
-                    document.getElementById('regencies').addEventListener('change', function() {
-                        let kabupatenId = this.value;
-                        let districtsSelect = document.getElementById('districts');
-                        let villagesSelect = document.getElementById('villages');
-                
-                        resetDropdown(districtsSelect, "Kecamatan");
-                        resetDropdown(villagesSelect, "Desa");
-                
-                        if (!kabupatenId) return;
-                
-                        fetch(`/locations/kecamatan?kabupaten_id=${kabupatenId}`)
-                            .then(response => response.json())
-                            .then(data => updateDropdown(districtsSelect, data, "Kecamatan"))
-                            .catch(error => console.error('Error:', error));
-                    });
-                
-                    document.getElementById('districts').addEventListener('change', function() {
-                        let kecamatanId = this.value;
-                        let villagesSelect = document.getElementById('villages');
-                
-                        resetDropdown(villagesSelect, "Desa");
-                
-                        if (!kecamatanId) return;
-                
-                        fetch(`/locations/desa?kecamatan_id=${kecamatanId}`)
-                            .then(response => response.json())
-                            .then(data => updateDropdown(villagesSelect, data, "Desa"))
-                            .catch(error => console.error('Error:', error));
-                    });
-                
-                    function updateDropdown(selectElement, data, defaultText) {
-                        let width = window.getComputedStyle(selectElement).width; // Ambil lebar sebelum di-update
-                        resetDropdown(selectElement, defaultText);
-                        selectElement.style.width = width; // Set lebar agar tidak berubah
-
-                        data.forEach(item => {
-                            let option = document.createElement('option');
-                            option.value = item.id;
-                            option.textContent = item.name;
-                            option.title = item.name; // Tambahkan tooltip
-                            selectElement.appendChild(option);
-                        });
-                    }
-
-                    document.querySelectorAll('select').forEach(select => {
-                        select.addEventListener('mouseover', function () {
-                            this.title = this.options[this.selectedIndex].text;
-                        });
-                    });
-                
-                    function resetDropdown(selectElement, defaultText) {
-                        while (selectElement.firstChild) {
-                            selectElement.removeChild(selectElement.firstChild);
-                        }
-                        let defaultOption = document.createElement('option');
-                        defaultOption.value = "";
-                        defaultOption.textContent = defaultText;
-                        selectElement.appendChild(defaultOption);
-                    }
-                </script>
             </div>
         </div>
 
 
         <div class="container-fluid py-4">
             <div class="row">
-                <div class="col-12">
+                <div id="search-results" class="col-12">
                     <table class="table table-hover rounded-table text-center"
                         style="font-size: 15px; width: 100%; background-color: white;">
                         <thead>
@@ -275,7 +168,7 @@
                                 <th>Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="user-table2">
                             @forelse($suspendUsers as $user)
                                 <tr class="align-middle">
                                     <td>{{ $loop->iteration }}</td>
@@ -298,8 +191,13 @@
                                             $user->kabupatens ? 'Kabupaten ' . $user->kabupatens->name : null,
                                             $user->kecamatans ? 'Kecamatan ' . $user->kecamatans->name : null,
                                             $user->desas ? 'Desa ' . $user->desas->name : null,
+                                        ])->filter()->isEmpty() ? '-' : collect([
+                                            $user->provinsis ? 'Provinsi ' . $user->provinsis->name : null,
+                                            $user->kabupatens ? 'Kabupaten ' . $user->kabupatens->name : null,
+                                            $user->kecamatans ? 'Kecamatan ' . $user->kecamatans->name : null,
+                                            $user->desas ? 'Desa ' . $user->desas->name : null,
                                         ])->filter()->implode(',<br>') !!}
-                                    </td>   
+                                    </td>
                                     <td>
                                         <form action="{{ route('admin.users.enable', $user->id) }}" method="POST"
                                             class="d-inline" id="enable-form-{{ $user->id }}">
@@ -311,25 +209,6 @@
                                             </button>
                                         </form>
                                     </td>
-
-                                    <script>
-                                        function confirmEnable(userId) {
-                                            Swal.fire({
-                                                title: 'Apakah Anda yakin?',
-                                                text: "Pengguna ini akan dibuka suspend-nya.",
-                                                icon: 'warning',
-                                                showCancelButton: true,
-                                                confirmButtonColor: '#3085d6',
-                                                cancelButtonColor: '#d33',
-                                                confirmButtonText: 'Ya, buka suspend!',
-                                                cancelButtonText: 'Batal'
-                                            }).then((result) => {
-                                                if (result.isConfirmed) {
-                                                    document.getElementById('enable-form-' + userId).submit();
-                                                }
-                                            });
-                                        }
-                                    </script>
                                 </tr>
                             @empty
                                 <tr>
@@ -341,15 +220,151 @@
                 </div>
             </div>
         </div>
+        <script>
+            document.getElementById('search').addEventListener('input', function() {
+                let query = this.value.toLowerCase();
+                let rows = document.querySelectorAll('#user-table2 tr');
 
-        {{-- <div class="d-flex justify-content-center mt-4">
-        <nav aria-label="Page navigation">
-            <ul class="pagination pagination-lg">
-                {{ $users->links('pagination::bootstrap-4') }}
-            </ul>
-        </nav>
-    </div> --}}
+                rows.forEach(row => {
+                    let name = row.children[1].textContent.toLowerCase();
+                    let email = row.children[2].textContent.toLowerCase();
+                    row.style.display = (name.includes(query) || email.includes(query)) ? '' : 'none';
+                });
+            });
+        </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+// Fetch daftar provinsi saat halaman dimuat
+fetch('/provinces')
+ .then(response => response.json())
+ .then(data => {
+     let provinceSelect = document.getElementById('provinces');
+     data.forEach(province => {
+         let option = document.createElement('option');
+         option.value = province.id;
+         option.textContent = province.name;
+         provinceSelect.appendChild(option);
+     });
+ })
+ .catch(error => console.error('Error fetching provinces:', error));
+
+// Event listener untuk perubahan provinsi
+document.getElementById('provinces').addEventListener('change', function () {
+ let provinceId = this.value;
+ let regencySelect = document.getElementById('regencies');
+
+ // Jika kembali ke pilihan awal, reload halaman
+ if (!provinceId) {
+     location.reload();
+     return;
+ }
+
+ // Reset dropdown kabupaten
+ regencySelect.innerHTML = '<option value="">Pilih Kabupaten</option>';
+
+ // Fetch daftar kabupaten berdasarkan provinsi
+ fetch(`/regencies/${provinceId}`)
+     .then(response => response.json())
+     .then(data => {
+         data.forEach(regency => {
+             let option = document.createElement('option');
+             option.value = regency.id;
+             option.textContent = regency.name;
+             regencySelect.appendChild(option);
+         });
+     })
+     .catch(error => console.error('Error fetching regencies:', error));
+});
+
+// Event listener untuk perubahan kabupaten
+document.getElementById('regencies').addEventListener('change', function () {
+ let regencyId = this.value;
+ let userTableBody = document.getElementById('user-table2');
+ userTableBody.innerHTML = ''; // Kosongkan tabel sebelum diisi ulang
+
+ if (regencyId) {
+     fetch(`/suspend/${regencyId}`)
+         .then(response => response.json())
+         .then(data => {
+             if (Array.isArray(data) && data.length > 0) {
+                 data.forEach((user, index) => {
+                     let lokasi = [
+                         user.provinsis ? `Provinsi ${user.provinsis.name}` : null,
+                         user.kabupatens ? `Kabupaten ${user.kabupatens.name}` : null,
+                         user.kecamatans ? `Kecamatan ${user.kecamatans.name}` : null,
+                         user.desas ? `Desa ${user.desas.name}` : null
+                     ].filter(Boolean).join(',<br>') || '-';
+
+                     let statusBadge = `
+                         <span class="badge ${user.status === 'suspend' ? 'status-suspend' : 'status-active'}">
+                             ${user.status === 'suspend'
+                                 ? '<i class="fa fa-ban me-1"></i> Suspend'
+                                 : '<i class="fa fa-check-square me-1"></i> Aktif'}
+                         </span>`;
+
+                     let actionButtons = user.status === 'suspend' ? `
+                         <form action="/users/${user.id}/enable" method="POST" class="d-inline" id="enable-form-${user.id}">
+                             <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').content}">
+                             <button type="button" class="btn btn-sm text-white"
+                                 style="background-color: #5D87FF; margin-top: 10px !important;"
+                                 onclick="confirmEnable('${user.id}')">
+                                 Buka Suspend
+                             </button>
+                         </form>
+                     ` : '';
+
+                     let row = `
+                         <tr class="align-middle">
+                             <td>${index + 1}</td>
+                             <td>${user.name || '-'}</td>
+                             <td>${user.email || '-'}</td>
+                             <td>${statusBadge}</td>
+                             <td style="max-width: 200px; word-wrap: break-word; white-space: normal;">
+                                 ${lokasi}
+                             </td>
+                             <td>${actionButtons}</td>
+                         </tr>`;
+
+                     userTableBody.insertAdjacentHTML('beforeend', row);
+                 });
+             } else {
+                 userTableBody.innerHTML = '<tr><td colspan="6" class="text-center">Tidak ada pengguna yang disuspend.</td></tr>';
+             }
+         })
+         .catch(error => console.error('Error fetching users:', error));
+ }
+});
+});
+
+   </script>
+
+        <script>
+            function confirmEnable(userId) {
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: "Pengguna ini akan dibuka suspend-nya.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, buka suspend!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('enable-form-' + userId).submit();
+                    }
+                });
+            }
+        </script>
+
+<div class="d-flex justify-content-center mt-4">
+    <nav aria-label="Page navigation">
+        <ul class="pagination pagination-lg">
+            {{ $suspendUsers->links('pagination::bootstrap-4') }}
+        </ul>
+    </nav>
+</div>
         <footer class="footer pt-3">
             <div class="container-fluid">
                 <div class="row align-items-center justify-content-center">

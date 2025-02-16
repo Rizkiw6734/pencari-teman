@@ -108,5 +108,11 @@
                 }, 1600);
             });
         }
+
+        setInterval(function() {
+        fetch('/update-activity', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
+            .then(response => console.log('Activity updated'))
+            .catch(error => console.error('Error updating activity', error));
+    }, 3000); 
     </script>
 @endsection

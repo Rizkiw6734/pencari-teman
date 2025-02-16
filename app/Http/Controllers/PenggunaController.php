@@ -9,6 +9,7 @@ use App\Models\Regencies;
 use App\Models\Districts;
 use App\Models\Villages;
 
+
 class PenggunaController extends Controller
 {
     /**
@@ -24,9 +25,10 @@ class PenggunaController extends Controller
         $perPage = $request->input('per_page', 10);
 
         $query = User::whereNotIn('status', ['banned', 'suspend'])
-            ->whereDoesntHave('roles', function ($query) {
-                $query->where('name', 'admin');
-            });
+    ->whereDoesntHave('roles', function ($query) {
+        $query->where('name', 'admin');
+    });
+
 
         if ($provinsi) {
             $query->where('provinces', $provinsi);
@@ -205,33 +207,69 @@ class PenggunaController extends Controller
         return view('Admin.users.suspend', compact('suspendUsers'));
     }
 
-    public function getProvinsi()
+    public function getProvinces()
     {
-        $provinsis = Provinces::select('id', 'name')->get();
-        return response()->json($provinsis);
+        return response()->json(Provinces::all());
     }
 
-    // Controller untuk lokasi
-    public function getKabupaten(Request $request)
-    {
-        $provinsiId = $request->query('provinsi_id');
-        $kabupaten = Regencies::where('province_id', $provinsiId)->select('id', 'name')->get();
-        return response()->json($kabupaten);
+    // Ambil kabupaten berdasarkan provinsi yang dipilih
+    public function getRegencies($province_id)
+{
+    try {
+        $regencies = Regencies::where('province_id', $province_id)->get(); // Sesuaikan model 'Regency'
+        return response()->json($regencies);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Terjadi kesalahan'], 500);
+    }
+}
+
+
+    // Ambil user berdasarkan kabupaten yang dipilih
+    public function getUsers($kabupaten_id)
+{
+    $users = User::where('kabupaten_id', $kabupaten_id)
+    ->whereNotIn('status', ['banned', 'suspend']) // Menyaring user yang tidak memiliki status banned dan suspend
+    ->with(['provinsis', 'kabupatens', 'kecamatans', 'desas'])
+    ->get();
+
+
+    if ($users->isEmpty()) {
+        return response()->json([], 200); // Kembalikan array kosong jika tidak ada data
     }
 
-    public function getKecamatan(Request $request)
-    {
-        $kabupatenId = $request->query('kabupaten_id');
-        $kecamatan = Districts::where('regency_id', $kabupatenId)->select('id', 'name')->get();
-        return response()->json($kecamatan);
+    return response()->json($users, 200); // Kembalikan data pengguna
+}
+
+    public function getUsersBanned($kabupaten_id)
+{
+    $users = User::where('kabupaten_id', $kabupaten_id)
+    ->whereNotIn('status', ['aktif', 'suspend']) // Mengecualikan pengguna yang statusnya active dan suspend
+    ->with(['provinsis', 'kabupatens', 'kecamatans', 'desas'])
+    ->get();
+
+
+    if ($users->isEmpty()) {
+        return response()->json([], 200); // Kembalikan array kosong jika tidak ada data
     }
 
-    public function getDesa(Request $request)
-    {
-        $kecamatanId = $request->query('kecamatan_id');
-        $desa = Villages::where('district_id', $kecamatanId)->select('id', 'name')->get();
-        return response()->json($desa);
+    return response()->json($users, 200); // Kembalikan data pengguna
+}
+
+    public function getUsersSuspend($kabupaten_id)
+{
+    $users = User::where('kabupaten_id', $kabupaten_id)
+    ->whereNotIn('status', ['aktif', 'banned']) // Mengecualikan pengguna yang statusnya active dan suspend
+    ->with(['provinsis', 'kabupatens', 'kecamatans', 'desas'])
+    ->get();
+
+
+    if ($users->isEmpty()) {
+        return response()->json([], 200); // Kembalikan array kosong jika tidak ada data
     }
+
+    return response()->json($users, 200); // Kembalikan data pengguna
+}
+
 
     public function pengaturan()
     {

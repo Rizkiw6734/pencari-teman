@@ -38,9 +38,11 @@ class UserSeeder extends Seeder
             'password' => bcrypt('coba4')
         ]);
 
+
         $user1->assignRole('User');
         $user2->assignRole('User');
         $user3->assignRole('User');
         $user4->assignRole('User');
+       
     }
 }

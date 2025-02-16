@@ -46,8 +46,10 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
 
-        // Update status user menjadi online
-        $user->update(['is_online' => true]);
+        $user->update([
+            'is_online' => true,
+            'last_activity' => now(), // Simpan waktu terakhir user aktif
+        ]);
 
         // Membuat token API jika login berhasil
         $token = $user->createToken('PencariTeman')->plainTextToken;

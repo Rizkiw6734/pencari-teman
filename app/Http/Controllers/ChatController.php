@@ -75,7 +75,14 @@ class ChatController extends Controller
         if ($chat->penerima_id == $userId && $chat->status === 'sent_and_unread') {
             $isOnline = $users->get($chat->penerima_id)->is_online ?? false;
             if ($isOnline) {
-                DB::table('chat')->where('id', $chat->id)->update(['status' => 'received']);
+                // Perbarui semua pesan yang belum dibaca dari pengirim ini
+                DB::table('chat')
+                    ->where('pengirim_id', $chat->pengirim_id) // Pesan dari pengirim ini
+                    ->where('penerima_id', $userId) // Pesan untuk user yang sedang login
+                    ->where('status', 'sent_and_unread') // Hanya pesan dengan status ini
+                    ->update(['status' => 'received']); // Perbarui status
+
+                // Perbarui status chat terbaru yang ditampilkan
                 $chat->status = 'received';
             }
         }
@@ -223,17 +230,20 @@ public function getMessages(Request $request, $userId, $penerimaId)
                   ->where('penerima_id', $userId);
         })
         ->when($lastTimestamp, function ($query) use ($lastTimestamp) {
-            return $query->where('created_at', '>', $lastTimestamp);
+            return $query->where('created_at', '>=', $lastTimestamp);
         })
         ->orderBy('created_at', 'asc')
         ->get()
         ->map(function ($chat) {
+            $createdAt = $chat->created_at->copy()->timezone('Asia/Jakarta');
+
             return [
                 'id' => $chat->id,
                 'pengirim_id' => $chat->pengirim_id,
                 'penerima_id' => $chat->penerima_id,
                 'konten' => $chat->konten,
-                'created_at' => $chat->created_at->timezone('Asia/Jakarta')->format('d M Y H:i'),
+                'created_at' => $createdAt->format('Y-m-d H:i:s'),
+                'formatted_date' => $createdAt->translatedFormat('l, d F Y'), // Format tanggal agar tetap muncul
                 'pengirim_foto' => $chat->pengirim && $chat->pengirim->foto_profil
                     ? url(Storage::url($chat->pengirim->foto_profil))
                     : asset('/images/marie.jpg'),
@@ -250,7 +260,6 @@ public function getMessages(Request $request, $userId, $penerimaId)
         'data' => $messages,
     ]);
 }
-
 
 
 
@@ -282,17 +291,19 @@ public function getMessages(Request $request, $userId, $penerimaId)
 public function getStatus($userId, $penerimaId)
 {
     try {
+        Log::info("Fetching chat status for user {$userId} and recipient {$penerimaId}");
+
         $chats = Chat::with(['penerima:id,is_online'])
-                ->where(function ($query) use ($userId, $penerimaId) {
-                    $query->where('pengirim_id', $userId)
-                          ->where('penerima_id', $penerimaId);
-                })
-                ->orWhere(function ($query) use ($userId, $penerimaId) {
-                    $query->where('pengirim_id', $penerimaId)
-                          ->where('penerima_id', $userId);
-                })
-                ->orderBy('created_at', 'asc')
-                ->get(['id', 'pengirim_id', 'penerima_id', 'status']);
+            ->where(function ($query) use ($userId, $penerimaId) {
+                $query->where('pengirim_id', $userId)
+                      ->where('penerima_id', $penerimaId);
+            })
+            ->orWhere(function ($query) use ($userId, $penerimaId) {
+                $query->where('pengirim_id', $penerimaId)
+                      ->where('penerima_id', $userId);
+            })
+            ->orderBy('created_at', 'asc')
+            ->get(['id', 'pengirim_id', 'penerima_id', 'status']);
 
         if ($chats->isEmpty()) {
             return response()->json([
@@ -302,32 +313,51 @@ public function getStatus($userId, $penerimaId)
             ]);
         }
 
+        // Log semua pesan sebelum update
+        Log::info("Chats before update:", $chats->toArray());
+
         // Update semua pesan 'received' menjadi 'sent_and_read'
         $updatedCount = Chat::where('pengirim_id', $penerimaId)
-                           ->where('penerima_id', $userId)
-                           ->where('status', 'received')
-                           ->update([
-                               'status' => 'sent_and_read',
-                               'is_seen' => true,
-                               'updated_at' => now()
-                           ]);
+            ->where('penerima_id', $userId)
+            ->where('status', 'received')
+            ->update([
+                'status' => 'sent_and_read',
+                'is_seen' => true,
+                'updated_at' => now()
+            ]);
 
-        // Jika penerima sedang online, update semua 'sent_and_unread' menjadi 'received'
-        $isOnline = $chats->first()->penerima->is_online ?? false;
+        Log::info("Updated 'received' -> 'sent_and_read' count: {$updatedCount}");
+
+        // Cek apakah ada penerima yang sedang online di seluruh daftar chat
+        $isOnline = $chats->where('penerima_id', $userId)->pluck('penerima.is_online')->filter()->isNotEmpty();
+        Log::info("Is recipient online? " . ($isOnline ? 'Yes' : 'No'));
+
+        $updatedReceived = 0;
+
         if ($isOnline) {
-            Chat::where('pengirim_id', $penerimaId)
+            // **Pastikan semua pesan 'sent_and_unread' berubah menjadi 'received'**
+            $updatedReceived = Chat::where('pengirim_id', $penerimaId)
                 ->where('penerima_id', $userId)
                 ->where('status', 'sent_and_unread')
-                ->update(['status' => 'received', 'updated_at' => now()]);
+                ->update([
+                    'status' => 'received',
+                    'updated_at' => now()
+                ]);
+
+            Log::info("Updated 'sent_and_unread' -> 'received' count: {$updatedReceived}");
         }
 
         return response()->json([
             'status' => 'success',
             'message' => 'Status updated successfully',
             'updatedCount' => $updatedCount,
+            'isOnline' => $isOnline,
+            'updatedReceived' => $updatedReceived,
             'data' => $chats
         ]);
     } catch (\Exception $e) {
+        Log::error("Error in getStatus: " . $e->getMessage());
+
         return response()->json([
             'status' => 'error',
             'message' => 'Something went wrong. Please try again.',
@@ -335,6 +365,5 @@ public function getStatus($userId, $penerimaId)
         ], 500);
     }
 }
-
 
 }

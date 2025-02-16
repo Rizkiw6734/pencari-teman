@@ -126,7 +126,7 @@
                             <div class="chat-body flex-grow-1 p-3"
                                 style="overflow-y: auto; background-color: #FFFFFF; min-height: 400px; max-height: 600px;">
                                 <!-- Pesan Sambutan -->
-                                <div id="welcome-message" class="text-center" style="margin-top: 150px;">
+                                <div id="welcome-message" class="text-center" style="margin-top: 150px;" style="display: none">
                                     <img src="{{ asset('assets/img/welcome-chat.svg') }}" alt="Welcome Image"
                                         style="max-width: 50%; height: auto;">
                                     <h5 class="mt-3">Selamat datang di <b>AroundYou!</b></h5>
@@ -424,7 +424,7 @@
 
     // Update status pengguna dan muat pesan
     updateUserStatus(penerimaId);
-    loadMessages({{ Auth::id() }}, penerimaId);
+    loadMessages({{ Auth::id() }}, penerimaId,false, false);
 
     // Hapus badge unread jika ada
     const badgeElement = element.querySelector('.notification-badge');
@@ -505,8 +505,8 @@ var avatar = response.foto_profil && response.foto_profil.startsWith("http")
 
 
 
-        // Fungsi untuk memuat pesan berdasarkan ID pengguna dan penerima
-        function loadMessages(userId, penerimaId) {
+
+        function loadMessages(userId, penerimaId, withInterval = true, isFirstLoad = true) {
     if (!document.getElementById('scroll-to-bottom')) {
         let scrollButton = document.createElement('div');
         scrollButton.id = 'scroll-to-bottom';
@@ -523,82 +523,123 @@ var avatar = response.foto_profil && response.foto_profil.startsWith("http")
         document.body.appendChild(scrollButton);
     }
 
+    if (typeof messageInterval === 'undefined') {
+        window.messageInterval = null;
+    }
+
     $.ajax({
-        url: '/messages/' + userId + '/' + penerimaId,
+        url: '/messages/' + userId + '/' + penerimaId + '?nocache=' + Date.now(),
         type: 'GET',
         success: function(response) {
-            if (response.status === 'success') {
+            if (response.status === 'success' && response.data) {
                 let chats = response.data;
                 let chatBody = $('.chat-body');
-                chatBody.empty();
+                let existingChatIds = new Set();
 
-                chats.forEach(function(chat) {
-                    let isSender = parseInt(chat.pengirim_id) === parseInt(userId);
-                    let statusIcon = getStatusIcon(chat.status); // Fungsi untuk menentukan status icon
+                $('.chat-item').each(function() {
+                    existingChatIds.add($(this).attr('id'));
+                });
 
-                    let senderAvatar = isSender
+                let shouldScroll = chatBody.scrollTop() + chatBody.height() >= chatBody[0].scrollHeight - 50;
+
+                if (Array.isArray(chats) && chats.length > 0) {
+                    chats.forEach(function(chat) {
+                        let chatId = `chat-${chat.id}`;
+
+                        if (!existingChatIds.has(chatId)) {
+                            let isSender = parseInt(chat.pengirim_id) === parseInt(userId);
+                            let statusIcon = getStatusIcon(chat.status);
+
+                            let senderAvatar = isSender
                         ? `${chat.pengirim_foto}?nocache=${Date.now()}`
                         : `${chat.penerima_foto}?nocache=${Date.now()}`;
 
-                    let receiverAvatar = !isSender
+                            let receiverAvatar = !isSender
                         ? `${chat.pengirim_foto}?nocache=${Date.now()}`
                         : `${chat.penerima_foto}?nocache=${Date.now()}`;
 
-                    let waktuPesan = chat.created_at
-                        ? new Date(chat.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
-                        : '-';
+                            let waktuPesan = chat.created_at
+                                ? new Date(chat.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+                                : '-';
 
-                    let chatElement = `
-                        <div class="chat-item ${isSender ? 'd-flex align-items-end justify-content-end' : 'd-flex align-items-start'} mb-3" id="chat-${chat.id}">
-                            ${isSender ? `
-                                <div class="chat-content text p-2 rounded" style="max-width: 60%; background-color: #D1E0FF; border-radius: 15px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">
-                                    <span style="font-size: 13px; color: #000000;">${chat.konten}</span>
-                                    <div class="text-end text-black-50" style="font-size: 10px;">
-                                        ${waktuPesan} <span class="status-icon">${statusIcon}</span>
+                            let tanggalPesan = chat.created_at
+                                ? new Date(chat.created_at).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+                                : '-';
+
+                            // Cek apakah tanggal sudah ada di tampilan sebelumnya
+                            let existingDate = $('.date-divider .badge').filter(function() {
+                                return $(this).text().trim() === tanggalPesan;
+                            });
+
+                            // Jika belum ada, tampilkan tanggal
+                            if (existingDate.length === 0) {
+                                chatBody.append(`
+                                    <div class="date-divider text-center my-2">
+                                        <span class="badge bg-secondary">${tanggalPesan}</span>
                                     </div>
-                                </div>
-                                <img src="${senderAvatar}" class="sender-avatar rounded-circle ms-3" style="width: 40px; height: 40px; object-fit: cover;">
-                            ` : `
-                                <img src="${receiverAvatar}" class="receiver-avatar rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
-                                <div class="chat-content text p-2 rounded" style="max-width: 50%; background-color: #EFF4FF; border-radius: 15px 15px 15px 0; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">
-                                    <span style="font-size: 13px; color: #000000;">${chat.konten}</span>
-                                    <div class="text-end text-black-50" style="font-size: 10px;">${waktuPesan}</div>
-                                </div>
-                            `}
-                        </div>
-                    `;
-                    chatBody.append(chatElement);
-                });
+                                `);
+                            }
 
-                if (chats.length > 0) {
-                    chatBody[0].scrollTo({
-                        top: chatBody[0].scrollHeight,
-                        behavior: 'smooth',
-                        block: 'end'
+                            let chatElement = `
+                                <div class="chat-item ${isSender ? 'd-flex align-items-end justify-content-end' : 'd-flex align-items-start'} mb-3" id="${chatId}">
+                                    ${isSender ? `
+                                        <div class="chat-content text p-2 rounded" style="max-width: 60%; background-color: #D1E0FF; border-radius: 15px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">
+                                            <span style="font-size: 13px; color: #000000;">${chat.konten}</span>
+                                            <div class="text-end text-black-50" style="font-size: 10px;">
+                                                ${waktuPesan} <span class="status-icon">${statusIcon}</span>
+                                            </div>
+                                        </div>
+                                        <img src="${senderAvatar}" class="sender-avatar rounded-circle ms-3" style="width: 40px; height: 40px; object-fit: cover;">
+                                    ` : `
+                                        <img src="${receiverAvatar}" class="receiver-avatar rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                        <div class="chat-content text p-2 rounded" style="max-width: 50%; background-color: #EFF4FF; border-radius: 15px 15px 15px 0; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">
+                                            <span style="font-size: 13px; color: #000000;">${chat.konten}</span>
+                                            <div class="text-end text-black-50" style="font-size: 10px;">${waktuPesan}</div>
+                                        </div>
+                                    `}
+                                </div>
+                            `;
+
+                            chatBody.append(chatElement);
+                            existingChatIds.add(chatId);
+                        }
                     });
-                }
 
-                let scrollToBottomBtn = $('#scroll-to-bottom');
-                chatBody.on('scroll', function() {
-                    if (chatBody.scrollTop() < chatBody[0].scrollHeight - chatBody.height() - 50) {
-                        scrollToBottomBtn.fadeIn();
-                    } else {
-                        scrollToBottomBtn.fadeOut();
+                    if (isFirstLoad) {
+                        chatBody.scrollTop(chatBody[0].scrollHeight);
+                    } else if (shouldScroll) {
+                        chatBody.animate({ scrollTop: chatBody[0].scrollHeight }, 300);
                     }
-                });
 
-                scrollToBottomBtn.on('click', function() {
-                    chatBody.animate({ scrollTop: chatBody[0].scrollHeight }, 500, function() {
-                        scrollToBottomBtn.fadeOut();
+                    let scrollToBottomBtn = $('#scroll-to-bottom');
+
+                    chatBody.on('scroll', function() {
+                        if (chatBody.scrollTop() < chatBody[0].scrollHeight - chatBody.height() - 50) {
+                            scrollToBottomBtn.fadeIn();
+                        } else {
+                            scrollToBottomBtn.fadeOut();
+                        }
                     });
-                });
 
-                document.getElementById('chat-footer').style.display = 'flex';
+                    scrollToBottomBtn.on('click', function() {
+                        chatBody.animate({ scrollTop: chatBody[0].scrollHeight }, 500, function() {
+                            scrollToBottomBtn.fadeOut();
+                        });
+                    });
 
-                // Update statusIcon secara realtime setiap 5 detik
-                setInterval(function() {
-                    updateStatusIcon(userId, penerimaId);
-                }, 5000);
+                    document.getElementById('chat-footer').style.display = 'flex';
+                    $('#welcome-message').hide();
+
+                    if (withInterval) {
+                        clearInterval(window.messageInterval);
+                        window.messageInterval = setInterval(function() {
+                            loadMessages(userId, penerimaId, false, false);
+                            updateStatusIcon(userId, penerimaId);
+                        }, 5000);
+                    }
+                } else {
+                    console.log("Tidak ada pesan baru.");
+                }
             }
         },
         error: function(error) {
@@ -607,6 +648,8 @@ var avatar = response.foto_profil && response.foto_profil.startsWith("http")
         }
     });
 }
+
+
 
 function getStatusIcon(status) {
     if (status === 'sent_and_read') {
@@ -625,17 +668,24 @@ function updateStatusIcon(userId, penerimaId) {
         url: '/messages/status/' + userId + '/' + penerimaId,
         type: 'GET',
         success: function(response) {
+            console.log("Response dari server:", response); // Log seluruh respons
+
             if (response.status === 'success') {
+                console.log("Is Online:", response.isOnline); // Log apakah penerima sedang online
+                console.log("Updated 'sent_and_unread' -> 'received' count:", response.updatedReceived); // Log jumlah pesan yang diperbarui
+
                 let chats = response.data;
                 chats.forEach(function(chat) {
                     let statusIcon = getStatusIcon(chat.status);
                     let statusElement = $('#chat-' + chat.id + ' .status-icon');
                     statusElement.html(statusIcon);
+
+                    console.log(`Chat ID: ${chat.id}, Status: ${chat.status}, Icon Updated: ${statusIcon}`);
                 });
             }
         },
         error: function(error) {
-            console.log("Error updating status icon:", error);
+            console.error("Error updating status icon:", error);
         }
     });
 }
@@ -666,36 +716,45 @@ function updateStatusIcon(userId, penerimaId) {
             });
 
             function sendMessage() {
-                let message = $('#chat-input').val().trim();
-                if (message === '') return; // Jangan kirim jika pesan kosong
+    let message = $('#chat-input').val().trim();
+    if (message === '') return; // Jangan kirim jika pesan kosong
 
-                var penerimaId = $("#penerima-id").val(); // Ambil penerima ID yang benar
-                console.log("Penerima ID yang dikirim:", penerimaId);
+    var penerimaId = $("#penerima-id").val(); // Ambil penerima ID yang benar
+    console.log("Penerima ID yang dikirim:", penerimaId);
 
-                if (!penerimaId) {
-                    console.error("Penerima ID tidak ditemukan.");
-                    return;
-                }
+    if (!penerimaId) {
+        console.error("Penerima ID tidak ditemukan.");
+        return;
+    }
 
-                $.ajax({
-                    url: '/send-message',
-                    type: 'POST',
-                    data: {
-                        _token: $('meta[name="csrf-token"]').attr('content'),
-                        konten: message,
-                        penerima_id: penerimaId, // Kirim ID penerima yang sudah diperbarui
-                    },
-                    success: function(response) {
-                        console.log("Pesan terkirim:", response);
-                        $('#chat-input').val(''); // Reset input setelah pesan terkirim
-                        loadMessages({{ Auth::id() }}, penerimaId); // Muat pesan setelah pengiriman
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Terjadi kesalahan:", error);
-                        console.error(xhr.responseText);
-                    }
-                });
-            }
+    $.ajax({
+        url: '/send-message',
+        type: 'POST',
+        data: {
+            _token: $('meta[name="csrf-token"]').attr('content'),
+            konten: message,
+            penerima_id: penerimaId, // Kirim ID penerima yang sudah diperbarui
+        },
+        success: function(response) {
+            console.log("Pesan terkirim:", response);
+            $('#chat-input').val(''); // Reset input setelah pesan terkirim
+            loadMessages({{ Auth::id() }}, penerimaId); // Muat pesan setelah pengiriman
+        },
+        error: function(xhr, status, error) {
+            console.error("Terjadi kesalahan:", error);
+            console.error(xhr.responseText);
+        }
+    });
+}
+
+// Menangani event ketika tombol Enter ditekan di input chat
+$('#chat-input').keypress(function(event) {
+    if (event.which === 13 && !event.shiftKey) {
+        event.preventDefault(); // Mencegah Enter membuat baris baru
+        sendMessage(); // Panggil fungsi kirim pesan
+    }
+});
+
         });
 
         function searchChat() {
@@ -709,6 +768,14 @@ function updateStatusIcon(userId, penerimaId) {
         }
     });
 }
+
+
+    setInterval(function() {
+        fetch('/update-activity', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
+            .then(response => console.log('Activity updated'))
+            .catch(error => console.error('Error updating activity', error));
+    }, 3000);
+
 
     </script>
 @endsection

@@ -34,7 +34,8 @@ class User extends Authenticatable
         'desa_id',
         'latitude',
         'longitude',
-        'is_online'
+        'is_online',
+        'last_activity'
     ];
 
     /**
@@ -163,4 +164,10 @@ class User extends Authenticatable
     public function following() {
         return $this->hasMany(Follower::class, 'follower_id');
     }
+
+    public function isFollowing(User $user)
+{
+    return $this->following()->where('user_id', $user->id)->exists();
+}
+
 }

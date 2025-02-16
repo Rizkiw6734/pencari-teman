@@ -79,18 +79,18 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     Route::get('/admin/users', [PenggunaController::class, 'index'])->name('admin.users.index');
     Route::post('/admin/users/{id}/block', [PenggunaController::class, 'block'])->name('admin.users.block');
     Route::post('/admin/users/{id}/disable', [PenggunaController::class, 'disable'])->name('admin.users.disable');
-    Route::post('/admin/users/{id}/enable', [PenggunaController::class, 'enable'])->name('admin.users.enable');
+    Route::post('/users/{id}/enable', [PenggunaController::class, 'enable'])->name('admin.users.enable');
     Route::get('/users/banned',[PenggunaController::class, 'banned'])->name('admin.users.banned');
     Route::get('/users/suspend',[PenggunaController::class, 'suspend'])->name('admin.users.suspend');
     Route::post('/users/{id}/unblock', [PenggunaController::class, 'unblock'])->name('admin.users.unblock');
-
     //log
     Route::get('/admin', [AdminLogController::class, 'index'])->name('admin.log');
 
-    Route::get('/locations/provinsi', [PenggunaController::class, 'getProvinsi']);
-    Route::get('/locations/kabupaten', [PenggunaController::class, 'getKabupaten']);
-    Route::get('/locations/kecamatan', [PenggunaController::class, 'getKecamatan']);
-    Route::get('/locations/desa', [PenggunaController::class, 'getDesa']);
+    Route::get('/provinces', [PenggunaController::class, 'getProvinces']);
+    Route::get('/regencies/{province_id}', [PenggunaController::class, 'getRegencies']);
+    Route::get('/users/{kabupaten_id}', [PenggunaController::class, 'getUsers']);
+    Route::get('/banned/{kabupaten_id}', [PenggunaController::class, 'getUsersBanned']);
+    Route::get('/suspend/{kabupaten_id}', [PenggunaController::class, 'getUsersSuspend']);
 });
 
     //profil (semua bisa akses tetapi harus login)
@@ -125,6 +125,8 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     Route::get('/get-regencies', [ProfileUserController::class, 'getRegencies'])->name('getRegencies');
     Route::get('/get-districts', [ProfileUserController::class, 'getDistricts'])->name('getDistricts');
     Route::get('/get-villages', [ProfileUserController::class, 'getVillages'])->name('getVillages');
+
+    Route::post('/update-activity', [ActiveUserController::class, 'updateActivity']);
 
 
     // Rute untuk halaman suspend

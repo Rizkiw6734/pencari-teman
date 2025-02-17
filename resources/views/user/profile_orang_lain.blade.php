@@ -266,7 +266,7 @@
 
                 <div class="d-flex justify-content-between align-items-center mb-3 mt-4">
                     <h5 class="text-dark">Teman di Sekitar Anda</h5>
-                    <a href="#" class="text-black" style="font-size: 12px;">Lihat Semua</a>
+                    <a href="{{ route('jelajahi.terdekat') }}" class="text-black" style="font-size: 12px;">Lihat Semua</a>
                 </div>
                 <div class="d-flex flex-nowrap" style="white-space: nowrap; gap: 12px; padding: 10px 0;">
                     <div class="card text-center p-3"

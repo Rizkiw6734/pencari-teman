@@ -105,8 +105,9 @@
                         <div class="chat-container d-flex flex-column" style="height: 100vh; overflow: hidden;">
                             <!-- Chat Header -->
                             <div id="chat-header" class="chat-header p-2 d-flex align-items-center"
-                                style="background-color: #F0F3F9; border-bottom: 0px solid #ddd;">
-                                <div class="chat-item d-flex align-items-start" style="flex: 1;">
+                                style="background-color: #F0F3F9; border-bottom: 0px solid #ddd;" >
+                                @foreach ($latestChats as $chat)
+                                <a href="{{ route('profile.show', ['id' => $chat->pengirim_id]) }}" class="chat-item d-flex align-items-start" style="flex: 1; text-decoration: none; color: inherit;">
                                     <img id="chat-avatar" alt="Avatar"
                                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-top: 3px; display: none;">
                                     <div class="chat-content"
@@ -120,7 +121,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </a>
+                                @endforeach
                             </div>
                             <!-- Chat Body -->
                             <div class="chat-body flex-grow-1 p-3"
@@ -416,6 +418,7 @@
 
     // Ubah warna background chat yang dipilih
     element.style.backgroundColor = '#D6EAF8';
+    $('#welcome-message').hide();
 
     // Set penerimaId dan tampilkan chat-footer
     $("#penerima-id").val(penerimaId);
@@ -425,6 +428,7 @@
     // Update status pengguna dan muat pesan
     updateUserStatus(penerimaId);
     loadMessages({{ Auth::id() }}, penerimaId,false, false);
+    $('.chat-body').empty(); 
 
     // Hapus badge unread jika ada
     const badgeElement = element.querySelector('.notification-badge');
@@ -531,117 +535,125 @@ var avatar = response.foto_profil && response.foto_profil.startsWith("http")
         url: '/messages/' + userId + '/' + penerimaId + '?nocache=' + Date.now(),
         type: 'GET',
         success: function(response) {
-            if (response.status === 'success' && response.data) {
-                let chats = response.data;
-                let chatBody = $('.chat-body');
-                let existingChatIds = new Set();
+    if (response.status === 'success' && response.data) {
+        let chats = response.data;
+        let chatBody = $('.chat-body');
+        let existingChatIds = new Set();
+        let currentChatUser = penerimaId; // Pastikan hanya menampilkan pesan dari user ini
 
-                $('.chat-item').each(function() {
-                    existingChatIds.add($(this).attr('id'));
-                });
+        // Kumpulkan ID pesan yang sudah ada
+        $('.chat-item').each(function() {
+            existingChatIds.add($(this).attr('id'));
+        });
 
-                let shouldScroll = chatBody.scrollTop() + chatBody.height() >= chatBody[0].scrollHeight - 50;
+        let shouldScroll = chatBody.scrollTop() + chatBody.height() >= chatBody[0].scrollHeight - 50;
 
-                if (Array.isArray(chats) && chats.length > 0) {
-                    chats.forEach(function(chat) {
-                        let chatId = `chat-${chat.id}`;
+        if (Array.isArray(chats) && chats.length > 0) {
+            let lastDisplayedDate = chatBody.find('.date-divider').last().text().trim(); // Ambil tanggal terakhir di tampilan
 
-                        if (!existingChatIds.has(chatId)) {
-                            let isSender = parseInt(chat.pengirim_id) === parseInt(userId);
-                            let statusIcon = getStatusIcon(chat.status);
+            chats.forEach(function(chat) {
+                let chatId = `chat-${chat.id}`;
 
-                            let senderAvatar = isSender
-                        ? `${chat.pengirim_foto}?nocache=${Date.now()}`
-                        : `${chat.penerima_foto}?nocache=${Date.now()}`;
-
-                            let receiverAvatar = !isSender
-                        ? `${chat.pengirim_foto}?nocache=${Date.now()}`
-                        : `${chat.penerima_foto}?nocache=${Date.now()}`;
-
-                            let waktuPesan = chat.created_at
-                                ? new Date(chat.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
-                                : '-';
-
-                            let tanggalPesan = chat.created_at
-                                ? new Date(chat.created_at).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
-                                : '-';
-
-                            // Cek apakah tanggal sudah ada di tampilan sebelumnya
-                            let existingDate = $('.date-divider .badge').filter(function() {
-                                return $(this).text().trim() === tanggalPesan;
-                            });
-
-                            // Jika belum ada, tampilkan tanggal
-                            if (existingDate.length === 0) {
-                                chatBody.append(`
-                                    <div class="date-divider text-center my-2">
-                                        <span class="badge bg-secondary">${tanggalPesan}</span>
-                                    </div>
-                                `);
-                            }
-
-                            let chatElement = `
-                                <div class="chat-item ${isSender ? 'd-flex align-items-end justify-content-end' : 'd-flex align-items-start'} mb-3" id="${chatId}">
-                                    ${isSender ? `
-                                        <div class="chat-content text p-2 rounded" style="max-width: 60%; background-color: #D1E0FF; border-radius: 15px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">
-                                            <span style="font-size: 13px; color: #000000;">${chat.konten}</span>
-                                            <div class="text-end text-black-50" style="font-size: 10px;">
-                                                ${waktuPesan} <span class="status-icon">${statusIcon}</span>
-                                            </div>
-                                        </div>
-                                        <img src="${senderAvatar}" class="sender-avatar rounded-circle ms-3" style="width: 40px; height: 40px; object-fit: cover;">
-                                    ` : `
-                                        <img src="${receiverAvatar}" class="receiver-avatar rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
-                                        <div class="chat-content text p-2 rounded" style="max-width: 50%; background-color: #EFF4FF; border-radius: 15px 15px 15px 0; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">
-                                            <span style="font-size: 13px; color: #000000;">${chat.konten}</span>
-                                            <div class="text-end text-black-50" style="font-size: 10px;">${waktuPesan}</div>
-                                        </div>
-                                    `}
-                                </div>
-                            `;
-
-                            chatBody.append(chatElement);
-                            existingChatIds.add(chatId);
-                        }
-                    });
-
-                    if (isFirstLoad) {
-                        chatBody.scrollTop(chatBody[0].scrollHeight);
-                    } else if (shouldScroll) {
-                        chatBody.animate({ scrollTop: chatBody[0].scrollHeight }, 300);
-                    }
-
-                    let scrollToBottomBtn = $('#scroll-to-bottom');
-
-                    chatBody.on('scroll', function() {
-                        if (chatBody.scrollTop() < chatBody[0].scrollHeight - chatBody.height() - 50) {
-                            scrollToBottomBtn.fadeIn();
-                        } else {
-                            scrollToBottomBtn.fadeOut();
-                        }
-                    });
-
-                    scrollToBottomBtn.on('click', function() {
-                        chatBody.animate({ scrollTop: chatBody[0].scrollHeight }, 500, function() {
-                            scrollToBottomBtn.fadeOut();
-                        });
-                    });
-
-                    document.getElementById('chat-footer').style.display = 'flex';
-                    $('#welcome-message').hide();
-
-                    if (withInterval) {
-                        clearInterval(window.messageInterval);
-                        window.messageInterval = setInterval(function() {
-                            loadMessages(userId, penerimaId, false, false);
-                            updateStatusIcon(userId, penerimaId);
-                        }, 5000);
-                    }
-                } else {
-                    console.log("Tidak ada pesan baru.");
+                // **Pastikan hanya menampilkan chat dari user yang dipilih**
+                if (parseInt(chat.pengirim_id) !== parseInt(currentChatUser) && parseInt(chat.penerima_id) !== parseInt(currentChatUser)) {
+                    return; // Lewati jika bukan dari user yang dipilih
                 }
+
+                if (!existingChatIds.has(chatId)) {
+                    let isSender = parseInt(chat.pengirim_id) === parseInt(userId);
+                    let statusIcon = getStatusIcon(chat.status);
+
+                    let senderAvatar = isSender
+                        ? `${chat.pengirim_foto}?nocache=${Date.now()}`
+                        : `${chat.penerima_foto}?nocache=${Date.now()}`;
+
+                    let receiverAvatar = !isSender
+                        ? `${chat.pengirim_foto}?nocache=${Date.now()}`
+                        : `${chat.penerima_foto}?nocache=${Date.now()}`;
+
+                    let waktuPesan = chat.created_at
+                        ? new Date(chat.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+                        : '-';
+
+                    let tanggalPesan = chat.created_at
+                        ? new Date(chat.created_at).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+                        : '-';
+
+                    // **Cek apakah tanggal ini sudah ada, jika belum baru tambahkan**
+                    if (tanggalPesan !== lastDisplayedDate) {
+                        chatBody.append(`
+                            <div class="date-divider text-center my-2">
+                                <span class="badge bg-secondary">${tanggalPesan}</span>
+                            </div>
+                        `);
+                        lastDisplayedDate = tanggalPesan; // Simpan tanggal terakhir yang sudah ditampilkan
+                    }
+
+                    let chatElement = `
+                        <div class="chat-item ${isSender ? 'd-flex align-items-end justify-content-end' : 'd-flex align-items-start'} mb-3" id="${chatId}">
+                            ${isSender ? `
+                                <div class="chat-content text p-2 rounded" style="max-width: 60%; background-color: #D1E0FF; border-radius: 15px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">
+                                    <span style="font-size: 13px; color: #000000;">${chat.konten}</span>
+                                    <div class="text-end text-black-50" style="font-size: 10px;">
+                                        ${waktuPesan} <span class="status-icon">${statusIcon}</span>
+                                    </div>
+                                </div>
+                                <img src="${senderAvatar}" class="sender-avatar rounded-circle ms-3" style="width: 40px; height: 40px; object-fit: cover;">
+                            ` : `
+                                <img src="${receiverAvatar}" class="receiver-avatar rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                <div class="chat-content text p-2 rounded" style="max-width: 50%; background-color: #EFF4FF; border-radius: 15px 15px 15px 0; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">
+                                    <span style="font-size: 13px; color: #000000;">${chat.konten}</span>
+                                    <div class="text-end text-black-50" style="font-size: 10px;">${waktuPesan}</div>
+                                </div>
+                            `}
+                        </div>
+                    `;
+
+                    chatBody.append(chatElement);
+                    existingChatIds.add(chatId);
+                }
+            });
+
+            // **Scroll ke bawah jika perlu**
+            if (isFirstLoad || shouldScroll) {
+                chatBody.animate({ scrollTop: chatBody[0].scrollHeight }, 300);
             }
-        },
+
+            // **Tombol Scroll ke Bawah**
+            let scrollToBottomBtn = $('#scroll-to-bottom');
+
+            chatBody.on('scroll', function() {
+                if (chatBody.scrollTop() < chatBody[0].scrollHeight - chatBody.height() - 50) {
+                    scrollToBottomBtn.fadeIn();
+                } else {
+                    scrollToBottomBtn.fadeOut();
+                }
+            });
+
+            scrollToBottomBtn.on('click', function() {
+                chatBody.animate({ scrollTop: chatBody[0].scrollHeight }, 500, function() {
+                    scrollToBottomBtn.fadeOut();
+                });
+            });
+
+            // **Tampilkan footer chat dan sembunyikan pesan selamat datang**
+            document.getElementById('chat-footer').style.display = 'flex';
+            $('#welcome-message').hide();
+
+            // **Atur interval untuk pesan baru**
+            if (withInterval) {
+                clearInterval(window.messageInterval);
+                window.messageInterval = setInterval(function() {
+                    loadMessages(userId, penerimaId, false, false);
+                    updateStatusIcon(userId, penerimaId);
+                }, 5000);
+            }
+        } else {
+            console.log("Tidak ada pesan baru.");
+        }
+    }
+},
+
         error: function(error) {
             console.log("Error:", error);
             document.getElementById('chat-footer').style.display = 'none';
@@ -775,7 +787,6 @@ $('#chat-input').keypress(function(event) {
             .then(response => console.log('Activity updated'))
             .catch(error => console.error('Error updating activity', error));
     }, 3000);
-
 
     </script>
 @endsection

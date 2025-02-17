@@ -16,6 +16,7 @@ class ChatController extends Controller
     public function index(Request $request)
 {
     $userId = Auth::id();
+    
 
     // Ambil chat terbaru dengan unread_count
     $latestChats = DB::table('chat as c')
@@ -102,7 +103,7 @@ class ChatController extends Controller
         return response()->json(['latestChats' => $latestChats, 'userId' => $userId], 200);
     }
 
-    return view('user.home', compact('latestChats', 'userId'));
+    return view('user.home', compact('latestChats', 'userId',));
 }
 
 

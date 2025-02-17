@@ -59,7 +59,7 @@ class ProfileUserController extends Controller
     $validated = $request->validate([
         'name'      => 'required|max:255',
         'last_name' => 'required|string|max:255',
-        'gender'    => ['nullable', Rule::in(['L', 'P'])], 
+        'gender'    => ['nullable', Rule::in(['L', 'P'])],
         'umur'      => 'required|integer|min:1|max:80',
         'email'     => [
             'required',
@@ -173,7 +173,12 @@ public function getVillages(Request $request)
 
 public function show($id)
     {
-        $user = User::findOrFail($id);  // Mengambil user berdasarkan ID
+        $user = User::findOrFail($id);
+
+        if (!$user) {
+            abort(404, 'User tidak ditemukan'); // Debugging jika user tidak ada
+        }
+
         $followersCount = $user->followers()->count();
         $followingCount = $user->following()->count();
         return view('user.profile_orang_lain', compact('user','followersCount', 'followingCount'));  // Tampilkan ke view

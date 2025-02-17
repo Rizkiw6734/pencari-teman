@@ -93,6 +93,12 @@ $penggunaLain = $query->get();
         return view('user.partials.pengguna-list', compact('penggunaLain'))->render();
     }
 
+    // return response()->json([
+    //     'success' => true,
+    //     'message' => 'Daftar pengguna terdekat ditemukan.',
+    //     'data' => $penggunaLain
+    // ]);
+
     return view('user.jelajahi', compact('penggunaLain'));
 }
 

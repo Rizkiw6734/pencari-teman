@@ -2,17 +2,17 @@
 @section('content')
     <div class="main-content"
         style="max-width: 1200px; margin: 0 auto; margin-top: 0px; background-color: #F0F3F9;
-           padding: 20px; margin-left: 260px; position: relative; z-index: 10;">
+           padding: 20px; margin-left: 260px; position: relative; z-index: 10;  min-height: 100vh;">
 
         <div class="container">
             <div class="d-flex justify-content-between align-items-center">
-                <h3 class="fw-bold">Teman di Sekitar</h3>
+                <h3 class="fw-bold">Teman di Kota</h3>
             </div>
             <div style="display: flex; align-items: center; margin-bottom: 10px; border: 1px solid #EFF3F4; border-radius:20px; padding: 5px 10px; width: 100%; background-color: #f9f9f9;">
                 <span style="color: #757575; font-size: 16px; cursor: default;">
                     <i class="fa fa-search ms-1" style="font-size: 15px"></i>
                 </span>
-                <input type="text" id="searchInput" placeholder="Cari teman seru di sekitar anda"
+                <input type="text" id="searchInput" placeholder="Cari teman seru di kota anda"
                     style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 5px;">
             </div>
 

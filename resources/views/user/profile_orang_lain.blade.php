@@ -8,10 +8,10 @@
                         <div class="card-body text-center" style="box-shadow: 0px 0px 5px 1px rgba(82, 139, 255, 0.25); border-radius: 12px;">
                             <div class="avatar avatar-xxl position-relative mb-3">
                                 <img src="{{ $user->foto_profil ? asset('storage/' . $user->foto_profil) : asset('images/marie.jpg') }}"
-                                            alt="Foto Profil" class="w-100 border-radius-lg shadow-sm rounded-circle" style="width: 150px; height: 110px; border-radius: 50%; object-fit: cover;">
+                                     alt="Foto Profil" class="w-100 border-radius-lg shadow-sm rounded-circle" style="width: 150px; height: 110px; border-radius: 50%; object-fit: cover;">
                             </div>
                             <div class="position-absolute top-0 start-0 m-3">
-                                <a href="{{ url()->previous() }}">
+                                <a href="{{ route('jelajahi.sekitar') }}">
                                     <i class="fa-solid fa-arrow-left text-secondary p-2 rounded-circle"
                                        style="font-size: 20px; margin-right: -10px;"></i>
                                 </a>
@@ -38,7 +38,6 @@
                                         onclick="followUser({{ $user->id }}, '{{ $user->name }}')"
                                         title="Ikuti pengguna"></i>
                                 @endif
-
                             </div>
                             <div>
                                 <h5 class="mb-2"
@@ -74,40 +73,39 @@
                                 <div class="d-grid gap-5 d-md-flex justify-content-center mt-2">
                                     <!-- Button trigger modal -->
                                     @if(auth()->user()->blokiran()->where('blocked_user_id', $user->id)->exists())
-    <button type="button" class="btn btn-sm btn-rounded text-secondary"
-            style="background-color: transparent; margin-top: 10px; border-radius: 10px;box-shadow: 0 0 10px hsla(0, 0%, 60%, 0.25);"
-            onclick="unblockUser({{ $user->id }})">
-            <i class="fa-solid fa-ban" style="font-size: 12px"></i> Buka Blokir
-    </button>
-@else
-    <button type="button" class="btn btn-sm btn-rounded text-danger" data-bs-toggle="modal"
-            data-bs-target="#blokirModal" style="background-color: transparent; margin-top: 10px; border-radius: 10px;box-shadow: 0 0 10px hsla(0, 0%, 60%, 0.25);">
-        <i class="fa-solid fa-ban" style="font-size: 14px"></i> Blokir
-    </button>
-@endif
+                                        <button type="button" class="btn btn-sm btn-rounded text-secondary"
+                                                style="background-color: transparent; margin-top: 10px; border-radius: 10px;box-shadow: 0 0 10px hsla(0, 0%, 60%, 0.25);"
+                                                onclick="unblockUser({{ $user->id }})">
+                                                <i class="fa-solid fa-ban" style="font-size: 12px"></i> Buka Blokir
+                                        </button>
+                                    @else
+                                        <button type="button" class="btn btn-sm btn-rounded text-danger" data-bs-toggle="modal"
+                                                data-bs-target="#blokirModal" style="background-color: transparent; margin-top: 10px; border-radius: 10px;box-shadow: 0 0 10px hsla(0, 0%, 60%, 0.25);">
+                                            <i class="fa-solid fa-ban" style="font-size: 14px"></i> Blokir
+                                        </button>
+                                    @endif
 
-<!-- Modal Blokir -->
-<div class="modal fade" id="blokirModal" tabindex="-1" aria-labelledby="blokirModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-0 text-center w-100 mb-0">
-                <h1 class="modal-title fs-3 mx-auto">Blokir Pengguna</h1>
-            </div>
-            <div class="modal-body text-black text-center fs-5 mx-auto mt-0">
-                <img src="/assets/img/blokir.png" alt="" class="d-block mx-auto">
-                Tindakan ini akan memblokir pengguna.<br>
-                Anda yakin ingin melanjutkan?
-            </div>
-            <div class="modal-footer d-flex justify-content-between border-0 mx-4">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                        style="background-color: #000000; color: white; font-size: 14px; padding: 10px 30px;">Batal</button>
-                <button type="button" class="btn btn-primary" onclick="blokirUser({{ $user->id }})"
-                        style="background-color: #ffffff; color: rgb(0, 0, 0); font-size: 14px; padding: 10px 30px; border:#000000 solid 1px;">Ya</button>
-            </div>
-        </div>
-    </div>
-</div>
-
+                                    <!-- Modal Blokir -->
+                                    <div class="modal fade" id="blokirModal" tabindex="-1" aria-labelledby="blokirModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header border-0 text-center w-100 mb-0">
+                                                    <h1 class="modal-title fs-3 mx-auto">Blokir Pengguna</h1>
+                                                </div>
+                                                <div class="modal-body text-black text-center fs-5 mx-auto mt-0">
+                                                    <img src="/assets/img/blokir.png" alt="" class="d-block mx-auto">
+                                                    Tindakan ini akan memblokir pengguna.<br>
+                                                    Anda yakin ingin melanjutkan?
+                                                </div>
+                                                <div class="modal-footer d-flex justify-content-between border-0 mx-4">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                                            style="background-color: #000000; color: white; font-size: 14px; padding: 10px 30px;">Batal</button>
+                                                    <button type="button" class="btn btn-primary" onclick="blokirUser({{ $user->id }})"
+                                                            style="background-color: #ffffff; color: rgb(0, 0, 0); font-size: 14px; padding: 10px 30px; border:#000000 solid 1px;">Ya</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     <!-- Button trigger modal -->
                                     <button type="button" class="btn btn-sm btn-rounded text-danger" data-bs-toggle="modal"
@@ -294,26 +292,41 @@
 
                 <div class="d-flex justify-content-between align-items-center mb-3 mt-4">
                     <h5 class="text-dark">Teman di Sekitar Anda</h5>
-                    <a href="{{ route('jelajahi.terdekat') }}" class="text-black" style="font-size: 12px;">Lihat Semua</a>
+                    <a href="{{ route('jelajahi.sekitar') }}" class="text-black" style="font-size: 12px;">Lihat Semua</a>
                 </div>
-                <div class="d-flex flex-nowrap" style="white-space: nowrap; gap: 12px; padding: 10px 0;">
-                    <div class="card text-center p-3"
-                        style="flex: 0 0 calc(100% / 8 - 10px); height: 160px; box-shadow: 0px 0px 10px 1px rgba(82, 139, 255, 0.25);">
-                        <img src="/assets/img/pp.jpg" class="rounded-circle mx-auto" alt="Avatar"
-                            style="width: 60px; height: 60px; object-fit: cover; margin-top: -8px;">
-                        <h6 class="mt-1 mb-0 text-dark" style="font-size: 13px;">Alexandra</h6>
-                        <p class="text-secondary small" style="font-size: 11px;">
-                            <i class="fa-solid fa-location-dot"></i> Malang
-                        </p>
-                        <button class="btn btn-primary btn-sm text-dark"
-                            style="font-size: 10px; padding: 3px 8px; background-color: #84ADFF; border-radius: 10px;">
-                            Ikuti
-                        </button>
+                @if($penggunaLain->isEmpty())
+                <div class="text-center">
+                    <img src="{{ asset('images/no-users.png') }}" alt="Tidak ada pengguna" width="250">
+                    <p class="mt-2">Tidak ada pengguna di sekitar.</p>
+                </div>
+                @else
+                    <div class="d-flex flex-nowrap" style="white-space: nowrap; gap: 12px; padding: 10px 0; overflow-x: auto;">
+                        @foreach ($penggunaLain as $pengguna)
+                            <div class="card text-center p-3"
+                                onclick="window.location.href='{{ route('profile.show', ['id' => $pengguna->id]) }}'"
+                                style="cursor: pointer; flex: 0 0 calc(100% / 8 - 10px); height: 160px; box-shadow: 0px 0px 10px 1px rgba(82, 139, 255, 0.25);">
+                                
+                                <img src="{{ $pengguna->foto_profil ? asset('storage/' . $pengguna->foto_profil) : asset('images/marie.jpg') }}" 
+                                    class="rounded-circle mx-auto" alt="Avatar"
+                                    style="width: 60px; height: 60px; object-fit: cover; margin-top: -8px;">
+                
+                                <h6 class="mt-1 mb-0 text-dark" style="font-size: 13px;">
+                                    {{ $pengguna->name }}
+                                </h6>
+                                
+                                <p class="text-secondary small" style="font-size: 11px;">
+                                    <i class="fa-solid fa-location-dot"></i> {{ $pengguna->distance }} km
+                                </p>
+                                
+                                <button class="btn btn-primary btn-sm text-dark friend-card"
+                                    style="font-size: 10px; padding: 3px 8px; background-color: #84ADFF; border-radius: 10px;"
+                                    onclick="followUser('{{ $pengguna->id }}', '{{ $pengguna->name }}')">
+                                    Ikuti
+                                </button>
+                            </div>
+                        @endforeach
                     </div>
-
-                </div>
-
-
+                @endif            
 
             </div>
 

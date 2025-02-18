@@ -154,24 +154,6 @@ public function updateAddress(Request $request)
     }
 
     public function getRegencies(Request $request)
-{
-    $regencies = Regencies::where('province_id', $request->province_id)->get();
-    return response()->json($regencies);
-}
-
-public function getDistricts(Request $request)
-{
-    $districts = Districts::where('regency_id', $request->regency_id)->get();
-    return response()->json($districts);
-}
-
-public function getVillages(Request $request)
-{
-    $villages = Villages::where('district_id', $request->district_id)->get();
-    return response()->json($villages);
-}
-
-public function show($id)
     {
         $user = User::findOrFail($id);
 
@@ -184,4 +166,77 @@ public function show($id)
         return view('user.profile_orang_lain', compact('user','followersCount', 'followingCount'));  // Tampilkan ke view
     }
 
+    public function getDistricts(Request $request)
+    {
+        $districts = Districts::where('regency_id', $request->regency_id)->get();
+        return response()->json($districts);
+    }
+
+    public function getVillages(Request $request)
+    {
+        $villages = Villages::where('district_id', $request->district_id)->get();
+        return response()->json($villages);
+    }
+
+    public function show($id, Request $request)
+    {
+        $user = User::findOrFail($id);
+        $followersCount = $user->followers()->count();
+        $followingCount = $user->following()->count();
+    
+        $userLogin = auth()->user();
+        $latitudeUser = $userLogin->latitude;
+        $longitudeUser = $userLogin->longitude;
+    
+        $query = User::where('id', '!=', $user->id)
+            ->where('id', '!=', $userLogin->id)
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->whereDoesntHave('followers', function ($query) use ($userLogin) {
+                $query->where('follower_id', $userLogin->id);
+            })
+            ->whereDoesntHave('roles', function ($query) {
+                $query->where('name', 'admin');
+            });
+    
+        $penggunaLain = $query->get()->map(function ($pengguna) use ($latitudeUser, $longitudeUser) {
+            $pengguna->distance = round($this->haversineGreatCircleDistance(
+                $latitudeUser,
+                $longitudeUser,
+                $pengguna->latitude,
+                $pengguna->longitude
+            ), 2);
+            return $pengguna;
+        });
+    
+        $penggunaLain = $penggunaLain->filter(function ($pengguna) {
+            return $pengguna->distance <= 25;
+        })->sortBy('distance')->values();
+    
+        if ($request->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data pengguna ditemukan',
+                'users' => $penggunaLain
+            ]);
+        }
+    
+        return view('user.profile_orang_lain', compact('user', 'followersCount', 'followingCount', 'penggunaLain'));
+    }    
+
+    private function haversineGreatCircleDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371)
+    {
+        $latFrom = deg2rad($latitudeFrom);
+        $lonFrom = deg2rad($longitudeFrom);
+        $latTo = deg2rad($latitudeTo);
+        $lonTo = deg2rad($longitudeTo);
+
+        $latDelta = $latTo - $latFrom;
+        $lonDelta = $lonTo - $lonFrom;
+
+        $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+            cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+
+        return $angle * $earthRadius;
+    }
 }

@@ -22,6 +22,29 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <meta name="penerima-id" content="">
 </head>
+<style>
+    .dropdown-menu-custom {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+      opacity: 0;
+      transform: translateY(-10px);
+      display: block;
+    }
+    .dropdown-menu-custom.show {
+      max-height: 200px;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .friend-card {
+      transition: transform 0.3s ease;
+    }
+
+    .friend-card:hover {
+      transform: scale(1.05);
+    }
+</style>
 <body>
     @include('partials.user-sidebar')
 

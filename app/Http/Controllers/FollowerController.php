@@ -55,6 +55,6 @@ public function unfollow(User $user)
     public function following(User $user)
     {
         $following = $user->following()->with('user')->get();
-        return view('following.list', compact('following'));
+        return view('user.profile', compact('following'));
     }
 }

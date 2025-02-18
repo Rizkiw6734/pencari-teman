@@ -154,6 +154,7 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     Route::delete('/unfollow/{user}', [FollowerController::class, 'unfollow'])->name('unfollow');
     Route::get('/followers/{user}', [FollowerController::class, 'followers'])->name('followers.list');
     Route::get('/following/{user}', [FollowerController::class, 'following'])->name('following.list');
+    Route::get('/show-follow/{userId}', [ProfileUserController::class, 'showFollow'])->name('showfollow');
     // Add the update-location route here
     Route::middleware(['auth'])->post('/update-location', [ProfileUserController::class, 'updateLocation']);
     Route::get('/active-users', [ActiveUserController::class, 'index']);
@@ -164,6 +165,10 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     Route::get('/messages/status/{userId}/{penerimaId}', [ChatController::class, 'getStatus']);
     // Suspend Page
     Route::get('/suspend', [UserStatusController::class, 'suspendPage'])->name('user.suspend');
+    });
+
+    Route::get('/hidup', function () {
+        return view('user.jelajahi_kota');
     });
 
     // Pengaturan

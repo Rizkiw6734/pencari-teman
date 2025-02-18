@@ -49,12 +49,12 @@ class JelajahiController extends Controller
         $userLogin = Auth::user();
         $latitudeUser = $userLogin->latitude;
         $longitudeUser = $userLogin->longitude;
-    
+
         // Jika pengguna tidak memiliki lokasi, hentikan proses
         if (is_null($latitudeUser) || is_null($longitudeUser)) {
             return response()->json(['message' => 'Lokasi pengguna tidak tersedia.'], 400);
         }
-    
+
         // Query dasar untuk mencari pengguna lain
         $query = User::where('id', '!=', $userLogin->id)
             ->whereNotNull('latitude')
@@ -65,7 +65,7 @@ class JelajahiController extends Controller
             ->whereDoesntHave('roles', function ($query) {
                 $query->where('name', 'admin');
             });
-    
+
         // Filter berdasarkan pencarian (search)
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -74,7 +74,7 @@ class JelajahiController extends Controller
                   ->orWhere('email', 'like', "%{$search}%");
             });
         }
-    
+
         // Ambil pengguna lain & hitung jaraknya
         $penggunaLain = $query->get()->map(function ($pengguna) use ($latitudeUser, $longitudeUser) {
             $pengguna->distance = round($this->haversineGreatCircleDistance(

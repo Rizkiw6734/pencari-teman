@@ -36,9 +36,37 @@ class ProfileUserController extends Controller
 
         $followersCount = $user->followers()->count();
         $followingCount = $user->following()->count();
+        $followers = $user->followers()->with('follower')->get()->map(function ($follow) {
+            return [
+                'id' => $follow->id,
+                'follower_id' => $follow->follower_id,
+                'name' => $follow->follower->name ?? null,
+                'email' => $follow->follower->email ?? null,
+                'foto_profil' => $follow->follower->foto_profil
+            ? asset('storage/' . $follow->follower->foto_profil)
+            : asset('images/marie.jpg'),
+               'created_at' => $follow->created_at,
+            ];
+        });
 
-        return view('user.profile', compact('user', 'provinces', 'regencies', 'districts', 'villages','followersCount', 'followingCount'));
+        $following = $user->following()->with('user')->get()->map(function ($follow) {
+            return [
+                'id' => $follow->id,
+                'following_id' => $follow->following_id,
+                'name' => $follow->user->name ?? null,
+                'email' => $follow->user->email ?? null,
+                'photo_profile' => $follow->user->foto_profil
+                    ? asset('storage/' . $follow->user->foto_profil)
+                    : asset('images/marie.jpg'),
+                'created_at' => $follow->created_at,
+            ];
+        });
+
+
+
+        return view('user.profile', compact('user', 'provinces', 'regencies', 'districts', 'villages','followersCount', 'followingCount','followers','following'));
     }
+
 
     public function edit() {
         $user = auth()->user();
@@ -183,11 +211,11 @@ public function updateAddress(Request $request)
         $user = User::findOrFail($id);
         $followersCount = $user->followers()->count();
         $followingCount = $user->following()->count();
-    
+
         $userLogin = auth()->user();
         $latitudeUser = $userLogin->latitude;
         $longitudeUser = $userLogin->longitude;
-    
+
         $query = User::where('id', '!=', $user->id)
             ->where('id', '!=', $userLogin->id)
             ->whereNotNull('latitude')
@@ -198,7 +226,7 @@ public function updateAddress(Request $request)
             ->whereDoesntHave('roles', function ($query) {
                 $query->where('name', 'admin');
             });
-    
+
         $penggunaLain = $query->get()->map(function ($pengguna) use ($latitudeUser, $longitudeUser) {
             $pengguna->distance = round($this->haversineGreatCircleDistance(
                 $latitudeUser,
@@ -208,11 +236,11 @@ public function updateAddress(Request $request)
             ), 2);
             return $pengguna;
         });
-    
+
         $penggunaLain = $penggunaLain->filter(function ($pengguna) {
             return $pengguna->distance <= 25;
         })->sortBy('distance')->values();
-    
+
         if ($request->ajax()) {
             return response()->json([
                 'status' => 'success',
@@ -220,9 +248,9 @@ public function updateAddress(Request $request)
                 'users' => $penggunaLain
             ]);
         }
-    
+
         return view('user.profile_orang_lain', compact('user', 'followersCount', 'followingCount', 'penggunaLain'));
-    }    
+    }
 
     private function haversineGreatCircleDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371)
     {

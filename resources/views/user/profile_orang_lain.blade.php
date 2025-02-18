@@ -297,7 +297,7 @@
                 @if($penggunaLain->isEmpty())
                 <div class="text-center">
                     <img src="{{ asset('images/no-users.png') }}" alt="Tidak ada pengguna" width="250">
-                    <p class="mt-2">Tidak ada pengguna di sekitar.</p>
+                    {{-- <p class="mt-2">Tidak ada pengguna di sekitar.</p> --}}
                 </div>
                 @else
                     <div class="d-flex flex-nowrap" style="white-space: nowrap; gap: 12px; padding: 10px 0; overflow-x: auto;">
@@ -305,19 +305,19 @@
                             <div class="card text-center p-3"
                                 onclick="window.location.href='{{ route('profile.show', ['id' => $pengguna->id]) }}'"
                                 style="cursor: pointer; flex: 0 0 calc(100% / 8 - 10px); height: 160px; box-shadow: 0px 0px 10px 1px rgba(82, 139, 255, 0.25);">
-                                
-                                <img src="{{ $pengguna->foto_profil ? asset('storage/' . $pengguna->foto_profil) : asset('images/marie.jpg') }}" 
+
+                                <img src="{{ $pengguna->foto_profil ? asset('storage/' . $pengguna->foto_profil) : asset('images/marie.jpg') }}"
                                     class="rounded-circle mx-auto" alt="Avatar"
                                     style="width: 60px; height: 60px; object-fit: cover; margin-top: -8px;">
-                
+
                                 <h6 class="mt-1 mb-0 text-dark" style="font-size: 13px;">
                                     {{ $pengguna->name }}
                                 </h6>
-                                
+
                                 <p class="text-secondary small" style="font-size: 11px;">
                                     <i class="fa-solid fa-location-dot"></i> {{ $pengguna->distance }} km
                                 </p>
-                                
+
                                 <button class="btn btn-primary btn-sm text-dark friend-card"
                                     style="font-size: 10px; padding: 3px 8px; background-color: #84ADFF; border-radius: 10px;"
                                     onclick="followUser('{{ $pengguna->id }}', '{{ $pengguna->name }}')">
@@ -326,7 +326,7 @@
                             </div>
                         @endforeach
                     </div>
-                @endif            
+                @endif
 
             </div>
 

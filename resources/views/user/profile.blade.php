@@ -38,19 +38,177 @@
                                         </p>
                                         <div class="row mb-2">
                                             <div class="col">
-                                                <p
-                                                    style="font-size: 16px; font-weight: 400; line-height: 24px; margin: 0; color:black;">
+                                                <p style="font-size: 16px; font-weight: 400; line-height: 24px; margin: 0; color:black;" data-bs-toggle="modal" data-bs-target="#pengikutModal">
                                                     Pengikut <br>
                                                     <span style="font-weight: 700;">{{ $followersCount }}</span>
                                                 </p>
                                             </div>
+
+                                            <div class="modal fade" id="pengikutModal" tabindex="-1" aria-labelledby="pengikutModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h1 class="modal-title fs-5 text-center w-100" id="pengikutModalLabel">Pengikut</h1>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div style="display: flex; align-items: center; margin-bottom: 10px; border: 1px solid #3243FD80; border-radius: 20px; padding: 3px 10px; width: 100%; background-color: #ffffff;">
+                                                                <span style="color: #757575; font-size: 16px; cursor: default; margin-right: 5px;">
+                                                                    <i class="fa fa-search ms-1" style="font-size: 15px"></i>
+                                                                </span>
+                                                                <input type="text" id="searchInput" placeholder="Cari" style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 5px;">
+                                                            </div>
+                                                            <div id="chat-container" style="height: 300px; overflow-y: scroll; solid #ccc;">
+                                                                @foreach ($followers as $follower)
+                                                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                                                    <div class="d-flex align-items-center">
+                                                                        <img src="{{ $follower['foto_profil'] }}" alt="Avatar" class="rounded-circle me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                                                                        <div>
+                                                                            <span class="d-block fw-bold" style="color: #000000; font-size: 15px;">{{ $follower['name'] }}</span>
+                                                                            <p class="m-0 font-small">{{ $follower['email'] }}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3" style="background-color: #BEB9B9">Hapus</button>
+                                                                </div>
+                                                                @endforeach
+                                                                <!-- Repeat the content inside for each follower -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <script>
+                                              document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchInput");
+    const chatContainer = document.getElementById("chat-container");
+    const originalFollowers = Array.from(chatContainer.children);
+
+    // Pencarian berdasarkan input
+    searchInput.addEventListener("input", function () {
+        const searchValue = searchInput.value.toLowerCase();
+
+        // Kosongkan kontainer dan periksa apakah nama/email cocok
+        chatContainer.innerHTML = "";
+
+        originalFollowers.forEach((follower) => {
+            const nameElement = follower.querySelector("span.fw-bold");
+            const emailElement = follower.querySelector("p.font-small");
+
+            if (nameElement && emailElement) {
+                const name = nameElement.textContent.toLowerCase();
+                const email = emailElement.textContent.toLowerCase();
+
+                // Cek apakah nama atau email mengandung kata yang dicari
+                if (name.includes(searchValue) || email.includes(searchValue)) {
+                    chatContainer.appendChild(follower);
+                }
+            }
+        });
+    });
+
+    // Reset input pencarian ketika modal ditutup
+    const modal = document.getElementById("pengikutModal");
+    modal.addEventListener('hidden.bs.modal', function () {
+        searchInput.value = '';  // Kosongkan input pencarian
+        chatContainer.innerHTML = '';  // Kosongkan hasil pencarian
+        // Kembalikan pengikut asli jika perlu (opsional, tergantung implementasi)
+        originalFollowers.forEach(follower => {
+            chatContainer.appendChild(follower);
+        });
+    });
+});
+
+
+                                            </script>
+
+
                                             <div class="col">
                                                 <p
-                                                    style="font-size: 16px; font-weight: 400; line-height: 24px; margin: 0; color:black;">
+                                                    style="font-size: 16px; font-weight: 400; line-height: 24px; margin: 0; color:black;"  data-bs-toggle="modal" data-bs-target="#mengikutiModal">
                                                     Mengikuti <br>
                                                     <span style="font-weight: 700;">{{ $followingCount }}</span>
                                                 </p>
                                             </div>
+                                            <div class="modal fade" id="mengikutiModal" tabindex="-1" aria-labelledby="mengikutiModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h1 class="modal-title fs-5 text-center w-100" id="mengikutiModalLabel">Mengikuti</h1>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div
+                                                                style="display: flex; align-items: center; margin-bottom: 10px; border: 1px solid #3243FD80; border-radius:20px; padding: 3px 10px; width: 100%; background-color: #ffffff;">
+                                                                <span style="color: #757575; font-size: 16px; cursor: default;">
+                                                                    <i class="fa fa-search ms-1" style="font-size: 15px"></i>
+                                                                </span>
+                                                                <input type="text" id="searchInput2" placeholder="Cari"
+                                                                    style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 5px;">
+                                                            </div>
+                                                            <div id="chat-container2" style="height: 300px; overflow-y: scroll; solid #ccc;">
+                                                                @foreach ($following as $followed)
+                                                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                                                    <div class="d-flex align-items-center">
+                                                                        <img src="{{ $followed['photo_profile'] }}" alt="Avatar" class="rounded-circle me-2"
+                                                                            style="width: 50px; height: 50px; object-fit: cover;">
+                                                                        <div>
+                                                                            <span class="d-block fw-bold"
+                                                                                style="color: #000000; font-size: 15px;">{{ $followed['name']}}</span>
+                                                                            <p class="m-0 font-small">{{ $followed['email']}}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3"
+                                                                        style="background-color: #528BFF">Kirim Pesan</button>
+                                                                </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <script>
+                                                document.addEventListener("DOMContentLoaded", function () {
+    const searchInput2 = document.getElementById("searchInput2");
+    const chatContainer2 = document.getElementById("chat-container2");
+    const originalFollowings = Array.from(chatContainer2.children);
+
+    // Pencarian berdasarkan input
+    searchInput2.addEventListener("input", function () {
+        const searchValue = searchInput2.value.toLowerCase();
+
+        // Kosongkan kontainer dan periksa apakah nama/email cocok
+        chatContainer2.innerHTML = "";
+
+        originalFollowings.forEach((follow) => {
+            const nameElement = follow.querySelector("span.fw-bold");
+            const emailElement = follow.querySelector("p.font-small");
+
+            if (nameElement && emailElement) {
+                const name = nameElement.textContent.toLowerCase();
+                const email = emailElement.textContent.toLowerCase();
+
+                // Cek apakah nama atau email mengandung kata yang dicari
+                if (name.includes(searchValue) || email.includes(searchValue)) {
+                    chatContainer2.appendChild(follow);
+                }
+            }
+        });
+    });
+
+    // Reset input pencarian ketika modal ditutup
+    const modal = document.getElementById("mengikutiModal");
+    modal.addEventListener('hidden.bs.modal', function () {
+        searchInput2.value = '';  // Kosongkan input pencarian
+        chatContainer2.innerHTML = '';  // Kosongkan hasil pencarian
+        // Kembalikan following asli jika perlu (opsional, tergantung implementasi)
+        originalFollowings.forEach(follow => {
+            chatContainer2.appendChild(follow);
+        });
+    });
+});
+
+
+                                            </script>
                                         </div>
                                     </div>
                                 </div>
@@ -598,177 +756,8 @@
             });
         });
     </script>
+
+
 @endsection
 
 
-{{-- @extends('layouts.user')
-@section('content')
-    <div class="main-content"
-        style="max-width: 1200px; margin: 0 auto; margin-top: 0px; background-color: #F0F3F9;
-           padding: 20px; margin-left: 260px; position: relative;">
-        <div class="container-fluid">
-            <!-- Pengikut -->
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pengikutModal">
-                Pengikut
-            </button>
-
-            <!-- Modal -->
-            <div class="modal fade" id="pengikutModal" tabindex="-1" aria-labelledby="pengikutModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5 text-center w-100" id="pengikutModalLabel">Pengikut</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div
-                                style="display: flex; align-items: center; margin-bottom: 10px; border: 1px solid #3243FD80; border-radius:20px; padding: 3px 10px; width: 100%; background-color: #ffffff;">
-                                <span style="color: #757575; font-size: 16px; cursor: default;">
-                                    <i class="fa fa-search ms-1" style="font-size: 15px"></i>
-                                </span>
-                                <input type="text" id="searchInput" placeholder="Cari"
-                                    style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 5px;">
-                            </div>
-                            <div id="chat-container" style="height: 300px; overflow-y: scroll; solid #ccc;">
-                                <div class="d-flex align-items-center justify-content-between mb-3">
-                                    <div class="d-flex align-items-center">
-                                        <img src="/assets/img/pp.jpg" alt="Avatar" class="rounded-circle me-2"
-                                            style="width: 50px; height: 50px; object-fit: cover;">
-                                        <div>
-                                            <span class="d-block fw-bold"
-                                                style="color: #000000; font-size: 15px;">Christ</span>
-                                            <p class="m-0 font-small">@cassain</p>
-                                        </div>
-                                    </div>
-                                    <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3"
-                                        style="background-color: #BEB9B9">Hapus</button>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-between mb-3">
-                                    <div class="d-flex align-items-center">
-                                        <img src="/assets/img/pp.jpg" alt="Avatar" class="rounded-circle me-2"
-                                            style="width: 50px; height: 50px; object-fit: cover;">
-                                        <div>
-                                            <span class="d-block fw-bold"
-                                                style="color: #000000; font-size: 15px;">Christ</span>
-                                            <p class="m-0 font-small">@cassain</p>
-                                        </div>
-                                    </div>
-                                    <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3"
-                                        style="background-color: #BEB9B9">Hapus</button>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-between mb-3">
-                                    <div class="d-flex align-items-center">
-                                        <img src="/assets/img/pp.jpg" alt="Avatar" class="rounded-circle me-2"
-                                            style="width: 50px; height: 50px; object-fit: cover;">
-                                        <div>
-                                            <span class="d-block fw-bold"
-                                                style="color: #000000; font-size: 15px;">Christ</span>
-                                            <p class="m-0 font-small">@cassain</p>
-                                        </div>
-                                    </div>
-                                    <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3"
-                                        style="background-color: #BEB9B9">Hapus</button>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-between mb-3">
-                                    <div class="d-flex align-items-center">
-                                        <img src="/assets/img/pp.jpg" alt="Avatar" class="rounded-circle me-2"
-                                            style="width: 50px; height: 50px; object-fit: cover;">
-                                        <div>
-                                            <span class="d-block fw-bold"
-                                                style="color: #000000; font-size: 15px;">Christ</span>
-                                            <p class="m-0 font-small">@cassain</p>
-                                        </div>
-                                    </div>
-                                    <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3"
-                                        style="background-color: #BEB9B9">Hapus</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- Mengikuti -->
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mengikutiModal">
-                Mengikuti
-            </button>
-
-            <!-- Modal -->
-            <div class="modal fade" id="mengikutiModal" tabindex="-1" aria-labelledby="mengikutiModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5 text-center w-100" id="mengikutiModalLabel">Mengikuti</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div
-                                style="display: flex; align-items: center; margin-bottom: 10px; border: 1px solid #3243FD80; border-radius:20px; padding: 3px 10px; width: 100%; background-color: #ffffff;">
-                                <span style="color: #757575; font-size: 16px; cursor: default;">
-                                    <i class="fa fa-search ms-1" style="font-size: 15px"></i>
-                                </span>
-                                <input type="text" id="searchInput" placeholder="Cari"
-                                    style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 5px;">
-                            </div>
-                            <div id="chat-container" style="height: 300px; overflow-y: scroll; solid #ccc;">
-                                <div class="d-flex align-items-center justify-content-between mb-3">
-                                    <div class="d-flex align-items-center">
-                                        <img src="/assets/img/pp.jpg" alt="Avatar" class="rounded-circle me-2"
-                                            style="width: 50px; height: 50px; object-fit: cover;">
-                                        <div>
-                                            <span class="d-block fw-bold"
-                                                style="color: #000000; font-size: 15px;">Christ</span>
-                                            <p class="m-0 font-small">@cassain</p>
-                                        </div>
-                                    </div>
-                                    <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3"
-                                        style="background-color: #528BFF">Kirim Pesan</button>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-between mb-3">
-                                    <div class="d-flex align-items-center">
-                                        <img src="/assets/img/pp.jpg" alt="Avatar" class="rounded-circle me-2"
-                                            style="width: 50px; height: 50px; object-fit: cover;">
-                                        <div>
-                                            <span class="d-block fw-bold"
-                                                style="color: #000000; font-size: 15px;">Christ</span>
-                                            <p class="m-0 font-small">@cassain</p>
-                                        </div>
-                                    </div>
-                                    <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3"
-                                        style="background-color: #528BFF">Kirim Pesan</button>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-between mb-3">
-                                    <div class="d-flex align-items-center">
-                                        <img src="/assets/img/pp.jpg" alt="Avatar" class="rounded-circle me-2"
-                                            style="width: 50px; height: 50px; object-fit: cover;">
-                                        <div>
-                                            <span class="d-block fw-bold"
-                                                style="color: #000000; font-size: 15px;">Christ</span>
-                                            <p class="m-0 font-small">@cassain</p>
-                                        </div>
-                                    </div>
-                                    <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3"
-                                        style="background-color: #528BFF">Kirim Pesan</button>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-between mb-3">
-                                    <div class="d-flex align-items-center">
-                                        <img src="/assets/img/pp.jpg" alt="Avatar" class="rounded-circle me-2"
-                                            style="width: 50px; height: 50px; object-fit: cover;">
-                                        <div>
-                                            <span class="d-block fw-bold"
-                                                style="color: #000000; font-size: 15px;">Christ</span>
-                                            <p class="m-0 font-small">@cassain</p>
-                                        </div>
-                                    </div>
-                                    <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3"
-                                        style="background-color: #528BFF">Kirim Pesan</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-@endsection --}}

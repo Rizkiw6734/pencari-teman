@@ -124,7 +124,7 @@
                         <li>
                             <div class="departments-card">
                                 <div class="card-image">
-                                    <img src="./assets/img/security.png" alt="Gambar 1">
+                                    <img src="./assets/img/mudah-cepat.png" alt="Gambar 1">
                                 </div>
                                 <div class="card-content-dp">
                                     <h3 class="h3 card-title">Mudah dan Cepat</h3>
@@ -137,7 +137,7 @@
                         <li>
                             <div class="departments-card">
                                 <div class="card-image">
-                                    <img src="./assets/img/security.png" alt="Gambar 2">
+                                    <img src="./assets/img/kesamaan.png" alt="Gambar 2">
                                 </div>
                                 <div class="card-content-dp">
                                     <h3 class="h3 card-title">Kesamaan Minat</h3>
@@ -150,7 +150,7 @@
                         <li>
                             <div class="departments-card">
                                 <div class="card-image">
-                                    <img src="./assets/img/security.png" alt="Gambar 3">
+                                    <img src="./assets/img/aman.png" alt="Gambar 3">
                                 </div>
                                 <div class="card-content-dp">
                                     <h3 class="h3 card-title">Aman dan Terpercaya</h3>
@@ -163,7 +163,7 @@
                         <li>
                             <div class="departments-card">
                                 <div class="card-image">
-                                    <img src="./assets/img/security.png" alt="Gambar 4">
+                                    <img src="./assets/img/komunikasi.png" alt="Gambar 4">
                                 </div>
                                 <div class="card-content-dp">
                                     <h3 class="h3 card-title">Komunitas dan Interaktif</h3>
@@ -197,7 +197,7 @@
                                 </div>
                             </label>
                             <input type="radio" name="slide" id="c2">
-                            <label for="c2" class="card2" >
+                            <label for="c2" class="card2"  style="background-image: url('/assets/img/mencari-teman.png');">
                                 <div class="row">
                                     <div class="description">
                                         <h2>Mencari Teman</h2>
@@ -215,7 +215,7 @@
                                 </div>
                             </label>
                             <input type="radio" name="slide" id="c4" checked>
-                            <label for="c4" class="card2" >
+                            <label for="c4" class="card2" style="background-image: url('/assets/img/chatting-2.png');">
                                 <div class="row">
                                     <div class="description">
                                         <h2>Chatting</h2>

@@ -68,3 +68,26 @@
 
 </script>
 @endsection
+
+
+<!-- Modal UnBlokir -->
+<div class="modal fade" id="unblokirModal" tabindex="-1" aria-labelledby="unblokirModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 text-center w-100 mb-0">
+                <h1 class="modal-title fs-3 mx-auto">Buka Blokir Pengguna</h1>
+            </div>
+            <div class="modal-body text-black text-center fs-5 mx-auto mt-0">
+                <img src="/assets/img/unblokir.png" alt="" class="d-block mx-auto">
+                Apakah Anda yakin ingin membuka<br>
+                blokir pengguna?
+            </div>
+            <div class="modal-footer d-flex justify-content-between border-0 mx-4">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        style="background-color: #000000; color: white; font-size: 14px; padding: 10px 30px;">Batal</button>
+                <button type="button" class="btn btn-primary"
+                        style="background-color: #ffffff; color: rgb(0, 0, 0); font-size: 14px; padding: 10px 30px; border:#000000 solid 1px;">Ya</button>
+            </div>
+        </div>
+    </div>
+</div>

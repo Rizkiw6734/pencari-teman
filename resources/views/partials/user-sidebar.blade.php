@@ -23,16 +23,35 @@
 
       <!-- Jelajahi -->
       <li class="nav-item" style="position: relative;">
-        <a class="nav-link {{ request()->routeIs('ujelajahi.terdekat') ? 'active' : '' }}" href="{{ route('jelajahi.terdekat') }}">
+        <a class="nav-link d-flex align-items-center" href="#" id="jelajahiDropdown" onclick="toggleDropdown()">
           <div class="fa fa-search icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
-               style="background-color: {{ request()->routeIs('jelajahi.terdekat') ? '#3243fd' : '#ffffff' }} !important; color: {{ request()->routeIs('jelajahi.terdekat') ? '#ffffff' : '#000000' }} !important;">
+               style="background-color: {{ request()->routeIs('jelajahi.sekitar') || request()->routeIs('jelajahi.kota') ? '#3243fd' : '#ffffff' }} !important; color: {{ request()->routeIs('jelajahi.sekitar') || request()->routeIs('jelajahi.kota') ? '#ffffff' : '#000000' }} !important;">
           </div>
           <span class="nav-link-text ms-1">Jelajahi</span>
-          @if(request()->routeIs('jelajahi.terdekat'))
-            <div style="position: absolute; left: 0; top: 0; width: 4px; height: 100%; background-color: #3243fd; border-radius: 0 6px 6px 0;"></div>
-         @endif
+          <i id="arrowIcon" class="fa fa-chevron-right ms-auto"></i>
         </a>
+        <ul class="nav flex-column ms-4 dropdown-menu-custom" id="jelajahiMenu">
+          <li class="nav-item d-flex align-items-center">
+            <div class="circle-icon me-2" style="width: 8px; height: 8px; border-radius: 50%; background-color: {{ request()->routeIs('jelajahi.sekitar') ? '#3243fd' : '#ccc' }};"></div>
+            <a class="nav-link {{ request()->routeIs('jelajahi.sekitar') ? 'active' : '' }}" href="{{ route('jelajahi.sekitar') }}">Teman Disekitar</a>
+          </li>
+        </ul>
       </li>
+      
+      <script>
+        function toggleDropdown() {
+          let menu = document.getElementById("jelajahiMenu");
+          let icon = document.getElementById("arrowIcon");
+          
+          if (menu.classList.contains("show")) {
+            menu.classList.remove("show");
+            icon.classList.replace("fa-chevron-down", "fa-chevron-right");
+          } else {
+            menu.classList.add("show");
+            icon.classList.replace("fa-chevron-right", "fa-chevron-down");
+          }
+        }
+      </script>           
     </ul>
 
     <ul class="navbar-nav position-absolute w-100" style="bottom: 20px; left: 0;">

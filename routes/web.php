@@ -24,6 +24,8 @@ use App\Http\Middleware\RoleMiddleware;
 use App\Http\Middleware\CheckExpiredSuspension;
 use App\Http\Middleware\CheckStatusUser;
 use App\Http\Controllers\FollowerController;
+use App\Http\Controllers\BlokirController;
+use App\Http\Controllers\PengaturanController;
 use App\Jobs\CheckExpiredSuspensionJob;
 use App\Http\Controllers\LocationController;
 use App\Models\Chat;
@@ -134,6 +136,12 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     Route::post('/laporan', [LaporanController::class, 'store'])->name('laporan.store');
     Route::get('/banding/create', [BandingController::class, 'create'])->name('banding.create');
     Route::post('/banding', [BandingController::class, 'store'])->name('banding.store');
+    Route::get('/blokiran', [BlokirController::class, 'daftarBlokir'])->name('blokiran');
+    Route::post('/buka-blokir/{user}', [BlokirController::class, 'bukaBlokir']);
+
+    Route::post('/blokir/{user}', [BlokirController::class, 'blokir'])->name('blokir');
+    Route::delete('/unblokir/{user}', [BlokirController::class, 'unblock'])->name('unblokir');
+    Route::get('/pengaturan', [PengaturanController::class, 'daftar2Blokir'])->name('user.pengaturan');
 
     Route::prefix('jelajahi')->group(function () {
         Route::get('/', [JelajahiController::class, 'index'])->name('user.jelajahi');
@@ -159,7 +167,7 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     });
 
     // Pengaturan
-    Route::get('/pengaturan', [PenggunaController::class, 'pengaturan'])->name('user.pengaturan');
+
 
     Route::get('/hitung-jarak', [JarakController::class, 'hitungJarak']);
 

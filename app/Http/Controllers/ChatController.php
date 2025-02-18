@@ -16,7 +16,7 @@ class ChatController extends Controller
     public function index(Request $request)
 {
     $userId = Auth::id();
-    
+
 
     // Ambil chat terbaru dengan unread_count
     $latestChats = DB::table('chat as c')

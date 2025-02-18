@@ -118,7 +118,7 @@ class User extends Authenticatable
     /**
      * Relationship: Blokir yang dilakukan oleh pengguna.
      */
-    public function blokir()
+    public function blokiran()
     {
         return $this->hasMany(Blokir::class, 'users_id');
     }
@@ -126,7 +126,7 @@ class User extends Authenticatable
     /**
      * Relationship: Blokir yang diterima oleh pengguna.
      */
-    public function diblokirOleh()
+    public function diblokir()
     {
         return $this->hasMany(Blokir::class, 'blocked_user_id');
     }

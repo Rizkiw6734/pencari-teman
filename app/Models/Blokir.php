@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Blokir extends Model
 {
     //
-    protected $table = 'blokirs';
+    protected $table = 'blokir';
     protected $fillable = [
         'user_id',
         'blocked_user_id',

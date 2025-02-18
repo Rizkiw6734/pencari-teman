@@ -271,9 +271,4 @@ class PenggunaController extends Controller
 }
 
 
-    public function pengaturan()
-    {
-        return view('user.pengaturan');
-    }
-
 }

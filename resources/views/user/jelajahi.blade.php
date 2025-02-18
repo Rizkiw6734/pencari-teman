@@ -46,9 +46,10 @@
                                         </p>
                                     </div>
                                     <div class="position-absolute bottom-0 end-0 m-3 d-flex align-items-center justify-content-center"
-                                        style="width: 50px; height: 50px; background: rgba(217, 217, 217, 0.5); border-radius: 50%;">
-                                        <i class="fa-regular fa-comment-dots" style="font-size: 25px;"></i>
-                                    </div>
+                                    style="width: 50px; height: 50px; background: rgba(217, 217, 217, 0.5); border-radius: 50%;"
+                                    id="chat-icon">
+                                   <i class="fa-regular fa-comment-dots" style="font-size: 25px;"></i>
+                               </div>
                                 </div>
                             </div>
                         </div>
@@ -113,6 +114,19 @@
         fetch('/update-activity', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
             .then(response => console.log('Activity updated'))
             .catch(error => console.error('Error updating activity', error));
-    }, 3000); 
+    }, 3000);
     </script>
+
+<script>
+    $('#chat-icon').on('click', function() {
+        // Ganti dengan ID pengguna dan penerima yang sesuai
+        let userId = '4'; // Contoh ID pengguna
+        let penerimaId = '5'; // Contoh ID penerima
+
+        // Mengarahkan ke halaman /home dan memanggil fungsi loadMessages
+        window.location.href = '/home?penerimaId=' + penerimaId + '&userId=' + userId;
+    });
+</script>
+
+
 @endsection

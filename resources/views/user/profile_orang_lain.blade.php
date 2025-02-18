@@ -19,8 +19,26 @@
                             <div class="position-absolute top-0 end-0 m-3">
                                 <i class="fa-solid fa-comment-sms text-secondary p-2 rounded-circle"
                                     style="font-size: 24px; margin-right: -10px;"></i>
-                                <i class="fa-solid fa-user-plus text-secondary p-2 rounded-circle"
-                                    style="font-size: 20px;"></i>
+                                    @php
+                                    $isFollowing = auth()->user()->following()->where('user_id', $user->id)->exists();
+                                @endphp
+
+                                @if ($isFollowing)
+                                    <!-- Ikon jika sudah mengikuti -->
+                                    <i class="fa-solid fa-user-check text-success p-2 rounded-circle"
+                                        style="font-size: 20px;" data-id="{{ $user->id }}"
+                                        data-name="{{ $user->name }}"
+                                        onclick="unfollowUser({{ $user->id }}, '{{ $user->name }}')"
+                                        title="Sudah diikuti"></i>
+                                @else
+                                    <!-- Ikon jika belum mengikuti -->
+                                    <i class="fa-solid fa-user-plus text-secondary p-2 rounded-circle"
+                                        style="font-size: 20px;" data-id="{{ $user->id }}"
+                                        data-name="{{ $user->name }}"
+                                        onclick="followUser({{ $user->id }}, '{{ $user->name }}')"
+                                        title="Ikuti pengguna"></i>
+                                @endif
+
                             </div>
                             <div>
                                 <h5 class="mb-2"
@@ -55,31 +73,41 @@
                                 <!-- Blokir -->
                                 <div class="d-grid gap-5 d-md-flex justify-content-center mt-2">
                                     <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-sm btn-rounded text-danger" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal" style="background-color: transparent; margin-top: 10px; border-radius: 10px;box-shadow: 0 0 10px hsla(0, 0%, 60%, 0.25);">
-                                        <i class="fa-solid fa-ban" style="font-size: 14px"></i>
-                                        Blokir
-                                    </button>
+                                    @if(auth()->user()->blokiran()->where('blocked_user_id', $user->id)->exists())
+    <button type="button" class="btn btn-sm btn-rounded text-success"
+            style="background-color: transparent; margin-top: 10px; border-radius: 10px;box-shadow: 0 0 10px hsla(0, 0%, 60%, 0.25);"
+            onclick="unblockUser({{ $user->id }})">
+        <i class="fa-solid fa-unlock" style="font-size: 14px"></i> Buka Blokir
+    </button>
+@else
+    <button type="button" class="btn btn-sm btn-rounded text-danger" data-bs-toggle="modal"
+            data-bs-target="#blokirModal" style="background-color: transparent; margin-top: 10px; border-radius: 10px;box-shadow: 0 0 10px hsla(0, 0%, 60%, 0.25);">
+        <i class="fa-solid fa-ban" style="font-size: 14px"></i> Blokir
+    </button>
+@endif
 
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header border-0 text-center w-100 mb-0">
-                                                    <h1 class="modal-title fs-3 mx-auto">Blokir Pengguna</h1>
-                                                </div>
-                                                <div class="modal-body text-black text-center fs-5 mx-auto mt-0">
-                                                    <img src="/assets/img/blokir.png" alt="" class="d-block mx-auto">
-                                                    Tindakan ini akan memblokir pengguna.<br>
-                                                    Anda yakin ingin melanjutkan?
-                                                </div>
-                                                <div class="modal-footer d-flex justify-content-between border-0 mx-4">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: #000000; color: white; font-size: 14px; padding: 10px 30px;">Batal</button>
-                                                    <button type="button" class="btn btn-primary" style="background-color: #ffffff; color: rgb(0, 0, 0); font-size: 14px; padding: 10px 30px; border:#000000 solid 1px;">Ya</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+<!-- Modal Blokir -->
+<div class="modal fade" id="blokirModal" tabindex="-1" aria-labelledby="blokirModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 text-center w-100 mb-0">
+                <h1 class="modal-title fs-3 mx-auto">Blokir Pengguna</h1>
+            </div>
+            <div class="modal-body text-black text-center fs-5 mx-auto mt-0">
+                <img src="/assets/img/blokir.png" alt="" class="d-block mx-auto">
+                Tindakan ini akan memblokir pengguna.<br>
+                Anda yakin ingin melanjutkan?
+            </div>
+            <div class="modal-footer d-flex justify-content-between border-0 mx-4">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        style="background-color: #000000; color: white; font-size: 14px; padding: 10px 30px;">Batal</button>
+                <button type="button" class="btn btn-primary" onclick="blokirUser({{ $user->id }})"
+                        style="background-color: #ffffff; color: rgb(0, 0, 0); font-size: 14px; padding: 10px 30px; border:#000000 solid 1px;">Ya</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
                                     <!-- Button trigger modal -->
                                     <button type="button" class="btn btn-sm btn-rounded text-danger" data-bs-toggle="modal"
@@ -293,4 +321,128 @@
     </div>
     </div>
     </div>
+@endsection
+@section('scripts')
+
+<script>
+function followUser(userId, userName) {
+    fetch(`/follow/${userId}`, {
+        method: "POST",
+        headers: {
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+            "Content-Type": "application/json",
+        }
+    })
+    .then(response => response.json()) // Parse response as JSON
+    .then(data => {
+        const icon = document.querySelector(`[data-id='${userId}']`);
+        icon.className = "fa-solid fa-user-check text-success p-2 rounded-circle"; // Ubah ikon jadi sudah diikuti
+        icon.setAttribute("title", "Sudah diikuti");
+        icon.setAttribute("onclick", `unfollowUser(${userId}, '${userName}')`); // Ganti fungsi onclick jadi unfollow
+
+        // Tampilkan notifikasi sukses
+        Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: data.message,
+            showConfirmButton: false,
+            timer: 1500
+        });
+
+        // Refresh halaman setelah 1.6 detik (waktu timer Swal)
+        setTimeout(() => {
+            location.reload(); // Halaman akan di-refresh
+        }, 1600);
+    })
+    .catch(error => console.error("Error:", error));
+}
+
+function unfollowUser(userId, userName) {
+    fetch(`/unfollow/${userId}`, {
+        method: "DELETE",
+        headers: {
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+            "Content-Type": "application/json",
+        }
+    })
+    .then(response => response.json()) // Parse response as JSON
+    .then(data => {
+        const icon = document.querySelector(`[data-id='${userId}']`);
+        icon.className = "fa-solid fa-user-plus text-secondary p-2 rounded-circle"; // Ubah ikon jadi follow
+        icon.setAttribute("title", "Ikuti pengguna");
+        icon.setAttribute("onclick", `followUser(${userId}, '${userName}')`); // Ganti fungsi onclick jadi follow
+
+        // Tampilkan notifikasi sukses
+        Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: data.message,
+            showConfirmButton: false,
+            timer: 1500
+        });
+
+        // Refresh halaman setelah 1.6 detik (waktu timer Swal)
+        setTimeout(() => {
+            location.reload(); // Halaman akan di-refresh
+        }, 1600);
+    })
+    .catch(error => console.error("Error:", error));
+}
+
+function blokirUser(userId) {
+    fetch(`/blokir/${userId}`, {
+        method: "POST",
+        headers: {
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+            "Content-Type": "application/json",
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: data.message,
+            showConfirmButton: false,
+            timer: 1500
+        });
+
+        setTimeout(() => {
+            location.reload();
+        }, 1500);
+    })
+    .catch(error => console.error("Error:", error));
+}
+
+function unblockUser(userId) {
+    fetch(`/unblokir/${userId}`, {
+        method: "DELETE",
+        headers: {
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+            "Content-Type": "application/json",
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: data.message,
+            showConfirmButton: false,
+            timer: 1500
+        });
+
+        setTimeout(() => {
+            location.reload();
+        }, 1500);
+    })
+    .catch(error => console.error("Error:", error));
+}
+
+
+</script>
 @endsection

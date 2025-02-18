@@ -18,13 +18,17 @@ class FollowerController extends Controller
 
     // Cek apakah user yang di-follow juga mengikuti balik
     if ($user->following()->where('user_id', $currentUser->id)->exists()) {
-        // Update status menjadi "teman" (opsional: bisa tambahkan tabel pivot untuk status pertemanan)
-        return redirect()->back()->with('success', 'Sekarang kalian berteman.');
+        return response()->json([
+            'message' => 'Sekarang kalian berteman.',
+            'status' => 'friend'
+        ]);
     }
 
-    return redirect()->back()->with('success', 'Berhasil mengikuti user.');
+    return response()->json([
+        'message' => 'Berhasil mengikuti user.',
+        'status' => 'following'
+    ]);
 }
-
 
 public function unfollow(User $user)
 {
@@ -33,16 +37,19 @@ public function unfollow(User $user)
     // Hapus data follow
     $currentUser->following()->where('user_id', $user->id)->delete();
 
-    // Opsional: Hapus status pertemanan jika ada tabel khusus untuk pertemanan
-    return redirect()->back()->with('success', 'Berhenti mengikuti user.');
+    return response()->json([
+        'message' => 'Berhenti mengikuti user.',
+        'status' => 'unfollowed'
+    ]);
 }
+
 
 
     public function followers(User $user)
     {
         $followers = $user->followers()->with('follower')->get();
-        dd($followers);
-        // return view('user.profile', compact('followers'));
+
+        return view('user.profile', compact('followers'));
     }
 
     public function following(User $user)

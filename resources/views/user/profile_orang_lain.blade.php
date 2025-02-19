@@ -123,8 +123,7 @@
                                                 <div class="modal-header border-0">
                                                     <h1 class="modal-title fs-4" id="laporkanmodalLabel">Laporkan Pengguna
                                                     </h1>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close" style="background-color: #000000;"></button>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <div class="card" style="box-shadow: 0px 0px 5px 1px rgba(82, 139, 255, 0.25);">
@@ -306,9 +305,7 @@
                                 onclick="window.location.href='{{ route('profile.show', ['id' => $pengguna->id]) }}'"
                                 style="cursor: pointer; flex: 0 0 calc(100% / 8 - 10px); height: 160px; box-shadow: 0px 0px 10px 1px rgba(82, 139, 255, 0.25);">
 
-                                <img src="{{ $pengguna->foto_profil ? asset('storage/' . $pengguna->foto_profil) : asset('images/marie.jpg') }}"
-                                    class="rounded-circle mx-auto" alt="Avatar"
-                                    style="width: 60px; height: 60px; object-fit: cover; margin-top: -8px;">
+                                <img src="{{ $pengguna->foto_profil ? asset('storage/' . $pengguna->foto_profil) : asset('images/marie.jpg') }}" class="rounded-circle mx-auto" alt="Avatar" style="width: 60px; height: 60px; object-fit: cover; aspect-ratio: 1/1; margin-top: -8px;">
 
                                 <h6 class="mt-1 mb-0 text-dark" style="font-size: 13px;">
                                     {{ $pengguna->name }}

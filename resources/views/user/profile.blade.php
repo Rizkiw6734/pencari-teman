@@ -49,7 +49,7 @@
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h1 class="modal-title fs-5 text-center w-100" id="pengikutModalLabel">Pengikut</h1>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
                                                         </div>
                                                         <div class="modal-body">
                                                             <div style="display: flex; align-items: center; margin-bottom: 10px; border: 1px solid #3243FD80; border-radius: 20px; padding: 3px 10px; width: 100%; background-color: #ffffff;">
@@ -60,16 +60,22 @@
                                                             </div>
                                                             <div id="chat-container" style="height: 300px; overflow-y: scroll; solid #ccc;">
                                                                 @foreach ($followers as $follower)
-                                                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                                                <div class="d-flex align-items-center justify-content-between mb-2">
                                                                     <div class="d-flex align-items-center">
+                                                                        <!-- Foto Profil -->
                                                                         <img src="{{ $follower['foto_profil'] }}" alt="Avatar" class="rounded-circle me-2" style="width: 50px; height: 50px; object-fit: cover;">
-                                                                        <div>
-                                                                            <span class="d-block fw-bold" style="color: #000000; font-size: 15px;">{{ $follower['name'] }}</span>
-                                                                            <p class="m-0 font-small">{{ $follower['email'] }}</p>
+
+                                                                        <!-- Nama di atas, Email di bawah -->
+                                                                        <div class="d-flex flex-column">
+                                                                            <span class="fw-bold" style="color: #000000; font-size: 15px; margin-left: -80px;">{{ $follower['name'] }}</span>
+                                                                            <span class="text-muted" style="font-size: 14px;">{{ $follower['email'] }}</span>
                                                                         </div>
                                                                     </div>
+
+                                                                    <!-- Tombol Hapus -->
                                                                     <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3" style="background-color: #BEB9B9">Hapus</button>
                                                                 </div>
+
                                                                 @endforeach
                                                                 <!-- Repeat the content inside for each follower -->
                                                             </div>
@@ -134,7 +140,7 @@
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h1 class="modal-title fs-5 text-center w-100" id="mengikutiModalLabel">Mengikuti</h1>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
                                                         </div>
                                                         <div class="modal-body">
                                                             <div
@@ -147,16 +153,20 @@
                                                             </div>
                                                             <div id="chat-container2" style="height: 300px; overflow-y: scroll; solid #ccc;">
                                                                 @foreach ($following as $followed)
-                                                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                                                <div class="d-flex align-items-center justify-content-between mb-2">
                                                                     <div class="d-flex align-items-center">
+                                                                        <!-- Foto Profil -->
                                                                         <img src="{{ $followed['photo_profile'] }}" alt="Avatar" class="rounded-circle me-2"
                                                                             style="width: 50px; height: 50px; object-fit: cover;">
-                                                                        <div>
-                                                                            <span class="d-block fw-bold"
-                                                                                style="color: #000000; font-size: 15px;">{{ $followed['name']}}</span>
-                                                                            <p class="m-0 font-small">{{ $followed['email']}}</p>
+
+                                                                        <!-- Nama di atas, Email di bawah -->
+                                                                        <div class="d-flex flex-column">
+                                                                            <span class="fw-bold" style="color: #000000; font-size: 15px; margin-left: -80px;">{{ $followed['name'] }}</span>
+                                                                            <span class="text-muted" style="font-size: 14px;">{{ $followed['email'] }}</span>
                                                                         </div>
                                                                     </div>
+
+                                                                    <!-- Tombol Kirim Pesan -->
                                                                     <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3"
                                                                         style="background-color: #528BFF">Kirim Pesan</button>
                                                                 </div>

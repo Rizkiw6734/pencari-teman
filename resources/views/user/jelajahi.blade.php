@@ -26,10 +26,8 @@
                                 <div class="position-absolute top-0 end-0 m-2"
                                 style="z-index: 2000; pointer-events: auto;">
                                <i class="fa-solid fa-user-plus text-white p-2 rounded-circle follow-btn"
-                                  style="cursor: pointer;"
-                                  data-id="{{ $pengguna->id }}"
-                                  data-name="{{ $pengguna->name }}"
-                                  onclick="followUser(this.dataset.id, this.dataset.name)">
+
+                                  style="cursor: pointer;">
                                </i>
                            </div>
 
@@ -116,17 +114,5 @@
             .catch(error => console.error('Error updating activity', error));
     }, 3000);
     </script>
-
-<script>
-    $('#chat-icon').on('click', function() {
-        // Ganti dengan ID pengguna dan penerima yang sesuai
-        let userId = '4'; // Contoh ID pengguna
-        let penerimaId = '5'; // Contoh ID penerima
-
-        // Mengarahkan ke halaman /home dan memanggil fungsi loadMessages
-        window.location.href = '/home?penerimaId=' + penerimaId + '&userId=' + userId;
-    });
-</script>
-
 
 @endsection

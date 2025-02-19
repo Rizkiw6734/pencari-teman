@@ -106,8 +106,9 @@
                             <!-- Chat Header -->
                             <div id="chat-header" class="chat-header p-2 d-flex align-items-center"
                                 style="background-color: #F0F3F9; border-bottom: 0px solid #ddd;" >
-                                @foreach ($latestChats as $chat)
-                                <a href="{{ route('profile.show', ['id' => $chat->penerima_id]) }}" class="chat-item d-flex align-items-start" style="flex: 1; text-decoration: none; color: inherit;">
+
+                                <div class="chat-item d-flex align-items-start" style="flex: 1; text-decoration: none; color: inherit;"
+                                onclick="redirectToProfile(this)">
                                     <img id="chat-avatar" alt="Avatar"
                                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 15px; margin-top: 3px; display: none;">
                                     <div class="chat-content"
@@ -121,9 +122,16 @@
                                             </div>
                                         </div>
                                     </div>
-                                </a>
-                                @endforeach
+                                </div>
                             </div>
+                            <script>
+                                function redirectToProfile(element) {
+                                    var userId = element.getAttribute('data-id');
+                                    if (userId) {
+                                        window.location.href = `/profile/${userId}`;
+                                    }
+                                }
+                            </script>
                             <!-- Chat Body -->
                             <div class="chat-body flex-grow-1 p-3"
                                 style="overflow-y: auto; background-color: #FFFFFF; min-height: 400px; max-height: 600px;">
@@ -334,7 +342,7 @@
     // Fungsi untuk memuat chat
     function fetchChats() {
         $.ajax({
-            url: '/home',
+            url: '/latest-chats',
             method: 'GET',
             success: function(response) {
                 console.log("Response dari server:", response);
@@ -426,10 +434,13 @@
     console.log("ID Penerima yang dipilih:", penerimaId);
     document.getElementById('chat-footer').style.display = 'flex';
 
+    localStorage.setItem('selectedChat', penerimaId);
+
     // Update status pengguna dan muat pesan
     updateUserStatus(penerimaId);
     loadMessages({{ Auth::id() }}, penerimaId,false, false);
     $('.chat-body').empty();
+
 
     // Hapus badge unread jika ada
     const badgeElement = element.querySelector('.notification-badge');
@@ -465,47 +476,51 @@
     }
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    const lastSelectedChat = localStorage.getItem('selectedChat');
+    if (lastSelectedChat) {
+        const chatItem = document.querySelector(`.chat-item[data-id="${lastSelectedChat}"]`);
+        if (chatItem) {
+            selectChat(chatItem, lastSelectedChat, chatItem.getAttribute('data-status'));
+        }
+    }
+});
+
 
 
 
 
 
         // Fungsi untuk mengupdate status pengguna di header chat
-        function updateUserStatus(userId) {
-            $.ajax({
-                url: "/user/status/" + userId,
-                type: "GET",
-                success: function(response) {
-                    $("#chat-name").text(response.name);
+        function updateUserStatus(penerimaId) {
+    $.ajax({
+        url: "/user/status/" + penerimaId,
+        type: "GET",
+        success: function(response) {
+            $("#chat-name").text(response.name);
 
-                    // Gunakan default avatar yang benar
-                    var defaultAvatar = "/images/marie.jpg";
+            var defaultAvatar = "/images/marie.jpg";
+            var avatar = response.foto_profil && response.foto_profil.startsWith("http")
+                ? response.foto_profil
+                : defaultAvatar;
 
-// Gunakan foto_profil jika tersedia dan valid, jika tidak pakai default
-var avatar = response.foto_profil && response.foto_profil.startsWith("http")
-    ? response.foto_profil
-    : defaultAvatar;
+            console.log("Avatar URL:", avatar);
 
+            $("#chat-avatar").attr("src", avatar).fadeIn();
+            $("#chat-header").show();
 
-
-                    console.log("Avatar URL:", avatar); // Debugging untuk cek URL
-
-                    $("#chat-avatar").attr("src", avatar).fadeIn();
-                    $("#chat-header").show();
-
-                    // Update status online atau offline
-                    if (response.is_online) {
-                        $("#chat-status").html('<span class="icon" style="color: #28a745;"></span> Online');
-                    } else {
-                        $("#chat-status").html('<span class="icon" style="color: #888;"></span> Offline');
-                    }
-                },
-                error: function() {
-                    console.log("Gagal mengambil data user.");
-                }
-            });
+            if (response.is_online) {
+                $("#chat-status").html('<span class="icon" style="color: #28a745;"></span> Online');
+            } else {
+                $("#chat-status").html('<span class="icon" style="color: #888;"></span> Offline');
+            }
+            $(".chat-item").attr("data-id", penerimaId);
+        },
+        error: function() {
+            console.log("Gagal mengambil data user.");
         }
-
+    });
+}
 
 
 

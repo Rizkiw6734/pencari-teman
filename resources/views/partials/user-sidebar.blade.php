@@ -33,16 +33,20 @@
         <ul class="nav flex-column ms-4 dropdown-menu-custom" id="jelajahiMenu">
           <li class="nav-item d-flex align-items-center">
             <div class="circle-icon me-2" style="width: 8px; height: 8px; border-radius: 50%; background-color: {{ request()->routeIs('jelajahi.sekitar') ? '#3243fd' : '#ccc' }};"></div>
-            <a class="nav-link {{ request()->routeIs('jelajahi.sekitar') ? 'active' : '' }}" href="{{ route('jelajahi.sekitar') }}">Teman Disekitar</a>
+            <a class="nav-link {{ request()->routeIs('jelajahi.sekitar') ? 'active' : '' }}" href="{{ route('jelajahi.sekitar') }}">Teman di Sekitar</a>
+          </li>
+          <li class="nav-item d-flex align-items-center">
+            <div class="circle-icon me-2" style="width: 8px; height: 8px; border-radius: 50%; background-color: {{ request()->routeIs('jelajahi.kota') ? '#3243fd' : '#ccc' }};"></div>
+            <a class="nav-link {{ request()->routeIs('jelajahi.kota') ? 'active' : '' }}" href="{{ route('jelajahi.kota') }}">Teman di Kota</a>
           </li>
         </ul>
       </li>
-      
+
       <script>
         function toggleDropdown() {
           let menu = document.getElementById("jelajahiMenu");
           let icon = document.getElementById("arrowIcon");
-          
+
           if (menu.classList.contains("show")) {
             menu.classList.remove("show");
             icon.classList.replace("fa-chevron-down", "fa-chevron-right");
@@ -51,7 +55,8 @@
             icon.classList.replace("fa-chevron-right", "fa-chevron-down");
           }
         }
-      </script>           
+      </script>
+
     </ul>
 
     <ul class="navbar-nav position-absolute w-100" style="bottom: 20px; left: 0;">
@@ -67,7 +72,7 @@
           @endif
         </a>
       </li>
-      
+
       <!-- Profile -->
       <li class="nav-item" style="position: relative;">
         <a class="nav-link {{ request()->routeIs('profile.index') ? 'active' : '' }}" href="{{ route('profile.index') }}">

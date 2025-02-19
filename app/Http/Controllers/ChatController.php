@@ -13,21 +13,20 @@ use Illuminate\Support\Facades\Log;
 class ChatController extends Controller
 {
     // Menampilkan chat terbaru antara dua user di sidebar
-    public function index(Request $request)
+    public function index()
+{
+    $userId = Auth::id();
+    return view('user.home', compact('userId'));
+}
+
+public function latestChatsJson(Request $request)
 {
     $userId = Auth::id();
 
-
-    // Ambil chat terbaru dengan unread_count
     $latestChats = DB::table('chat as c')
         ->select(
-            'c.id',
-            'c.pengirim_id',
-            'c.penerima_id',
-            'c.konten',
-            'c.status',
-            'c.is_seen',
-            'c.created_at',
+            'c.id', 'c.pengirim_id', 'c.penerima_id', 'c.konten',
+            'c.status', 'c.is_seen', 'c.created_at',
             DB::raw("(
                 SELECT COUNT(*)
                 FROM chat
@@ -38,10 +37,9 @@ class ChatController extends Controller
             ) as unread_count")
         )
         ->join(DB::raw("(
-            SELECT
-                LEAST(pengirim_id, penerima_id) AS user1,
-                GREATEST(pengirim_id, penerima_id) AS user2,
-                MAX(id) AS latest_chat_id
+            SELECT LEAST(pengirim_id, penerima_id) AS user1,
+                   GREATEST(pengirim_id, penerima_id) AS user2,
+                   MAX(id) AS latest_chat_id
             FROM chat
             GROUP BY user1, user2
         ) as latest_chats"), function ($join) {
@@ -72,25 +70,26 @@ class ChatController extends Controller
             ? url('storage/' . $chat->penerima->foto_profil)
             : asset('images/marie.jpg');
 
-        // Update status menjadi "received" jika penerima sedang online, tapi belum membuka chat
-        if ($chat->penerima_id == $userId && $chat->status === 'sent_and_unread') {
-            $isOnline = $users->get($chat->penerima_id)->is_online ?? false;
-            if ($isOnline) {
-                // Perbarui semua pesan yang belum dibaca dari pengirim ini
-                DB::table('chat')
-                    ->where('pengirim_id', $chat->pengirim_id) // Pesan dari pengirim ini
-                    ->where('penerima_id', $userId) // Pesan untuk user yang sedang login
-                    ->where('status', 'sent_and_unread') // Hanya pesan dengan status ini
-                    ->update(['status' => 'received']); // Perbarui status
+            if ($chat->penerima_id == $userId && $chat->status === 'sent_and_unread') {
+                $isOnline = $users->get($chat->pengirim_id)->is_online ?? false; // Ganti penerima_id menjadi pengirim_id
+                if ($isOnline) {
+                    $updated = DB::table('chat')
+                        ->where('pengirim_id', $chat->pengirim_id)
+                        ->where('penerima_id', $userId)
+                        ->where('status', 'sent_and_unread')
+                        ->update(['status' => 'received']);
 
-                // Perbarui status chat terbaru yang ditampilkan
-                $chat->status = 'received';
+                    if ($updated) {
+                        $chat->status = 'received';
+                    } else {
+                        Log::info("Update status gagal untuk chat ID: " . $chat->id);
+                    }
+                }
             }
-        }
 
-        // Update status menjadi "sent_and_read" jika chat benar-benar dibuka
+
         if ($chat->penerima_id == $userId && $chat->status === 'received') {
-            $isChatOpened = $request->input('is_seen') ?? false; // Pastikan ini dikirim dari frontend
+            $isChatOpened = $request->input('is_seen') ?? false;
             if ($isChatOpened) {
                 DB::table('chat')->where('id', $chat->id)->update(['status' => 'sent_and_read', 'is_seen' => true]);
                 $chat->status = 'sent_and_read';
@@ -99,18 +98,10 @@ class ChatController extends Controller
         }
     }
 
-    if ($request->ajax()) {
-        return response()->json(['latestChats' => $latestChats, 'userId' => $userId], 200);
-    }
-
-    return view('user.home', compact('latestChats', 'userId',));
+    return response()->json(['latestChats' => $latestChats, 'userId' => $userId], 200);
 }
 
 
-// return response()->json([
-        //     'latestChats' => $latestChats,
-        //     'userId' => $userId
-        // ], 200);
 
 
 

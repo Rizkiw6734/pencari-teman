@@ -11,11 +11,21 @@
                                      alt="Foto Profil" class="w-100 border-radius-lg shadow-sm rounded-circle" style="width: 150px; height: 110px; border-radius: 50%; object-fit: cover;">
                             </div>
                             <div class="position-absolute top-0 start-0 m-3">
-                                <a href="{{ route('jelajahi.sekitar') }}">
+                                <a href="javascript:void(0);" onclick="goBackAndRefresh();">
                                     <i class="fa-solid fa-arrow-left text-secondary p-2 rounded-circle"
                                        style="font-size: 20px; margin-right: -10px;"></i>
                                 </a>
                             </div>
+
+                            <script>
+                                function goBackAndRefresh() {
+                                    window.history.back();
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 500); // Delay untuk memastikan halaman kembali sebelum reload
+                                }
+                            </script>
+
                             <div class="position-absolute top-0 end-0 m-3">
                                 <i class="fa-solid fa-comment-sms text-secondary p-2 rounded-circle"
                                     style="font-size: 24px; margin-right: -10px;"></i>

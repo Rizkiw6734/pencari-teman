@@ -183,15 +183,14 @@ public function updateAddress(Request $request)
 
     public function getRegencies(Request $request)
     {
-        $user = User::findOrFail($id);
+        $provinceId = $request->input('province_id');
 
-        if (!$user) {
-            abort(404, 'User tidak ditemukan'); // Debugging jika user tidak ada
+        if (!$provinceId) {
+            return response()->json(['error' => 'Province ID is required'], 400);
         }
 
-        $followersCount = $user->followers()->count();
-        $followingCount = $user->following()->count();
-        return view('user.profile_orang_lain', compact('user','followersCount', 'followingCount'));  // Tampilkan ke view
+        $regencies = Regencies::where('province_id', $provinceId)->get();
+        return response()->json($regencies);
     }
 
     public function getDistricts(Request $request)

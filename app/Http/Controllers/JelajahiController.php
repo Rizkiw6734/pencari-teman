@@ -16,30 +16,25 @@ class JelajahiController extends Controller
     public function index(Request $request)
     {
         $query = User::where('id', '!=', Auth::id())
-        ->whereNotNull('latitude')
-        ->whereNotNull('longitude')
-        ->whereDoesntHave('roles', function ($query) {
-            $query->where('name', 'admin');
-        });
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->whereDoesntHave('roles', function ($query) {
+                $query->where('name', 'admin');
+            })
+            ->with('kabupatens'); // Pastikan relasi dimuat
 
-    if ($request->filled('search') && $request->input('context') === 'umum') {
-        $search = $request->input('search');
-        $query->where('name', 'like', "%{$search}%");
+        if ($request->filled('search') && $request->input('context') === 'umum') {
+            $search = $request->input('search');
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        $penggunaLain = $query->get();
+
+        return view('jelajahi.kota', compact('penggunaLain'));
+
+        // return response()->json($penggunaLain); // Untuk debugging
     }
 
-    $penggunaLain = $query->get();
-
-        // Cek apakah request berasal dari AJAX
-        // if ($request->ajax()) {
-        //     return response()->json([
-        //         'status' => 'success',
-        //         'message' => 'Pengguna ditemukan.',
-        //         'users' => $penggunaLain
-        //     ]);
-        // }
-
-        // return view('user.jelajahi', compact('penggunaLain'));
-    }
 
     /**
      * Menampilkan pengguna di sekitar (radius 50 km) berdasarkan latitude dan longitude user yang login.
@@ -91,9 +86,9 @@ class JelajahiController extends Controller
             return $pengguna->distance <= 25;
         })->sortBy('distance')->values();
 
-        if ($request->ajax()) {
-            return view('user.partials.pengguna-list', compact('penggunaLain'))->render();
-        }
+        // if ($request->ajax()) {
+        //     return view('user.partials.pengguna-list', compact('penggunaLain'))->render();
+        // }
 
         // return response()->json([
         //     'success' => true,
@@ -189,7 +184,8 @@ class JelajahiController extends Controller
             ->where('id', '!=', Auth::id())
             ->whereDoesntHave('roles', function ($query) {
                 $query->where('name', 'admin');
-            });
+            })
+            ->with('kabupatens');
 
         if ($request->filled('search') && $request->input('context') === 'kota') {
             $search = $request->input('search');

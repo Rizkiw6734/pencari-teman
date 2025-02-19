@@ -111,6 +111,7 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
 
     // User Home Page
     Route::get('/home', [ChatController::class, 'index'])->name('user.home');
+    Route::get('/latest-chats', [ChatController::class, 'latestChatsJson']);
 
     // Banned Page
     Route::get('/banned', [UserStatusController::class, 'bannedPage'])->name('user.banned');
@@ -144,10 +145,10 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     Route::get('/pengaturan', [PengaturanController::class, 'daftar2Blokir'])->name('user.pengaturan');
 
     Route::prefix('jelajahi')->group(function () {
-        Route::get('/', [JelajahiController::class, 'index'])->name('user.jelajahi');
+        Route::get('/', [JelajahiController::class, 'index'])->name('jelajahi.kota');
         Route::get('/sekitar', [JelajahiController::class, 'penggunaSekitar'])->name('jelajahi.sekitar');
         Route::get('/provinsi', [JelajahiController::class, 'getProvinsi'])->name('jelajahi.provinsi');
-        Route::get('/provinsi/{provinsi_id}', [JelajahiController::class, 'getKotaByProvinsi'])->name('jelajahi.kota');
+        Route::get('/provinsi/{provinsi_id}', [JelajahiController::class, 'getKotaByProvinsi'])->name('jelajahi');
         Route::get('/pengguna-by-kota/{kabupaten_id}', [JelajahiController::class, 'penggunaByKota'])->name('jelajahi.pengguna');
     });
     Route::post('/follow/{user}', [FollowerController::class, 'follow'])->name('follow');
@@ -165,10 +166,6 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     Route::get('/messages/status/{userId}/{penerimaId}', [ChatController::class, 'getStatus']);
     // Suspend Page
     Route::get('/suspend', [UserStatusController::class, 'suspendPage'])->name('user.suspend');
-    });
-
-    Route::get('/hidup', function () {
-        return view('user.jelajahi_kota');
     });
 
     // Pengaturan

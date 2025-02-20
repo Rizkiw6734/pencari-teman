@@ -8,6 +8,7 @@ use App\Models\Provinces;
 use App\Models\Regencies;
 use App\Models\Districts;
 use App\Models\Villages;
+use App\Models\notifikasi;
 
 
 class PenggunaController extends Controller
@@ -57,8 +58,14 @@ class PenggunaController extends Controller
         $regencies = $provinsi ? Regencies::where('province_id', $provinsi)->get() : [];
         $districts = $kabupaten ? Districts::where('regency_id', $kabupaten)->get() : [];
         $villages = $kecamatan ? Villages::where('district_id', $kecamatan)->get() : [];
+        $notifications = notifikasi::where('user_id', auth()->id())
+        ->where('status', 'unread')
+        ->orderBy('created_at', 'desc')
+        ->take(10)
+        ->get();
 
-        return view('Admin.users.index', compact('users', 'provinces', 'regencies', 'districts', 'villages'));
+
+        return view('Admin.users.index', compact('users', 'provinces', 'regencies', 'districts', 'villages','notifications'));
     }
 
     /**
@@ -181,8 +188,13 @@ class PenggunaController extends Controller
         }
 
         $bannedUsers = $query->paginate($perPage);
+        $notifications = notifikasi::where('user_id', auth()->id())
+        ->where('status', 'unread')
+        ->orderBy('created_at', 'desc')
+        ->take(10)
+        ->get();
 
-        return view('Admin.users.banned', compact('bannedUsers'));
+        return view('Admin.users.banned', compact('bannedUsers','notifications'));
     }
 
     public function suspend(Request $request)
@@ -203,8 +215,13 @@ class PenggunaController extends Controller
         }
 
         $suspendUsers = $query->paginate($perPage);
+        $notifications = notifikasi::where('user_id', auth()->id())
+        ->where('status', 'unread')
+        ->orderBy('created_at', 'desc')
+        ->take(10)
+        ->get();
 
-        return view('Admin.users.suspend', compact('suspendUsers'));
+        return view('Admin.users.suspend', compact('suspendUsers','notifications'));
     }
 
     public function getProvinces()

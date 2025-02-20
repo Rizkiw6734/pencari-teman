@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Pinalti;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\notifikasi;
 
 class BandingController extends Controller
 {
@@ -28,8 +29,13 @@ class BandingController extends Controller
         }
 
         $bandings = $query->with(['user', 'pinalti'])->paginate(10);
+        $notifications = notifikasi::where('user_id', auth()->id())
+        ->where('status', 'unread')
+        ->orderBy('created_at', 'desc')
+        ->take(10)
+        ->get();
 
-        return view('banding.index', compact('bandings'));
+        return view('banding.index', compact('bandings','notifications'));
     }
 
     /**

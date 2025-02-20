@@ -26,4 +26,10 @@ class Laporan extends Model {
     public function pinalti() {
         return $this->HasOne(Pinalti::class, 'laporan_id');
     }
+
+    public function notifikasi()
+{
+    return $this->hasMany(notifikasi::class, 'laporan_id');
+}
+
 }

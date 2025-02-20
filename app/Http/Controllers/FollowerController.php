@@ -26,7 +26,10 @@ class FollowerController extends Controller
 
     return response()->json([
         'message' => 'Berhasil mengikuti user.',
-        'status' => 'following'
+        'status' => 'following',
+        'data' => [
+            'name' => $user->name // Tambahkan username user yang di-follow
+        ]
     ]);
 }
 

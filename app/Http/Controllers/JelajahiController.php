@@ -167,48 +167,53 @@ class JelajahiController extends Controller
     }
 
     public function penggunaByKota(Request $request, $kabupaten_id)
-    {
-        \Log::info('Kabupaten ID diterima: ' . ($kabupaten_id ?? 'null'));
+{
+    \Log::info('Kabupaten ID diterima: ' . ($kabupaten_id ?? 'null'));
 
-        if (empty($kabupaten_id)) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'ID kabupaten tidak valid.',
-                'data' => []
-            ], 400);
-        }
-
-        $query = User::where('kabupaten_id', $kabupaten_id)
-            ->whereNotNull('latitude')
-            ->whereNotNull('longitude')
-            ->where('id', '!=', Auth::id())
-            ->whereDoesntHave('roles', function ($query) {
-                $query->where('name', 'admin');
-            })
-            ->with('kabupatens');
-
-        if ($request->filled('search') && $request->input('context') === 'kota') {
-            $search = $request->input('search');
-            $query->where('name', 'like', "%{$search}%");
-        }
-
-        $pengguna = $query->get();
-
-        \Log::info('Jumlah pengguna ditemukan: ' . $pengguna->count());
-
-        if ($pengguna->isEmpty()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Tidak ada pengguna di kabupaten ini dengan lokasi yang valid.',
-                'data' => []
-            ], 200);
-        }
-
+    if (empty($kabupaten_id)) {
         return response()->json([
-            'status' => 'success',
-            'message' => 'Pengguna ditemukan.',
-            'data' => $pengguna
+            'status' => 'error',
+            'message' => 'ID kabupaten tidak valid.',
+            'data' => []
+        ], 400);
+    }
+
+    $userId = Auth::id();
+
+    $query = User::where('kabupaten_id', $kabupaten_id)
+        ->whereNotNull('latitude')
+        ->whereNotNull('longitude')
+        ->where('id', '!=', $userId)
+        ->whereDoesntHave('roles', function ($query) {
+            $query->where('name', 'admin');
+        })
+        ->whereDoesntHave('followers', function ($query) use ($userId) {
+            $query->where('follower_id', $userId);
+        })
+        ->with('kabupatens');
+
+    if ($request->filled('search') && $request->input('context') === 'kota') {
+        $search = $request->input('search');
+        $query->where('name', 'like', "%{$search}%");
+    }
+
+    $pengguna = $query->get();
+
+    \Log::info('Jumlah pengguna ditemukan: ' . $pengguna->count());
+
+    if ($pengguna->isEmpty()) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Tidak ada pengguna di kabupaten ini dengan lokasi yang valid.',
+            'data' => []
         ], 200);
     }
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Pengguna ditemukan.',
+        'data' => $pengguna
+    ], 200);
+}
 
 }

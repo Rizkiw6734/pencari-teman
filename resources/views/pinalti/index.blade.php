@@ -15,35 +15,75 @@
                 </div>
 
                 <ul class="navbar-nav d-flex align-items-center" style="margin-left: -15px;">
-                <li class="nav-item dropdown pe-2 d-flex align-items-center justify-content-center" 
+                    <li class="nav-item dropdown pe-2 d-flex align-items-center justify-content-center"
                     style="width: 45px; height: 45px; flex-grow: 0; margin: 3.2px 12px 0 0; padding: 7px; border-radius: 15px; background-color: rgba(45, 156, 219, 0.15);">
-                    <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center" 
-                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa fa-bell cursor-pointer" style="font-size: 20px; color: #2970ff;"></i>
+                    <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center"
+                       id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-bell cursor-pointer" style="font-size: 20px; color: #2970ff;"></i>
+                        @if($notifications->count() > 0)
+                            <span class="badge bg-danger text-white" style="position: absolute; top: 5px; right: 5px; font-size: 10px;">
+                                {{ $notifications->count() }}
+                            </span>
+                        @endif
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
-                    <li class="mb-2">
-                        <a class="dropdown-item border-radius-md" href="/laporan/detail/1">
-                        <div class="d-flex py-1">
-                            <div class="my-auto">
-                            <img src="/assets/img/team-2.jpg" class="avatar avatar-sm me-3">
-                            </div>
-                            <div class="d-flex flex-column justify-content-center">
-                            <h6 class="text-sm font-weight-normal mb-1">
-                                <span class="font-weight-bold">New message</span> from Laur
-                            </h6>
-                            <p class="text-xs text-secondary mb-0">
-                                <i class="fa fa-clock me-1"></i>
-                                13 minutes ago
-                            </p>
-                            </div>
-                        </div>
-                        </a>
-                    </li>
+                        @forelse($notifications as $notif)
+                            <li class="mb-2">
+                                <a class="dropdown-item border-radius-md notif-item" href="{{ $notif->link }}" data-id="{{ $notif->id }}">
+                                    <div class="d-flex py-1">
+                                        <div class="my-auto">
+                                            <img src="/assets/img/team-2.jpg" class="avatar avatar-sm me-3">
+                                        </div>
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="text-sm font-weight-normal mb-1">
+                                                <span class="font-weight-bold">{{ $notif->judul }}</span>
+                                            </h6>
+                                            <p class="text-xs text-secondary mb-0">
+                                                <i class="fa fa-clock me-1"></i>
+                                                {{ $notif->created_at->diffForHumans() }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        @empty
+                            <li class="text-center py-2">
+                                <p class="text-xs text-secondary mb-0">Tidak ada notifikasi</p>
+                            </li>
+                        @endforelse
                     </ul>
+                    <script>
+                        $(document).ready(function () {
+                            $(document).on("click", ".notif-item", function (e) {
+                                e.preventDefault(); // Jangan langsung pindah halaman
+                                let notifId = $(this).data("id");
+                                let notifLink = $(this).attr("href");
+
+                                $.ajax({
+                                    url: "/notifikasi/read/" + notifId,
+                                    type: "POST",
+                                    headers: {
+                                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                                    },
+                                    success: function (response) {
+                                        if (response.success) {
+                                            // Ubah tampilan notifikasi jadi "read" (opsional)
+                                            $(`a[data-id="${notifId}"]`).removeClass("unread").addClass("read");
+
+                                            // Redirect setelah status diperbarui
+                                            window.location.href = notifLink;
+                                        }
+                                    },
+                                    error: function () {
+                                        console.error("Gagal memperbarui notifikasi.");
+                                    }
+                                });
+                            });
+                        });
+                    </script>
                 </li>
                 <div class="d-flex align-items-center">
-                    <li class="nav-item px-3 d-flex align-items-center justify-content-center" 
+                    <li class="nav-item px-3 d-flex align-items-center justify-content-center"
                         style="width: 45px; height: 45px; flex-grow: 0; padding: 9px; border-radius: 15px; background-color: rgba(255, 91, 91, 0.15);">
                         <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center">
                             <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer" style="font-size: 20px; color: #ff5b5b;"></i>
@@ -51,11 +91,11 @@
                     </li>
 
                     <div style="width: 1px; height: 45px; background-color: #ddd; margin: 0 10px;"></div>
-                
+
                     <li class="nav-item dropdown">
-                        <a href="#" class="nav-link text-body font-weight-bold px-0 d-flex align-items-center" 
+                        <a href="#" class="nav-link text-body font-weight-bold px-0 d-flex align-items-center"
                             id="adminMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="{{ Auth::user()->foto_profil ?? '/images/marie.jpg' }}" 
+                            <img src="{{ Auth::user()->foto_profil ?? '/images/marie.jpg' }}"
                                 class="rounded-circle me-2" alt="Profile Image" width="45" height="45">
                             <span class="d-sm-inline d-none">{{ Auth::user()->name }}</span>
                             <i class="fa fa-chevron-down ms-2"></i>
@@ -82,10 +122,10 @@
                             @csrf
                         </form>
                     </li>
-                </div>           
-                </ul>        
+                </div>
+                </ul>
             </div>
-        </div>    
+        </div>
     </nav>
 
     <div class="container-fluid py-4">
@@ -99,14 +139,14 @@
                             <h4 class="mb-0">Management Pinalti</h4>
                         </div>
                         <div style="flex-shrink: 0;">
-                            <img src="{{ asset('images/header.svg') }}" alt="Welcome Image" 
+                            <img src="{{ asset('images/header.svg') }}" alt="Welcome Image"
                                  style="max-width: 150px; height: auto; object-fit: cover; border-radius: 10px;">
                         </div>
-                    </div>                
+                    </div>
                 </div>
             </div>
         </div>
-        
+
         <div class="d-flex justify-content-between">
             <div class="d-flex justify-content-between align-items-center" style="gap: 20px;">
                 <div class="d-flex align-items-center">
@@ -118,7 +158,7 @@
                         <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
                     </select>
                 </div>
-            
+
                 <div class="input-group" style="width: 300px;">
                     <form action="{{ route('laporan.index') }}" method="GET" style="display: flex; width: 100%;">
                         <div class="input-group">
@@ -127,8 +167,8 @@
                         </div>
                     </form>
                 </div>
-            </div>          
-    
+            </div>
+
             <script>
                 document.getElementById('data-count').addEventListener('change', function() {
                     var perPage = this.value;
@@ -138,15 +178,15 @@
 
             <div class="d-flex align-items-center">
                 <div class="input-group" style="width: auto; align-items: center; position: relative; margin-right: 5px;">
-                    <span class="input-group-text" 
+                    <span class="input-group-text"
                         style="background-color: transparent; border: 1px solid #C9C1FF; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 7px; padding: 10px 15px;">
                         <i class="fa fa-calendar" style="font-size: 18.5px; margin-right: 10px;"></i>
                         <i class="fa fa-caret-down" style="font-size: 18.5px;"></i>
                     </span>
-                    <input type="date" id="dateFilter" class="form-control" 
+                    <input type="date" id="dateFilter" class="form-control"
                         style="background-color: transparent; border: none; position: absolute; top: 0; left: 0; width: 100%; height: 40px; opacity: 0; cursor: pointer;">
-                </div>                
-                
+                </div>
+
                 <div class="input-group text-dark" style="width: auto; align-items: center; position: relative; margin-left: 5px;">
                     <select id="jenisHukumanFilter" class="form-control"
                         style="background-color: transparent; border: 1px solid #C9C1FF; cursor: pointer; appearance: none; -moz-appearance: none; -webkit-appearance: none; padding-right: 25px;">
@@ -156,8 +196,8 @@
                         <option value="banned">Banned</option>
                     </select>
                     <i class="fa fa-caret-down" style="font-size: 18.5px; position: absolute; right: 10px; pointer-events: none;"></i>
-                </div>              
-                
+                </div>
+
                 <script>
                     document.getElementById('dateFilter').addEventListener('change', function() {
                         var selectedDate = this.value; // Mendapatkan tanggal yang dipilih
@@ -165,7 +205,7 @@
                         rows.forEach(function(row) {
                             var dateCell = row.cells[5].textContent.trim(); // Mengambil tanggal dari kolom ke-4 (Tanggal)
                             var formattedDate = new Date(dateCell.split('-').reverse().join('-')).toISOString().split('T')[0]; // Format ulang tanggal ke YYYY-MM-DD
-                            
+
                             if (formattedDate === selectedDate) {
                                 row.style.display = ''; // Tampilkan baris jika tanggal cocok
                             } else {
@@ -173,17 +213,17 @@
                             }
                         });
                     });
-                </script>    
-                
+                </script>
+
                 <script>
                     document.getElementById('jenisHukumanFilter').addEventListener('change', function () {
                         var selectedHukuman = this.value; // Ambil nilai hukuman yang dipilih
                         var rows = document.querySelectorAll('table tbody tr'); // Semua baris tabel
-                        
+
                         rows.forEach(function (row) {
                             var jenisHukumanCell = row.cells[2];
                             var jenisHukumanText = jenisHukumanCell ? jenisHukumanCell.textContent.trim().toLowerCase() : ''; // Ambil teks dalam kolom
-                            
+
                             // Tampilkan atau sembunyikan baris tergantung pada apakah jenis hukuman cocok
                             if (selectedHukuman === '' || jenisHukumanText.includes(selectedHukuman)) {
                                 row.style.display = ''; // Tampilkan baris
@@ -193,11 +233,11 @@
                         });
                     });
                 </script>
-                             
+
             </div>
         </div>
     </div>
-    
+
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-12">
@@ -231,15 +271,15 @@
             </div>
         </div>
     </div>
-    
+
     <div class="d-flex justify-content-center mt-4">
         <nav aria-label="Page navigation">
             <ul class="pagination pagination-lg">
                 {{ $pinalti->links('pagination::bootstrap-4') }}
             </ul>
         </nav>
-    </div>    
-  
+    </div>
+
     <footer class="footer pt-3">
         <div class="container-fluid">
             <div class="row align-items-center justify-content-center">

@@ -29,28 +29,25 @@
                 @else
                     @foreach($penggunaLain as $pengguna)
                         <div class="col friend-card">
-                        
+
                             <div class="card position-relative overflow-hidden border-0 shadow-sm" style="height: 300px">
-                                <img src="{{ $pengguna->foto_profil ? asset('storage/' . $pengguna->foto_profil) : asset('images/marie.jpg') }}" 
+                                <img src="{{ $pengguna->foto_profil ? asset('storage/' . $pengguna->foto_profil) : asset('images/marie.jpg') }}"
                                     class="card-img-top" alt="Foto Profile"
                                     style="object-fit: cover; height: 100%; width: 100%; z-index: 0;">
-                        
+
                                 <div class="position-absolute top-0 end-0 m-2"
                                     style="z-index: 2000; pointer-events: auto;">
                                     <i class="fa-solid fa-user-plus text-white p-2 rounded-circle follow-btn"
-                                        style="cursor: pointer; font-size: 20px;"
-                                        data-id="{{ $pengguna->id }}"
-                                        data-name="{{ $pengguna->name }}"
-                                        onclick="event.stopPropagation(); followUser(this.dataset.id, this.dataset.name)">
+                                        style="cursor: pointer; font-size: 20px;">
                                     </i>
                                 </div>
-                        
+
                                 <div class="card-img-overlay d-flex flex-column justify-content-end text-white p-3 rounded-bottom"
                                     style="background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <h5 class="card-title mb-1 friend-name"> 
-                                                <a href="{{ route('profile.show', ['id' => $pengguna->id]) }}" 
+                                            <h5 class="card-title mb-1 friend-name">
+                                                <a href="{{ route('profile.show', ['id' => $pengguna->id]) }}"
                                                     class="text-white text-decoration-none"
                                                     onclick="event.stopPropagation();">
                                                     {{ $pengguna->name }}
@@ -60,15 +57,15 @@
                                                 <i class="fa-solid fa-location-dot"></i> {{ $pengguna->distance }} km
                                             </p>
                                         </div>
-                                        
+
                                         <div class="chat-icon position-absolute bottom-0 end-0 m-3 d-flex align-items-center justify-content-center"
                                             style="width: 50px; height: 50px; background: rgba(217, 217, 217, 0.5); border-radius: 50%; cursor: pointer;">
                                             <i class="fa-regular fa-comment-dots" style="font-size: 25px;"></i>
                                         </div>
                                     </div>
                                 </div>
-                            </div>  
-                        </div>                
+                            </div>
+                        </div>
                     @endforeach
                 @endif
             </div>
@@ -126,12 +123,4 @@
             });
         }
     </script>
-
-<script>
-    $(document).on('click', '.chat-icon', function() {
-        let userId = '4';
-        let penerimaId = '5';
-        window.location.href = '/home?penerimaId=' + penerimaId + '&userId=' + userId;
-    });
-</script>
 @endsection

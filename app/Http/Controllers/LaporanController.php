@@ -8,6 +8,7 @@ use App\Models\AdminLog;
 use App\Models\User;
 use App\Models\Pinalti;
 use Illuminate\Support\Facades\Auth;
+use App\Models\notifikasi;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class LaporanController extends Controller
@@ -33,7 +34,13 @@ class LaporanController extends Controller
         ->orderByRaw("FIELD(status, 'proses', 'diterima', 'selesai', 'ditolak')")
         ->paginate(10);
 
-        return view('laporan.index', compact('laporans'));
+        $notifications = notifikasi::where('user_id', auth()->id())
+        ->where('status', 'unread')
+        ->orderBy('created_at', 'desc')
+        ->take(10)
+        ->get();
+
+        return view('laporan.index', compact('laporans','notifications'));
     }
 
     /**
@@ -48,48 +55,64 @@ class LaporanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $data = $request->validate([
-            'reported_id' => 'required|exists:users,id',
-            'bukti' => 'image|max:5280|mimes:jpeg,png,jpg',
-            'alasan' => 'required|string|max:255',
-        ], [
-            'reported_id.required' => 'terlapor harus ada',
-            'reported_id.exists' => 'terlpor tidak valid',
-            'reported_id.different' => 'terlapor harus berbeda dari Pelapor',
-            'bukti.image' => 'File harus berupa gambar.',
-            'bukti.mimes' => 'Format gambar harus berupa jpeg, png, atau jpg.',
-            'bukti.max' => 'Ukuran gambar tidak boleh lebih dari 5MB.',
-            'alasan.required' => 'alasan laporan harus ada'
-        ]);
 
-        $data['report_id'] = Auth::id();
 
-        $existingReport = Laporan::where('report_id', $data['report_id'])
+public function store(Request $request)
+{
+    // Validasi input
+    $data = $request->validate([
+        'reported_id' => 'required|exists:users,id',
+        'bukti' => 'image|max:5280|mimes:jpeg,png,jpg',
+        'alasan' => 'required|string|max:255',
+    ], [
+        'reported_id.required' => 'Terlapor harus ada',
+        'reported_id.exists' => 'Terlapor tidak valid',
+        'bukti.image' => 'File harus berupa gambar.',
+        'bukti.mimes' => 'Format gambar harus jpeg, png, atau jpg.',
+        'bukti.max' => 'Ukuran gambar tidak boleh lebih dari 5MB.',
+        'alasan.required' => 'Alasan laporan harus ada'
+    ]);
+
+    // Set pelapor
+    $data['report_id'] = Auth::id();
+
+    // Cek apakah laporan terhadap user yang sama sudah ada dan belum selesai
+    $existingReport = Laporan::where('report_id', $data['report_id'])
         ->where('reported_id', $data['reported_id'])
         ->whereNotIn('status', ['selesai', 'ditolak'])
         ->exists();
 
-        if ($existingReport) {
-            return redirect()->back()->with('error', 'Anda sudah memiliki laporan terhadap pengguna ini. Tunggu hingga laporan selesai atau di tolak.');
-        }
-
-        if($file = $request->file('bukti')) {
-            $filename = $file->getClientOriginalName();
-            if (Laporan::where('bukti', $filename)->exists()) {
-                return redirect()->back()->with('error', 'Gambar ini sudah ada. Silakan pilih gambar yang berbeda.');
-            }
-            $file->move(public_path('assets/img/laporan'), $filename);
-            $data['bukti'] = $filename;
-        }
-
-        if (Laporan::create($data)) {
-            return redirect()->back()->with('success', 'Laporan berhasil ditambahkan.');
-        }
-
-        return redirect()->back()->with('error', 'Laporan gagal ditambahkan.');
+    if ($existingReport) {
+        return redirect()->back()->with('error', 'Anda sudah memiliki laporan terhadap pengguna ini. Tunggu hingga laporan selesai atau ditolak.');
     }
+
+    // Simpan bukti gambar jika ada
+    if ($file = $request->file('bukti')) {
+        $filename = time() . '_' . $file->getClientOriginalName(); // Tambahkan timestamp agar unik
+        if (Laporan::where('bukti', $filename)->exists()) {
+            return redirect()->back()->with('error', 'Gambar ini sudah ada. Silakan pilih gambar yang berbeda.');
+        }
+        $file->move(public_path('assets/img/laporan'), $filename);
+        $data['bukti'] = $filename;
+    }
+
+    // Simpan laporan
+    $laporan = Laporan::create($data);
+
+    // Kirim notifikasi ke semua admin
+    $admins = User::role('Admin')->get();
+    foreach ($admins as $admin) {
+        notifikasi::create([
+            'user_id' => $admin->id, // Admin sebagai penerima notifikasi
+            'laporan_id' => $laporan->id,
+            'judul' => 'Laporan Baru Masuk',
+            'pesan' => 'Ada laporan baru dari ' . auth()->user()->name,
+            'link' => url("/laporan"),
+        ]);
+    }
+
+    return redirect()->back()->with('success', 'Laporan berhasil ditambahkan.');
+}
 
     /**
      * Display the specified resource.

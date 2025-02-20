@@ -15,30 +15,73 @@
                 </div>
 
                 <ul class="navbar-nav d-flex align-items-center" style="marqgin-left: -15px;">
-                    <li class="nav-item dropdown pe-2 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; flex-grow: 0; margin: 3.2px 12px 0 0; padding: 7px; border-radius: 15px; background-color: rgba(45, 156, 219, 0.15);">
-                        <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa fa-bell cursor-pointer" style="font-size: 20px; color: #2970ff;"></i>
+                    <li class="nav-item dropdown pe-2 d-flex align-items-center justify-content-center"
+            style="width: 45px; height: 45px; flex-grow: 0; margin: 3.2px 12px 0 0; padding: 7px; border-radius: 15px; background-color: rgba(45, 156, 219, 0.15);">
+            <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center"
+               id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-bell cursor-pointer" style="font-size: 20px; color: #2970ff;"></i>
+                @if($notifications->count() > 0)
+                    <span class="badge bg-danger text-white" style="position: absolute; top: 5px; right: 5px; font-size: 10px;">
+                        {{ $notifications->count() }}
+                    </span>
+                @endif
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+                @forelse($notifications as $notif)
+                    <li class="mb-2">
+                        <a class="dropdown-item border-radius-md notif-item" href="{{ $notif->link }}" data-id="{{ $notif->id }}">
+                            <div class="d-flex py-1">
+                                <div class="my-auto">
+                                    <img src="/assets/img/team-2.jpg" class="avatar avatar-sm me-3">
+                                </div>
+                                <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="text-sm font-weight-normal mb-1">
+                                        <span class="font-weight-bold">{{ $notif->judul }}</span>
+                                    </h6>
+                                    <p class="text-xs text-secondary mb-0">
+                                        <i class="fa fa-clock me-1"></i>
+                                        {{ $notif->created_at->diffForHumans() }}
+                                    </p>
+                                </div>
+                            </div>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
-                            <li class="mb-2">
-                                <a class="dropdown-item border-radius-md" href="/laporan/detail/1">
-                                    <div class="d-flex py-1">
-                                        <div class="my-auto">
-                                            <img src="/assets/img/team-2.jpg" class="avatar avatar-sm me-3">
-                                        </div>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="text-sm font-weight-normal mb-1">
-                                                <span class="font-weight-bold">New message</span> from Laur
-                                            </h6>
-                                            <p class="text-xs text-secondary mb-0">
-                                                <i class="fa fa-clock me-1"></i> 13 minutes ago
-                                            </p>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                        </ul>
                     </li>
+                @empty
+                    <li class="text-center py-2">
+                        <p class="text-xs text-secondary mb-0">Tidak ada notifikasi</p>
+                    </li>
+                @endforelse
+            </ul>
+            <script>
+                $(document).ready(function () {
+                    $(document).on("click", ".notif-item", function (e) {
+                        e.preventDefault(); // Jangan langsung pindah halaman
+                        let notifId = $(this).data("id");
+                        let notifLink = $(this).attr("href");
+
+                        $.ajax({
+                            url: "/notifikasi/read/" + notifId,
+                            type: "POST",
+                            headers: {
+                                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                            },
+                            success: function (response) {
+                                if (response.success) {
+                                    // Ubah tampilan notifikasi jadi "read" (opsional)
+                                    $(`a[data-id="${notifId}"]`).removeClass("unread").addClass("read");
+
+                                    // Redirect setelah status diperbarui
+                                    window.location.href = notifLink;
+                                }
+                            },
+                            error: function () {
+                                console.error("Gagal memperbarui notifikasi.");
+                            }
+                        });
+                    });
+                });
+            </script>
+        </li>
 
                     <div class="d-flex align-items-center">
                         <li class="nav-item px-3 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; flex-grow: 0; padding: 9px; border-radius: 15px; background-color: rgba(255, 91, 91, 0.15);">
@@ -111,7 +154,7 @@
                         <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
                     </select>
                 </div>
-            
+
                 <div class="input-group" style="width: 300px;">
                     <form action="{{ route('laporan.index') }}" method="GET" style="display: flex; width: 100%;">
                         <div class="input-group">
@@ -286,22 +329,22 @@
                                                                         <p class="text-dark text-bold mb-0">Bukti</p>
                                                                         <p class="mb-0">{{ \Carbon\Carbon::parse($laporan->created_at)->format('d-m-Y') }}</p>
                                                                     </div>
-                                                                    
+
                                                                     <div class="d-flex justify-content-center mt-4">
                                                                         @if ($laporan->bukti)
                                                                             <div class="position-relative">
                                                                                 <img src="{{ asset('assets/img/laporan/' . $laporan->bukti) }}" alt="Bukti Laporan" class="img-fluid rounded bukti-laporan">
-                                                            
+
                                                                                 <span class="position-absolute bottom-0 end-0 mb-2 me-2 text-dark" style="font-size: 18px; cursor: pointer; background-color: #FEFEFEE5; border-radius: 50%; padding: 8px; width: 35px; height: 35px; display: flex; justify-content: center; align-items: center;">
                                                                                     <i class="fa fa-expand bukti-laporan" data-id="{{ $laporan->id }}"></i>
                                                                                 </span>
-                                                                            </div>                                                                        
+                                                                            </div>
                                                                         @else
                                                                             <span class="text-muted">Tidak ada bukti</span>
                                                                         @endif
-                                                                    </div>                                                                    
+                                                                    </div>
                                                                 </div>
-                                                                
+
                                                                 <!-- Modal Pop-up -->
                                                                 @if ($laporan->bukti)
                                                                     <div class="modal fade" id="buktiModal{{ $laporan->id }}" data-bs-backdrop="false" tabindex="-1" aria-labelledby="modalBuktiLabel{{ $laporan->id }}" aria-hidden="true" style="background-color: rgba(0, 0, 0, 0.5) !important;">
@@ -309,21 +352,21 @@
                                                                             <div class="modal-content bg-transparent border-0">
                                                                                 <div class="modal-body text-center">
                                                                                     <div class="position-relative d-inline-block">
-                                                                                        <span class="position-absolute top-0 end-0 mt-2 me-2 text-dark" 
-                                                                                              data-bs-dismiss="modal" aria-label="Close" 
+                                                                                        <span class="position-absolute top-0 end-0 mt-2 me-2 text-dark"
+                                                                                              data-bs-dismiss="modal" aria-label="Close"
                                                                                               style="font-size: 18px; cursor: pointer; background-color: #FEFEFEE5; border-radius: 50%; padding: 6px; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center;">
                                                                                             <i class="fa fa-times fa-lg"></i>
                                                                                         </span>
-                                                                        
-                                                                                        <img src="{{ asset('assets/img/laporan/' . $laporan->bukti) }}" 
+
+                                                                                        <img src="{{ asset('assets/img/laporan/' . $laporan->bukti) }}"
                                                                                              alt="Bukti Laporan" class="img-fluid rounded" style="width: 100%; height: 100%; object-fit: cover; overflow: hidden;">
                                                                                     </div>
-                                                                                </div> 
-                                                                            </div>                                                                           
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                @endif  
-                                                                
+                                                                @endif
+
                                                                 <script>
                                                                     document.addEventListener("DOMContentLoaded", function () {
                                                                         document.querySelectorAll(".bukti-laporan").forEach(img => {
@@ -346,13 +389,13 @@
                                                                     <button type="button" class="btn" style="border-radius: 12px; background-color: transparent; border: 1.5px solid #151515; color: #151515; margin-right: 20px; margin-top: 3px !important;" data-bs-toggle="modal" data-bs-target="#modalBanned{{ $laporan->id }}">
                                                                         Banned User
                                                                     </button>
-                                                        
+
                                                                     <button type="button" class="btn" style="border-radius: 12px; background-color: transparent; border: 1.5px solid #FFC300; color: #FFC300; margin-top: 3px !important;" data-bs-toggle="modal" data-bs-target="#modalPeringatan{{ $laporan->id }}">
                                                                         Beri Peringatan
                                                                     </button>
                                                                 @endif
                                                             </div>
-                                                        
+
                                                             <div>
                                                                 @if ($laporan->status === 'proses')
                                                                     @foreach ([
@@ -362,7 +405,7 @@
                                                                             {{ $action['label'] }}
                                                                         </button>
                                                                     @endforeach
-                                                        
+
                                                                     <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modalTolak{{ $laporan->id }}" style="border-radius: 12px; background-color: transparent; border: 1.5px solid #FF0000; color: #FF0000; margin-left: 20px; margin-top: 3px !important;" onclick="confirmTolakLaporan({{ $laporan->id }})">
                                                                         Tolak Laporan
                                                                     </button>
@@ -374,7 +417,7 @@
                                                                     <p class="text-success">Laporan telah selesai.</p>
                                                                 @endif
                                                             </div>
-                                                        </div>                                                        
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

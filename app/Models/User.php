@@ -170,4 +170,10 @@ class User extends Authenticatable
     return $this->following()->where('user_id', $user->id)->exists();
 }
 
+public function notifikasi()
+{
+    return $this->hasMany(notifikasi::class, 'user_id');
+}
+
+
 }

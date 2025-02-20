@@ -6,17 +6,26 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Laporan;
 use App\Models\Pinalti;
+use App\Models\notifikasi;
 
 class DashboardController extends Controller
 {
     public function index()
-    {
-        // Ambil data dari database
-        $totalUsers = User::count(); // Contoh: hitung jumlah pengguna
-        $totalReports = Laporan::count(); // Contoh: hitung jumlah laporan
-        $totalPenalties = Pinalti::count(); // Contoh: hitung jumlah pinalti
+{
+    // Ambil data utama
+    $totalUsers = User::count();
+    $totalReports = Laporan::count();
+    $totalPenalties = Pinalti::count();
 
-        // Kirim data ke view
-        return view('dashboard', compact('totalUsers', 'totalReports', 'totalPenalties'));
-    }
+    // Ambil notifikasi terbaru yang belum dibaca oleh user yang login
+    $notifications = notifikasi::where('user_id', auth()->id())
+        ->where('status', 'unread')
+        ->orderBy('created_at', 'desc')
+        ->take(10)
+        ->get();
+
+    // Kirim semua data ke view
+    return view('dashboard', compact('totalUsers', 'totalReports', 'totalPenalties', 'notifications'));
+}
+
 }

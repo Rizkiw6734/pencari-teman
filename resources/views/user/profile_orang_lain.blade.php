@@ -83,9 +83,8 @@
                                 <div class="d-grid gap-5 d-md-flex justify-content-center mt-2">
                                     <!-- Button trigger modal -->
                                     @if(auth()->user()->blokiran()->where('blocked_user_id', $user->id)->exists())
-                                        <button type="button" class="btn btn-sm btn-rounded text-secondary"
-                                                style="background-color: transparent; margin-top: 10px; border-radius: 10px;box-shadow: 0 0 10px hsla(0, 0%, 60%, 0.25);"
-                                                onclick="unblockUser({{ $user->id }})">
+                                        <button type="button" class="btn btn-sm btn-rounded text-secondary"  data-bs-toggle="modal" data-bs-target="#unblokirModal"
+                                                style="background-color: transparent; margin-top: 10px; border-radius: 10px;box-shadow: 0 0 10px hsla(0, 0%, 60%, 0.25);">
                                                 <i class="fa-solid fa-ban" style="font-size: 12px"></i> Buka Blokir
                                         </button>
                                     @else
@@ -116,6 +115,29 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Modal UnBlokir -->
+                                    <div class="modal fade" id="unblokirModal" tabindex="-1" aria-labelledby="unblokirModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header border-0 text-center w-100 mb-0">
+                                                    <h1 class="modal-title fs-3 mx-auto">Buka Blokir Pengguna</h1>
+                                                </div>
+                                                <div class="modal-body text-black text-center fs-5 mx-auto mt-0">
+                                                    <img src="/assets/img/unblokir.png" alt="" class="d-block mx-auto">
+                                                    Apakah Anda yakin ingin membuka<br>
+                                                    blokir pengguna?
+                                                </div>
+                                                <div class="modal-footer d-flex justify-content-between border-0 mx-4">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                                            style="background-color: #000000; color: white; font-size: 14px; padding: 10px 30px;">Batal</button>
+                                                    <button type="button" class="btn btn-primary" onclick="unblockUser({{ $user->id }})"
+                                                            style="background-color: #ffffff; color: rgb(0, 0, 0); font-size: 14px; padding: 10px 30px; border:#000000 solid 1px;">Ya</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
 
                                     <!-- Button trigger modal -->
                                     <button type="button" class="btn btn-sm btn-rounded text-danger" data-bs-toggle="modal"
@@ -179,7 +201,25 @@
                                                                 });
 
                                                                 function submitLaporan() {
-                                                                    document.getElementById('laporanForm').submit();
+                                                                    Swal.fire({
+                                                                        title: "Apakah Anda yakin?",
+                                                                        text: "Pastikan data yang Anda isi sudah benar!",
+                                                                        icon: "warning",
+                                                                        showCancelButton: true,
+                                                                        confirmButtonText: "Ya, kirim!",
+                                                                        cancelButtonText: "Batal"
+                                                                    }).then((result) => {
+                                                                        if (result.isConfirmed) {
+                                                                            document.getElementById('laporanForm').submit();
+                                                                            Swal.fire({
+                                                                                title: "Berhasil!",
+                                                                                text: "Laporan Anda telah dikirim.",
+                                                                                icon: "success",
+                                                                                timer: 2000,
+                                                                                showConfirmButton: false
+                                                                            });
+                                                                        }
+                                                                    });
                                                                 }
                                                             </script>
 
@@ -467,24 +507,4 @@ function unblockUser(userId) {
 </script>
 @endsection
 
-<!-- Modal UnBlokir -->
-<div class="modal fade" id="unblokirModal" tabindex="-1" aria-labelledby="unblokirModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-0 text-center w-100 mb-0">
-                <h1 class="modal-title fs-3 mx-auto">Buka Blokir Pengguna</h1>
-            </div>
-            <div class="modal-body text-black text-center fs-5 mx-auto mt-0">
-                <img src="/assets/img/unblokir.png" alt="" class="d-block mx-auto">
-                Apakah Anda yakin ingin membuka<br>
-                blokir pengguna?
-            </div>
-            <div class="modal-footer d-flex justify-content-between border-0 mx-4">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                        style="background-color: #000000; color: white; font-size: 14px; padding: 10px 30px;">Batal</button>
-                <button type="button" class="btn btn-primary"
-                        style="background-color: #ffffff; color: rgb(0, 0, 0); font-size: 14px; padding: 10px 30px; border:#000000 solid 1px;">Ya</button>
-            </div>
-        </div>
-    </div>
-</div>
+

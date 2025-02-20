@@ -6,6 +6,7 @@ use App\Models\AdminLog;
 use App\Models\Pinalti;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\notifikasi;
 
 class AdminLogController extends Controller
 {
@@ -13,21 +14,26 @@ class AdminLogController extends Controller
     public function index(Request $request)
     {
         $query = AdminLog::query(); // Inisialisasi query
-    
+
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-    
+
             $query->whereHas('user', function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%');
             })->orWhereHas('pinalti', function ($q) use ($search) {
-                $q->where('jenis_hukuman', 'like', '%' . $search . '%'); 
-            });            
+                $q->where('jenis_hukuman', 'like', '%' . $search . '%');
+            });
         }
-    
+
         $logs = $query->with(['user', 'pinalti'])->latest()->get();
-    
-        return view('Admin.log', compact('logs'));
-    }    
+        $notifications = notifikasi::where('user_id', auth()->id())
+        ->where('status', 'unread')
+        ->orderBy('created_at', 'desc')
+        ->take(10)
+        ->get();
+
+        return view('Admin.log', compact('logs','notifications'));
+    }
 
     // Menambahkan log aktivitas baru
     public function store(Request $request)

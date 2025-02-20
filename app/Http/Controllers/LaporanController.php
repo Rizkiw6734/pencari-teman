@@ -76,15 +76,23 @@ public function store(Request $request)
     // Set pelapor
     $data['report_id'] = Auth::id();
 
-    // Cek apakah laporan terhadap user yang sama sudah ada dan belum selesai
     $existingReport = Laporan::where('report_id', $data['report_id'])
         ->where('reported_id', $data['reported_id'])
-        ->whereNotIn('status', ['selesai', 'ditolak'])
-        ->exists();
+        ->orderBy('created_at', 'desc')
+        ->first();
 
     if ($existingReport) {
-        return redirect()->back()->with('error', 'Anda sudah memiliki laporan terhadap pengguna ini. Tunggu hingga laporan selesai atau ditolak.');
+        if ($existingReport->status === 'dibanned') {
+            return redirect()->back()->with('error', 'Pengguna ini sudah dibanned. Tidak perlu melaporkannya lagi.');
+        }
+        if ($existingReport->status === 'disuspend') {
+            return redirect()->back()->with('error', 'Pengguna ini sudah disuspend. Tidak perlu melaporkannya lagi.');
+        }
+        if ($existingReport->status === 'diproses') {
+            return redirect()->back()->with('error', 'Laporan terhadap pengguna ini masih dalam proses. Mohon tunggu hingga laporan selesai atau ditolak.');
+        }
     }
+
 
     // Simpan bukti gambar jika ada
     if ($file = $request->file('bukti')) {
@@ -227,7 +235,7 @@ public function store(Request $request)
                     'jenis_hukuman' => 'peringatan',
                 ]);
 
-                $laporan->status = 'selesai';
+                $laporan->status = 'peringatan';
                 $laporan->save();
                 break;
 
@@ -270,7 +278,7 @@ public function store(Request $request)
                        $laporan->save();
                    });
 
-                $laporan->status = 'diterima';
+                $laporan->status = 'disuspend';
                 $laporan->save();
                 break;
 
@@ -303,7 +311,7 @@ public function store(Request $request)
                     $laporan->save();
                 });
 
-                $laporan->status = 'selesai';
+                $laporan->status = 'dibanned';
                 $laporan->save();
                 break;
 

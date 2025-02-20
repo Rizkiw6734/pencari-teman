@@ -67,7 +67,7 @@
 
                                                                         <!-- Nama di atas, Email di bawah -->
                                                                         <div class="d-flex flex-column">
-                                                                            <span class="fw-bold" style="color: #000000; font-size: 15px; margin-left: -80px;">{{ $follower['name'] }}</span>
+                                                                            <span class="fw-bold" style="color: #000000; font-size: 15px; margin-left: -28px; max-width: 100px;">{{ $follower['name'] }}</span>
                                                                             <span class="text-muted" style="font-size: 14px;">{{ $follower['email'] }}</span>
                                                                         </div>
                                                                     </div>
@@ -338,8 +338,7 @@
                                             @method('PUT')
                                             <div class="modal-header border-0">
                                                 <h5 class="modal-title" id="editModalLabel">Edit Informasi Pribadi</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close" style="background-color: #000000;"></button>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
                                             </div>
                                             <div class="modal-body">
                                                 <div class="card"
@@ -544,8 +543,7 @@
 
                                     <div class="modal-header border-0">
                                         <h5 class="modal-title" id="editAddressModalLabel">Edit Alamat</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close" style="background-color: #000000;"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
                                     </div>
 
                                     <div class="modal-body">

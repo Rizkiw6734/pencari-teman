@@ -26,6 +26,7 @@ use App\Http\Middleware\CheckStatusUser;
 use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\BlokirController;
 use App\Http\Controllers\PengaturanController;
+use App\Http\Controllers\NotifikasiController;
 use App\Jobs\CheckExpiredSuspensionJob;
 use App\Http\Controllers\LocationController;
 use App\Models\Chat;
@@ -164,6 +165,7 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     Route::middleware('auth')->get('/messages/{user}/{penerima_id}', [ChatController::class, 'getMessages']);
     Route::post('/send-message', [ChatController::class, 'sendMessage']);
     Route::get('/messages/status/{userId}/{penerimaId}', [ChatController::class, 'getStatus']);
+    Route::post('/notifikasi/read/{id}', [NotifikasiController::class, 'markAsRead'])->middleware('auth');
     // Suspend Page
     Route::get('/suspend', [UserStatusController::class, 'suspendPage'])->name('user.suspend');
     });

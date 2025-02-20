@@ -123,9 +123,12 @@
                             <div class="col">
                                 <div class="card position-relative overflow-hidden border-0 shadow-sm" style="height: 300px">
                                     <img src="${imageUrl}" class="card-img-top" alt="Foto Profile" style="object-fit: cover; height: 100%; width: 100%; z-index: 0;">
-                                    <div class="position-absolute top-0 end-0 m-2">
-                                        <i class="fa-solid fa-user-plus text-white p-2 rounded-circle"></i>
-                                    </div>
+                                   <div class="position-absolute top-0 end-0 m-2"
+                                    style="z-index: 2000; pointer-events: auto;">
+                                    <i class="fa-solid fa-user-plus text-white p-2 rounded-circle follow-btn"
+                                        style="cursor: pointer; font-size: 20px;" onclick="followUser(${user.id})">
+                                    </i>
+                                </div>
                                     <div class="card-img-overlay d-flex flex-column justify-content-end text-white p-3 rounded-bottom" style="background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div>
@@ -149,5 +152,59 @@
                 }
             }
         });
+    </script>
+    <script>
+       function followUser(userId) {
+    fetch(`/follow/${userId}`, {
+        method: "POST",
+        headers: {
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+    })
+    .then(response => response.json().catch(() => {
+        console.error("Gagal parsing JSON, respons server:", response);
+        throw new Error("Respons bukan JSON yang valid.");
+    }))
+    .then(data => {
+        console.log("Response dari server:", data); // Debugging response
+
+        if (data && data.status === "following") {
+            // Ambil nama pengguna jika ada
+            const userName = data.data && data.data.name ? data.data.name : "";
+
+            Swal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "success",
+                title: userName ? `Berhasil mengikuti ${userName}` : data.message,
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+            // Tunggu 1.5 detik sebelum refresh
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        } else {
+            Swal.fire({
+                icon: "warning",
+                title: "Tindakan berhasil, tetapi respons server tidak sesuai!",
+                text: "Periksa kembali data yang dikembalikan dari server."
+            });
+        }
+    })
+    .catch(error => {
+        console.error("Kesalahan:", error);
+        Swal.fire({
+            icon: "error",
+            title: "Terjadi kesalahan dalam memproses permintaan.",
+            text: error.message
+        });
+    });
+}
+
+
     </script>
 @endsection

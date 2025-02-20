@@ -15,33 +15,74 @@
         </div>
 
         <ul class="navbar-nav d-flex align-items-center" style="margin-left: -15px;">
-          <li class="nav-item dropdown pe-2 d-flex align-items-center justify-content-center"
-              style="width: 45px; height: 45px; flex-grow: 0; margin: 3.2px 12px 0 0; padding: 7px; border-radius: 15px; background-color: rgba(45, 156, 219, 0.15);">
+            <li class="nav-item dropdown pe-2 d-flex align-items-center justify-content-center"
+            style="width: 45px; height: 45px; flex-grow: 0; margin: 3.2px 12px 0 0; padding: 7px; border-radius: 15px; background-color: rgba(45, 156, 219, 0.15);">
             <a href="javascript:;" class="nav-link text-body p-0 d-flex align-items-center justify-content-center"
-              id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="fa fa-bell cursor-pointer" style="font-size: 20px; color: #2970ff;"></i>
+               id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-bell cursor-pointer" style="font-size: 20px; color: #2970ff;"></i>
+                @if($notifications->count() > 0)
+                    <span class="badge bg-danger text-white" style="position: absolute; top: 5px; right: 5px; font-size: 10px;">
+                        {{ $notifications->count() }}
+                    </span>
+                @endif
             </a>
             <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
-              <li class="mb-2">
-                <a class="dropdown-item border-radius-md" href="/laporan/detail/1">
-                  <div class="d-flex py-1">
-                    <div class="my-auto">
-                      <img src="/assets/img/team-2.jpg" class="avatar avatar-sm me-3">
-                    </div>
-                    <div class="d-flex flex-column justify-content-center">
-                      <h6 class="text-sm font-weight-normal mb-1">
-                        <span class="font-weight-bold">New message</span> from Laur
-                      </h6>
-                      <p class="text-xs text-secondary mb-0">
-                        <i class="fa fa-clock me-1"></i>
-                        13 minutes ago
-                      </p>
-                    </div>
-                  </div>
-                </a>
-              </li>
+                @forelse($notifications as $notif)
+                    <li class="mb-2">
+                        <a class="dropdown-item border-radius-md notif-item" href="{{ $notif->link }}" data-id="{{ $notif->id }}">
+                            <div class="d-flex py-1">
+                                <div class="my-auto">
+                                    <img src="/assets/img/team-2.jpg" class="avatar avatar-sm me-3">
+                                </div>
+                                <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="text-sm font-weight-normal mb-1">
+                                        <span class="font-weight-bold">{{ $notif->judul }}</span>
+                                    </h6>
+                                    <p class="text-xs text-secondary mb-0">
+                                        <i class="fa fa-clock me-1"></i>
+                                        {{ $notif->created_at->diffForHumans() }}
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                @empty
+                    <li class="text-center py-2">
+                        <p class="text-xs text-secondary mb-0">Tidak ada notifikasi</p>
+                    </li>
+                @endforelse
             </ul>
-          </li>
+            <script>
+                $(document).ready(function () {
+                    $(document).on("click", ".notif-item", function (e) {
+                        e.preventDefault(); // Jangan langsung pindah halaman
+                        let notifId = $(this).data("id");
+                        let notifLink = $(this).attr("href");
+
+                        $.ajax({
+                            url: "/notifikasi/read/" + notifId,
+                            type: "POST",
+                            headers: {
+                                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                            },
+                            success: function (response) {
+                                if (response.success) {
+                                    // Ubah tampilan notifikasi jadi "read" (opsional)
+                                    $(`a[data-id="${notifId}"]`).removeClass("unread").addClass("read");
+
+                                    // Redirect setelah status diperbarui
+                                    window.location.href = notifLink;
+                                }
+                            },
+                            error: function () {
+                                console.error("Gagal memperbarui notifikasi.");
+                            }
+                        });
+                    });
+                });
+            </script>
+        </li>
+
           <div class="d-flex align-items-center">
             <li class="nav-item px-3 d-flex align-items-center justify-content-center"
                 style="width: 45px; height: 45px; flex-grow: 0; padding: 9px; border-radius: 15px; background-color: rgba(255, 91, 91, 0.15);">
@@ -255,7 +296,7 @@
         </div>
       </div>
     </div>
-  </div>  
+  </div>
 
   <!-- Tambahkan CDN Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -283,7 +324,7 @@
           }
         }
       });
-      
+
       // Chart for Total Laporan
       const totalReportsCanvas = document.getElementById('totalReportsChart');
       const totalReports = totalReportsCanvas.getAttribute('data-total');
@@ -306,7 +347,7 @@
           }
         }
       });
-      
+
       // Chart for Total Pinalti
       const totalPenaltiesCanvas = document.getElementById('totalPenaltiesChart');
       const totalPenalties = totalPenaltiesCanvas.getAttribute('data-total');
@@ -329,7 +370,7 @@
           }
         }
       });
-      
+
       // Reviews Pengguna
       const reviewsCtx = document.getElementById('reviewsChart').getContext('2d');
       new Chart(reviewsCtx, {
@@ -352,7 +393,7 @@
           cutout: '70%'
         }
       });
-      
+
       // Chart for Neutral Reviews
       const neutralCtx = document.getElementById('neutralChart').getContext('2d');
       new Chart(neutralCtx, {
@@ -375,7 +416,7 @@
           cutout: '70%'
         }
       });
-      
+
       // Chart for Negative Reviews
       const negativeCtx = document.getElementById('negativeChart').getContext('2d');
       new Chart(negativeCtx, {
@@ -398,7 +439,7 @@
           cutout: '70%'
         }
       });
-      
+
       // Data Pengguna Tahun 2024
       const penggunaCtx = document.getElementById('chart-line').getContext('2d');
       const data2024 = {

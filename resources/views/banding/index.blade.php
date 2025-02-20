@@ -27,6 +27,7 @@
                 @endif
             </a>
             <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+                <div style="height: 300px; overflow-y: scroll; solid #ccc;">
                 @forelse($notifications as $notif)
                     <li class="mb-2">
                         <a class="dropdown-item border-radius-md notif-item" href="{{ $notif->link }}" data-id="{{ $notif->id }}">
@@ -51,6 +52,7 @@
                         <p class="text-xs text-secondary mb-0">Tidak ada notifikasi</p>
                     </li>
                 @endforelse
+                </div>
             </ul>
             <script>
                 $(document).ready(function () {

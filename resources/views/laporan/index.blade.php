@@ -264,6 +264,9 @@
                                         @elseif($laporan->status == 'ditolak') status-ditolak
                                         @elseif($laporan->status == 'diterima') status-diterima
                                         @elseif($laporan->status == 'selesai') status-diterima
+                                        @elseif($laporan->status == 'dibanned') status-banned
+                                        @elseif($laporan->status == 'disuspend') status-suspend
+                                        @elseif($laporan->status == 'peringatan') status-peringatan
                                         @endif">
                                         @if($laporan->status == 'proses')
                                             <i class="fa fa-spinner me-1 mt-2"></i> Proses
@@ -273,6 +276,12 @@
                                             <i class="fa fa-check me-1 mt-2"></i> Diterima
                                         @elseif($laporan->status == 'selesai')
                                             <i class="fa fa-check me-1 mt-2"></i> Selesai
+                                        @elseif($laporan->status == 'dibanned')
+                                            <i class="fa fa-ban me-1 mt-2"></i> Dibanned
+                                        @elseif($laporan->status == 'disuspend')
+                                            <i class="fa fa-exclamation-triangle me-1 mt-2"></i> Disuspend
+                                        @elseif($laporan->status == 'peringatan')
+                                            <i class="fa fa-exclamation-circle me-1 mt-2"></i> Peringatan
                                         @endif
                                     </span>
                                 </td>
@@ -417,6 +426,12 @@
                                                                     <p class="text-danger">Laporan telah ditolak.</p>
                                                                 @elseif ($laporan->status === 'selesai')
                                                                     <p class="text-success">Laporan telah selesai.</p>
+                                                                @elseif ($laporan->status === 'dibanned')
+                                                                    <p class="text-dark"><i class="fa fa-ban me-1"></i> Pengguna telah dibanned secara permanen.</p>
+                                                                @elseif ($laporan->status === 'disuspend')
+                                                                    <p style="color: #FFC300;"><i class="fa fa-exclamation-triangle me-1"></i> Pengguna sedang dalam masa suspend.</p>
+                                                                @elseif ($laporan->status === 'peringatan')
+                                                                    <p style="color: #FF8800;"><i class="fa fa-exclamation-circle me-1"></i> Pengguna telah diberi peringatan.</p>
                                                                 @endif
                                                             </div>
                                                         </div>

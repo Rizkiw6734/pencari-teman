@@ -186,26 +186,54 @@
     }
 
     .status-proses {
-        background-color: #E9E9E9 !important;
-        color: #5D5D5D !important;
-        padding: 0;
-        width: 100px;
-        height: 30px;
+        background-color: #757575;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
     }
+
     .status-ditolak {
-        background-color: #FFF0F0 !important;
-        color: #FF0000 !important;
-        padding: 0;
-        width: 100px;
-        height: 30px;
+        background-color: #FF5B5B;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
     }
+
     .status-diterima {
-        background-color: #F0FFF3 !important;
-        color: #00FF37 !important;
-        padding: 0;
-        width: 100px;
-        height: 30px;
+        background-color: #2EDDA6;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
     }
+
+    .status-selesai {
+        background-color: #2EDDA6;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    .status-banned {
+        background-color: #000000;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    .status-suspend {
+        background-color: #FFC300;
+        color: black;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    .status-peringatan {
+        background-color: #FF8800;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
 
     .pagination {
         list-style: none;

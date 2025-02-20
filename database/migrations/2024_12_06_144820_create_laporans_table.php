@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('reported_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('bukti')->nullable();
             $table->string('alasan');
-            $table->enum('status', ['proses', 'diterima', 'ditolak', 'selesai'])->default('proses');
+            $table->enum('status', ['proses', 'disuspend', 'dibanned', 'peringatan', 'ditolak', 'selesai'])->default('proses');
             $table->timestamps();
         });
     }

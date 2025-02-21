@@ -35,14 +35,14 @@
 
                                 @if ($isFollowing)
                                     <!-- Ikon jika sudah mengikuti -->
-                                    <i class="fa-solid fa-user-check text-secondary p-2 rounded-circle"
+                                    <i class="fa-solid fa-user-check text-success p-2 rounded-circle"
                                         style="font-size: 20px;" data-id="{{ $user->id }}"
                                         data-name="{{ $user->name }}"
                                         onclick="unfollowUser({{ $user->id }}, '{{ $user->name }}')"
                                         title="Sudah diikuti"></i>
                                 @else
                                     <!-- Ikon jika belum mengikuti -->
-                                    <i class="fa-solid fa-user-plus text-secondary p-2 rounded-circle"
+                                    <i class="fa-solid fa-user-plus text-danger p-2 rounded-circle"
                                         style="font-size: 20px;" data-id="{{ $user->id }}"
                                         data-name="{{ $user->name }}"
                                         onclick="followUser({{ $user->id }}, '{{ $user->name }}')"

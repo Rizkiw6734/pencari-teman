@@ -689,14 +689,16 @@
    * #DETAIL COMMENT
   \*-----------------------------------*/
   .hero-title {
-    margin-left: 15px;
-    margin-bottom: 20px;
+    font-size: 32px;
+    margin-left: 30px;
+    margin-top: 20px;
+    margin-bottom: 10px;
   }
 
   .departments-2 {
     padding-block: var(--section-padding);
     text-align: left;
-    margin-top: -200px;
+    margin-top: 200px;
 }
 
 .card {
@@ -717,11 +719,11 @@
 
 .col-md-6 {
     flex: 0 0 50%; /* Setiap kolom jadi 50% agar 2 card sejajar */
-    max-width: 48%;
+    max-width: 43%;
 }
 
 .card-text {
-    font-size: 15px;
+    font-size: 14px;
 }
 
 .rating-2 {
@@ -749,6 +751,8 @@
     list-style: none;
     justify-content: center;
     padding: 0;
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .pagination .page-item {

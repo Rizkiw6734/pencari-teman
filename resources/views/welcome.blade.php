@@ -7,22 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AroundYou - Temukan Teman Baru</title>
 
-    <!--
-    - favicon
-  -->
+    <!--- favicon -->
     <link rel="icon" type="image/png" href="/assets/img/logo.jpg">
 
-    <!--
-    - custom css link
-  -->
+    <!--- custom css link -->
     <link rel="stylesheet" href="./assets/css/style.custom.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
-    <!--
-    - google font link
-  -->
+    <!--- google font link -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -31,9 +25,7 @@
 </head>
 
 <body id="top">
-    <!--
-    - #HEADER
-  -->
+    <!--- #HEADER -->
     <header class="header" data-header>
         <div class="container-nv">
             <div class="overlay" data-overlay></div>
@@ -302,125 +294,6 @@
         </article>
     </main>
 
-    <section id="departments" class="departments-2">
-        <div class="container departments-content">
-            <div id="full-comments" style="display: none;">
-                <div class="card">
-                    <div class="card-body">
-                        <h1 class="h1 hero-title">Semua Komentar</h1>
-                        <div class="row">
-                            <div class="col-md-6 col-sm-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="user-info">
-                                            <img src="/assets/img/team-2.jpg" alt="User Photo" class="user-photo">
-                                            <div>
-                                                <h5 class="card-title">Andrew</h5>
-                                                <div class="rating-2">⭐⭐⭐⭐4/5</div>
-                                            </div>
-                                        </div>
-                                        <p class="card-text">Saya sangat puas menggunakan AroundYou! Aplikasi ini memungkinkan saya untuk dengan mudah menjelajahi berbagai komunitas dan bertemu orang-orang baru dengan minat yang serupa. Fitur-fitur seperti pencarian teman berdasarkan lokasi atau hobi membuat pengalaman semakin personal.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="user-info">
-                                            <img src="/assets/img/team-2.jpg" alt="User Photo" class="user-photo">
-                                            <div>
-                                                <h5 class="card-title">Andrew</h5>
-                                                <div class="rating-2">⭐⭐⭐⭐ 4/5</div>
-                                            </div>
-                                        </div>
-                                        <p class="card-text">Saya sangat puas menggunakan AroundYou! Aplikasi ini memungkinkan saya untuk dengan mudah menjelajahi berbagai komunitas dan bertemu orang-orang baru dengan minat yang serupa. Fitur-fitur seperti pencarian teman berdasarkan lokasi atau hobi membuat pengalaman semakin personal.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 col-sm-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="user-info">
-                                            <img src="/assets/img/team-2.jpg" alt="User Photo" class="user-photo">
-                                            <div>
-                                                <h5 class="card-title">Andrew</h5>
-                                                <div class="rating-2">⭐⭐⭐⭐4/5</div>
-                                            </div>
-                                        </div>
-                                        <p class="card-text">Saya sangat puas menggunakan AroundYou! Aplikasi ini memungkinkan saya untuk dengan mudah menjelajahi berbagai komunitas dan bertemu orang-orang baru dengan minat yang serupa. Fitur-fitur seperti pencarian teman berdasarkan lokasi atau hobi membuat pengalaman semakin personal.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="user-info">
-                                            <img src="/assets/img/team-2.jpg" alt="User Photo" class="user-photo">
-                                            <div>
-                                                <h5 class="card-title">Andrew</h5>
-                                                <div class="rating-2">⭐⭐⭐⭐ 4/5</div>
-                                            </div>
-                                        </div>
-                                        <p class="card-text">Saya sangat puas menggunakan AroundYou! Aplikasi ini memungkinkan saya untuk dengan mudah menjelajahi berbagai komunitas dan bertemu orang-orang baru dengan minat yang serupa. Fitur-fitur seperti pencarian teman berdasarkan lokasi atau hobi membuat pengalaman semakin personal.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 col-sm-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="user-info">
-                                            <img src="/assets/img/team-2.jpg" alt="User Photo" class="user-photo">
-                                            <div>
-                                                <h5 class="card-title">Andrew</h5>
-                                                <div class="rating-2">⭐⭐⭐⭐4/5</div>
-                                            </div>
-                                        </div>
-                                        <p class="card-text">Saya sangat puas menggunakan AroundYou! Aplikasi ini memungkinkan saya untuk dengan mudah menjelajahi berbagai komunitas dan bertemu orang-orang baru dengan minat yang serupa. Fitur-fitur seperti pencarian teman berdasarkan lokasi atau hobi membuat pengalaman semakin personal.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="user-info">
-                                            <img src="/assets/img/team-2.jpg" alt="User Photo" class="user-photo">
-                                            <div>
-                                                <h5 class="card-title">Andrew</h5>
-                                                <div class="rating-2">⭐⭐⭐⭐ 4/5</div>
-                                            </div>
-                                        </div>
-                                        <p class="card-text">Saya sangat puas menggunakan AroundYou! Aplikasi ini memungkinkan saya untuk dengan mudah menjelajahi berbagai komunitas dan bertemu orang-orang baru dengan minat yang serupa. Fitur-fitur seperti pencarian teman berdasarkan lokasi atau hobi membuat pengalaman semakin personal.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination">
-                      <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                          <span aria-hidden="true">&laquo; Sebelumnya </span>
-                        </a>
-                      </li>
-                      <li class="page-item"><a class="page-link" href="#">1</a></li>
-                      <li class="page-item"><a class="page-link" href="#">2</a></li>
-                      <li class="page-item"><a class="page-link" href="#">3</a></li>
-                      <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                          <span aria-hidden="true">Selanjutnya &raquo;</span>
-                        </a>
-                      </li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </section>
-
     <section class="min-h-screen flex items-center justify-center relative">
         <div class="bg-white flex rounded-2xl shadow-lg max-w-3xl p-5 items-center relative">
             <div class="md:w-1/2 px-8 md:px-16">
@@ -675,21 +548,6 @@
                 });
             });
         });
-
-            document.addEventListener("DOMContentLoaded", function () {
-                const toggleButton = document.getElementById("toggle-comments");
-                const fullComments = document.getElementById("full-comments");
-
-            toggleButton.addEventListener("click", function () {
-            if (fullComments.style.display === "none" || fullComments.style.display === "") {
-                fullComments.style.display = "block";
-                toggleButton.textContent = "Tutup semua Komentar";
-            } else {
-                fullComments.style.display = "none";
-                toggleButton.textContent = "Lihat semua Komentar";
-            }
-        });
-    });
 </script>
 
 

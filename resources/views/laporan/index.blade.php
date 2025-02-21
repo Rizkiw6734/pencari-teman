@@ -21,7 +21,7 @@
                id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fa fa-bell cursor-pointer" style="font-size: 20px; color: #2970ff;"></i>
                 @if($notifications->count() > 0)
-                    <span class="badge bg-danger text-white" style="position: absolute; top: 5px; right: 5px; font-size: 10px;">
+                    <span class="badge text-white" style="width: 20px; height: 20px; border-radius: 50%; position: absolute; top: -3px; left: -8px; background-color: #2D9CDB; display: flex; align-items: center; justify-content: center; font-size: 10px; line-height: 20px; text-align: center;">
                         {{ $notifications->count() }}
                     </span>
                 @endif

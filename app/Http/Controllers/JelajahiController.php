@@ -83,7 +83,7 @@ class JelajahiController extends Controller
 
         // Filter hanya yang dalam radius 5 km
         $penggunaLain = $penggunaLain->filter(function ($pengguna) {
-            return $pengguna->distance <= 25;
+            return $pengguna->distance <= 5;
         })->sortBy('distance')->values();
 
         // if ($request->ajax()) {

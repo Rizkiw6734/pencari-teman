@@ -163,7 +163,6 @@
                             <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
                         </select>
                     </div>
-
                     <div class="input-group " style="width: 300px;">
                         <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
                         <input type="text" id="search" class="form-control" placeholder="Mencari apa?">
@@ -180,15 +179,25 @@
                 <div class="d-flex align-items-center" style="gap: 10px;">
                     <!-- Dropdown untuk Provinsi -->
                     <select id="provinces" class="form-select"
-                        style="background-color: transparent; width: auto; padding-right: 33px; border: 1px solid #C9C1FF;">
+                        style="background-color: transparent; width: 100px; padding-right: 33px; border: 1px solid #C9C1FF;">
                         <option value="">Provinsi</option>
                     </select>
 
                     <!-- Dropdown untuk Kabupaten -->
                     <select id="regencies" class="form-select"
-                        style="background-color: transparent; width: auto; padding-right: 33px; border: 1px solid #C9C1FF;">
+                        style="background-color: transparent; width: 120px; padding-right: 33px; border: 1px solid #C9C1FF;">
                         <option value="">Kabupaten</option>
                     </select>
+
+                    <script>
+                        $(document).ready(function () {
+                            $('#provinces, #regencies').on('change', function () {
+                                let selectedText = $(this).find("option:selected").text();
+                                $(this).attr('title', selectedText);
+                            });
+                        });
+                    </script>
+                </div>
             </div>
         </div>
 
@@ -215,13 +224,12 @@
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->email }}</td>
                                     <td>
-                                        <span
-                                            class="badge align-items-center justify-content-center
-                                        {{ $user->status === 'suspend' ? 'status-suspend' : 'status-active' }}">
+                                        <span class="badge d-inline-flex align-items-center justify-content-center px-3 py-2
+                                            {{ $user->status === 'suspend' ? 'status-suspend' : 'status-active' }}">
                                             @if ($user->status === 'suspend')
-                                                <i class="fa fa-stop-circle me-1 mt-2"></i> Suspend
+                                                <i class="fa fa-exclamation-triangle me-1"></i> Suspend
                                             @else
-                                                <i class="fa fa-check-square me-1 mt-2"></i> Aktif
+                                                <i class="fa fa-check me-1"></i> Aktif
                                             @endif
                                         </span>
                                     </td>
@@ -243,7 +251,7 @@
                                             class="d-inline" id="enable-form-{{ $user->id }}">
                                             @csrf
                                             <button type="button" class="btn btn-sm text-white"
-                                                style="background-color: #5D87FF; margin-top: 10px !important;"
+                                                style="background-color: #5D87FF; margin-top: 12px !important;"
                                                 onclick="confirmEnable('{{ $user->id }}')">
                                                 Buka Suspend
                                             </button>

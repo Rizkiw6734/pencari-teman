@@ -1,35 +1,115 @@
 @extends('layouts.user')
-
 @section('content')
     <div class="main-content"
         style="max-width: 1200px; margin: 0 auto; margin-top: 0px; background-color: #F0F3F9;
-           padding: 20px; margin-left: 260px; position: relative; z-index: 10;">
+           padding: 20px; margin-left: 260px; position: relative; z-index: 10; min-height: 100vh;">
 
         <div class="container">
             <div class="d-flex justify-content-between align-items-center">
-                <h3 class="fw-bold" id="judulTeman">Teman di Kota</h3>
-            </div>
-
-            <div style="display: flex; align-items: center; margin-bottom: 10px; border: 1px solid #EFF3F4; border-radius:20px; padding: 5px 10px; width: 100%; background-color: #f9f9f9;">
-                <span style="color: #757575; font-size: 16px; cursor: default;">
-                    <i class="fa fa-search ms-1" style="font-size: 15px"></i>
-                </span>
-                <input type="text" id="searchInput" placeholder="Cari teman seru disekitar anda" style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 5px;">
-            </div>
-
-            <div id="filterByKota" class="mt-3">
-                <div class="dropdown d-flex">
-                    <select id="provinsi" class="form-select me-2" style="width: 150px;">
+                <h3 class="fw-bold m-0" id="judulTeman">Teman di Kota</h3>
+                <div id="filterByKota" class="d-flex align-items-center">
+                    <select id="provinsi" class="form-select me-2 custom-select">
                         <option value="">Pilih Provinsi</option>
                     </select>
-                    <select id="kota" class="form-select" style="width: 150px;">
+                    <select id="kota" class="form-select custom-select">
                         <option value="">Pilih Kota</option>
                     </select>
                 </div>
+                <script>
+                    $(document).ready(function() {
+                        loadProvinsi();
+
+                        function loadProvinsi() {
+                            $.ajax({
+                                url: '/jelajahi/provinsi',
+                                type: 'GET',
+                                dataType: 'json',
+                                success: function(response) {
+                                    if (response.status === 'success') {
+                                        $('#provinsi').empty().append('<option value="">Pilih Provinsi</option>');
+                                        $.each(response.data, function(key, provinsi) {
+                                            $('#provinsi').append('<option value="' + provinsi.id + '" data-name="' + provinsi.name + '">' + provinsi.name + '</option>');
+                                        });
+                                    }
+                                }
+                            });
+                        }
+
+                        function loadKota(provinsiId) {
+                            $('#kota').html('<option value="">Memuat...</option>');
+                            $.ajax({
+                                url: '/jelajahi/provinsi/' + provinsiId,
+                                type: 'GET',
+                                dataType: 'json',
+                                success: function(response) {
+                                    $('#kota').empty().append('<option value="">Pilih Kota</option>');
+                                    if (response.status === 'success') {
+                                        $.each(response.data, function(key, kota) {
+                                            $('#kota').append('<option value="' + kota.id + '" data-name="' + kota.name + '">' + kota.name + '</option>');
+                                        });
+                                    }
+                                }
+                            });
+                        }
+
+                        $(document).ready(function () {
+                            $('#provinsi, #kota').on('change', function () {
+                                let selectedText = $(this).find("option:selected").text();
+                                $(this).attr('title', selectedText);
+                            });
+                        });
+
+                        function capitalizeFirstLetter(text) {
+                            let exceptions = { "dki jakarta": "DKI Jakarta"};
+                            text = text.toLowerCase();
+                            return exceptions[text] || text.replace(/\b\w/g, char => char.toUpperCase());
+                        }
+
+                        function updateJudul() {
+                            let provinsiText = capitalizeFirstLetter($('#provinsi option:selected').text().trim());
+                            let kotaText = capitalizeFirstLetter($('#kota option:selected').text().trim());
+
+                            if (provinsiText !== "Pilih Provinsi" && kotaText !== "Pilih Kota") {
+                                $('#judulTeman').text(`Teman di ${provinsiText} · ${kotaText}`);
+                            } else if (provinsiText !== "Pilih Provinsi") {
+                                $('#judulTeman').text(`Teman di ${provinsiText}`);
+                            } else {
+                                $('#judulTeman').text("Teman di Kota");
+                            }
+                        }
+
+                        $('#provinsi').change(function() {
+                            let provinsiId = $(this).val();
+                            $('#kota').empty().append('<option value="">Pilih Kota</option>');
+                            if (provinsiId) {
+                                loadKota(provinsiId);
+                            } else {
+                                $('#kota').empty().append('<option value="">Pilih Kota</option>');
+                            }
+                            updateJudul();
+                        });
+
+                        $('#kota').change(function() {
+                            updateJudul();
+                        });
+                    });
+                </script>
+            </div>
+            <div class="mt-3" style="display: flex; align-items: center; margin-bottom: 10px; border: 1px solid #EFF3F4; border-radius:20px; padding: 5px 10px; width: 100%; background-color: #f9f9f9;">
+                <span style="color: #757575; font-size: 16px; cursor: default;">
+                    <i class="fa fa-search ms-1" style="font-size: 15px"></i>
+                </span>
+                <input type="text" id="searchInput" placeholder="Jelajahi teman baru di Kota Anda" style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 5px;">
             </div>
 
-            <div id="userList" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 mt-3">
+            <div id="userList" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 mt-0">
                 <!-- Data pengguna akan dimuat di sini -->
+                <div class="flex-grow-1 text-center" style="overflow-y: auto; min-height: 400px; max-height: 600px;">
+                    <div id="welcome-message">
+                        <img src="{{ asset('images/no-users.svg') }}" alt="Tidak ada pengguna" class="mt-5" style="max-width: 50%; height: auto;">
+                        <p class="mt-2 text-dark">Tidak ada data yang tersedia. Silahkan pilih filter terlebih dahulu.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -95,6 +175,18 @@
                     type: 'GET',
                     dataType: 'json',
                     success: function(response) {
+                        if (response.data.length === 0) {
+                            $('#userList').html(`
+                                <div class="flex-grow-1 text-center" style="overflow-y: auto; min-height: 400px; max-height: 600px;">
+                                    <div id="welcome-message">
+                                        <img src="{{ asset('images/no-users.svg') }}" alt="Tidak ada pengguna" class="mt-5" style="max-width: 50%; height: auto;">
+                                        <p class="mt-2 text-dark">Tidak ada pengguna yang tersedia di daerah ini.</p>
+                                    </div>
+                                </div>
+                            `);
+                            return; // Menghentikan eksekusi agar renderUserList tidak dipanggil
+                        }
+
                         renderUserList(response.data, 'Tidak ada pengguna di kota ini.');
                     },
                     error: function(xhr) {
@@ -112,15 +204,15 @@
                 } else {
                     users.forEach(user => {
                         console.log(user); // 🔍 Cek seluruh data user
-    console.log(user.kabupatens); // 🔍 Cek apakah relasi ada
+                        console.log(user.kabupatens); // 🔍 Cek apakah relasi ada
 
-    const distanceOrLocation = (user.kabupatens && user.kabupatens.name)
-        ? user.kabupatens.name
-        : 'Lokasi tidak tersedia';
+                        const distanceOrLocation = (user.kabupatens && user.kabupatens.name)
+                            ? user.kabupatens.name
+                            : 'Lokasi tidak tersedia';
                         const imageUrl = user.foto_profil ? `/storage/${user.foto_profil}` : '/images/marie.jpg';
 
                         const userCard = `
-                            <div class="col">
+                            <div class="col friend-card">
                                 <div class="card position-relative overflow-hidden border-0 shadow-sm" style="height: 300px">
                                     <img src="${imageUrl}" class="card-img-top" alt="Foto Profile" style="object-fit: cover; height: 100%; width: 100%; z-index: 0;">
                                    <div class="position-absolute top-0 end-0 m-2"

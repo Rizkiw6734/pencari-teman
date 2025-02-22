@@ -12,7 +12,7 @@
                 <span style="color: #757575; font-size: 16px; cursor: default;">
                     <i class="fa fa-search ms-1" style="font-size: 15px"></i>
                 </span>
-                <input type="text" id="searchInput" placeholder="Cari teman seru di sekitar anda"
+                <input type="text" id="searchInput" placeholder="Cari teman seru di sekitar Anda"
                     style="border: none; outline: none; flex: 1; font-size: 15px; background-color: transparent; padding: 5px;">
             </div>
 

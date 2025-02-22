@@ -259,35 +259,37 @@
                                 <td>{{ $laporan->terlapor->name }}</td>
                                 <td>{{ \Carbon\Carbon::parse($laporan->created_at)->format('d-m-Y') }}</td>
                                 <td>
-                                    <span class="badge align-items-center justify-content-center
+                                    <span class="badge d-inline-flex align-items-center justify-content-center px-3 py-2
                                         @if($laporan->status == 'proses') status-proses
-                                        @elseif($laporan->status == 'ditolak') status-ditolak
+                                        @elseif($laporan->status == 'dibanned') status-banned
+                                        @elseif($laporan->status == 'peringatan') status-peringatan
+                                        @elseif($laporan->status == 'disuspend') status-suspend
                                         @elseif($laporan->status == 'diterima') status-diterima
                                         @elseif($laporan->status == 'selesai') status-diterima
-                                        @elseif($laporan->status == 'dibanned') status-banned
-                                        @elseif($laporan->status == 'disuspend') status-suspend
-                                        @elseif($laporan->status == 'peringatan') status-peringatan
+                                        @elseif($laporan->status == 'ditolak') status-ditolak
                                         @endif">
+                                        
                                         @if($laporan->status == 'proses')
-                                            <i class="fa fa-spinner me-1 mt-2"></i> Proses
-                                        @elseif($laporan->status == 'ditolak')
-                                            <i class="fa fa-times me-1 mt-2"></i> Ditolak
-                                        @elseif($laporan->status == 'diterima')
-                                            <i class="fa fa-check me-1 mt-2"></i> Diterima
-                                        @elseif($laporan->status == 'selesai')
-                                            <i class="fa fa-check me-1 mt-2"></i> Selesai
+                                            Proses
                                         @elseif($laporan->status == 'dibanned')
-                                            <i class="fa fa-ban me-1 mt-2"></i> Dibanned
-                                        @elseif($laporan->status == 'disuspend')
-                                            <i class="fa fa-exclamation-triangle me-1 mt-2"></i> Disuspend
+                                            Dibanned
                                         @elseif($laporan->status == 'peringatan')
-                                            <i class="fa fa-exclamation-circle me-1 mt-2"></i> Peringatan
+                                            Peringatan
+                                        @elseif($laporan->status == 'disuspend')
+                                            Disuspend
+                                        @elseif($laporan->status == 'diterima')
+                                            Diterima
+                                        @elseif($laporan->status == 'selesai')
+                                            Selesai
+                                        @elseif($laporan->status == 'ditolak')
+                                            Ditolak
                                         @endif
                                     </span>
-                                </td>
+                                </td>                                                            
                                 <td>
-                                    <button type="button" class="btn btn-sm text-white" data-bs-toggle="modal" data-bs-target="#laporanModal{{ $laporan->id }}"
-                                        data-id="{{ $laporan->id }}" style="background-color: #624DE3; margin-top: 10px !important;">Detail
+                                    <button type="button" class="btn btn-detail btn-sm" data-bs-toggle="modal" data-bs-target="#laporanModal{{ $laporan->id }}"
+                                        data-id="{{ $laporan->id }}" style="margin-top: 15px !important;">
+                                        <i class="fa fa-eye" style="font-size: 18px;"></i>
                                     </button>
                                 </td>
                                 <!-- Modal Detail Laporan -->
@@ -394,19 +396,37 @@
                                                                 </script>
                                                             </div>
                                                         </div>
-                                                        <div class="modal-footer d-flex justify-content-between align-items-center">
+                                                        <div class="modal-footer d-flex align-items-center">
                                                             <div>
                                                                 @if ($laporan->status === 'proses')
                                                                     <button type="button" class="btn" style="border-radius: 12px; background-color: transparent; border: 1.5px solid #151515; color: #151515; margin-right: 20px; margin-top: 3px !important;" data-bs-toggle="modal" data-bs-target="#modalBanned{{ $laporan->id }}">
                                                                         Banned User
                                                                     </button>
-
+                                                        
                                                                     <button type="button" class="btn" style="border-radius: 12px; background-color: transparent; border: 1.5px solid #FFC300; color: #FFC300; margin-top: 3px !important;" data-bs-toggle="modal" data-bs-target="#modalPeringatan{{ $laporan->id }}">
                                                                         Beri Peringatan
                                                                     </button>
                                                                 @endif
                                                             </div>
 
+                                                            <div class="flex-grow-1 text-center">
+                                                                @if ($laporan->status !== 'proses')
+                                                                    @if ($laporan->status === 'diterima')
+                                                                        <p class="text-success">Laporan telah diterima dan diproses.</p>
+                                                                    @elseif ($laporan->status === 'ditolak')
+                                                                        <p class="text-danger">Laporan telah ditolak.</p>
+                                                                    @elseif ($laporan->status === 'selesai')
+                                                                        <p class="text-success">Laporan telah selesai.</p>
+                                                                    @elseif ($laporan->status === 'dibanned')
+                                                                        <p class="text-dark"><i class="fa fa-ban me-1"></i> Pengguna telah dibanned secara permanen.</p>
+                                                                    @elseif ($laporan->status === 'disuspend')
+                                                                        <p style="color: #FFC300;"><i class="fa fa-exclamation-triangle me-1"></i> Pengguna sedang dalam masa suspend.</p>
+                                                                    @elseif ($laporan->status === 'peringatan')
+                                                                        <p style="color: #FF8800;"><i class="fa fa-exclamation-circle me-1"></i> Pengguna telah diberi peringatan.</p>
+                                                                    @endif
+                                                                @endif
+                                                            </div>
+                                                        
                                                             <div>
                                                                 @if ($laporan->status === 'proses')
                                                                     @foreach ([
@@ -416,25 +436,14 @@
                                                                             {{ $action['label'] }}
                                                                         </button>
                                                                     @endforeach
-
+                                                        
                                                                     <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modalTolak{{ $laporan->id }}" style="border-radius: 12px; background-color: transparent; border: 1.5px solid #FF0000; color: #FF0000; margin-left: 20px; margin-top: 3px !important;" onclick="confirmTolakLaporan({{ $laporan->id }})">
                                                                         Tolak Laporan
                                                                     </button>
-                                                                @elseif ($laporan->status === 'diterima')
-                                                                    <p class="text-success">Laporan telah diterima dan diproses.</p>
-                                                                @elseif ($laporan->status === 'ditolak')
-                                                                    <p class="text-danger">Laporan telah ditolak.</p>
-                                                                @elseif ($laporan->status === 'selesai')
-                                                                    <p class="text-success">Laporan telah selesai.</p>
-                                                                @elseif ($laporan->status === 'dibanned')
-                                                                    <p class="text-dark"><i class="fa fa-ban me-1"></i> Pengguna telah dibanned secara permanen.</p>
-                                                                @elseif ($laporan->status === 'disuspend')
-                                                                    <p style="color: #FFC300;"><i class="fa fa-exclamation-triangle me-1"></i> Pengguna sedang dalam masa suspend.</p>
-                                                                @elseif ($laporan->status === 'peringatan')
-                                                                    <p style="color: #FF8800;"><i class="fa fa-exclamation-circle me-1"></i> Pengguna telah diberi peringatan.</p>
                                                                 @endif
                                                             </div>
                                                         </div>
+                                                        
                                                     </div>
                                                 </div>
                                             </div>

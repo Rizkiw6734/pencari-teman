@@ -92,34 +92,18 @@
         border-bottom-right-radius: 10px; /* Sudut kanan bawah */
     }
 
-    .status-active {
-        background-color: #F0FFF3; /* Warna hijau muda */
-        color: #00FF37; /* Hijau teks */
+    .btn-detail {
+        background-color: #D1E0FF; /* Warna biru muda */
+        color: #3243FD; /* Biru teks */
+        border: 1px solid #3243FD; /* Border biru */
         padding: 0;
-        width: 100px; /* Lebar tombol */
+        width: 40px; /* Lebar tombol */
         height: 30px; /* Tinggi tombol */
     }
 
-    .status-suspend {
-        background-color: #FFF0DE; /* Warna orange muda */
-        color: #fd7e14; /* Orange teks */
-        padding: 0;
-        width: 100px; /* Lebar tombol */
-        height: 30px; /* Tinggi tombol */
-    }
-
-    .status-banned {
-        background-color: #FFF0F0; /* Warna merah muda */
-        color: #FF0000; /* Merah teks */
-        padding: 0;
-        width: 100px; /* Lebar tombol */
-        height: 30px; /* Tinggi tombol */
-    }
-
-    .status-active i,
-    .status-suspend i,
-    .status-banned i {
-        font-size: 14px; /* Ukuran ikon */
+    .btn-detail:hover {
+        background-color: #3243FD; /* Warna biru saat hover */
+        color: #fff; /* Teks putih saat hover */
     }
 
     .btn-block-user {
@@ -186,52 +170,66 @@
     }
 
     .status-proses {
-        background-color: #757575;
-        color: white;
-        padding: 5px 10px;
+        background-color: #E9E9E9;
+        color: #5D5D5D;
+        padding: 0;
         border-radius: 5px;
+        width: 100px;
+        height: 30px;
     }
 
     .status-ditolak {
-        background-color: #FF5B5B;
-        color: white;
-        padding: 5px 10px;
+        background-color: #FFF0F0;
+        color: #FF0000;
+        padding: 0;
         border-radius: 5px;
+        width: 100px;
+        height: 30px;
     }
 
     .status-diterima {
-        background-color: #2EDDA6;
-        color: white;
-        padding: 5px 10px;
+        background-color: #F0FFF3;
+        color: #00FF37;
+        padding: 0;
         border-radius: 5px;
+        width: 100px;
+        height: 30px;
     }
 
     .status-selesai {
-        background-color: #2EDDA6;
-        color: white;
-        padding: 5px 10px;
+        background-color: #F0FFF3;
+        color: #00FF37;
+        padding: 0;
         border-radius: 5px;
+        width: 100px;
+        height: 30px;
     }
 
     .status-banned {
-        background-color: #000000;
-        color: white;
-        padding: 5px 10px;
+        background-color: #222124;
+        color: #FFFFFF;
+        padding: 0;
         border-radius: 5px;
+        width: 100px;
+        height: 30px;
     }
 
     .status-suspend {
-        background-color: #FFC300;
-        color: black;
-        padding: 5px 10px;
+        background-color: #FBFFD3;
+        color: #FFD900;
+        padding: 0;
         border-radius: 5px;
+        width: 100px;
+        height: 30px;
     }
 
     .status-peringatan {
-        background-color: #FF8800;
-        color: white;
-        padding: 5px 10px;
+        background-color: #FFEBCC;
+        color: #FF8800;
+        padding: 0;
         border-radius: 5px;
+        width: 100px;
+        height: 30px;
     }
 
 

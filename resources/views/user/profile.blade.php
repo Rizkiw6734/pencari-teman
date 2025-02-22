@@ -15,8 +15,17 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="card shadow-sm h-90">
+                                <div class="d-flex justify-content-end p-2 mt-1">
+                                    <a class="text-danger" href="{{ route('logout') }}"
+                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        <i class="fa fa-sign-out-alt fa-lg me-2"></i>
+                                    </a>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
+                                </div>
                                 <div class="card-body text-center">
-                                    <div class="avatar avatar-xxl position-relative mt-3 max-height-100">
+                                    <div class="avatar avatar-xxl position-relative max-height-100">
                                         <img src="{{ $user->foto_profil ? asset('storage/' . $user->foto_profil) : asset('images/marie.jpg') }}"
                                             alt="Foto Profil" class="w-100 border-radius-lg shadow-sm rounded-circle"
                                             style="width: 140px; height: 110px; border-radius: 50%; object-fit: cover;">
@@ -37,7 +46,7 @@
                                             {{ $user->bio ?? 'Tidak tersedia' }}
                                         </p>
                                         <div class="row mb-2">
-                                            <div class="col">
+                                            <div class="col" style="cursor: pointer;">
                                                 <p style="font-size: 16px; font-weight: 400; line-height: 24px; margin: 0; color:black;" data-bs-toggle="modal" data-bs-target="#pengikutModal">
                                                     Pengikut <br>
                                                     <span style="font-weight: 700;">{{ $followersCount }}</span>
@@ -84,53 +93,49 @@
                                                 </div>
                                             </div>
                                             <script>
-                                              document.addEventListener("DOMContentLoaded", function () {
-    const searchInput = document.getElementById("searchInput");
-    const chatContainer = document.getElementById("chat-container");
-    const originalFollowers = Array.from(chatContainer.children);
+                                                document.addEventListener("DOMContentLoaded", function () {
+                                                    const searchInput = document.getElementById("searchInput");
+                                                    const chatContainer = document.getElementById("chat-container");
+                                                    const originalFollowers = Array.from(chatContainer.children);
 
-    // Pencarian berdasarkan input
-    searchInput.addEventListener("input", function () {
-        const searchValue = searchInput.value.toLowerCase();
+                                                    // Pencarian berdasarkan input
+                                                    searchInput.addEventListener("input", function () {
+                                                        const searchValue = searchInput.value.toLowerCase();
 
-        // Kosongkan kontainer dan periksa apakah nama/email cocok
-        chatContainer.innerHTML = "";
+                                                        // Kosongkan kontainer dan periksa apakah nama/email cocok
+                                                        chatContainer.innerHTML = "";
 
-        originalFollowers.forEach((follower) => {
-            const nameElement = follower.querySelector("span.fw-bold");
-            const emailElement = follower.querySelector("p.font-small");
+                                                        originalFollowers.forEach((follower) => {
+                                                            const nameElement = follower.querySelector("span.fw-bold");
+                                                            const emailElement = follower.querySelector("p.font-small");
 
-            if (nameElement && emailElement) {
-                const name = nameElement.textContent.toLowerCase();
-                const email = emailElement.textContent.toLowerCase();
+                                                            if (nameElement && emailElement) {
+                                                                const name = nameElement.textContent.toLowerCase();
+                                                                const email = emailElement.textContent.toLowerCase();
 
-                // Cek apakah nama atau email mengandung kata yang dicari
-                if (name.includes(searchValue) || email.includes(searchValue)) {
-                    chatContainer.appendChild(follower);
-                }
-            }
-        });
-    });
+                                                                // Cek apakah nama atau email mengandung kata yang dicari
+                                                                if (name.includes(searchValue) || email.includes(searchValue)) {
+                                                                    chatContainer.appendChild(follower);
+                                                                }
+                                                            }
+                                                        });
+                                                    });
 
-    // Reset input pencarian ketika modal ditutup
-    const modal = document.getElementById("pengikutModal");
-    modal.addEventListener('hidden.bs.modal', function () {
-        searchInput.value = '';  // Kosongkan input pencarian
-        chatContainer.innerHTML = '';  // Kosongkan hasil pencarian
-        // Kembalikan pengikut asli jika perlu (opsional, tergantung implementasi)
-        originalFollowers.forEach(follower => {
-            chatContainer.appendChild(follower);
-        });
-    });
-});
-
-
+                                                    // Reset input pencarian ketika modal ditutup
+                                                    const modal = document.getElementById("pengikutModal");
+                                                    modal.addEventListener('hidden.bs.modal', function () {
+                                                        searchInput.value = '';  // Kosongkan input pencarian
+                                                        chatContainer.innerHTML = '';  // Kosongkan hasil pencarian
+                                                        // Kembalikan pengikut asli jika perlu (opsional, tergantung implementasi)
+                                                        originalFollowers.forEach(follower => {
+                                                            chatContainer.appendChild(follower);
+                                                        });
+                                                    });
+                                                });
                                             </script>
 
-
-                                            <div class="col">
-                                                <p
-                                                    style="font-size: 16px; font-weight: 400; line-height: 24px; margin: 0; color:black;"  data-bs-toggle="modal" data-bs-target="#mengikutiModal">
+                                            <div class="col" style="cursor: pointer;">
+                                                <p style="font-size: 16px; font-weight: 400; line-height: 24px; margin: 0; color:black;"  data-bs-toggle="modal" data-bs-target="#mengikutiModal">
                                                     Mengikuti <br>
                                                     <span style="font-weight: 700;">{{ $followingCount }}</span>
                                                 </p>
@@ -178,46 +183,44 @@
                                             </div>
                                             <script>
                                                 document.addEventListener("DOMContentLoaded", function () {
-    const searchInput2 = document.getElementById("searchInput2");
-    const chatContainer2 = document.getElementById("chat-container2");
-    const originalFollowings = Array.from(chatContainer2.children);
+                                                    const searchInput2 = document.getElementById("searchInput2");
+                                                    const chatContainer2 = document.getElementById("chat-container2");
+                                                    const originalFollowings = Array.from(chatContainer2.children);
 
-    // Pencarian berdasarkan input
-    searchInput2.addEventListener("input", function () {
-        const searchValue = searchInput2.value.toLowerCase();
+                                                    // Pencarian berdasarkan input
+                                                    searchInput2.addEventListener("input", function () {
+                                                        const searchValue = searchInput2.value.toLowerCase();
 
-        // Kosongkan kontainer dan periksa apakah nama/email cocok
-        chatContainer2.innerHTML = "";
+                                                        // Kosongkan kontainer dan periksa apakah nama/email cocok
+                                                        chatContainer2.innerHTML = "";
 
-        originalFollowings.forEach((follow) => {
-            const nameElement = follow.querySelector("span.fw-bold");
-            const emailElement = follow.querySelector("p.font-small");
+                                                        originalFollowings.forEach((follow) => {
+                                                            const nameElement = follow.querySelector("span.fw-bold");
+                                                            const emailElement = follow.querySelector("p.font-small");
 
-            if (nameElement && emailElement) {
-                const name = nameElement.textContent.toLowerCase();
-                const email = emailElement.textContent.toLowerCase();
+                                                            if (nameElement && emailElement) {
+                                                                const name = nameElement.textContent.toLowerCase();
+                                                                const email = emailElement.textContent.toLowerCase();
 
-                // Cek apakah nama atau email mengandung kata yang dicari
-                if (name.includes(searchValue) || email.includes(searchValue)) {
-                    chatContainer2.appendChild(follow);
-                }
-            }
-        });
-    });
+                                                                // Cek apakah nama atau email mengandung kata yang dicari
+                                                                if (name.includes(searchValue) || email.includes(searchValue)) {
+                                                                    chatContainer2.appendChild(follow);
+                                                                }
+                                                            }
+                                                        });
+                                                    });
 
-    // Reset input pencarian ketika modal ditutup
-    const modal = document.getElementById("mengikutiModal");
-    modal.addEventListener('hidden.bs.modal', function () {
-        searchInput2.value = '';  // Kosongkan input pencarian
-        chatContainer2.innerHTML = '';  // Kosongkan hasil pencarian
-        // Kembalikan following asli jika perlu (opsional, tergantung implementasi)
-        originalFollowings.forEach(follow => {
-            chatContainer2.appendChild(follow);
-        });
-    });
-});
-
-
+                                                    // Reset input pencarian ketika modal ditutup
+                                                    const modal = document.getElementById("mengikutiModal");
+                                                    modal.addEventListener('hidden.bs.modal', function () {
+                                                        searchInput2.value = '';  // Kosongkan input pencarian
+                                                        chatContainer2.innerHTML = '';  // Kosongkan hasil pencarian
+                                                        // Kembalikan following asli jika perlu (opsional, tergantung implementasi)
+                                                        originalFollowings.forEach(follow => {
+                                                            chatContainer2.appendChild(follow);
+                                                        });
+                                                    });
+                                                });
                                             </script>
                                         </div>
                                     </div>

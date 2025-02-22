@@ -52,15 +52,38 @@ class ProfileUserController extends Controller
         $following = $user->following()->with('user')->get()->map(function ($follow) {
             return [
                 'id' => $follow->id,
+                'penerima_id' => $follow->user->id,
                 'following_id' => $follow->following_id,
                 'name' => $follow->user->name ?? null,
                 'email' => $follow->user->email ?? null,
                 'photo_profile' => $follow->user->foto_profil
                     ? asset('storage/' . $follow->user->foto_profil)
                     : asset('images/marie.jpg'),
+                'status' => $follow->user->status,
+                'is_online' => $follow->user->is_online,
+                'last_activity' => $follow->user->last_activity,
                 'created_at' => $follow->created_at,
             ];
         });
+
+        // return response()->json([
+        //     'user' => [
+        //         'id' => $user->id,
+        //         'name' => $user->name,
+        //         'email' => $user->email,
+        //         'foto_profil' => $user->foto_profil ? asset('storage/' . $user->foto_profil) : asset('images/marie.jpg'),
+        //     ],
+        //     'location' => [
+        //         'provinces' => $provinces,
+        //         'regencies' => $regencies,
+        //         'districts' => $districts,
+        //         'villages' => $villages,
+        //     ],
+        //     'followers_count' => $followersCount,
+        //     'following_count' => $followingCount,
+        //     'followers' => $followers,
+        //     'following' => $following,
+        // ]);
 
 
 

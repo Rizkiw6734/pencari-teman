@@ -19,12 +19,14 @@
 
                             <script>
                                 function goBackAndRefresh() {
-                                    window.history.back();
+                                    const prevPage = document.referrer; // Ambil URL halaman sebelumnya
+                                    window.location.href = prevPage ? prevPage : '/'; // Kembali ke halaman sebelumnya atau ke halaman utama jika tidak ada
                                     setTimeout(() => {
-                                        location.reload();
-                                    }, 500); // Delay untuk memastikan halaman kembali sebelum reload
+                                        window.location.reload(true); // Force reload untuk memastikan refresh dari server
+                                    }, 1000); // Delay lebih lama untuk memastikan halaman benar-benar kembali sebelum refresh
                                 }
                             </script>
+
 
                             <div class="position-absolute top-0 end-0 m-3">
                                 <i class="fa-solid fa-comment-sms text-secondary p-2 rounded-circle"
@@ -397,7 +399,7 @@ function followUser(userId, userName) {
     .then(data => {
         const icon = document.querySelector(`[data-id='${userId}']`);
         icon.className = "fa-solid fa-user-check text-success p-2 rounded-circle"; // Ubah ikon jadi sudah diikuti
-        icon.setAttribute("title", "Sudah diikuti");
+        icon.setAttribute("title", `Sudah mengikuti ${userName}`);
         icon.setAttribute("onclick", `unfollowUser(${userId}, '${userName}')`); // Ganti fungsi onclick jadi unfollow
 
         // Tampilkan notifikasi sukses
@@ -405,7 +407,7 @@ function followUser(userId, userName) {
             toast: true,
             position: "top-end",
             icon: "success",
-            title: data.message,
+            title: `Berhasil mengikuti ${userName}`,
             showConfirmButton: false,
             timer: 1500
         });
@@ -430,7 +432,7 @@ function unfollowUser(userId, userName) {
     .then(data => {
         const icon = document.querySelector(`[data-id='${userId}']`);
         icon.className = "fa-solid fa-user-plus text-secondary p-2 rounded-circle"; // Ubah ikon jadi follow
-        icon.setAttribute("title", "Ikuti pengguna");
+        icon.setAttribute("title", `Mengikuti ${userName}`);
         icon.setAttribute("onclick", `followUser(${userId}, '${userName}')`); // Ganti fungsi onclick jadi follow
 
         // Tampilkan notifikasi sukses
@@ -438,7 +440,7 @@ function unfollowUser(userId, userName) {
             toast: true,
             position: "top-end",
             icon: "success",
-            title: data.message,
+            title: `Berhenti mengikuti ${userName}`,
             showConfirmButton: false,
             timer: 1500
         });

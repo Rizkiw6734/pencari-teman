@@ -113,6 +113,9 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     // User Home Page
     Route::get('/home', [ChatController::class, 'index'])->name('user.home');
     Route::get('/latest-chats', [ChatController::class, 'latestChatsJson']);
+    Route::get('/aktivitas', function() {
+        return view('user.aktivitas');
+    })->name('user.aktivitas');
 
     // Banned Page
     Route::get('/banned', [UserStatusController::class, 'bannedPage'])->name('user.banned');
@@ -151,11 +154,13 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
         Route::get('/provinsi', [JelajahiController::class, 'getProvinsi'])->name('jelajahi.provinsi');
         Route::get('/provinsi/{provinsi_id}', [JelajahiController::class, 'getKotaByProvinsi'])->name('jelajahi');
         Route::get('/pengguna-by-kota/{kabupaten_id}', [JelajahiController::class, 'penggunaByKota'])->name('jelajahi.pengguna');
+        Route::get('/cari-pengguna', [JelajahiController::class, 'cariPengguna']);
     });
     Route::post('/follow/{user}', [FollowerController::class, 'follow'])->name('follow');
     Route::delete('/unfollow/{user}', [FollowerController::class, 'unfollow'])->name('unfollow');
     Route::get('/followers/{user}', [FollowerController::class, 'followers'])->name('followers.list');
     Route::get('/following/{user}', [FollowerController::class, 'following'])->name('following.list');
+    Route::post('/hapus-pengikut', [FollowerController::class, 'hapusPengikut'])->middleware('auth');
     Route::get('/show-follow/{userId}', [ProfileUserController::class, 'showFollow'])->name('showfollow');
     // Add the update-location route here
     Route::middleware(['auth'])->post('/update-location', [ProfileUserController::class, 'updateLocation']);

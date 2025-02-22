@@ -216,4 +216,27 @@ class JelajahiController extends Controller
     ], 200);
 }
 
+public function cariPengguna(Request $request)
+{
+    $query = $request->query('q');
+
+    // Ambil user yang memiliki relasi dengan kabupaten
+    $users = User::whereHas('kabupatens', function ($q) {
+            $q->whereNotNull('id'); // Pastikan ada data kabupaten
+        })
+        ->when($query, function ($q) use ($query) {
+            $q->where('name', 'LIKE', "%{$query}%");
+        })
+        ->with('kabupatens') // Panggil relasi kabupaten
+        ->get();
+
+    return response()->json([
+        'status' => 'success',
+        'data' => $users
+    ]);
+}
+
+
+
+
 }

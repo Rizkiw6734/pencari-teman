@@ -38,7 +38,10 @@
                                 <div class="position-absolute top-0 end-0 m-2"
                                     style="z-index: 2000; pointer-events: auto;">
                                     <i class="fa-solid fa-user-plus text-white p-2 rounded-circle follow-btn"
-                                        style="cursor: pointer; font-size: 20px;">
+                                        style="cursor: pointer; font-size: 20px;"
+                                        data-id="{{ $pengguna->id }}"
+                                        data-name="{{ $pengguna->name }}"
+                                        onclick="event.stopPropagation(); followUser(this.dataset.id, this.dataset.name)">
                                     </i>
                                 </div>
 
@@ -59,9 +62,11 @@
                                         </div>
 
                                         <div class="chat-icon position-absolute bottom-0 end-0 m-3 d-flex align-items-center justify-content-center"
-                                            style="width: 50px; height: 50px; background: rgba(217, 217, 217, 0.5); border-radius: 50%; cursor: pointer;">
-                                            <i class="fa-regular fa-comment-dots" style="font-size: 25px;"></i>
-                                        </div>
+        style="width: 50px; height: 50px; background: rgba(217, 217, 217, 0.5); border-radius: 50%; cursor: pointer;"
+        data-penerima-id="{{ $pengguna->id }}"
+        onclick="selectChat(this, '{{ $pengguna->id }}', 'received')">
+        <i class="fa-regular fa-comment-dots" style="font-size: 25px;"></i>
+    </div>
                                     </div>
                                 </div>
                             </div>
@@ -123,4 +128,16 @@
             });
         }
     </script>
+    <script>
+        async function selectChat(element, penerimaId, chatStatus) {
+            // Simpan penerimaId ke Local Storage sebelum pindah halaman
+            localStorage.setItem('selectedChat', penerimaId);
+
+            // Arahkan ke halaman user.home setelah memilih chat
+            window.location.href = "/home";
+        }
+    </script>
+
+
+
 @endsection

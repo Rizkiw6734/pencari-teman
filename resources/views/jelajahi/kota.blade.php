@@ -9,6 +9,7 @@
                 <h3 class="fw-bold m-0" id="judulTeman">Teman di Kota</h3>
                 <div id="filterByKota" class="d-flex align-items-center">
                     <select id="provinsi" class="form-select me-2 custom-select">
+
                         <option value="">Pilih Provinsi</option>
                     </select>
                     <select id="kota" class="form-select custom-select">
@@ -119,15 +120,19 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
-            loadProvinsi();
+            loadProvinsi(); // Muat daftar provinsi saat halaman dimuat
+            let searchTimeout;
 
             $('#provinsi').on('change', function() {
                 let provinsiId = $(this).val();
-                if (provinsiId) {
-                    loadKota(provinsiId);
-                } else {
-                    $('#kota').empty().append('<option value="">Pilih Kota</option>');
+
+                // Jika pengguna memilih kembali "Pilih Provinsi", reload halaman
+                if (!provinsiId) {
+                    location.reload();
+                    return;
                 }
+
+                loadKota(provinsiId);
             });
 
             $('#kota').on('change', function() {
@@ -137,18 +142,55 @@
                 }
             });
 
+            $('#searchInput').on('input', function() {
+            clearTimeout(searchTimeout);
+            let query = $(this).val().trim();
+
+            if (query.length > 0) {
+                searchTimeout = setTimeout(function() {
+                    cariPengguna(query);
+                }, 500); // Delay pencarian 500ms agar tidak terlalu sering memanggil API
+            } else {
+                // Jika input kosong, tampilkan ulang pengguna berdasarkan kota yang dipilih
+                let kotaId = $('#kota').val();
+                if (kotaId) {
+                    getPenggunaByKota(kotaId);
+                }
+            }
+        });
+
+        function cariPengguna(query) {
+            $.ajax({
+                url: '/jelajahi/cari-pengguna?q=' + encodeURIComponent(query),
+                type: 'GET',
+                dataType: 'json',
+                cache: false,
+                success: function(response) {
+                    renderUserList(response.data, 'Tidak ditemukan pengguna dengan kata kunci tersebut.');
+                },
+                error: function(xhr) {
+                    console.error('Gagal mencari pengguna:', xhr.responseText);
+                }
+            });
+        }
+
             function loadProvinsi() {
                 $.ajax({
                     url: '/jelajahi/provinsi',
                     type: 'GET',
                     dataType: 'json',
+                    cache: false,
                     success: function(response) {
                         if (response.status === 'success') {
-                            $('#provinsi').empty().append('<option value="">Pilih Provinsi</option>');
-                            $.each(response.data, function(key, provinsi) {
-                                $('#provinsi').append('<option value="' + provinsi.id + '">' + provinsi.name + '</option>');
+                            let options = '<option value="">Pilih Provinsi</option>';
+                            $.each(response.data, function(index, provinsi) {
+                                options += `<option value="${provinsi.id}">${provinsi.name}</option>`;
                             });
+                            $('#provinsi').html(options);
                         }
+                    },
+                    error: function(xhr) {
+                        console.error('Gagal memuat provinsi:', xhr.responseText);
                     }
                 });
             }
@@ -158,13 +200,18 @@
                     url: '/jelajahi/provinsi/' + provinsiId,
                     type: 'GET',
                     dataType: 'json',
+                    cache: false,
                     success: function(response) {
-                        $('#kota').empty().append('<option value="">Pilih Kota</option>');
+                        let options = '<option value="">Pilih Kota</option>';
                         if (response.status === 'success') {
-                            $.each(response.data, function(key, kota) {
-                                $('#kota').append('<option value="' + kota.id + '">' + kota.name + '</option>');
+                            $.each(response.data, function(index, kota) {
+                                options += `<option value="${kota.id}">${kota.name}</option>`;
                             });
                         }
+                        $('#kota').html(options);
+                    },
+                    error: function(xhr) {
+                        console.error('Gagal memuat kota:', xhr.responseText);
                     }
                 });
             }
@@ -174,6 +221,7 @@
                     url: '/jelajahi/pengguna-by-kota/' + kabupaten_id,
                     type: 'GET',
                     dataType: 'json',
+                    cache: false,
                     success: function(response) {
                         if (response.data.length === 0) {
                             $('#userList').html(`
@@ -203,8 +251,9 @@
                     userList.append('<p class="text-center">' + emptyMessage + '</p>');
                 } else {
                     users.forEach(user => {
-                        console.log(user); // 🔍 Cek seluruh data user
-                        console.log(user.kabupatens); // 🔍 Cek apakah relasi ada
+
+                        console.log(user);
+                        console.log(user.kabupatens);
 
                         const distanceOrLocation = (user.kabupatens && user.kabupatens.name)
                             ? user.kabupatens.name
@@ -299,4 +348,5 @@
 
 
     </script>
+
 @endsection

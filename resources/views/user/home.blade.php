@@ -171,6 +171,8 @@
 @endsection
 
 @section('scripts')
+<script src="/assets/js/chat.js"></script>
+
 
     <script>
         @auth
@@ -417,6 +419,31 @@
 //Anda bisa sesuaikan interval waktu sesuai kebutuhan
 // Anda bisa sesuaikan interval waktu sesuai kebutuhan
 
+
+document.addEventListener("DOMContentLoaded", function () {
+
+        let penerimaId = localStorage.getItem("selectedChat");
+
+
+        if (penerimaId) {
+            console.log("Memuat pesan untuk penerima ID:", penerimaId);
+            updateUserStatus(penerimaId);
+
+            // Panggil fungsi loadMessages()
+            loadMessages({{ Auth::id() }}, penerimaId, false, false);
+            document.getElementById('chat-footer').style.display = 'flex';
+            $('.chat-body').empty();
+
+            // Hapus selectedChat dari Local Storage agar tidak dipanggil terus-menerus
+            localStorage.removeItem("selectedChat");
+            $("#penerima-id").val(penerimaId);
+        }
+    });
+
+
+
+
+
         // Fungsi untuk memilih chat dan menampilkan footer chat
         async function selectChat(element, penerimaId, chatStatus) {
     // Reset background color semua chat item
@@ -474,17 +501,6 @@
         }
     }
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-    const lastSelectedChat = localStorage.getItem('selectedChat');
-    if (lastSelectedChat) {
-        const chatItem = document.querySelector(`.chat-item[data-id="${lastSelectedChat}"]`);
-        if (chatItem) {
-            selectChat(chatItem, lastSelectedChat, chatItem.getAttribute('data-status'));
-        }
-    }
-});
-
 
 
 

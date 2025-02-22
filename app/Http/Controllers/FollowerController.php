@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Follower;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
 
 class FollowerController extends Controller
 {
@@ -60,4 +63,19 @@ public function unfollow(User $user)
         $following = $user->following()->with('user')->get();
         return view('user.profile', compact('following'));
     }
+
+    public function hapusPengikut(Request $request)
+    {
+        $followerId = $request->input('follower_id');
+        $user = auth()->user();
+
+        // Pastikan hanya pengikut milik user yang bisa dihapus
+        $deleted = DB::table('followers')
+            ->where('user_id', $user->id)
+            ->where('id', $followerId) // Hapus berdasarkan ID follower
+            ->delete();
+
+        return response()->json(['success' => $deleted ? true : false]);
+    }
+
 }

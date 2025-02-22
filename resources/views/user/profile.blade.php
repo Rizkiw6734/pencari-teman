@@ -69,7 +69,7 @@
                                                             </div>
                                                             <div id="chat-container" style="height: 300px; overflow-y: scroll; solid #ccc;">
                                                                 @foreach ($followers as $follower)
-                                                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                                                <div class="d-flex align-items-center justify-content-between mb-2" >
                                                                     <div class="d-flex align-items-center">
                                                                         <!-- Foto Profil -->
                                                                         <img src="{{ $follower['foto_profil'] }}" alt="Avatar" class="rounded-circle me-2" style="width: 50px; height: 50px; object-fit: cover;">
@@ -82,7 +82,12 @@
                                                                     </div>
 
                                                                     <!-- Tombol Hapus -->
-                                                                    <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3" style="background-color: #BEB9B9">Hapus</button>
+                                                                    <button type="button" class="btn btn-secondary btn-sm hapus-pengikut"
+                                                                    data-follower-id="{{ $follower['id'] }}" style="background-color: #BEB9B9">
+                                                                    Hapus
+                                                                </button>
+
+
                                                                 </div>
 
                                                                 @endforeach
@@ -93,45 +98,102 @@
                                                 </div>
                                             </div>
                                             <script>
-                                                document.addEventListener("DOMContentLoaded", function () {
-                                                    const searchInput = document.getElementById("searchInput");
-                                                    const chatContainer = document.getElementById("chat-container");
-                                                    const originalFollowers = Array.from(chatContainer.children);
+                                            document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchInput");
+    const chatContainer = document.getElementById("chat-container");
 
-                                                    // Pencarian berdasarkan input
-                                                    searchInput.addEventListener("input", function () {
-                                                        const searchValue = searchInput.value.toLowerCase();
+    function getFollowers() {
+        const followers = Array.from(chatContainer.querySelectorAll(".d-flex.align-items-center.justify-content-between"));
+        console.log("Followers ditemukan:", followers.length); // Cek apakah followers terdeteksi
+        return followers;
+    }
 
-                                                        // Kosongkan kontainer dan periksa apakah nama/email cocok
-                                                        chatContainer.innerHTML = "";
+    searchInput.addEventListener("input", function () {
+        const searchValue = searchInput.value.toLowerCase().trim();
+        const followers = getFollowers();
 
-                                                        originalFollowers.forEach((follower) => {
-                                                            const nameElement = follower.querySelector("span.fw-bold");
-                                                            const emailElement = follower.querySelector("p.font-small");
+        followers.forEach((follower) => {
+            const nameElement = follower.querySelector(".fw-bold");
+            const emailElement = follower.querySelector(".text-muted");
 
-                                                            if (nameElement && emailElement) {
-                                                                const name = nameElement.textContent.toLowerCase();
-                                                                const email = emailElement.textContent.toLowerCase();
+            if (nameElement && emailElement) {
+                console.log("Nama:", nameElement.textContent); // Debug nama
+                console.log("Email:", emailElement.textContent); // Debug email
 
-                                                                // Cek apakah nama atau email mengandung kata yang dicari
-                                                                if (name.includes(searchValue) || email.includes(searchValue)) {
-                                                                    chatContainer.appendChild(follower);
-                                                                }
+                const name = nameElement.textContent.toLowerCase();
+                const email = emailElement.textContent.toLowerCase();
+
+                if (name.includes(searchValue) || email.includes(searchValue)) {
+                    follower.style.visibility = "visible";
+                    follower.style.opacity = "1";
+                    follower.style.height = "auto"; // Supaya tetap muncul
+                } else {
+                    follower.style.visibility = "hidden";
+                    follower.style.opacity = "0";
+                    follower.style.height = "0"; // Supaya tidak makan tempat
+                }
+            }
+        });
+    });
+
+    const modal = document.getElementById("pengikutModal");
+    modal.addEventListener("hidden.bs.modal", function () {
+        searchInput.value = "";
+        getFollowers().forEach(follower => {
+            follower.style.visibility = "visible";
+            follower.style.opacity = "1";
+            follower.style.height = "auto";
+        });
+    });
+});
+
+                                            </script>
+                                           <script>
+                                            document.addEventListener("DOMContentLoaded", function () {
+                                                document.querySelectorAll(".hapus-pengikut").forEach(button => {
+                                                    button.addEventListener("click", function () {
+                                                        const followerId = this.getAttribute("data-follower-id");
+
+                                                        fetch("/hapus-pengikut", {
+                                                            method: "POST",
+                                                            headers: {
+                                                                "Content-Type": "application/json",
+                                                                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                                                            },
+                                                            body: JSON.stringify({ follower_id: followerId })
+                                                        })
+                                                        .then(response => response.json())
+                                                        .then(data => {
+                                                            if (data.success) {
+                                                                Swal.fire({
+                                                                    title: "Berhasil!",
+                                                                    text: "Berhasil menghapus pengikut.",
+                                                                    icon: "success",
+                                                                    confirmButtonText: "OK"
+                                                                }).then(() => {
+                                                                    location.reload(); // Refresh halaman setelah pengguna menekan tombol OK
+                                                                });
+                                                            } else {
+                                                                Swal.fire({
+                                                                    title: "Gagal!",
+                                                                    text: "Gagal menghapus pengikut.",
+                                                                    icon: "error",
+                                                                    confirmButtonText: "OK"
+                                                                });
                                                             }
-                                                        });
-                                                    });
-
-                                                    // Reset input pencarian ketika modal ditutup
-                                                    const modal = document.getElementById("pengikutModal");
-                                                    modal.addEventListener('hidden.bs.modal', function () {
-                                                        searchInput.value = '';  // Kosongkan input pencarian
-                                                        chatContainer.innerHTML = '';  // Kosongkan hasil pencarian
-                                                        // Kembalikan pengikut asli jika perlu (opsional, tergantung implementasi)
-                                                        originalFollowers.forEach(follower => {
-                                                            chatContainer.appendChild(follower);
+                                                        })
+                                                        .catch(error => {
+                                                            console.error("Error:", error);
+                                                            Swal.fire({
+                                                                title: "Error!",
+                                                                text: "Terjadi kesalahan, coba lagi.",
+                                                                icon: "error",
+                                                                confirmButtonText: "OK"
+                                                            });
                                                         });
                                                     });
                                                 });
+                                            });
                                             </script>
 
                                             <div class="col" style="cursor: pointer;">
@@ -173,7 +235,12 @@
 
                                                                     <!-- Tombol Kirim Pesan -->
                                                                     <button type="button" class="btn btn-secondary btn-sm me-md-3 mt-3"
-                                                                        style="background-color: #528BFF">Kirim Pesan</button>
+                                                                    data-penerima-id="{{ $followed['penerima_id'] }}"
+                                                                    onclick="selectChat(this, '{{ $followed['penerima_id'] }}', 'received')"
+                                                                    style="background-color: #528BFF">
+                                                                Kirim Pesan
+                                                            </button>
+
                                                                 </div>
                                                                 @endforeach
                                                             </div>
@@ -182,45 +249,64 @@
                                                 </div>
                                             </div>
                                             <script>
-                                                document.addEventListener("DOMContentLoaded", function () {
-                                                    const searchInput2 = document.getElementById("searchInput2");
-                                                    const chatContainer2 = document.getElementById("chat-container2");
-                                                    const originalFollowings = Array.from(chatContainer2.children);
+                                               document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchInput2");
+    const chatContainer = document.getElementById("chat-container2");
 
-                                                    // Pencarian berdasarkan input
-                                                    searchInput2.addEventListener("input", function () {
-                                                        const searchValue = searchInput2.value.toLowerCase();
+    function getFollowers() {
+        const followers = Array.from(chatContainer.querySelectorAll(".d-flex.align-items-center.justify-content-between"));
+        console.log("Followers ditemukan:", followers.length); // Cek apakah followers terdeteksi
+        return followers;
+    }
 
-                                                        // Kosongkan kontainer dan periksa apakah nama/email cocok
-                                                        chatContainer2.innerHTML = "";
+    searchInput.addEventListener("input", function () {
+        const searchValue = searchInput.value.toLowerCase().trim();
+        const followers = getFollowers();
 
-                                                        originalFollowings.forEach((follow) => {
-                                                            const nameElement = follow.querySelector("span.fw-bold");
-                                                            const emailElement = follow.querySelector("p.font-small");
+        followers.forEach((follower) => {
+            const nameElement = follower.querySelector(".fw-bold");
+            const emailElement = follower.querySelector(".text-muted");
 
-                                                            if (nameElement && emailElement) {
-                                                                const name = nameElement.textContent.toLowerCase();
-                                                                const email = emailElement.textContent.toLowerCase();
+            if (nameElement && emailElement) {
+                console.log("Nama:", nameElement.textContent); // Debug nama
+                console.log("Email:", emailElement.textContent); // Debug email
 
-                                                                // Cek apakah nama atau email mengandung kata yang dicari
-                                                                if (name.includes(searchValue) || email.includes(searchValue)) {
-                                                                    chatContainer2.appendChild(follow);
-                                                                }
-                                                            }
-                                                        });
-                                                    });
+                const name = nameElement.textContent.toLowerCase();
+                const email = emailElement.textContent.toLowerCase();
 
-                                                    // Reset input pencarian ketika modal ditutup
-                                                    const modal = document.getElementById("mengikutiModal");
-                                                    modal.addEventListener('hidden.bs.modal', function () {
-                                                        searchInput2.value = '';  // Kosongkan input pencarian
-                                                        chatContainer2.innerHTML = '';  // Kosongkan hasil pencarian
-                                                        // Kembalikan following asli jika perlu (opsional, tergantung implementasi)
-                                                        originalFollowings.forEach(follow => {
-                                                            chatContainer2.appendChild(follow);
-                                                        });
-                                                    });
-                                                });
+                if (name.includes(searchValue) || email.includes(searchValue)) {
+                    follower.style.visibility = "visible";
+                    follower.style.opacity = "1";
+                    follower.style.height = "auto"; // Supaya tetap muncul
+                } else {
+                    follower.style.visibility = "hidden";
+                    follower.style.opacity = "0";
+                    follower.style.height = "0"; // Supaya tidak makan tempat
+                }
+            }
+        });
+    });
+
+    const modal = document.getElementById("mengikutiModal");
+    modal.addEventListener("hidden.bs.modal", function () {
+        searchInput.value = "";
+        getFollowers().forEach(follower => {
+            follower.style.visibility = "visible";
+            follower.style.opacity = "1";
+            follower.style.height = "auto";
+        });
+    });
+});
+
+                                            </script>
+                                            <script>
+                                                async function selectChat(element, penerimaId, chatStatus) {
+                                                    // Simpan penerimaId ke Local Storage sebelum pindah halaman
+                                                    localStorage.setItem('selectedChat', penerimaId);
+
+                                                    // Arahkan ke halaman user.home setelah memilih chat
+                                                    window.location.href = "/home";
+                                                }
                                             </script>
                                         </div>
                                     </div>

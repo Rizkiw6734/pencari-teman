@@ -192,17 +192,6 @@
                             style="background-color: transparent; border: none; position: absolute; top: 0; left: 0; width: 100%; height: 40px; opacity: 0; cursor: pointer;">
                     </div>
 
-                    <div class="input-group text-dark" style="width: auto; align-items: center; position: relative; margin-left: 5px;">
-                        <select id="jenisPinaltiFilter" class="form-control"
-                            style="background-color: transparent; border: 1px solid #C9C1FF; cursor: pointer; appearance: none; -moz-appearance: none; -webkit-appearance: none; padding-right: 25px;">
-                            <option value="">Pinalti</option>
-                            <option value="peringatan">Peringatan</option>
-                            <option value="suspend">Suspend</option>
-                            <option value="banned">Banned</option>
-                        </select>
-                        <i class="fa fa-caret-down" style="font-size: 18.5px; position: absolute; right: 10px; pointer-events: none;"></i>
-                    </div>
-
                     <script>
                         document.getElementById('dateFilter').addEventListener('change', function() {
                             var selectedDate = this.value; // Mendapatkan tanggal yang dipilih
@@ -219,25 +208,6 @@
                             });
                         });
                     </script>
-
-                    <script>
-                        document.getElementById('jenisPinaltiFilter').addEventListener('change', function () {
-                            var selectedPinalti = this.value; // Ambil nilai Pinalti yang dipilih
-                            var rows = document.querySelectorAll('table tbody tr'); // Semua baris tabel
-
-                            rows.forEach(function (row) {
-                                var jenisPinaltiCell = row.cells[2];
-                                var jenisPinaltiText = jenisPinaltiCell ? jenisPinaltiCell.textContent.trim().toLowerCase() : ''; // Ambil teks dalam kolom
-
-                                // Tampilkan atau sembunyikan baris tergantung pada apakah jenis Pinalti cocok
-                                if (selectedPinalti === '' || jenisPinaltiText.includes(selectedPinalti)) {
-                                    row.style.display = ''; // Tampilkan baris
-                                } else {
-                                    row.style.display = 'none'; // Sembunyikan baris
-                                }
-                            });
-                        });
-                    </script>
                 </div>
             </div>
         </div>
@@ -250,8 +220,8 @@
                         <thead class="thead-light">
                             <tr>
                                 <th>No</th>
-                                <th>Nama</th>
-                                <th>Aktivitas Hukuman</th>
+                                <th>Nama Admin</th>
+                                <th>Aktivitas Admin</th>
                                 <th>Tanggal</th>
                             </tr>
                         </thead>

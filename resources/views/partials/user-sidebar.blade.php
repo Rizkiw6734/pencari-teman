@@ -85,19 +85,6 @@
           @endif
         </a>
       </li>
-
-      <!-- Logout -->
-      <li class="nav-item" style="position: relative;">
-        <a class="nav-link text-danger" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-          <div class="fa fa-sign-out-alt icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
-               style="background-color: #ffffff !important; color: #dc3545 !important;">
-          </div>
-          <span class="nav-link-text ms-1">Logout</span>
-        </a>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-          @csrf
-        </form>
-      </li>
     </ul>
   </div>
 </aside>

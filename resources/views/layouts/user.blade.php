@@ -23,6 +23,34 @@
     <meta name="penerima-id" content="">
 </head>
 <style>
+    select {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 250px;
+    }
+
+    .custom-select {
+      width: 150px;
+      background-color: #84ADFF;
+      border: none;
+      color: white;
+      padding-right: 30px;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      position: relative;
+      
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' fill='white'%3E%3Cpath d='M10 7l5 5-5 5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 5px center;
+      background-size: 30px;
+    }
+
+    .custom-select::-ms-expand {
+      display: none;
+    }
+
     .dropdown-menu-custom {
       max-height: 0;
       overflow: hidden;

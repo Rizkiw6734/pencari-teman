@@ -296,17 +296,17 @@
                                     <td>{{ $banding->alasan_banding }}</td>
                                     <td>{{ \Carbon\Carbon::parse($banding->created_at)->format('d-m-Y') }}</td>
                                     <td>
-                                        <span class="badge align-items-center justify-content-center
+                                        <span class="badge d-inline-flex align-items-center justify-content-center px-3 py-2
                                             @if($banding->status == 'proses') status-proses
                                             @elseif($banding->status == 'ditolak') status-ditolak
                                             @elseif($banding->status == 'diterima') status-diterima
                                             @endif">
                                             @if($banding->status == 'proses')
-                                                <i class="fa fa-spinner me-1 mt-2"></i> Proses
+                                                <i class="fa fa-spinner me-1"></i> Proses
                                             @elseif($banding->status == 'ditolak')
-                                                <i class="fa fa-times me-1 mt-2"></i> Ditolak
+                                                <i class="fa fa-times me-1"></i> Ditolak
                                             @elseif($banding->status == 'diterima')
-                                                <i class="fa fa-check me-1 mt-2"></i> Diterima
+                                                <i class="fa fa-check me-1"></i> Diterima
                                             @endif
                                         </span>
                                     </td>
@@ -316,14 +316,14 @@
                                             @csrf
                                             <input type="hidden" name="action" id="action-{{ $banding->id }}" value="">
                                             <button type="button" class="btn btn-trm btn-sm"
-                                                data-id="{{ $banding->id }}" data-jenis="{{ $banding->jenis_hukuman }}" style="margin-top: 10px !important;">
+                                                data-id="{{ $banding->id }}" data-jenis="{{ $banding->jenis_hukuman }}" style="margin-top: 15px !important;">
                                                 <i class="fa fa-check" style="font-size: 18px;"></i>
                                             </button>
                                         </form>
                                         <form id="form-tolak-{{ $banding->id }}" action="{{ route('banding.tolak', $banding->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             <button type="button" class="btn btn-tlk btn-sm"
-                                                data-id="{{ $banding->id }}" style="margin-top: 10px !important;">
+                                                data-id="{{ $banding->id }}" style="margin-top: 15px !important;">
                                                 <i class="fa fa-times " style="font-size: 18px;"></i>
                                             </button>
                                         </form>

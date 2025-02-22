@@ -179,15 +179,24 @@
                 <div class="d-flex align-items-center" style="gap: 10px;">
                     <!-- Dropdown untuk Provinsi -->
                     <select id="provinces" class="form-select"
-                        style="background-color: transparent; width: auto; padding-right: 33px; border: 1px solid #C9C1FF;">
+                        style="background-color: transparent; width: 100px; padding-right: 33px; border: 1px solid #C9C1FF;">
                         <option value="">Provinsi</option>
                     </select>
 
                     <!-- Dropdown untuk Kabupaten -->
                     <select id="regencies" class="form-select"
-                        style="background-color: transparent; width: auto; padding-right: 33px; border: 1px solid #C9C1FF;">
+                        style="background-color: transparent; width: 120px; padding-right: 33px; border: 1px solid #C9C1FF;">
                         <option value="">Kabupaten</option>
                     </select>
+
+                    <script>
+                        $(document).ready(function () {
+                            $('#provinces, #regencies').on('change', function () {
+                                let selectedText = $(this).find("option:selected").text();
+                                $(this).attr('title', selectedText);
+                            });
+                        });
+                    </script>
                 </div>
             </div>
         </div>
@@ -231,14 +240,14 @@
                                         ])->filter()->implode(',<br>') !!}
                                     </td>
                                     <td>
-                                        <span class="badge align-items-center justify-content-center
-                                            {{ $user->status === 'banned' ? 'status-banned' : ($user->status === 'suspend' ? 'status-suspend' : 'status-active') }}">
+                                        <span class="badge d-inline-flex align-items-center justify-content-center px-3 py-2
+                                            {{ $user->status === 'banned' ? 'status-banned' : ($user->status === 'suspend' ? 'status-suspend' : 'status-selesai') }}">
                                             @if ($user->status === 'banned')
-                                                <i class="fa fa-ban me-1 mt-2"></i> Banned
+                                                <i class="fa fa-ban me-1"></i> Banned
                                             @elseif ($user->status === 'suspend')
-                                                <i class="fa fa-stop-circle me-1 mt-2"></i> Suspend
+                                                <i class="fa fa-exclamation-triangle me-1"></i> Suspend
                                             @else
-                                                <i class="fa fa-check-square me-1 mt-2"></i> Aktif
+                                                <i class="fa fa-check me-1"></i> Aktif
                                             @endif
                                         </span>
                                     </td>
@@ -250,7 +259,7 @@
                                                 @csrf
                                                 <button type="button" class="btn btn-block-user btn-sm"
                                                     onclick="confirmAction('block', '{{ $user->id }}')"
-                                                    style="margin-top: 10px !important;">
+                                                    style="margin-top: 15px !important;">
                                                     <i class="fa fa-ban" style="font-size: 18px;"></i>
                                                 </button>
                                             </form>
@@ -263,7 +272,7 @@
                                                 @csrf
                                                 <button type="button" class="btn btn-delete-user btn-sm"
                                                     onclick="confirmAction('suspend', '{{ $user->id }}')"
-                                                    style="margin-top: 10px !important;">
+                                                    style="margin-top: 15px !important;">
                                                     <i class="fa fa-stop-circle" style="font-size: 18px;"></i>
                                                 </button>
                                             </form>

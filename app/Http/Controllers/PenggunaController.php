@@ -9,6 +9,9 @@ use App\Models\Regencies;
 use App\Models\Districts;
 use App\Models\Villages;
 use App\Models\notifikasi;
+use App\Models\AdminLog;
+use Illuminate\Support\Facades\Auth;
+
 
 
 class PenggunaController extends Controller
@@ -115,9 +118,14 @@ class PenggunaController extends Controller
             redirect()->route('Pengguna.index')->with('error', 'pengguna adalah Admin');
         }
 
+        AdminLog::create([
+            'users_id' => Auth::id(),
+            'aktivitas' => 'Admin melakukan banned terhadap user ' . $user->name,
+        ]);
+
         $user->status = 'banned';
         $user->save();
-        return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil diblokir');
+        return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil dibanned dan log dicatat');
     }
 
     public function unblock($id)
@@ -129,7 +137,13 @@ class PenggunaController extends Controller
 
         $user->status = 'aktif';
         $user->save();
-        return redirect()->route('admin.users.banned')->with('success', 'Banned pengguna berhasil dicabut');
+
+        AdminLog::create([
+            'users_id' => Auth::id(),
+            'aktivitas' => 'Admin membuka banned user ' . $user->name,
+        ]);
+
+        return redirect()->route('admin.users.banned')->with('success', 'Banned pengguna berhasil dicabut dan log dicatat');
     }
 
     public function disable($id)

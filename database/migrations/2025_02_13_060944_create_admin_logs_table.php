@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('admin_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('users_id')->constrained('users')->onDelete('cascade');
-            $table->unsignedBigInteger('pinalti_id');
-            $table->string('jenis_hukuman');
+            $table->text('aktivitas');
             $table->timestamp('created_at')->useCurrent();
         });
     }

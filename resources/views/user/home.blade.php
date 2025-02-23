@@ -393,9 +393,11 @@
         ${unreadCountBadge ? unreadCountBadge : time}
     </span>
                                     </div>
-                                    <div class="chat-message" style="font-size: 14px; color: #555; margin-top: 5px;">
-                                        ${statusIcon} ${chat.konten.substr(0, 30)}
-                                    </div>
+                                   <div class="chat-message" style="font-size: 14px; color: #555; margin-top: 5px;">
+    ${chat.konten ? `${chat.isBlocked ? '' : statusIcon} ${chat.konten.substr(0, 30)}` : 'Pesan tidak tersedia'}
+</div>
+
+
                                 </div>
                             </div>
                         `;
@@ -524,11 +526,17 @@ document.addEventListener("DOMContentLoaded", function () {
             $("#chat-avatar").attr("src", avatar).fadeIn();
             $("#chat-header").show();
 
-            if (response.is_online) {
-                $("#chat-status").html('<span class="icon" style="color: #28a745;"></span> Online');
-            } else {
+            // Jika pengguna terblokir, tetap tampilkan status tetapi jadikan Offline
+            if (response.is_blocked) {
                 $("#chat-status").html('<span class="icon" style="color: #888;"></span> Offline');
+            } else {
+                if (response.is_online) {
+                    $("#chat-status").html('<span class="icon" style="color: #28a745;"></span> Online');
+                } else {
+                    $("#chat-status").html('<span class="icon" style="color: #888;"></span> Offline');
+                }
             }
+
             $(".chat-item").attr("data-id", penerimaId);
         },
         error: function() {
@@ -536,6 +544,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 }
+
 
 
 

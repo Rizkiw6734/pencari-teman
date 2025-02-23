@@ -6,10 +6,10 @@
 
         <div class="container">
             <div class="d-flex justify-content-between align-items-center">
+
                 <h3 class="fw-bold m-0" id="judulTeman">Teman di Kota</h3>
                 <div id="filterByKota" class="d-flex align-items-center">
                     <select id="provinsi" class="form-select me-2 custom-select">
-
                         <option value="">Pilih Provinsi</option>
                     </select>
                     <select id="kota" class="form-select custom-select">
@@ -166,6 +166,17 @@
                 dataType: 'json',
                 cache: false,
                 success: function(response) {
+                    if (response.data.length === 0) {
+                            $('#userList').html(`
+                                <div class="flex-grow-1 text-center" style="overflow-y: auto; min-height: 400px; max-height: 600px;">
+                                    <div id="welcome-message">
+                                        <img src="{{ asset('images/no-users.svg') }}" alt="Tidak ada pengguna" class="mt-5" style="max-width: 50%; height: auto;">
+                                        <p class="mt-2 text-dark">Tidak ada pengguna yang tersedia di pencarian ini.</p>
+                                    </div>
+                                </div>
+                            `);
+                            return; // Menghentikan eksekusi agar renderUserList tidak dipanggil
+                        }
                     renderUserList(response.data, 'Tidak ditemukan pengguna dengan kata kunci tersebut.');
                 },
                 error: function(xhr) {

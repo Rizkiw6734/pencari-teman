@@ -23,6 +23,21 @@ public function latestChatsJson(Request $request)
 {
     $userId = Auth::id();
 
+    // Ambil daftar pengguna yang diblokir oleh userId
+    $blockedUsers = DB::table('blokir')
+        ->where('users_id', $userId)
+        ->pluck('blocked_user_id')
+        ->toArray();
+
+    // Ambil daftar pengguna yang memblokir userId
+    $usersWhoBlockedMe = DB::table('blokir')
+        ->where('blocked_user_id', $userId)
+        ->pluck('users_id')
+        ->toArray();
+
+    // Gabungkan daftar blokir (baik yang diblokir maupun yang memblokir)
+    $blockedList = array_merge($blockedUsers, $usersWhoBlockedMe);
+
     $latestChats = DB::table('chat as c')
         ->select(
             'c.id', 'c.pengirim_id', 'c.penerima_id', 'c.konten',
@@ -54,6 +69,7 @@ public function latestChatsJson(Request $request)
         ->orderBy('c.created_at', 'DESC')
         ->get();
 
+    // Ambil daftar user terkait chat
     $userIds = $latestChats->pluck('pengirim_id')->merge($latestChats->pluck('penerima_id'))->unique();
     $users = User::whereIn('id', $userIds)->get()->keyBy('id');
 
@@ -62,6 +78,14 @@ public function latestChatsJson(Request $request)
         $chat->penerima = $users->get($chat->penerima_id);
         $chat->created_at = \Carbon\Carbon::parse($chat->created_at)->timezone('Asia/Jakarta')->format('d M Y H:i');
 
+        // Cek jika pengguna diblokir, kosongkan isi chat
+        if (in_array($chat->pengirim_id, $blockedList) || in_array($chat->penerima_id, $blockedList)) {
+            $chat->konten = null;
+            $chat->status = null;
+            $chat->unread_count = null;
+        }
+
+        // Cek profil foto
         $chat->pengirim->foto_profil = !empty($chat->pengirim->foto_profil)
             ? url('storage/' . $chat->pengirim->foto_profil)
             : asset('images/marie.jpg');
@@ -70,24 +94,25 @@ public function latestChatsJson(Request $request)
             ? url('storage/' . $chat->penerima->foto_profil)
             : asset('images/marie.jpg');
 
-            if ($chat->penerima_id == $userId && $chat->status === 'sent_and_unread') {
-                $isOnline = $users->get($chat->pengirim_id)->is_online ?? false; // Ganti penerima_id menjadi pengirim_id
-                if ($isOnline) {
-                    $updated = DB::table('chat')
-                        ->where('pengirim_id', $chat->pengirim_id)
-                        ->where('penerima_id', $userId)
-                        ->where('status', 'sent_and_unread')
-                        ->update(['status' => 'received']);
+        // Update status jika pesan diterima tapi belum dibaca
+        if ($chat->penerima_id == $userId && $chat->status === 'sent_and_unread') {
+            $isOnline = $users->get($chat->pengirim_id)->is_online ?? false;
+            if ($isOnline) {
+                $updated = DB::table('chat')
+                    ->where('pengirim_id', $chat->pengirim_id)
+                    ->where('penerima_id', $userId)
+                    ->where('status', 'sent_and_unread')
+                    ->update(['status' => 'received']);
 
-                    if ($updated) {
-                        $chat->status = 'received';
-                    } else {
-                        Log::info("Update status gagal untuk chat ID: " . $chat->id);
-                    }
+                if ($updated) {
+                    $chat->status = 'received';
+                } else {
+                    Log::info("Update status gagal untuk chat ID: " . $chat->id);
                 }
             }
+        }
 
-
+        // Update jika chat sudah dibaca
         if ($chat->penerima_id == $userId && $chat->status === 'received') {
             $isChatOpened = $request->input('is_seen') ?? false;
             if ($isChatOpened) {
@@ -187,10 +212,28 @@ public function getUserStatus($id)
         return response()->json(['status' => 'Tidak dapat menampilkan status untuk Admin'], 403);
     }
 
-    // Pastikan foto profile menggunakan path yang benar
+    // Ambil daftar pengguna yang diblokir oleh userId
+    $userId = Auth::id();
+    $blockedUsers = DB::table('blokir')
+        ->where('users_id', $userId)
+        ->pluck('blocked_user_id')
+        ->toArray();
+
+    $usersWhoBlockedMe = DB::table('blokir')
+        ->where('blocked_user_id', $userId)
+        ->pluck('users_id')
+        ->toArray();
+
+    // Gabungkan daftar blokir
+    $blockedList = array_merge($blockedUsers, $usersWhoBlockedMe);
+
+    // Pastikan foto profil menggunakan path yang benar
     $fotoProfile = $user->foto_profil
         ? url('storage/' . $user->foto_profil)
         : asset('/images/marie.jpg');
+
+    // Jika pengguna terblokir, sembunyikan status online
+    $isOnline = in_array($user->id, $blockedList) ? null : (bool) $user->is_online;
 
     // Kirimkan data yang dibutuhkan ke tampilan
     return response()->json([
@@ -198,7 +241,7 @@ public function getUserStatus($id)
         'name' => $user->name,
         'email' => $user->email,
         'foto_profil' => $fotoProfile,
-        'is_online' => (bool) $user->is_online,
+        'is_online' => $isOnline,
         'created_at' => $user->created_at->format('Y-m-d H:i:s'),
     ]);
 }
@@ -206,9 +249,17 @@ public function getUserStatus($id)
 
 public function getMessages(Request $request, $userId, $penerimaId)
 {
-    if (!User::where('id', $penerimaId)->exists()) {
-        return response()->json(['status' => 'error', 'message' => 'Penerima tidak ditemukan'], 404);
+    $user = User::with(['blokiran', 'diblokir'])->find($userId);
+    $penerima = User::with(['blokiran', 'diblokir'])->find($penerimaId);
+
+    if (!$user || !$penerima) {
+        return response()->json(['status' => 'error', 'message' => 'Pengguna atau penerima tidak ditemukan'], 404);
     }
+
+    // Cek apakah pengguna memblokir atau diblokir
+    $userBlocked = $user->blokiran->where('blocked_user_id', $penerimaId)->isNotEmpty();
+    $penerimaBlocked = $penerima->blokiran->where('blocked_user_id', $userId)->isNotEmpty();
+    $isBlocked = $userBlocked || $penerimaBlocked;
 
     $lastTimestamp = $request->input('last_timestamp');
 
@@ -235,7 +286,7 @@ public function getMessages(Request $request, $userId, $penerimaId)
                 'penerima_id' => $chat->penerima_id,
                 'konten' => $chat->konten,
                 'created_at' => $createdAt->format('Y-m-d H:i:s'),
-                'formatted_date' => $createdAt->translatedFormat('l, d F Y'), // Format tanggal agar tetap muncul
+                'formatted_date' => $createdAt->translatedFormat('l, d F Y'),
                 'pengirim_foto' => $chat->pengirim && $chat->pengirim->foto_profil
                     ? url(Storage::url($chat->pengirim->foto_profil))
                     : asset('/images/marie.jpg'),
@@ -248,14 +299,15 @@ public function getMessages(Request $request, $userId, $penerimaId)
 
     return response()->json([
         'status' => 'success',
-        'message' => 'Pesan berhasil diambil',
+        'message' => $isBlocked
+            ? 'Chat berhasil diambil, tetapi salah satu pengguna sedang diblokir.'
+            : 'Pesan berhasil diambil',
+        'is_blocked' => $isBlocked,
         'data' => $messages,
     ]);
 }
 
-
-
-    public function sendMessage(Request $request)
+public function sendMessage(Request $request)
 {
     // Validasi input
     $validated = $request->validate([
@@ -263,14 +315,33 @@ public function getMessages(Request $request, $userId, $penerimaId)
         'penerima_id' => 'required|integer|exists:users,id',
     ]);
 
-    // Debug: Cek data yang diterima
-    Log::info('Data yang diterima:', $validated);
+    $pengirimId = Auth::id();
+    $penerimaId = $validated['penerima_id'];
 
-    // Simpan pesan
+    // Ambil data pengguna dan penerima beserta relasi blokir
+    $pengirim = User::with(['blokiran', 'diblokir'])->find($pengirimId);
+    $penerima = User::with(['blokiran', 'diblokir'])->find($penerimaId);
+
+    if (!$pengirim || !$penerima) {
+        return response()->json(['success' => false, 'message' => 'Pengguna tidak ditemukan.'], 404);
+    }
+
+    // Cek apakah pengirim memblokir penerima atau sebaliknya
+    $pengirimMemblokir = $pengirim->blokiran->where('blocked_user_id', $penerimaId)->isNotEmpty();
+    $penerimaMemblokir = $penerima->blokiran->where('blocked_user_id', $pengirimId)->isNotEmpty();
+
+    if ($pengirimMemblokir || $penerimaMemblokir) {
+        return response()->json([
+            'success' => true,
+            'message' => 'Pesan berhasil dikirim tetapi tidak dapat diterima oleh pengguna karena pemblokiran.',
+        ]);
+    }
+
+    // Simpan pesan ke database
     $message = new Chat();
     $message->konten = $validated['konten'];
-    $message->pengirim_id = Auth::id();  // Pengirim ID
-    $message->penerima_id = $validated['penerima_id'];
+    $message->pengirim_id = $pengirimId;
+    $message->penerima_id = $penerimaId;
     $message->save();
 
     return response()->json([

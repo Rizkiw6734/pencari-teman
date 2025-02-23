@@ -14,7 +14,7 @@
                 <a href="{{ route('blokiran') }}" class="text-black" style="font-size: 17px; font-weight: 500;">Kontak Diblokir</a>
                 <p style="font-size: 12px; font-style: italic;">{{ $jumlahBlokir }} Pengguna Diblokir</p>
 
-                <a href="{{ route('user.aktivitas') }}" class="text-black" style="font-size: 17px; font-weight: 500; ">Aktivitas Anda</a>
+                <a href="{{ route('user.logs') }}" class="text-black" style="font-size: 17px; font-weight: 500; ">Aktivitas Anda</a>
                 <p style="font-size: 12px; font-style: italic;">Aktivitas anda dapat dilihat disini</p>
             </div>
         </div>

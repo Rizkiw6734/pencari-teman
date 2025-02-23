@@ -27,6 +27,7 @@ use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\BlokirController;
 use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\NotifikasiController;
+use App\Http\Controllers\UserLogController;
 use App\Jobs\CheckExpiredSuspensionJob;
 use App\Http\Controllers\LocationController;
 use App\Models\Chat;
@@ -35,14 +36,11 @@ use App\Models\Chat;
 // CheckExpiredSuspensionJob::dispatch();
 
 require __DIR__.'/auth.php';
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
 
 Route::middleware([ToSweetAlert::class])->group(function () {
     Route::get('/', function () {
         return view('welcome');
-    });
+    })->name('welcome');
 });
 
 //ADMIN
@@ -113,9 +111,7 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     // User Home Page
     Route::get('/home', [ChatController::class, 'index'])->name('user.home');
     Route::get('/latest-chats', [ChatController::class, 'latestChatsJson']);
-    Route::get('/aktivitas', function() {
-        return view('user.aktivitas');
-    })->name('user.aktivitas');
+    Route::get('/logs', [UserLogController::class, 'index'])->name('user.logs');
 
     // Banned Page
     Route::get('/banned', [UserStatusController::class, 'bannedPage'])->name('user.banned');

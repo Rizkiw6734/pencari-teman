@@ -291,9 +291,11 @@
                                                     <i class="fa-solid fa-location-dot"></i> ${distanceOrLocation}
                                                 </p>
                                             </div>
-                                            <div class="position-absolute bottom-0 end-0 m-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: rgba(217, 217, 217, 0.5); border-radius: 50%;">
-                                                <i class="fa-regular fa-comment-dots" style="font-size: 25px;"></i>
-                                            </div>
+                                            <div class="position-absolute bottom-0 end-0 m-3 d-flex align-items-center justify-content-center"
+                            style="width: 50px; height: 50px; background: rgba(217, 217, 217, 0.5); border-radius: 50%;"
+                            onclick="selectChat(this, ${user.id}, 'received')">
+                            <i class="fa-regular fa-comment-dots" style="font-size: 25px; cursor: pointer;"></i>
+                        </div>
                                         </div>
                                     </div>
                                 </div>
@@ -358,6 +360,15 @@
 }
 
 
+    </script>
+    <script>
+        async function selectChat(element, penerimaId, chatStatus) {
+            // Simpan penerimaId ke Local Storage sebelum pindah halaman
+            localStorage.setItem('selectedChat', penerimaId);
+
+            // Arahkan ke halaman user.home setelah memilih chat
+            window.location.href = "/home";
+        }
     </script>
 
 @endsection

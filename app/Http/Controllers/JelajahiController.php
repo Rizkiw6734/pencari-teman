@@ -40,64 +40,61 @@ class JelajahiController extends Controller
      * Menampilkan pengguna di sekitar (radius 50 km) berdasarkan latitude dan longitude user yang login.
      */
     public function penggunaSekitar(Request $request)
-    {
-        $userLogin = Auth::user();
-        $latitudeUser = $userLogin->latitude;
-        $longitudeUser = $userLogin->longitude;
+{
+    $userLogin = Auth::user();
+    $latitudeUser = $userLogin->latitude;
+    $longitudeUser = $userLogin->longitude;
 
-        // Jika pengguna tidak memiliki lokasi, hentikan proses
-        if (is_null($latitudeUser) || is_null($longitudeUser)) {
-            return response()->json(['message' => 'Lokasi pengguna tidak tersedia.'], 400);
-        }
+    // Jika pengguna tidak memiliki lokasi, hentikan proses
+    if (is_null($latitudeUser) || is_null($longitudeUser)) {
+        return response()->json(['message' => 'Lokasi pengguna tidak tersedia.'], 400);
+    }
 
-        // Query dasar untuk mencari pengguna lain
-        $query = User::where('id', '!=', $userLogin->id)
-            ->whereNotNull('latitude')
-            ->whereNotNull('longitude')
-            ->whereDoesntHave('followers', function ($query) use ($userLogin) {
-                $query->where('follower_id', $userLogin->id);
-            })
-            ->whereDoesntHave('roles', function ($query) {
-                $query->where('name', 'admin');
-            });
+    // Ambil daftar user yang diblokir dan yang memblokir user login
+    $userBlokiran = $userLogin->blokiran->pluck('blocked_user_id')->toArray();
+    $userMemblokir = $userLogin->diblokir->pluck('users_id')->toArray();
+    $blokirList = array_merge($userBlokiran, $userMemblokir);
 
-        // Filter berdasarkan pencarian (search)
-        if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
-            });
-        }
-
-        // Ambil pengguna lain & hitung jaraknya
-        $penggunaLain = $query->get()->map(function ($pengguna) use ($latitudeUser, $longitudeUser) {
-            $pengguna->distance = round($this->haversineGreatCircleDistance(
-                $latitudeUser,
-                $longitudeUser,
-                $pengguna->latitude,
-                $pengguna->longitude
-            ), 2);
-            return $pengguna;
+    // Query untuk mencari pengguna sekitar dengan pengecualian user yang diblokir
+    $query = User::where('id', '!=', $userLogin->id)
+        ->whereNotNull('latitude')
+        ->whereNotNull('longitude')
+        ->whereNotIn('id', $blokirList) // Filter pengguna yang diblokir atau memblokir
+        ->whereDoesntHave('followers', function ($query) use ($userLogin) {
+            $query->where('follower_id', $userLogin->id);
+        })
+        ->whereDoesntHave('roles', function ($query) {
+            $query->where('name', 'admin');
         });
 
-        // Filter hanya yang dalam radius 5 km
-        $penggunaLain = $penggunaLain->filter(function ($pengguna) {
-            return $pengguna->distance <= 5;
-        })->sortBy('distance')->values();
-
-        // if ($request->ajax()) {
-        //     return view('user.partials.pengguna-list', compact('penggunaLain'))->render();
-        // }
-
-        // return response()->json([
-        //     'success' => true,
-        //     'message' => 'Daftar pengguna terdekat ditemukan.',
-        //     'data' => $penggunaLain
-        // ]);
-
-        return view('jelajahi.sekitar', compact('penggunaLain'));
+    // Filter berdasarkan pencarian (search)
+    if ($request->filled('search')) {
+        $search = $request->input('search');
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('email', 'like', "%{$search}%");
+        });
     }
+
+    // Ambil pengguna lain & hitung jaraknya
+    $penggunaLain = $query->get()->map(function ($pengguna) use ($latitudeUser, $longitudeUser) {
+        $pengguna->distance = round($this->haversineGreatCircleDistance(
+            $latitudeUser,
+            $longitudeUser,
+            $pengguna->latitude,
+            $pengguna->longitude
+        ), 2);
+        return $pengguna;
+    });
+
+    // Filter hanya yang dalam radius 5 km
+    $penggunaLain = $penggunaLain->filter(function ($pengguna) {
+        return $pengguna->distance <= 5;
+    })->sortBy('distance')->values();
+
+    return view('jelajahi.sekitar', compact('penggunaLain'));
+}
+
 
 
     private function haversineGreatCircleDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371)
@@ -190,6 +187,12 @@ class JelajahiController extends Controller
         ->whereDoesntHave('followers', function ($query) use ($userId) {
             $query->where('follower_id', $userId);
         })
+        ->whereDoesntHave('diblokir', function ($query) use ($userId) {
+            $query->where('users_id', $userId); // Mengecualikan user yang telah diblokir oleh user yang sedang login
+        })
+        ->whereDoesntHave('blokiran', function ($query) use ($userId) {
+            $query->where('blocked_user_id', $userId); // Mengecualikan user yang memblokir user yang sedang login
+        })
         ->with('kabupatens');
 
     if ($request->filled('search') && $request->input('context') === 'kota') {
@@ -216,13 +219,21 @@ class JelajahiController extends Controller
     ], 200);
 }
 
+
 public function cariPengguna(Request $request)
 {
     $query = $request->query('q');
+    $userId = Auth::id(); // Ambil ID user yang sedang login
 
-    // Ambil user yang memiliki relasi dengan kabupaten
+    // Ambil user yang memiliki relasi dengan kabupaten dan tidak termasuk dalam daftar blokiran
     $users = User::whereHas('kabupatens', function ($q) {
             $q->whereNotNull('id'); // Pastikan ada data kabupaten
+        })
+        ->whereDoesntHave('diblokir', function ($q) use ($userId) {
+            $q->where('users_id', $userId); // Mengecualikan user yang telah diblokir oleh user yang sedang login
+        })
+        ->whereDoesntHave('blokiran', function ($q) use ($userId) {
+            $q->where('blocked_user_id', $userId); // Mengecualikan user yang memblokir user yang sedang login
         })
         ->when($query, function ($q) use ($query) {
             $q->where('name', 'LIKE', "%{$query}%");
@@ -235,7 +246,6 @@ public function cariPengguna(Request $request)
         'data' => $users
     ]);
 }
-
 
 
 

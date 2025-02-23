@@ -142,7 +142,7 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     Route::get('/banding/create', [BandingController::class, 'create'])->name('banding.create');
     Route::post('/banding', [BandingController::class, 'store'])->name('banding.store');
     Route::get('/blokiran', [BlokirController::class, 'daftarBlokir'])->name('blokiran');
-    Route::post('/buka-blokir/{user}', [BlokirController::class, 'bukaBlokir']);
+    Route::delete('/buka-blokir/{user}', [BlokirController::class, 'bukaBlokir']);
 
     Route::post('/blokir/{user}', [BlokirController::class, 'blokir'])->name('blokir');
     Route::delete('/unblokir/{user}', [BlokirController::class, 'unblock'])->name('unblokir');
@@ -175,8 +175,9 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     Route::get('/suspend', [UserStatusController::class, 'suspendPage'])->name('user.suspend');
     });
 
-    // Pengaturan
-
+    Route::get('/comment', function() {
+        return view('coment');
+    })->name('comment');
 
     Route::get('/hitung-jarak', [JarakController::class, 'hitungJarak']);
 

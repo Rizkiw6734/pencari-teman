@@ -40,16 +40,22 @@ class BlokirController extends Controller
     }
 
     public function bukaBlokir(User $user)
-{
-    $blokiran = Blokir::where('users_id', auth()->id())->where('blocked_user_id', $user->id)->first();
+    {
+        $blokiran = Blokir::where('users_id', auth()->id())
+                          ->where('blocked_user_id', $user->id)
+                          ->get(); // Ambil semua data yang sesuai
 
-    if ($blokiran) {
-        $blokiran->delete();
-        return response()->json(['message' => 'Blokir berhasil dibuka'], 200);
+        if ($blokiran->isNotEmpty()) {
+            foreach ($blokiran as $item) {
+                $item->delete(); // Hapus satu per satu untuk memastikan data yang benar dihapus
+            }
+
+            return response()->json(['message' => 'Blokir berhasil dibuka'], 200);
+        }
+
+        return response()->json(['error' => 'Data tidak ditemukan'], 404);
     }
 
-    return response()->json(['error' => 'Data tidak ditemukan'], 404);
-}
 
 
 }

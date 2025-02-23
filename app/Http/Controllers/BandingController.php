@@ -6,6 +6,7 @@ use App\Models\Banding;
 use App\Models\User;
 use App\Models\Pinalti;
 use Illuminate\Http\Request;
+use App\Models\AdminLog;
 use Illuminate\Support\Facades\Auth;
 use App\Models\notifikasi;
 
@@ -66,8 +67,9 @@ class BandingController extends Controller
         ]);
 
         $existingBanding = Banding::where('users_id', Auth::user()->id)
-            ->where('pinalti_id', $request->pinalti_id)
-            ->first();
+        ->where('pinalti_id', $request->pinalti_id)
+        ->whereNotIn('status', ['ditolak'])
+        ->first();
 
         if ($existingBanding) {
             return redirect()->back()->with('error', 'Anda sudah mengajukan banding untuk pinalti ini.');
@@ -136,6 +138,11 @@ class BandingController extends Controller
         $banding->status = 'ditolak';
         $banding->save();
 
+        AdminLog::create([
+            'users_id' => Auth::id(),
+            'aktivitas' => 'Admin menolak aju banding dari user ' . $banding->user->name,
+        ]);
+
         return redirect()->route('banding.index')->with('success', 'Laporan berhasil ditolak.');
     }
 
@@ -176,6 +183,11 @@ class BandingController extends Controller
                     $laporan->status = 'selesai';
                     $laporan->save();
 
+                    AdminLog::create([
+                        'users_id' => Auth::id(),
+                        'aktivitas' => 'Admin menerima aju banding dari user ' . $banding->user->name . ' dan menghapus pinalti suspend.',
+                    ]);
+
                     return redirect()->route('banding.index')->with('success', 'Banding diterima dan Suspend berhasil dihapus.');
                 } elseif ($action === 'kurangi') {
                     $currentDurasi = $pinalti->durasi;
@@ -192,6 +204,11 @@ class BandingController extends Controller
                     $banding->status = 'diterima';
                     $banding->save();
 
+                    AdminLog::create([
+                        'users_id' => Auth::id(),
+                        'aktivitas' => 'Admin menerima banding dari ' . $banding->user->name . ' dan mengurangi durasi suspend sebanyak ' . $requestedDurasi . ' hari.',
+                    ]);
+
                     return back()->with('success', 'Durasi suspend berhasil diperbarui.');
                 } else {
                     return back()->with('error', 'Pilihan tidak valid untuk jenis hukuman suspend.');
@@ -204,6 +221,11 @@ class BandingController extends Controller
 
                 $user->status = 'aktif';
                 $user->save();
+
+                AdminLog::create([
+                    'users_id' => Auth::id(),
+                    'aktivitas' => 'Admin menerima banding dari user ' . $banding->user->name . ' dan menghapus hukuman.',
+                ]);
 
                 return redirect()->route('banding.index')->with('success', 'Banding diterima dan hukuman berhasil dihapus.');
 

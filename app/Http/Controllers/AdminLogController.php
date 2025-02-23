@@ -20,12 +20,11 @@ class AdminLogController extends Controller
 
             $query->whereHas('user', function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%');
-            })->orWhereHas('pinalti', function ($q) use ($search) {
-                $q->where('jenis_hukuman', 'like', '%' . $search . '%');
-            });
+            })->orWhere('aktivitas', 'like', '%' . $search . '%');
         }
 
-        $logs = $query->with(['user', 'pinalti'])->latest()->get();
+
+        $logs = $query->with(['user'])->latest()->get();
         $notifications = notifikasi::where('user_id', auth()->id())
         ->where('status', 'unread')
         ->orderBy('created_at', 'desc')

@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Laporan;
 use App\Models\AdminLog;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Pinalti;
-use Illuminate\Support\Facades\Auth;
 use App\Models\notifikasi;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -230,9 +230,8 @@ public function store(Request $request)
                 ]);
 
                 AdminLog::create([
-                    'users_id' => $laporan->reported_id,
-                    'pinalti_id' => $pinalti->id,
-                    'jenis_hukuman' => 'peringatan',
+                    'users_id' => Auth::id(),
+                    'aktivitas' => 'Admin menyetujui laporan dari user ' . $laporan->pelapor->name . ' dan memberikan pinalti berupa peringatan kepada user ' . $laporan->terlapor->name,
                 ]);
 
                 $laporan->status = 'peringatan';
@@ -261,9 +260,8 @@ public function store(Request $request)
                 ]);
 
                 AdminLog::create([
-                    'users_id' => $laporan->reported_id,
-                    'pinalti_id' => $pinalti->id,
-                    'jenis_hukuman' => 'suspend',
+                    'users_id' => Auth::id(),
+                    'aktivitas' => 'Admin menyetujui laporan dari user ' . $laporan->pelapor->name . ' dan memberikan pinalti berupa suspend (Durasi: ' . $request->durasi . ' hari) kepada user ' . $laporan->terlapor->name,
                 ]);
 
                 $user = User::find($laporan->reported_id);
@@ -292,9 +290,8 @@ public function store(Request $request)
                 ]);
 
                 AdminLog::create([
-                    'users_id' => $laporan->reported_id,
-                    'pinalti_id' => $pinalti->id,
-                    'jenis_hukuman' => 'banned',
+                    'users_id' => Auth::id(),
+                    'aktivitas' => 'Admin menyetujui laporan dari user ' . $laporan->pelapor->name . ' dan memberikan pinalti berupa banned kepada user ' . $laporan->terlapor->name,
                 ]);
 
                 $user = User::find($laporan->reported_id);
@@ -337,7 +334,12 @@ public function store(Request $request)
         $laporan->status = 'ditolak';
         $laporan->save();
 
-        return redirect()->route('laporan.index')->with('success', 'Laporan berhasil ditolak.');
+        AdminLog::create([
+            'users_id' => Auth::id(),
+            'aktivitas' => 'Admin menolak laporan dari ' . $laporan->pelapor->name . ' terhadap ' . $laporan->terlapor->name . '.',
+        ]);
+
+        return redirect()->route('laporan.index')->with('success', 'Laporan berhasil ditolak dan Log dicatat.');
     }
 
 

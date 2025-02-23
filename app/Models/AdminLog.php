@@ -16,17 +16,11 @@ class AdminLog extends Model
 
     protected $fillable = [
         'users_id',
-        'pinalti_id',
-        'jenis_hukuman',
+        'aktivitas',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class, 'users_id');
-    }
-
-    public function pinalti()
-    {
-        return $this->belongsTo(Pinalti::class, 'pinalti_id');
     }
 }

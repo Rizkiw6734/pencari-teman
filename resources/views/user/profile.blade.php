@@ -16,13 +16,30 @@
                         <div class="col-md-4">
                             <div class="card shadow-sm h-90">
                                 <div class="d-flex justify-content-end p-2 mt-1">
-                                    <a class="text-danger" href="{{ route('logout') }}"
-                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <a class="text-danger" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalLogout">
                                         <i class="fa fa-sign-out-alt fa-lg me-2"></i>
                                     </a>
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                        @csrf
-                                    </form>
+
+                                    <div class="modal fade" id="modalLogout" data-bs-backdrop="false" tabindex="-1" aria-labelledby="modalLogoutLabel" aria-hidden="true" style="background-color: rgba(0, 0, 0, 0.5) !important;">
+                                        <div class="modal-dialog">
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                                                @csrf
+                                                <div class="modal-content">
+                                                    <div class="modal-header flex-column text-center border-0">
+                                                        <h2 class="modal-title w-100" id="modalLogoutLabel">LogOut</h2>
+                                                        <i class="fas fa-sign-out-alt fa-4x mt-3" style="color: #FF1C1C;"></i>
+                                                    </div>
+                                                    <div class="modal-body text-black text-center fs-5 mx-auto mt-0">
+                                                        Anda yakin ingin keluar dari akun Anda? Semua<br>sesi yang sedang berjalan akan dihentikan, dan Anda perlu login kembali untuk mengakses aplikasi.
+                                                    </div>
+                                                    <div class="modal-footer d-flex justify-content-between border-0 mx-4">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="showPreviousModal()" style="background-color: #ffffff; color: rgb(0, 0, 0); font-size: 14px; padding: 10px 30px; border:#000000 solid 1px;">Batal</button>
+                                                        <button type="submit" class="btn btn-primary" style="background-color: #FF1C1C; color: white; font-size: 14px; padding: 10px 30px;">Ya</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="card-body text-center">
                                     <div class="avatar avatar-xxl position-relative max-height-100">

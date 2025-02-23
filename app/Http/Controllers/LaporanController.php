@@ -31,7 +31,7 @@ class LaporanController extends Controller
         }
 
         $laporans = $query->with(['pelapor', 'terlapor'])
-        ->orderByRaw("FIELD(status, 'proses', 'diterima', 'selesai', 'ditolak')")
+        ->orderByRaw("FIELD(status, 'proses', 'dibanned', 'peringatan', 'disuspend', 'diterima', 'selesai', 'ditolak')")
         ->paginate(10);
 
         $notifications = notifikasi::where('user_id', auth()->id())

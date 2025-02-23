@@ -230,7 +230,7 @@
                                 <tr class="align-middle">
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ optional($log->user)->name ?? 'Pengguna tidak ditemukan' }}</td>
-                                    <td>{{ ucwords($log->aktivitas ?? 'Aktivitas tidak ada') }}</td>
+                                    <td style="max-width: 220px; word-wrap: break-word; white-space: normal;">{{ ucwords($log->aktivitas ?? 'Aktivitas tidak ada') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($log->created_at)->format('d-m-Y') }}</td>
                                 </tr>
                             @empty

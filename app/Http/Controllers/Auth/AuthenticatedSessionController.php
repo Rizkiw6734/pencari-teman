@@ -38,8 +38,10 @@ class AuthenticatedSessionController extends Controller
 
         // Proses autentikasi menggunakan email dan password
         if (!Auth::attempt($request->only('email', 'password'))) {
-            return back()->with('error', 'Login gagal, email atau password salah.');
-        }
+            return back()
+                ->withInput($request->only('email'))
+                ->withErrors(['password' => 'Password yang Anda masukkan salah.']);
+        }        
 
         // Regenerasi session setelah berhasil login
         $request->session()->regenerate();

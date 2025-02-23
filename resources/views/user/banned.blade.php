@@ -30,39 +30,33 @@
         <!-- Tombol Logout -->
         <button type="button" class="text-danger btn btn-sm btn-rounded me-5"
             style="box-shadow: 0 0 10px hsla(0, 0%, 0%, 0.2); border-radius: 10px; background-color: transparent; border: 2px; font-size: 16px; padding: 10px 20px;"
-            onclick="confirmLogout()">
+            data-bs-toggle="modal" data-bs-target="#modalLogout">
             <i class="fa fa-ban" aria-hidden="true"></i> Logout
         </button>
 
         <!-- Form Logout -->
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            @csrf
-        </form>
+        <div class="modal fade" id="modalLogout" data-bs-backdrop="false" tabindex="-1" aria-labelledby="modalLogoutLabel" aria-hidden="true" style="background-color: rgba(0, 0, 0, 0.5) !important;">
+            <div class="modal-dialog">
+                <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <div class="modal-content">
+                        <div class="modal-header flex-column text-center border-0">
+                            <h2 class="modal-title w-100" id="modalLogoutLabel">LogOut</h2>
+                            <i class="fas fa-sign-out-alt fa-4x mt-3" style="color: #FF1C1C;"></i>
+                        </div>
+                        <div class="modal-body text-black text-center fs-5 mx-auto mt-0">
+                            Anda yakin ingin keluar dari akun Anda? Semua<br>sesi yang sedang berjalan akan dihentikan, dan Anda perlu login kembali untuk mengakses aplikasi.
+                        </div>
+                        <div class="modal-footer d-flex justify-content-between border-0 mx-4">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="showPreviousModal()" style="background-color: #ffffff; color: rgb(0, 0, 0); font-size: 14px; padding: 10px 30px; border:#000000 solid 1px;">Batal</button>
+                            <button type="submit" class="btn btn-primary" style="background-color: #FF1C1C; color: white; font-size: 14px; padding: 10px 30px;">Ya</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-            function confirmLogout() {
-                Swal.fire({
-                    title: 'LogOut',
-                    html: '<i class="fas fa-sign-out-alt fa-3x mb-3" style="color: #FF1C1C;"></i><br>Anda yakin ingin keluar dari akun Anda?<br>Semua sesi yang sedang berjalan akan dihentikan, dan Anda perlu login kembali untuk mengakses aplikasi.',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya',
-                    cancelButtonText: 'Batal',
-                    customClass: {
-                        popup: 'rounded-lg shadow',
-                        title: 'fw-bold',
-                        confirmButton: 'btn btn-danger px-4',
-                        cancelButton: 'btn btn-secondary px-4'
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById('logout-form').submit();
-                    }
-                });
-            }
-        </script>
 
         @if (session('success'))
             <script>
@@ -132,16 +126,6 @@
                                             <button type="submit" class="btn btn-primary" id="submitBanding">Ajukan</button>
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Batal</button>
                                         </div>
-
-                                        @if ($errors->any())
-                                        <script>
-                                            document.addEventListener("DOMContentLoaded", function () {
-                                                var bandingModal = new bootstrap.Modal(document.getElementById('bandingModal'));
-                                                bandingModal.show();
-                                            });
-                                        </script>
-                                        @endif
-
                                     </div>
                                 </div>
                             </form>

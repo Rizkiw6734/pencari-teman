@@ -29,7 +29,9 @@ class BandingController extends Controller
             })->orWhere('status', 'like', '%' . $search . '%'); // Cari berdasarkan status
         }
 
-        $bandings = $query->with(['user', 'pinalti'])->paginate(10);
+        $bandings = $query->with(['user', 'pinalti'])
+        ->orderByRaw("FIELD(status, 'proses', 'diterima', 'ditolak')")
+        ->paginate(10);
         $notifications = notifikasi::where('user_id', auth()->id())
         ->where('status', 'unread')
         ->orderBy('created_at', 'desc')

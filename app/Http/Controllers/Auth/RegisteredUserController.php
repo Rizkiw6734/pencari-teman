@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
@@ -29,9 +30,9 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $data = $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User ::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ], [
             'name.required' => 'Nama wajib diisi.',
@@ -46,12 +47,20 @@ class RegisteredUserController extends Controller
             'password.required' => 'Password wajib diisi.',
             'password.confirmed' => 'Password konfirmasi tidak sesuai.'
         ]);
+    
+        if ($validator->fails()) {
+            if ($validator->errors()->has('password')) {
+                $validator->errors()->forget('password');
+                $validator->errors()->add('password_confirmation', 'Password konfirmasi tidak sesuai.');
+            }
+            return redirect()->back()->withErrors($validator)->withInput()->with('form', 'register');
+        }
 
         try {
             $user = User::create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => Hash::make($data['password']),
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
             ]);
 
             $user->assignRole('User');

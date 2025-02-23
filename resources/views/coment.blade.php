@@ -10,15 +10,9 @@
   </head>
   <body>
      <div style="display: flex; align-items: center; margin-bottom: 20px; margin-top: 30px;">
-            <i class="fa-solid fa-arrow-left" style="margin-right: 15px; cursor: pointer; font-size: 20px; margin-left: 30px;" onclick="goBack()"></i>
+        <i class="fa-solid fa-arrow-left" style="margin-right: 15px; cursor: pointer; font-size: 20px; margin-left: 30px;" onclick="window.location.href='{{ route('welcome') }}'"></i>
             <span style="font-size: 32px; font-weight: 600; color:#000000;">Semua Komentar</span>
         </div>
-        <script>
-            function goBack() {
-    window.history.back();
-}
-
-        </script>
     <div class="row">
         <div class="col-md-6 col-sm-12">
             <div class="card">

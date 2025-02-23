@@ -175,5 +175,9 @@ public function notifikasi()
     return $this->hasMany(notifikasi::class, 'user_id');
 }
 
+    public function userLogs() {
+            return $this->hasMany(UserLog::class);
+    }
+
 
 }

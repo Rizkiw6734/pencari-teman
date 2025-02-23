@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Pinalti;
 use App\Models\notifikasi;
+use App\Models\UserLog;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class LaporanController extends Controller
@@ -57,70 +58,76 @@ class LaporanController extends Controller
      */
 
 
-public function store(Request $request)
-{
-    // Validasi input
-    $data = $request->validate([
-        'reported_id' => 'required|exists:users,id',
-        'bukti' => 'image|max:5280|mimes:jpeg,png,jpg',
-        'alasan' => 'required|string|max:255',
-    ], [
-        'reported_id.required' => 'Terlapor harus ada',
-        'reported_id.exists' => 'Terlapor tidak valid',
-        'bukti.image' => 'File harus berupa gambar.',
-        'bukti.mimes' => 'Format gambar harus jpeg, png, atau jpg.',
-        'bukti.max' => 'Ukuran gambar tidak boleh lebih dari 5MB.',
-        'alasan.required' => 'Alasan laporan harus ada'
-    ]);
+     public function store(Request $request)
+     {
+         // Validasi input
+         $data = $request->validate([
+             'reported_id' => 'required|exists:users,id',
+             'bukti' => 'image|max:5280|mimes:jpeg,png,jpg',
+             'alasan' => 'required|string|max:255',
+         ], [
+             'reported_id.required' => 'Terlapor harus ada',
+             'reported_id.exists' => 'Terlapor tidak valid',
+             'bukti.image' => 'File harus berupa gambar.',
+             'bukti.mimes' => 'Format gambar harus jpeg, png, atau jpg.',
+             'bukti.max' => 'Ukuran gambar tidak boleh lebih dari 5MB.',
+             'alasan.required' => 'Alasan laporan harus ada'
+         ]);
 
-    // Set pelapor
-    $data['report_id'] = Auth::id();
+         // Set pelapor
+         $data['report_id'] = Auth::id();
+         $reportedUser = User::findOrFail($data['reported_id']);
 
-    $existingReport = Laporan::where('report_id', $data['report_id'])
-        ->where('reported_id', $data['reported_id'])
-        ->orderBy('created_at', 'desc')
-        ->first();
+         $existingReport = Laporan::where('report_id', $data['report_id'])
+             ->where('reported_id', $data['reported_id'])
+             ->orderBy('created_at', 'desc')
+             ->first();
 
-    if ($existingReport) {
-        if ($existingReport->status === 'dibanned') {
-            return redirect()->back()->with('error', 'Pengguna ini sudah dibanned. Tidak perlu melaporkannya lagi.');
-        }
-        if ($existingReport->status === 'disuspend') {
-            return redirect()->back()->with('error', 'Pengguna ini sudah disuspend. Tidak perlu melaporkannya lagi.');
-        }
-        if ($existingReport->status === 'diproses') {
-            return redirect()->back()->with('error', 'Laporan terhadap pengguna ini masih dalam proses. Mohon tunggu hingga laporan selesai atau ditolak.');
-        }
-    }
+         if ($existingReport) {
+             if ($existingReport->status === 'dibanned') {
+                 return redirect()->back()->with('error', 'Pengguna ini sudah dibanned. Tidak perlu melaporkannya lagi.');
+             }
+             if ($existingReport->status === 'disuspend') {
+                 return redirect()->back()->with('error', 'Pengguna ini sudah disuspend. Tidak perlu melaporkannya lagi.');
+             }
+             if ($existingReport->status === 'diproses') {
+                 return redirect()->back()->with('error', 'Laporan terhadap pengguna ini masih dalam proses. Mohon tunggu hingga laporan selesai atau ditolak.');
+             }
+         }
 
+         // Simpan bukti gambar jika ada
+         if ($file = $request->file('bukti')) {
+             $filename = time() . '_' . $file->getClientOriginalName(); // Tambahkan timestamp agar unik
+             if (Laporan::where('bukti', $filename)->exists()) {
+                 return redirect()->back()->with('error', 'Gambar ini sudah ada. Silakan pilih gambar yang berbeda.');
+             }
+             $file->move(public_path('assets/img/laporan'), $filename);
+             $data['bukti'] = $filename;
+         }
 
-    // Simpan bukti gambar jika ada
-    if ($file = $request->file('bukti')) {
-        $filename = time() . '_' . $file->getClientOriginalName(); // Tambahkan timestamp agar unik
-        if (Laporan::where('bukti', $filename)->exists()) {
-            return redirect()->back()->with('error', 'Gambar ini sudah ada. Silakan pilih gambar yang berbeda.');
-        }
-        $file->move(public_path('assets/img/laporan'), $filename);
-        $data['bukti'] = $filename;
-    }
+         // Simpan laporan
+         $laporan = Laporan::create($data);
 
-    // Simpan laporan
-    $laporan = Laporan::create($data);
+         // Simpan log aktivitas
+         UserLog::create([
+             'user_id' => auth()->id(),
+             'aktivitas' => "Anda telah berhasil melaporkan {$reportedUser->name}"
+         ]);
 
-    // Kirim notifikasi ke semua admin
-    $admins = User::role('Admin')->get();
-    foreach ($admins as $admin) {
-        notifikasi::create([
-            'user_id' => $admin->id, // Admin sebagai penerima notifikasi
-            'laporan_id' => $laporan->id,
-            'judul' => 'Laporan Baru Masuk',
-            'pesan' => 'Ada laporan baru dari ' . auth()->user()->name,
-            'link' => url("/laporan"),
-        ]);
-    }
+         // Kirim notifikasi ke semua admin
+         $admins = User::role('Admin')->get();
+         foreach ($admins as $admin) {
+             notifikasi::create([
+                 'user_id' => $admin->id, // Admin sebagai penerima notifikasi
+                 'laporan_id' => $laporan->id,
+                 'judul' => 'Laporan Baru Masuk',
+                 'pesan' => 'Ada laporan baru dari ' . auth()->user()->name,
+                 'link' => url("/laporan"),
+             ]);
+         }
 
-    return redirect()->back()->with('success', 'Laporan berhasil ditambahkan.');
-}
+         return redirect()->back()->with('success', 'Laporan berhasil ditambahkan.');
+     }
 
     /**
      * Display the specified resource.

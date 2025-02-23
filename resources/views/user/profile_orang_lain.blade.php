@@ -10,7 +10,7 @@
                                 <img src="{{ $user->foto_profil ? asset('storage/' . $user->foto_profil) : asset('images/marie.jpg') }}"
                                      alt="Foto Profil" class="w-100 border-radius-lg shadow-sm rounded-circle" style="width: 150px; height: 110px; border-radius: 50%; object-fit: cover;">
                             </div>
-                            <div class="position-absolute top-0 start-0 m-3">
+                            <div class="position-absolute top-0 start-0 m-3" >
                                 <a href="javascript:void(0);" onclick="goBackAndRefresh();">
                                     <i class="fa-solid fa-arrow-left text-secondary p-2 rounded-circle"
                                        style="font-size: 20px; margin-right: -10px;"></i>
@@ -28,8 +28,9 @@
                             </script>
 
 
-                            <div class="position-absolute top-0 end-0 m-3">
-                                <i class="fa-solid fa-comment-sms text-secondary p-2 rounded-circle"
+                            <div class="position-absolute top-0 end-0 m-3" >
+                                <i class="fa-solid fa-comment-sms text-secondary p-2 rounded-circle" data-penerima-id="{{ $user->id }}"
+                                onclick="selectChat(this, '{{ $user->id }}', 'received')"
                                     style="font-size: 24px; margin-right: -10px;"></i>
                                     @php
                                     $isFollowing = auth()->user()->following()->where('user_id', $user->id)->exists();
@@ -506,6 +507,15 @@ function unblockUser(userId) {
 }
 
 
+</script>
+<script>
+    async function selectChat(element, penerimaId, chatStatus) {
+        // Simpan penerimaId ke Local Storage sebelum pindah halaman
+        localStorage.setItem('selectedChat', penerimaId);
+
+        // Arahkan ke halaman user.home setelah memilih chat
+        window.location.href = "/home";
+    }
 </script>
 @endsection
 

@@ -10,7 +10,11 @@
             <span style="font-size: 20px; font-weight: 600; color:#000000;">Aktivitas Anda</span>
         </div>
         <div style="height: 1px; background-color: #ddd; margin: 2px 0; margin-bottom: 20px;"></div>
-
+        <style>
+            div::-webkit-scrollbar {
+                display: none;
+            }
+        </style>
         <div id="chat-container" style="height: 500px; overflow-y: scroll;">
             <p style="font-size: 15px; color:#000000; font-weight: 600; margin-bottom: 10px;">Hari ini</p>
             @foreach($logsToday as $log)

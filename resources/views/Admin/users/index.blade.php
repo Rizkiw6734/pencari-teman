@@ -185,7 +185,9 @@
 
                     <!-- Dropdown untuk Kabupaten -->
                     <select id="regencies" class="form-select"
-                        style="background-color: transparent; width: 120px; padding-right: 33px; border: 1px solid #C9C1FF;">
+
+                        style="background-color: transparent; width: 200px; padding-right: 33px; border: 1px solid #C9C1FF;">
+
                         <option value="">Kabupaten</option>
                     </select>
 
@@ -232,7 +234,7 @@
                                                 $user->provinsis? $user->provinsis->name : null,
                                                 $user->kabupatens? $user->kabupatens->name : null,
                                             ])->filter()->implode(', '),
-                                    
+
                                             collect([
                                                 $user->kecamatans? $user->kecamatans->name : null,
                                                 $user->desas? $user->desas->name : null,
@@ -242,13 +244,13 @@
                                                 $user->provinsis? $user->provinsis->name : null,
                                                 $user->kabupatens? $user->kabupatens->name : null,
                                             ])->filter()->implode(', '),
-                                    
+
                                             collect([
                                                 $user->kecamatans? $user->kecamatans->name : null,
                                                 $user->desas? $user->desas->name : null,
                                             ])->filter()->implode(', ')
                                         ])->filter()->implode('<br>') !!}
-                                    </td>                                                                      
+                                    </td>
                                     <td>
                                         <span class="badge d-inline-flex align-items-center justify-content-center px-3 py-2
                                             {{ $user->status === 'banned' ? 'status-banned' : ($user->status === 'suspend' ? 'status-suspend' : 'status-selesai') }}">

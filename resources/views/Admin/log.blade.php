@@ -315,12 +315,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach($notifikasis as $index => $notifikasi)
                                     <tr>
-                                        <td>1.</td>
-                                        <td>coba1</td>
-                                        <td>pp</td>
-                                        <td>14-07-2022</td>
+                                        <td>{{ $index + 1 }}.</td>
+                                        <td>{{ $notifikasi->laporan->pelapor->name ?? 'Tidak diketahui' }}</td> 
+                                        <td>{{ $notifikasi->pesan }}</td>
+                                        <td>{{ $notifikasi->created_at->format('d-m-Y') }}</td>
                                     </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>

@@ -31,7 +31,14 @@ class AdminLogController extends Controller
         ->take(10)
         ->get();
 
-        return view('Admin.log', compact('logs','notifications'));
+        $notifikasis = notifikasi::whereHas('user', function ($query) {
+            $query->whereHas('roles', function ($roleQuery) {
+                $roleQuery->where('name', 'Admin');
+            });
+        })->with(['user', 'laporan'])->orderBy('created_at', 'desc')->get();
+
+
+        return view('Admin.log', compact('logs','notifications', 'notifikasis'));
     }
 
     // Menambahkan log aktivitas baru

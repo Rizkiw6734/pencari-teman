@@ -11,11 +11,14 @@
                     </h2>
                     <div style="height: 2px; background-color: #75757580; margin: 2px 0; margin-bottom: 20px;"></div>
                 </header>
-                <a href="{{ route('blokiran') }}" class="text-black" style="font-size: 17px; font-weight: 500;">Kontak Diblokir</a>
+                <a href="{{ route('blokiran') }}" style="font-size: 17px; font-weight: 500; color: #528BFF;">Kontak Diblokir</a>
                 <p style="font-size: 12px; font-style: italic;">{{ $jumlahBlokir }} Pengguna Diblokir</p>
 
-                <a href="{{ route('user.logs') }}" class="text-black" style="font-size: 17px; font-weight: 500; ">Aktivitas Anda</a>
+                <a href="{{ route('user.logs') }}" style="font-size: 17px; font-weight: 500; color: #528BFF;">Aktivitas Anda</a>
                 <p style="font-size: 12px; font-style: italic;">Aktivitas anda dapat dilihat disini</p>
+
+                <a href="#" style="font-size: 17px; font-weight: 500; color: #528BFF;">Rating Aplikasi</a>
+                <p style="font-size: 12px; font-style: italic;">Kami ingin tahu bagaimana pendapatmu tentang aplikasi ini</p>
             </div>
         </div>
     </div>

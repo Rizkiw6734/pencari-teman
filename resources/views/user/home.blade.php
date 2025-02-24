@@ -12,8 +12,8 @@
                                 <a href="javascript:;"
                                     class="nav-link text-body p-0 d-flex align-items-center justify-content-center"
                                     id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa-regular fa-bell" style="color: #2970e1; font-size: 20px;"></i>
-                                    <span class="badge bg-danger notifikasi-count" style="position: absolute; top: 5px; right: 5px; font-size: 10px;">0</span>
+                                    <i class="fa-regular fa-bell" style="color: #2970e1; font-size: 25px;"></i>
+                                    <span class="badge notifikasi-count" style="position: absolute; top: -4px; left: 12px; font-size: 7px; background-color : #2D9CDB;">0</span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
                                     <!-- Notifikasi akan dimuat di sini secara dinamis oleh JavaScript -->
@@ -840,7 +840,7 @@ function fetchNotifications() {
             `;
 
             data.forEach(notifikasi => {
-                let gambar = notifikasi.gambar ? notifikasi.gambar : "/assets/img/default-avatar.png";
+                let gambar = notifikasi.gambar ? notifikasi.gambar : "/assets/img/team-1.jpg";
                 let notifikasiItem = document.createElement("li");
                 notifikasiItem.classList.add("dropdown-item", "border-radius-md");
 
@@ -849,7 +849,7 @@ function fetchNotifications() {
 
                 notifikasiItem.innerHTML = `
                     <a href="#" onclick="markAsRead(${notifikasi.id}, '${notifikasi.link}', '${notifikasi.user_id}', this)"
-                        class="d-flex py-1 mb-3 text-decoration-none text-dark" style="background-color: ${bgColor};">
+                        class="d-flex py-1 mb-0 text-decoration-none text-dark">
                         <div class="my-auto">
                             <img src="${gambar}" class="avatar avatar-sm me-3" style="width: 50px; height: 50px; border-radius: 50%;">
                         </div>

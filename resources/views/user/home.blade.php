@@ -8,56 +8,18 @@
                     <div class="mb-3">
                         <div class="mb-2 mt-3 d-flex justify-content-between align-items-center">
                             <h5 class="font-weight-bold">Sedang Aktif</h5>
-                        <li class="nav-item dropdown pe-2 d-flex align-items-center justify-content-center">
-                            <a href="javascript:;"
-                                class="nav-link text-body p-0 d-flex align-items-center justify-content-center"
-                                id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa-regular fa-bell" style="color: #2970e1; font-size: 20px;"></i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4"
-                                aria-labelledby="dropdownMenuButton">
-                                <li class="mb-2">
-                                    <div style="border-bottom: 1px solid #ccc; padding-bottom: 10px;" class="mb-3">
-                                        <div class="d-flex flex-column">
-                                            <h5 class="mb-0">Notifikasi</h5>
-                                            <small class="text-muted">Kamu mendapatkan <span style="color: #2970ff;">10 Notifikasi</span> terbaru.</small>
-                                        </div>
-                                    </div>
-                                    <a class="dropdown-item border-radius-md" href="#">
-                                        <div style="height: 200px; overflow-y: scroll; solid #ccc;">
-                                            <div class="d-flex py-1 mb-3">
-                                                <div class="my-auto">
-                                                    <img src="/assets/img/team-2.jpg" class="avatar avatar-sm me-3" style="width: 50px; height: 50px; border-radius: 50%;">
-                                                </div>
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="text-sm font-weight-normal mb-1" style="font-size: 10px;">
-                                                        <span class="font-weight-bold">Alifio</span> Mengirim Ajubanding
-                                                    </h6>
-                                                    <p class="text-xs text-secondary mb-0">
-                                                        <i class="fa fa-clock me-1"></i>
-                                                        1 jam yang lalu
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex py-1 mb-3">
-                                                <div class="my-auto">
-                                                    <img src="/assets/img/team-2.jpg" class="avatar avatar-sm me-3" style="width: 50px; height: 50px; border-radius: 50%;">
-                                                </div>
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="text-sm font-weight-normal mb-1" style="font-size: 10px;">
-                                                        <span class="font-weight-bold">Alifio</span> Mengirim Ajubanding
-                                                    </h6>
-                                                    <p class="text-xs text-secondary mb-0">
-                                                        <i class="fa fa-clock me-1"></i>
-                                                        1 jam yang lalu
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                            <li class="nav-item dropdown pe-2 d-flex align-items-center justify-content-center">
+                                <a href="javascript:;"
+                                    class="nav-link text-body p-0 d-flex align-items-center justify-content-center"
+                                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-regular fa-bell" style="color: #2970e1; font-size: 20px;"></i>
+                                    <span class="badge bg-danger notifikasi-count" style="position: absolute; top: 5px; right: 5px; font-size: 10px;">0</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+                                    <!-- Notifikasi akan dimuat di sini secara dinamis oleh JavaScript -->
+                                </ul>
+                            </li>
+
                         </div>
 
                         <!-- Sedang Aktif -->
@@ -835,4 +797,123 @@ $('#chat-input').keypress(function(event) {
             }
         });
     </script>
+    <script>
+       document.addEventListener("DOMContentLoaded", function () {
+    fetchNotifications();
+});
+
+function fetchNotifications() {
+    let notifikasiCount = document.querySelector(".notifikasi-count");
+    let dropdownMenu = document.querySelector(".dropdown-menu");
+
+    if (!notifikasiCount || !dropdownMenu) return;
+
+    // **Sembunyikan notifikasi count sebelum request**
+    notifikasiCount.style.visibility = "hidden";
+    notifikasiCount.textContent = "";
+
+    fetch("{{ route('user.notifikasi') }}")
+        .then(response => response.json())
+        .then(data => {
+            dropdownMenu.innerHTML = "";
+
+            if (data.length === 0) {
+                notifikasiCount.style.visibility = "hidden";
+                notifikasiCount.textContent = "";
+                dropdownMenu.innerHTML = `<li class="mb-2 text-center p-3">Tidak ada notifikasi</li>`;
+                return;
+            }
+
+            // **Tampilkan notifikasi count hanya jika ada notifikasi**
+            notifikasiCount.style.visibility = "visible";
+            notifikasiCount.textContent = data.length;
+
+            dropdownMenu.innerHTML = `
+                <li class="mb-2">
+                    <div style="border-bottom: 1px solid #ccc; padding-bottom: 10px;" class="mb-3">
+                        <div class="d-flex flex-column">
+                            <h5 class="mb-0">Notifikasi</h5>
+                            <small class="text-muted">Kamu mendapatkan <span style="color: #2970ff;">${data.length} Notifikasi</span> terbaru.</small>
+                        </div>
+                    </div>
+                </li>
+            `;
+
+            data.forEach(notifikasi => {
+                let gambar = notifikasi.gambar ? notifikasi.gambar : "/assets/img/default-avatar.png";
+                let notifikasiItem = document.createElement("li");
+                notifikasiItem.classList.add("dropdown-item", "border-radius-md");
+
+                let roleText = notifikasi.role === "pelapor" ? "Pelapor" : "Terlapor";
+                let bgColor = notifikasi.role === "pelapor" ? "#ffcccc" : "#ccffcc";
+
+                notifikasiItem.innerHTML = `
+                    <a href="#" onclick="markAsRead(${notifikasi.id}, '${notifikasi.link}', '${notifikasi.user_id}', this)"
+                        class="d-flex py-1 mb-3 text-decoration-none text-dark" style="background-color: ${bgColor};">
+                        <div class="my-auto">
+                            <img src="${gambar}" class="avatar avatar-sm me-3" style="width: 50px; height: 50px; border-radius: 50%;">
+                        </div>
+                        <div class="d-flex flex-column justify-content-center">
+                            <h6 class="text-sm font-weight-normal mb-1" style="font-size: 12px;">
+                                <span class="font-weight-bold">${roleText}: ${notifikasi.judul}</span> - ${notifikasi.pesan}
+                            </h6>
+                            <p class="text-xs text-secondary mb-0">
+                                <i class="fa fa-clock me-1"></i>
+                                ${formatDate(notifikasi.created_at)}
+                            </p>
+                        </div>
+                    </a>
+                `;
+                dropdownMenu.appendChild(notifikasiItem);
+            });
+        })
+        .catch(error => console.error("Error fetching notifications:", error));
+}
+
+
+function markAsRead(id, link, user_id, element) {
+    fetch(`/notifikasi/read/${id}`, {
+        method: "POST",
+        headers: {
+            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ user_id: user_id }) // Kirim user_id untuk validasi di backend
+    })
+    .then(response => response.json())
+    .then(() => {
+        element.closest("li").remove(); // Hapus dari tampilan
+
+        let notifikasiCount = document.querySelector(".notifikasi-count");
+        let dropdownMenu = document.querySelector(".dropdown-menu");
+
+        let newCount = parseInt(notifikasiCount.textContent) - 1;
+
+        if (newCount <= 0) {
+            notifikasiCount.style.visibility = "hidden";
+            notifikasiCount.textContent = "";
+            dropdownMenu.innerHTML = `<li class="mb-2 text-center p-3">Tidak ada notifikasi</li>`;
+        } else {
+            notifikasiCount.textContent = newCount;
+        }
+
+        window.location.href = link; // Redirect ke halaman tujuan
+    })
+    .catch(error => console.error("Error marking notification as read:", error));
+}
+
+function formatDate(dateString) {
+    let date = new Date(dateString);
+    return date.toLocaleString("id-ID", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
+
+
+    </script>
+
 @endsection

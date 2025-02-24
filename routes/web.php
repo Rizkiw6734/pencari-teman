@@ -112,6 +112,7 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     Route::get('/home', [ChatController::class, 'index'])->name('user.home');
     Route::get('/latest-chats', [ChatController::class, 'latestChatsJson']);
     Route::get('/logs', [UserLogController::class, 'index'])->name('user.logs');
+    Route::get('/notifikasi', [ChatController::class, 'notif'])->name('user.notifikasi');
 
     // Banned Page
     Route::get('/banned', [UserStatusController::class, 'bannedPage'])->name('user.banned');

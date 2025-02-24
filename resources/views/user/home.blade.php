@@ -855,7 +855,7 @@ function fetchNotifications() {
                         </div>
                         <div class="d-flex flex-column justify-content-center">
                             <h6 class="text-sm font-weight-normal mb-1" style="font-size: 12px;">
-                                <span class="font-weight-bold">${roleText}: ${notifikasi.judul}</span> - ${notifikasi.pesan}
+                                <span class="font-weight-bold">${notifikasi.judul}</span>
                             </h6>
                             <p class="text-xs text-secondary mb-0">
                                 <i class="fa fa-clock me-1"></i>

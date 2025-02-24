@@ -7,15 +7,18 @@ use App\Models\notifikasi;
 
 class NotifikasiController extends Controller
 {
-    public function markAsRead($id)
+    public function markAsRead($id, Request $request)
     {
-        $notif = Notifikasi::find($id);
+        $notifikasi = notifikasi::where('id', $id)
+            ->where('user_id', $request->user_id) // Cek apakah user_id cocok
+            ->first();
 
-        if ($notif && $notif->status === 'unread') {
-            $notif->markAsRead();
-            return response()->json(['success' => true]);
+        if ($notifikasi) {
+            $notifikasi->update(['status' => 'read']);
+            return response()->json(['message' => 'Notifikasi ditandai sebagai dibaca']);
         }
 
-        return response()->json(['success' => false, 'message' => 'Notifikasi tidak ditemukan atau sudah dibaca']);
+        return response()->json(['error' => 'Notifikasi tidak ditemukan atau tidak memiliki akses'], 403);
     }
+
 }

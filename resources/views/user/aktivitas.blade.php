@@ -34,7 +34,7 @@
                         <div class="d-flex align-items-center p-1 rounded shadow-sm w-100 px-3 mb-3" style="background-color: #D1E0FF;">
                             <img src="/assets/img/team-3.jpg" alt="Profile" class="rounded-circle me-3" width="40" height="40">
                             <div class="flex-grow-1">
-                                <p class="mb-0" style="color: #000000;">Anda melakukan <strong><em>{{ $log->aktivitas }}</em></strong></p>
+                                <p class="mb-0" style="color: #000000;">{{ $log->aktivitas }}</p>
                                 <small class="d-block text-muted">{{ $log->created_at->diffForHumans() }}</small>
                             </div>
                             <small style="color: #000000;">{{ $log->created_at->format('d M Y') }}</small>

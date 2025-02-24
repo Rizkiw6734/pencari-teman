@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use App\Models\notifikasi;
 
 class ChatController extends Controller
 {
@@ -18,6 +19,18 @@ class ChatController extends Controller
     $userId = Auth::id();
     return view('user.home', compact('userId'));
 }
+
+public function notif()
+    {
+        // Ambil notifikasi berdasarkan user yang sedang login
+        $notifikasis = notifikasi::where('user_id', auth()->id())
+        ->where('status', 'unread')
+        ->orderBy('created_at', 'desc')
+        ->take(10)
+        ->get();
+
+        return response()->json($notifikasis);
+    }
 
 public function latestChatsJson(Request $request)
 {

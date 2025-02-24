@@ -212,7 +212,7 @@
             </div>
         </div>
 
-        <div class="container-fluid py-4">
+        {{-- <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
                     <table class="table table-hover rounded-table text-center"
@@ -242,7 +242,95 @@
                     </table>
                 </div>
             </div>
+        </div> --}}
+
+        <style>
+            .nav-tabs .nav-link.active {
+                background-color: #8979FF !important;
+                color: white !important;
+                border-color: #8979FF #8979FF #fff !important;
+            }
+
+            .nav-tabs .nav-link {
+                color: #000000 !important;
+            }
+
+        </style>
+
+        <div class="container mt-4">
+            <!-- Navigasi Tabs -->
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="admin-tab" data-bs-toggle="tab" data-bs-target="#admin" type="button" role="tab">Aktivitas Admin</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="user-tab" data-bs-toggle="tab" data-bs-target="#user" type="button" role="tab">Notifikasi User</button>
+                </li>
+            </ul>
+
+            <!-- Konten Tabs -->
+            <div class="tab-content mt-3">
+                <div class="tab-pane fade show active" id="admin" role="tabpanel">
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table table-hover rounded-table text-center"
+                                style="font-size: 15px; width: 100%; background-color: white;">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Admin</th>
+                                        <th>Aktivitas Admin</th>
+                                        <th>Tanggal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($logs as $log)
+                                        <tr class="align-middle">
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ optional($log->user)->name ?? 'Pengguna tidak ditemukan' }}</td>
+                                            <td style="max-width: 220px; word-wrap: break-word; white-space: normal;">{{ ucwords($log->aktivitas ?? 'Aktivitas tidak ada') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($log->created_at)->format('d-m-Y') }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" class="text-center">Data tidak ditemukan.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="user" role="tabpanel">
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table table-hover rounded-table text-center"
+                                style="font-size: 15px; width: 100%; background-color: white;">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama User</th>
+                                        <th>Notifikasi User</th>
+                                        <th>Tanggal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1.</td>
+                                        <td>coba1</td>
+                                        <td>pp</td>
+                                        <td>14-07-2022</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 
         <footer class="footer pt-3">
             <div class="container-fluid">

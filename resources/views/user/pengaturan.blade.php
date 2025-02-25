@@ -1,4 +1,4 @@
-{{-- @extends('layouts.user')
+@extends('layouts.user')
 @section('content')
     <div class="main-content"
         style="max-width: 1200px; margin: 0 auto; margin-top: 0px; background-color: #F0F3F9;
@@ -17,25 +17,9 @@
                 <a href="{{ route('user.logs') }}" style="font-size: 17px; font-weight: 500; color: #528BFF;">Aktivitas Anda</a>
                 <p style="font-size: 12px; font-style: italic;">Aktivitas anda dapat dilihat disini</p>
 
-                <a href="#" style="font-size: 17px; font-weight: 500; color: #528BFF;">Rating Aplikasi</a>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" style="font-size: 17px; font-weight: 500; color: #528BFF;">Rating Aplikasi</a>
                 <p style="font-size: 12px; font-style: italic;">Kami ingin tahu bagaimana pendapatmu tentang aplikasi ini</p>
-            </div>
-        </div>
-    </div>
-@endsection --}}
-
-@extends('layouts.user')
-@section('content')
-<div class="main-content"
-style="max-width: 1200px; margin: 0 auto; margin-top: 0px; background-color: #F0F3F9;
-   padding: 20px; margin-left: 260px; position: relative; min-height: 100vh;">
-<div class="container-fluid">
-    <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    Launch demo modal
-</button>
-
-  <!-- Modal -->
+                <!-- Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
@@ -85,31 +69,33 @@ style="max-width: 1200px; margin: 0 auto; margin-top: 0px; background-color: #F0
       </div>
     </div>
   </div>
-</div>
-</div>
+            </div>
+        </div>
+    </div>
 
-<style>
-    /* Styling rating bintang */
-    .rating {
-        direction: rtl;
-        display: flex;
-        justify-content: end;
-    }
+    <style>
+        /* Styling rating bintang */
+        .rating {
+            direction: rtl;
+            display: flex;
+            justify-content: end;
+        }
 
-    .rating input {
-        display: none;
-    }
+        .rating input {
+            display: none;
+        }
 
-    .rating label {
-        font-size: 32px;
-        color: #ddd;
-        cursor: pointer;
-        transition: color 0.3s;
-    }
+        .rating label {
+            font-size: 32px;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
 
-    .rating input:checked ~ label {
-        color: #1C55E0;
-    }
-</style>
+        .rating input:checked ~ label {
+            color: #1C55E0;
+        }
+    </style>
 @endsection
+
 

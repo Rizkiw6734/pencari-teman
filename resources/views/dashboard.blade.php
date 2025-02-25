@@ -58,19 +58,21 @@
                 $(document).ready(function () {
                     $(document).on("click", ".notif-item", function (e) {
                         e.preventDefault(); // Jangan langsung pindah halaman
+
                         let notifId = $(this).data("id");
                         let notifLink = $(this).attr("href");
 
                         $.ajax({
                             url: "/notifikasi/read/" + notifId,
-                            type: "POST",
+                            type: "POST", // Gunakan metode PUT untuk update
                             headers: {
-                                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                                "Content-Type": "application/json"
                             },
                             success: function (response) {
                                 if (response.success) {
-                                    // Ubah tampilan notifikasi jadi "read" (opsional)
-                                    $(`a[data-id="${notifId}"]`).removeClass("unread").addClass("read");
+                                    // Tandai semua notifikasi terkait sebagai "read"
+                                    $(".notif-item").removeClass("unread").addClass("read");
 
                                     // Redirect setelah status diperbarui
                                     window.location.href = notifLink;
@@ -83,6 +85,7 @@
                     });
                 });
             </script>
+
         </li>
 
           <div class="d-flex align-items-center">

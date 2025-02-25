@@ -872,7 +872,7 @@ function fetchNotifications() {
 
 
 function markAsRead(id, link, user_id, element) {
-    fetch(`/notifikasi/read/${id}`, {
+    fetch(`/notifikasi/${id}/read`, {
         method: "POST",
         headers: {
             "X-CSRF-TOKEN": "{{ csrf_token() }}",

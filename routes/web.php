@@ -168,6 +168,7 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     Route::post('/send-message', [ChatController::class, 'sendMessage']);
     Route::get('/messages/status/{userId}/{penerimaId}', [ChatController::class, 'getStatus']);
     Route::post('/notifikasi/read/{id}', [NotifikasiController::class, 'markAsRead'])->middleware('auth');
+    Route::post('/notifikasi/{id}/read', [NotifikasiController::class, 'Read'])->middleware('auth');
     // Suspend Page
     Route::get('/suspend', [UserStatusController::class, 'suspendPage'])->name('user.suspend');
     });

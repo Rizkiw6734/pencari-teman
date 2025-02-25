@@ -36,8 +36,7 @@
                                     <div class="card-body">
                                         <form id="ratingform" action="#" method="POST" enctype="multipart/form-data">
                                             <div class="mb-3 d-flex flex-column">
-                                                <label for="rating" class="form-label fw-bold text-start"
-                                                    style="font-size: 17px; margin-bottom : -10px;">Rating</label>
+                                                <label for="rating" class="form-label fw-bold text-start" style="font-size: 17px; margin-bottom: -10px;">Rating</label>
                                                 <!-- Rating Bintang -->
                                                 <div class="rating">
                                                     <input type="radio" id="star5" name="rating" value="5">
@@ -55,15 +54,13 @@
                                                     <input type="radio" id="star1" name="rating" value="1">
                                                     <label for="star1" title="Sangat Buruk">&#9733;</label>
                                                 </div>
-
-                                                <!-- Input Ulasan -->
-                                                <label for="ulasan" class="form-label fw-bold text-start"
-                                                    style="font-size: 17px; margin-bottom: -15px;">Ulasan</label>
-                                                <textarea class="form-control mt-3" id="ulasan" name="ulasan" rows="3" placeholder="Masukkan ulasan Anda"
-                                                    style="border: 0px solid #ffffff; box-shadow: 0px 0px 1px 1px rgba(82, 139, 255, 0.25)">
-                            </textarea>
-                                                <small class="text-end">0/200</small>
                                             </div>
+                                                <!-- Input Ulasan -->
+                                                <div class="mb-3 d-flex flex-column">
+                                                    <label for="ulasan" class="form-label fw-bold text-start" style="font-size: 18px;">Ulasan</label>
+                                                    <textarea class="form-control" id="ulasan" name="ulasan" rows="3" placeholder="Masukkan ulasan Anda" style="border: 0px solid #ffffff; box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25)"></textarea>
+                                                    <small class="text-end">0/200</small>
+                                                </div>
                                         </form>
                                     </div>
                                     <div class="modal-footer d-flex justify-content-between border-0 mx-2"

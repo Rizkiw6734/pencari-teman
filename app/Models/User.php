@@ -179,5 +179,9 @@ public function notifikasi()
             return $this->hasMany(UserLog::class);
     }
 
+    public function rating() {
+        return $this->hasMany(Rating::class);
+    }
+
 
 }

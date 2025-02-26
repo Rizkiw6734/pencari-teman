@@ -237,7 +237,7 @@
             <div class="d-flex align-items-center pb-3" style="background-color: #E9F7FF; border-radius: 10px; padding: 10px;">
               <div class="me-3" style="flex: 1;">
                 <h6 class="mb-0" style="font-size: 12px">Anda telah menerima
-                  <span class="mb-0" style=" font-size: 16px; font-weight: bold; color: #3243fd;">80%</span>
+                  <span class="mb-0" style=" font-size: 16px; font-weight: bold; color: #3243fd;">{{ $positivePercentage }}%</span>
                   ulasan positif dari pengguna!
                 </h6>
               </div>
@@ -254,7 +254,7 @@
             <div class="d-flex align-items-center pb-3 mt-3" style="background-color: #FFF7E5; border-radius: 10px; padding: 10px;">
               <div class="me-3" style="flex: 1;">
                 <h6 class="mb-0" style="font-size: 12px">Anda telah menerima
-                  <span class="mb-0" style=" font-size: 16px; font-weight: bold; color: #FFC107;">17%</span>
+                  <span class="mb-0" style=" font-size: 16px; font-weight: bold; color: #FFC107;">{{ $neutralPercentage }}%</span>
                   ulasan netral dari pengguna!
                 </h6>
               </div>
@@ -271,7 +271,7 @@
             <div class="d-flex align-items-center mt-3" style="background-color: #FFE9E9; border-radius: 10px; padding: 10px;">
               <div class="me-3" style="flex: 1;">
                 <h6 class="mb-0" style="font-size: 12px">Anda telah menerima
-                  <span class="mb-0" style=" font-size: 16px; font-weight: bold; color: #DC3545;">3%</span>
+                  <span class="mb-0" style=" font-size: 16px; font-weight: bold; color: #DC3545;">{{ $negativePercentage }}%</span>
                   ulasan negatif dari pengguna!
                 </h6>
               </div>
@@ -377,130 +377,132 @@
       });
 
       // Reviews Pengguna
-      const reviewsCtx = document.getElementById('reviewsChart').getContext('2d');
-      new Chart(reviewsCtx, {
-        type: 'doughnut',
-        data: {
-          labels: ['Positive'],
-          datasets: [{
-            label: 'Reviews',
-            data: [80, 20],
-            backgroundColor: ['#0D6EFD', '#E9ECEF'],
-            hoverOffset: 4
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
-          cutout: '70%'
-        }
-      });
+      const positivePercentage = {{ $positive }};
+const neutralPercentage = {{ $neutral }};
+const negativePercentage = {{ $negative }};
 
-      // Chart for Neutral Reviews
-      const neutralCtx = document.getElementById('neutralChart').getContext('2d');
-      new Chart(neutralCtx, {
-        type: 'doughnut',
-        data: {
-          labels: ['Neutral'],
-          datasets: [{
-            label: 'Reviews',
-            data: [17, 83],
-            backgroundColor: ['#FFC107', '#E9ECEF'],
-            hoverOffset: 4
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
-          cutout: '70%'
-        }
-      });
+const reviewsCtx = document.getElementById('reviewsChart').getContext('2d');
+new Chart(reviewsCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['Positive'],
+    datasets: [{
+      label: 'Reviews',
+      data: [positivePercentage, 100 - positivePercentage],
+      backgroundColor: ['#0D6EFD', '#E9ECEF'],
+      hoverOffset: 4
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false }
+    },
+    cutout: '70%'
+  }
+});
 
-      // Chart for Negative Reviews
-      const negativeCtx = document.getElementById('negativeChart').getContext('2d');
-      new Chart(negativeCtx, {
-        type: 'doughnut',
-        data: {
-          labels: ['Negative'],
-          datasets: [{
-            label: 'Reviews',
-            data: [3, 97],
-            backgroundColor: ['#DC3545', '#E9ECEF'],
-            hoverOffset: 4
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
-          cutout: '70%'
-        }
-      });
+// Chart for Neutral Reviews
+const neutralCtx = document.getElementById('neutralChart').getContext('2d');
+new Chart(neutralCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['Neutral'],
+    datasets: [{
+      label: 'Reviews',
+      data: [neutralPercentage, 100 - neutralPercentage],
+      backgroundColor: ['#FFC107', '#E9ECEF'],
+      hoverOffset: 4
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false }
+    },
+    cutout: '70%'
+  }
+});
 
-      // Data Pengguna Tahun 2024
-      const penggunaCtx = document.getElementById('chart-line').getContext('2d');
-      const data2024 = {
-        labels: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
-        datasets: [
-          {
-            label: 'Pengguna Laki-laki',
-            data: [70, 40, 42, 90, 31, 51, 43, 31, 85, 55, 82, 95],
-            borderColor: '#8979FF',
-            backgroundColor: 'rgba(137, 121, 255, 0.2)',
-            tension: 0.5,
-            fill: true
-          },
-          {
-            label: 'Pengguna Perempuan',
-            data: [35, 70, 85, 75, 50, 73, 16, 43, 22, 16, 30, 19],
-            borderColor: '#FF928A',
-            backgroundColor: 'rgba(255, 146, 138, 0.2)',
-            tension: 0.5,
-            fill: true
-          }
-        ]
-      };
-
-      const config = {
-        type: 'line',
-        data: data2024,
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { position: 'bottom' },
-            tooltip: {
-              callbacks: {
-                label: (context) => `${context.dataset.label}: ${context.parsed.y} pengguna`
-              }
-            }
-          },
-          scales: {
-            x: {
-              title: { display: true, text: 'Bulan' }
-            },
-            y: {
-              title: { display: true, text: 'Jumlah Pengguna' },
-              beginAtZero: true,
-              ticks: {
-                stepSize: 20,
-                min: 0,
-                max: 100
-              }
-            }
-          }
-        }
-      };
-
-      new Chart(penggunaCtx, config);
+// Chart for Negative Reviews
+const negativeCtx = document.getElementById('negativeChart').getContext('2d');
+new Chart(negativeCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['Negative'],
+    datasets: [{
+      label: 'Reviews',
+      data: [negativePercentage, 100 - negativePercentage],
+      backgroundColor: ['#DC3545', '#E9ECEF'],
+      hoverOffset: 4
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false }
+    },
+    cutout: '70%'
+  }
+});
     });
+  </script>
+  <script>
+    fetch('/user-statistics')
+  .then(response => response.json())
+  .then(data => {
+    const penggunaCtx = document.getElementById('chart-line').getContext('2d');
+
+    const data2024 = {
+      labels: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+      datasets: [
+        {
+          label: 'Pengguna Laki-laki',
+          data: data.male,
+          borderColor: '#8979FF',
+          backgroundColor: 'rgba(137, 121, 255, 0.2)',
+          tension: 0.5,
+          fill: true
+        },
+        {
+          label: 'Pengguna Perempuan',
+          data: data.female,
+          borderColor: '#FF928A',
+          backgroundColor: 'rgba(255, 146, 138, 0.2)',
+          tension: 0.5,
+          fill: true
+        }
+      ]
+    };
+
+    new Chart(penggunaCtx, {
+      type: 'line',
+      data: data2024,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: {
+            callbacks: {
+              label: (context) => `${context.dataset.label}: ${context.parsed.y} pengguna`
+            }
+          }
+        },
+        scales: {
+          x: { title: { display: true, text: 'Bulan' } },
+          y: {
+            title: { display: true, text: 'Jumlah Pengguna' },
+            beginAtZero: true,
+            ticks: { stepSize: 20, min: 0, max: 100 }
+          }
+        }
+      }
+    });
+  });
+
   </script>
 
   <footer class="footer pt-3  ">

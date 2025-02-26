@@ -28,6 +28,7 @@ use App\Http\Controllers\BlokirController;
 use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\UserLogController;
+use App\Http\Controllers\RatingController;
 use App\Jobs\CheckExpiredSuspensionJob;
 use App\Http\Controllers\LocationController;
 use App\Models\Chat;
@@ -52,6 +53,7 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     //provinsi
     Route::get('/lokasi', [ProvinsiController::class, 'index'])->name('lokasi.index');
     Route::get('/find-nearby', [ProvinsiController::class, 'findNearby'])->name('lokasi.index');
+    Route::get('/user-statistics', [DashboardController::class, 'getUserStatistics']);
 
 
     //kabupaten
@@ -144,6 +146,7 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     Route::post('/blokir/{user}', [BlokirController::class, 'blokir'])->name('blokir');
     Route::delete('/unblokir/{user}', [BlokirController::class, 'unblock'])->name('unblokir');
     Route::get('/pengaturan', [PengaturanController::class, 'daftar2Blokir'])->name('user.pengaturan');
+    Route::post('/rating', [RatingController::class, 'store'])->name('rating.store');
 
     Route::prefix('jelajahi')->group(function () {
         Route::get('/', [JelajahiController::class, 'index'])->name('jelajahi.kota');
@@ -172,10 +175,7 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     // Suspend Page
     Route::get('/suspend', [UserStatusController::class, 'suspendPage'])->name('user.suspend');
     });
-
-    Route::get('/comment', function() {
-        return view('coment');
-    })->name('comment');
+    Route::get('/ratings', [RatingController::class, 'index'])->name('ratings.index');
 
     Route::get('/hitung-jarak', [JarakController::class, 'hitungJarak']);
 

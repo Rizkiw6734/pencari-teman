@@ -39,9 +39,7 @@ use App\Models\Chat;
 require __DIR__.'/auth.php';
 
 Route::middleware([ToSweetAlert::class])->group(function () {
-    Route::get('/', function () {
-        return view('welcome');
-    })->name('welcome');
+    Route::get('/',[RatingController::class, 'luar'])->name('welcome');
 });
 
 //ADMIN

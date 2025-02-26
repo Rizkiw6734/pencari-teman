@@ -338,62 +338,64 @@
 
     // Event listener untuk perubahan kabupaten
     document.getElementById('regencies').addEventListener('change', function () {
-        let regencyId = this.value;
-        let userTableBody = document.getElementById('user-table1');
-        userTableBody.innerHTML = ''; // Kosongkan tabel sebelum diisi ulang
+    let regencyId = this.value;
+    let userTableBody = document.getElementById('user-table1');
+    userTableBody.innerHTML = ''; // Kosongkan tabel sebelum diisi ulang
 
-        if (regencyId) {
-            fetch(`/banned/${regencyId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (Array.isArray(data) && data.length > 0) {
-                        data.forEach((user, index) => {
-                            let lokasi = [
-                                user.provinsis ? `Provinsi ${user.provinsis.name}` : null,
-                                user.kabupatens ? `Kabupaten ${user.kabupatens.name}` : null,
-                                user.kecamatans ? `Kecamatan ${user.kecamatans.name}` : null,
-                                user.desas ? `Desa ${user.desas.name}` : null
-                            ].filter(Boolean).join(',<br>') || '-';
+    if (regencyId) {
+        fetch(`/banned/${regencyId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (Array.isArray(data) && data.length > 0) {
+                    data.forEach((user, index) => {
+                        let lokasi = [
+                            user.provinsis ? user.provinsis.name : null,
+                            user.kabupatens ? user.kabupatens.name : null,
+                            user.kecamatans ? user.kecamatans.name : null,
+                            user.desas ? user.desas.name : null
+                        ].filter(Boolean).join(', ');
 
-                            let statusBadge = `
-                                <span class="badge ${user.status === 'banned' ? 'status-banned' : 'status-active'}">
-                                    ${user.status === 'banned'
-                                        ? '<i class="fa fa-ban me-1"></i> Banned'
-                                        : '<i class="fa fa-check-square me-1"></i> Aktif'}
-                                </span>`;
+                        let statusBadge = `
+                            <span class="badge d-inline-flex align-items-center justify-content-center px-3 py-2
+                                ${user.status === 'banned' ? 'status-banned' : 'status-active'}">
+                                ${user.status === 'banned'
+                                    ? '<i class="fa fa-ban me-1"></i> Banned'
+                                    : '<i class="fa fa-check me-1"></i> Aktif'}
+                            </span>`;
 
-                            let actionButtons = user.status === 'banned' ? `
-                                <form action="/users/${user.id}/unblock" method="POST" class="d-inline" id="unblock-form-${user.id}">
-                                    <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').content}">
-                                    <button type="button" class="btn btn-sm text-white"
-                                        style="background-color: #5D87FF; margin-top: 10px !important;"
-                                        onclick="confirmUnblock('${user.id}')">
-                                        Buka Banned
-                                    </button>
-                                </form>
-                            ` : '';
+                        let actionButtons = user.status === 'banned' ? `
+                            <form action="/users/${user.id}/unblock" method="POST" class="d-inline" id="unblock-form-${user.id}">
+                                <input type="hidden" name="_token" value="${document.querySelector('meta[name=\"csrf-token\"').content}">
+                                <button type="button" class="btn btn-sm text-white"
+                                    style="background-color: #5D87FF; margin-top: 12px !important;"
+                                    onclick="confirmUnblock('${user.id}')">
+                                    Buka Banned
+                                </button>
+                            </form>
+                        ` : '';
 
-                            let row = `
-                                <tr class="align-middle">
-                                    <td>${index + 1}</td>
-                                    <td>${user.name || '-'}</td>
-                                    <td>${user.email || '-'}</td>
-                                    <td>${statusBadge}</td>
-                                    <td style="max-width: 200px; word-wrap: break-word; white-space: normal;">
-                                        ${lokasi}
-                                    </td>
-                                    <td>${actionButtons}</td>
-                                </tr>`;
+                        let row = `
+                            <tr class="align-middle">
+                                <td>${index + 1}</td>
+                                <td>${user.name || '-'}</td>
+                                <td>${user.email || '-'}</td>
+                                <td>${statusBadge}</td>
+                                <td style="max-width: 200px; word-wrap: break-word; white-space: normal;">
+                                    ${lokasi || '-'}
+                                </td>
+                                <td>${actionButtons}</td>
+                            </tr>`;
 
-                            userTableBody.insertAdjacentHTML('beforeend', row);
-                        });
-                    } else {
-                        userTableBody.innerHTML = '<tr><td colspan="6" class="text-center">Tidak ada pengguna yang dibanned.</td></tr>';
-                    }
-                })
-                .catch(error => console.error('Error fetching users:', error));
-        }
-    });
+                        userTableBody.insertAdjacentHTML('beforeend', row);
+                    });
+                } else {
+                    userTableBody.innerHTML = '<tr><td colspan="6" class="text-center">Tidak ada pengguna yang dibanned.</td></tr>';
+                }
+            })
+            .catch(error => console.error('Error fetching users:', error));
+    }
+});
+
 });
 
           </script>

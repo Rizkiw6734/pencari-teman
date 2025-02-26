@@ -339,62 +339,64 @@ document.getElementById('provinces').addEventListener('change', function () {
 
 // Event listener untuk perubahan kabupaten
 document.getElementById('regencies').addEventListener('change', function () {
- let regencyId = this.value;
- let userTableBody = document.getElementById('user-table2');
- userTableBody.innerHTML = ''; // Kosongkan tabel sebelum diisi ulang
+    let regencyId = this.value;
+    let userTableBody = document.getElementById('user-table2');
+    userTableBody.innerHTML = ''; // Kosongkan tabel sebelum diisi ulang
 
- if (regencyId) {
-     fetch(`/suspend/${regencyId}`)
-         .then(response => response.json())
-         .then(data => {
-             if (Array.isArray(data) && data.length > 0) {
-                 data.forEach((user, index) => {
-                     let lokasi = [
-                         user.provinsis ? `Provinsi ${user.provinsis.name}` : null,
-                         user.kabupatens ? `Kabupaten ${user.kabupatens.name}` : null,
-                         user.kecamatans ? `Kecamatan ${user.kecamatans.name}` : null,
-                         user.desas ? `Desa ${user.desas.name}` : null
-                     ].filter(Boolean).join(',<br>') || '-';
+    if (regencyId) {
+        fetch(`/suspend/${regencyId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (Array.isArray(data) && data.length > 0) {
+                    data.forEach((user, index) => {
+                        let lokasi = [
+                            user.provinsis ? user.provinsis.name : null,
+                            user.kabupatens ? user.kabupatens.name : null,
+                            user.kecamatans ? user.kecamatans.name : null,
+                            user.desas ? user.desas.name : null
+                        ].filter(Boolean).join(', ');
 
-                     let statusBadge = `
-                         <span class="badge ${user.status === 'suspend' ? 'status-suspend' : 'status-active'}">
-                             ${user.status === 'suspend'
-                                 ? '<i class="fa fa-ban me-1"></i> Suspend'
-                                 : '<i class="fa fa-check-square me-1"></i> Aktif'}
-                         </span>`;
+                        let statusBadge = `
+                            <span class="badge d-inline-flex align-items-center justify-content-center px-3 py-2
+                                ${user.status === 'suspend' ? 'status-suspend' : 'status-active'}">
+                                ${user.status === 'suspend'
+                                    ? '<i class="fa fa-exclamation-triangle me-1"></i> Suspend'
+                                    : '<i class="fa fa-check me-1"></i> Aktif'}
+                            </span>`;
 
-                     let actionButtons = user.status === 'suspend' ? `
-                         <form action="/users/${user.id}/enable" method="POST" class="d-inline" id="enable-form-${user.id}">
-                             <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').content}">
-                             <button type="button" class="btn btn-sm text-white"
-                                 style="background-color: #5D87FF; margin-top: 10px !important;"
-                                 onclick="confirmEnable('${user.id}')">
-                                 Buka Suspend
-                             </button>
-                         </form>
-                     ` : '';
+                        let actionButtons = user.status === 'suspend' ? `
+                            <form action="/users/${user.id}/enable" method="POST" class="d-inline" id="enable-form-${user.id}">
+                                <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').content}">
+                                <button type="button" class="btn btn-sm text-white"
+                                    style="background-color: #5D87FF; margin-top: 12px !important;"
+                                    onclick="confirmEnable('${user.id}')">
+                                    Buka Suspend
+                                </button>
+                            </form>
+                        ` : '';
 
-                     let row = `
-                         <tr class="align-middle">
-                             <td>${index + 1}</td>
-                             <td>${user.name || '-'}</td>
-                             <td>${user.email || '-'}</td>
-                             <td>${statusBadge}</td>
-                             <td style="max-width: 200px; word-wrap: break-word; white-space: normal;">
-                                 ${lokasi}
-                             </td>
-                             <td>${actionButtons}</td>
-                         </tr>`;
+                        let row = `
+                            <tr class="align-middle text-center">
+                                <td>${index + 1}</td>
+                                <td>${user.name || '-'}</td>
+                                <td>${user.email || '-'}</td>
+                                <td>${statusBadge}</td>
+                                <td style="max-width: 200px; word-wrap: break-word; white-space: normal;">
+                                    ${lokasi || '-'}
+                                </td>
+                                <td>${actionButtons}</td>
+                            </tr>`;
 
-                     userTableBody.insertAdjacentHTML('beforeend', row);
-                 });
-             } else {
-                 userTableBody.innerHTML = '<tr><td colspan="6" class="text-center">Tidak ada pengguna yang disuspend.</td></tr>';
-             }
-         })
-         .catch(error => console.error('Error fetching users:', error));
- }
+                        userTableBody.insertAdjacentHTML('beforeend', row);
+                    });
+                } else {
+                    userTableBody.innerHTML = '<tr><td colspan="6" class="text-center">Tidak ada pengguna yang disuspend.</td></tr>';
+                }
+            })
+            .catch(error => console.error('Error fetching users:', error));
+    }
 });
+
 });
 
    </script>

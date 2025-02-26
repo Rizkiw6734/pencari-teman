@@ -240,7 +240,7 @@
                         <p class="section-text">
                             Beberapa ulasan dari pengguna yang telah menggunakan AroundYou untuk berbagi momen dan menjalin koneksi.
                         </p>
-                        <a href="{{ route('comment') }}" class="btn btn-primary">Lihat semua Komentar</a>
+                        <a href="{{ route('ratings.index') }}" class="btn btn-primary">Lihat semua Komentar</a>
                     </div>
                     <img src="./assets/img/ellipse.svg" alt="Vector line art" class="ellipse">
 

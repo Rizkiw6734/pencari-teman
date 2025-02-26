@@ -293,7 +293,7 @@
   <div class="container-fluid py-4">
     <div class="card z-index-2">
       <div class="card-header pb-0">
-        <h6>Data Pengguna Tahun 2024</h6>
+        <h6>Data Pengguna Tahun <span id="current-year"></span></h6>
       </div>
       <div class="card-body p-3" style="padding: 1rem;">
         <div class="chart">
@@ -504,6 +504,9 @@ new Chart(negativeCtx, {
   });
 
   </script>
+  <script>
+    document.getElementById("current-year").textContent = new Date().getFullYear();
+</script>
 
   <footer class="footer pt-3  ">
     <div class="container-fluid">

@@ -19,7 +19,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="user-info">
-                        <img src="{{ asset('assets/img/team-2.jpg') }}" alt="User Photo" class="user-photo">
+                        <img src="{{ $rating->user->foto_profil ? asset('storage/' . $rating->user->foto_profil) : asset('images/marie.jpg') }}" alt="User Photo" class="user-photo">
                         <div>
                             <h5 class="card-title">{{ $rating->user->name }}</h5>
                             <div class="rating-2">

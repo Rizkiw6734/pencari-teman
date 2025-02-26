@@ -246,49 +246,34 @@
 
                     <div class="slider-container">
                         <div class="slider-wrapper">
-                            <div class="slider-card">
-                                <div class="card-content">
-                                    <img src="./assets/img/team-1.jpg" alt="User" class="card-img">
-                                    <div class="text-content">
-                                        <h3>Andrew</h3>
-                                        <div class="rating">⭐⭐⭐⭐4/5</div>
+                            @foreach ($ratings as $rating)
+                                <div class="slider-card">
+                                    <div class="card-content">
+                                        <img src="{{ $rating->user->foto_profil ? asset('storage/' . $rating->user->foto_profil) : asset('images/marie.jpg') }}"  alt="User" class="card-img">
+                                        <div class="text-content">
+                                            <h3>{{ $rating->user->name }}</h3>
+                                            <div class="rating">
+                                                {!! str_repeat('⭐', $rating->rating) !!}{{ $rating->rating }}/5
+                                            </div>
+                                        </div>
                                     </div>
+                                    <p>{{ $rating->ulasan }}</p>
                                 </div>
-                                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Officiis accusamus optio molestias, hic esse, incidunt eveniet ex commodi laudantium ipsum nemo aperiam a. Ex fugiat rem qui, ipsa enim architecto.</p>
-                            </div>
-                            <div class="slider-card">
-                                <div class="card-content">
-                                    <img src="./assets/img/team-1.jpg" alt="User" class="card-img">
-                                    <div class="text-content">
-                                        <h3>Sarah</h3>
-                                        <div class="rating">⭐⭐⭐⭐⭐5/5</div>
-                                    </div>
-                                </div>
-                                <p>Aplikasi ini membantu saya menemukan teman baru.</p>
-                            </div>
-                            <div class="slider-card">
-                                <div class="card-content">
-                                    <img src="./assets/img/team-1.jpg" alt="User" class="card-img">
-                                    <div class="text-content">
-                                        <h3>Michael</h3>
-                                        <div class="rating">⭐⭐⭐⭐4/5</div>
-                                    </div>
-                                </div>
-                                <p>Fitur-fiturnya sangat lengkap dan mudah digunakan!</p>
-                            </div>
+                            @endforeach
                         </div>
 
                         <!-- Navigasi Tombol dan Dots -->
                         <div class="slider-navigation">
                             <button class="slider-btn prev-btn">❮</button>
                             <div class="slider-dots">
-                                <span class="dot active"></span>
-                                <span class="dot"></span>
-                                <span class="dot"></span>
+                                @foreach ($ratings as $index => $rating)
+                                    <span class="dot {{ $index == 0 ? 'active' : '' }}"></span>
+                                @endforeach
                             </div>
                             <button class="slider-btn next-btn">❯</button>
                         </div>
                     </div>
+
                 </div>
             </section>
         </article>

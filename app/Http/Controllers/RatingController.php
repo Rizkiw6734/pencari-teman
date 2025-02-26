@@ -39,7 +39,21 @@ class RatingController extends Controller
     {
         // Ambil daftar rating dengan paginasi 6 per halaman
         $ratings = Rating::with('user')->latest()->paginate(6);
+        // return response()->json($ratings);
 
         return view('coment', compact('ratings'));
     }
+
+    public function luar()
+{
+    $ratings = Rating::with('user')->latest()->take(3)->get();
+    return view('welcome', compact('ratings'));
+
+    // return response()->json([
+    //     'success' => true,
+    //     'message' => 'List of approved ratings',
+    //     'data' => $ratings
+    // ]);
+}
+
 }

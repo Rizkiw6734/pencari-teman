@@ -367,82 +367,82 @@
         .catch(error => console.error('Error fetching regencies:', error));
 });
 
-    document.getElementById('regencies').addEventListener('change', function () {
-        let regencyId = this.value;
-        let userTableBody = document.getElementById('user-table');
-        userTableBody.innerHTML = ''; // Kosongkan tabel sebelum diisi ulang
+document.getElementById('regencies').addEventListener('change', function () {
+    let regencyId = this.value;
+    let userTableBody = document.getElementById('user-table');
+    userTableBody.innerHTML = ''; // Kosongkan tabel sebelum diisi ulang
 
-        if (regencyId) {
-            fetch(`/users/${regencyId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (Array.isArray(data) && data.length > 0) {
-                        data.forEach((user, index) => {
-                            let lokasi = [
-                                user.provinsis ? `Provinsi ${user.provinsis.name}` : null,
-                                user.kabupatens ? `Kabupaten ${user.kabupatens.name}` : null,
-                                user.kecamatans ? `Kecamatan ${user.kecamatans.name}` : null,
-                                user.desas ? `Desa ${user.desas.name}` : null
-                            ].filter(Boolean).join(',<br>') || '-';
+    if (regencyId) {
+        fetch(`/users/${regencyId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (Array.isArray(data) && data.length > 0) {
+                    data.forEach((user, index) => {
+                        let lokasi = [
+                            user.provinsis ? user.provinsis.name : null,
+                            user.kabupatens ? user.kabupatens.name : null,
+                            user.kecamatans ? user.kecamatans.name : null,
+                            user.desas ? user.desas.name : null
+                        ].filter(Boolean).join(', ') || '-';
 
-                            let statusBadge = `
-                                <span class="badge ${user.status === 'banned' ? 'status-banned' :
-                                    (user.status === 'suspend' ? 'status-suspend' : 'status-active')}">
-                                    ${user.status === 'banned' ? '<i class="fa fa-ban me-1"></i> Banned' :
-                                    user.status === 'suspend' ? '<i class="fa fa-stop-circle me-1"></i> Suspend' :
-                                    '<i class="fa fa-check-square me-1"></i> Aktif'}
-                                </span>`;
+                        let statusBadge = `
+                            <span class="badge d-inline-flex align-items-center justify-content-center px-3 py-2
+                                ${user.status === 'banned' ? 'status-banned' : (user.status === 'suspend' ? 'status-suspend' : 'status-selesai')}">
+                                ${user.status === 'banned' ? '<i class="fa fa-ban me-1"></i> Banned' :
+                                user.status === 'suspend' ? '<i class="fa fa-exclamation-triangle me-1"></i> Suspend' :
+                                '<i class="fa fa-check me-1"></i> Aktif'}
+                            </span>`;
 
-                            let actionButtons = `
-                                <td>
-                                    ${user.status !== 'banned' ? `
-                                        <form action="/admin/users/${user.id}/block" method="POST" class="d-inline" id="block-form-${user.id}">
-                                            <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').content}">
-                                            <button type="button" class="btn btn-block-user btn-sm"
-                                                onclick="confirmAction('block', '${user.id}')"
-                                                style="margin-top: 10px !important;">
-                                                <i class="fa fa-ban" style="font-size: 18px;"></i>
-                                            </button>
-                                        </form>
-                                    ` : ''}
+                        let actionButtons = `
+                                ${user.status !== 'banned' ? `
+                                    <form action="/admin/users/${user.id}/block" method="POST" class="d-inline" id="block-form-${user.id}">
+                                        <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').content}">
+                                        <button type="button" class="btn btn-block-user btn-sm"
+                                            onclick="confirmAction('block', '${user.id}')"
+                                            style="margin-top: 15px !important;">
+                                            <i class="fa fa-ban" style="font-size: 18px;"></i>
+                                        </button>
+                                    </form>
+                                ` : ''}
 
-                                    ${user.status !== 'suspend' ? `
-                                        <form action="/admin/users/${user.id}/disable/" method="POST" class="d-inline" id="suspend-form-${user.id}">
-                                            <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').content}">
-                                            <button type="button" class="btn btn-delete-user btn-sm"
-                                                onclick="confirmAction('suspend', '${user.id}')"
-                                                style="margin-top: 10px !important;">
-                                                <i class="fa fa-stop-circle" style="font-size: 18px;"></i>
-                                            </button>
-                                        </form>
-                                    ` : ''}
-                                </td>`;
+                                ${user.status !== 'suspend' ? `
+                                    <form action="/admin/users/${user.id}/disable" method="POST" class="d-inline" id="suspend-form-${user.id}">
+                                        <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').content}">
+                                        <button type="button" class="btn btn-delete-user btn-sm"
+                                            onclick="confirmAction('suspend', '${user.id}')"
+                                            style="margin-top: 15px !important;">
+                                            <i class="fa fa-stop-circle" style="font-size: 18px;"></i>
+                                        </button>
+                                    </form>
+                                ` : ''}
+                            `;
 
-                            let row = `
-                                <tr class="align-middle">
-                                    <td>${index + 1}</td>
-                                    <td>${user.name || '-'}</td>
-                                    <td>${user.email || '-'}</td>
-                                    <td>${user.umur ? `${user.umur} tahun` : '-'}</td>
-                                    <td>${user.gender || '-'}</td>
-                                    <td style="max-width: 250px; word-wrap: break-word; white-space: normal;">
-                                        ${lokasi}
-                                    </td>
-                                    <td>${statusBadge}</td>
-                                    <td>${actionButtons}</td>
-                                </tr>`;
+                        let row = `
+                            <tr class="align-middle">
+                                <td>${index + 1}</td>
+                                <td>${user.name || '-'}</td>
+                                <td>${user.email || '-'}</td>
+                                <td>${user.umur ? `${user.umur} tahun` : '-'}</td>
+                                <td>${user.gender || '-'}</td>
+                                <td style="max-width: 200px; word-wrap: break-word; white-space: normal;">
+                                    ${lokasi}
+                                </td>
+                                <td>${statusBadge}</td>
+                                <td>${actionButtons}</td>
+                            </tr>`;
 
-                            userTableBody.insertAdjacentHTML('beforeend', row);
-                        });
-                    } else {
-                        userTableBody.innerHTML = '<tr><td colspan="8" class="text-center">Tidak ada data pengguna.</td></tr>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching users:', error);
-                });
-        }
-    });
+                        userTableBody.insertAdjacentHTML('beforeend', row);
+                    });
+                } else {
+                    userTableBody.innerHTML = '<tr><td colspan="8" class="text-center">Tidak ada data pengguna.</td></tr>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching users:', error);
+            });
+    }
+});
+
 });
 
 

@@ -190,9 +190,12 @@
                         style="background-color: transparent; border: 1px solid #C9C1FF; cursor: pointer; appearance: none; -moz-appearance: none; -webkit-appearance: none; padding-right: 25px;">
                         <option value="">Status</option>
                         <option value="proses">Proses</option>
-                        <option value="ditolak">Ditolak</option>
+                        <option value="dibanned">Dibanned</option>
+                        <option value="peringatan">Peringatan</option>
+                        <option value="disuspend">Disuspend</option>
                         <option value="diterima">Diterima</option>
                         <option value="selesai">Selesai</option>
+                        <option value="ditolak">Ditolak</option>
                     </select>
                     <i class="fa fa-caret-down" style="font-size: 18.5px; position: absolute; right: 10px; pointer-events: none;"></i>
                 </div>

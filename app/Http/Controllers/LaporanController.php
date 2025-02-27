@@ -216,25 +216,11 @@ class LaporanController extends Controller
         $userId = $laporan->reported_id;
         $jenisHukuman = $request->input('jenis_hukuman');
 
-        $hukumanAktif = Pinalti::whereHas('laporan', function ($query) use ($userId) {
+        $sudahPernahDihukum = Pinalti::whereHas('laporan', function ($query) use ($userId) {
             $query->where('reported_id', $userId);
         })
-        ->where(function ($query) {
-            $query->where('jenis_hukuman', 'suspend')
-                  ->orWhere('jenis_hukuman', 'banned');
-        })
-        ->where(function ($query) {
-            $query->whereNull('end_date')
-                  ->orWhere('end_date', '>', now());
-        })
+        ->whereIn('jenis_hukuman', ['suspend', 'banned'])
         ->exists();
-
-        if ($hukumanAktif) {
-            $laporan->status = 'selesai';
-            $laporan->save();
-            return redirect('/laporan')->with('success', 'Pengguna sudah memiliki hukuman aktif. Laporan dianggap selesai.');
-
-        }
 
         switch ($jenisHukuman) {
             case 'peringatan':
@@ -285,6 +271,54 @@ class LaporanController extends Controller
                     'durasi.max' => 'Max waktu suspend adalah 6 hari.'
                 ]);
 
+                if ($sudahPernahDihukum) {
+                    Laporan::where('reported_id', $userId)
+                        ->whereNotIn('status', ['selesai', 'peringatan'])
+                        ->get()
+                        ->each(function($laporan) {
+                            $laporan->status = 'selesai';
+                            $laporan->save();
+                        });
+                
+                    $jenisHukumanTerakhir = Pinalti::whereHas('laporan', function ($query) use ($userId) {
+                            $query->where('reported_id', $userId);
+                        })
+                        ->whereIn('jenis_hukuman', ['suspend', 'banned'])
+                        ->orderByDesc('start_date')
+                        ->first();
+                
+                    if ($jenisHukumanTerakhir) {
+                        $pesan = "Pengguna ini sudah terkena hukuman {$jenisHukumanTerakhir->jenis_hukuman}. Laporan dianggap selesai.";
+                
+                        AdminLog::create([
+                            'users_id' => Auth::id(),
+                            'aktivitas' => "Admin menandai laporan terkait user {$laporan->terlapor->name} sebagai selesai karena pengguna sudah terkena hukuman {$jenisHukumanTerakhir->jenis_hukuman}.",
+                        ]);
+                
+                        return redirect()->route('laporan.index')->with('success', $pesan);
+                    }
+                }
+                
+    
+                $laporan->status = 'disuspend';
+                $laporan->save();
+                break;
+
+                // $hasWarnings = Pinalti::whereHas('laporan', function ($query) use ($laporan) {
+                //     $query->where('reported_id', $laporan->reported_id);
+                // })->where('jenis_hukuman', 'peringatan')->exists();
+
+                // if ($hasWarnings) {
+                //     Pinalti::whereHas('laporan', function ($query) use ($laporan) {
+                //         $query->where('reported_id', $laporan->reported_id);
+                //     })->where('jenis_hukuman', 'peringatan')->delete();
+
+                //     AdminLog::create([
+                //         'users_id' => Auth::id(),
+                //         'aktivitas' => 'Semua pinalti peringatan terhadap user ' . $laporan->terlapor->name . ' dihapus karena mendapatkan hukuman suspend.',
+                //     ]);
+                // }
+
                 $pinalti = Pinalti::create([
                     'laporan_id' => $laporan->id,
                     'jenis_hukuman' => 'suspend',
@@ -302,20 +336,40 @@ class LaporanController extends Controller
                 $user = User::find($laporan->reported_id);
                 $user->status = 'suspend';
                 $user->save();
-
-                Laporan::where('reported_id', $userId)
-                   ->where('status', '!=', 'selesai')
-                   ->get()
-                   ->each(function($laporan) {
-                       $laporan->status = 'selesai';
-                       $laporan->save();
-                   });
-
                 $laporan->status = 'disuspend';
                 $laporan->save();
                 break;
 
             case 'banned':
+                if ($sudahPernahDihukum) {
+                    Laporan::where('reported_id', $userId)
+                        ->whereNotIn('status', ['selesai', 'peringatan'])
+                        ->get()
+                        ->each(function($laporan) {
+                            $laporan->status = 'selesai';
+                            $laporan->save();
+                        });
+                
+                    $jenisHukumanTerakhir = Pinalti::whereHas('laporan', function ($query) use ($userId) {
+                            $query->where('reported_id', $userId);
+                        })
+                        ->whereIn('jenis_hukuman', ['suspend', 'banned'])
+                        ->orderByDesc('start_date')
+                        ->first();
+                
+                    if ($jenisHukumanTerakhir) {
+                        $pesan = "Pengguna ini sudah terkena hukuman {$jenisHukumanTerakhir->jenis_hukuman}. Laporan dianggap selesai.";
+                
+                        AdminLog::create([
+                            'users_id' => Auth::id(),
+                            'aktivitas' => "Admin menandai laporan terkait user {$laporan->terlapor->name} sebagai selesai karena pengguna sudah terkena hukuman {$jenisHukumanTerakhir->jenis_hukuman}.",
+                        ]);
+                
+                        return redirect()->route('laporan.index')->with('success', $pesan);
+                    }
+                }
+                
+                
                 $pinalti = Pinalti::create([
                     'laporan_id' => $laporan->id,
                     'jenis_hukuman' => 'banned',
@@ -334,14 +388,6 @@ class LaporanController extends Controller
                 $user->save();
 
                 $lp = Laporan::where('reported_id', $userId)->get();
-
-                Laporan::where('reported_id', $userId)
-                ->where('status', '!=', 'selesai')
-                ->get()
-                ->each(function($laporan) {
-                    $laporan->status = 'selesai';
-                    $laporan->save();
-                });
 
                 $laporan->status = 'dibanned';
                 $laporan->save();

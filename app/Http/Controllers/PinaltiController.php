@@ -27,10 +27,15 @@ class PinaltiController extends Controller
 
         $pinalti = $query->with('laporan.terlapor')->paginate(10);
         $notifications = notifikasi::where('user_id', auth()->id())
-        ->where('status', 'unread')
-        ->orderBy('created_at', 'desc')
-        ->take(10)
-        ->get();
+    ->where('status', 'unread')
+    ->orderBy('created_at', 'desc')
+    ->take(10)
+    ->get()
+    ->map(function ($notification) {
+        $notification->foto_profil = User::where('id', $notification->user_id)->value('foto_profil');
+        return $notification;
+    });
+
 
         return view('pinalti.index', compact('pinalti','notifications'));
     }

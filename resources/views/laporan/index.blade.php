@@ -33,7 +33,7 @@
                         <a class="dropdown-item border-radius-md notif-item" href="{{ $notif->link }}" data-id="{{ $notif->id }}">
                             <div class="d-flex py-1">
                                 <div class="my-auto">
-                                    <img src="/assets/img/team-2.jpg" class="avatar avatar-sm me-3">
+                                    <img src="{{ $notif->foto_profil ? asset('storage/' . $notif->foto_profil) : asset('images/marie.jpg') }}" class="avatar avatar-sm me-3">
                                 </div>
                                 <div class="d-flex flex-column justify-content-center">
                                     <h6 class="text-sm font-weight-normal mb-1">
@@ -271,7 +271,7 @@
                                         @elseif($laporan->status == 'selesai') status-diterima
                                         @elseif($laporan->status == 'ditolak') status-ditolak
                                         @endif">
-                                        
+
                                         @if($laporan->status == 'proses')
                                             Proses
                                         @elseif($laporan->status == 'dibanned')
@@ -288,7 +288,7 @@
                                             Ditolak
                                         @endif
                                     </span>
-                                </td>                                                            
+                                </td>
                                 <td>
                                     <button type="button" class="btn btn-detail btn-sm" data-bs-toggle="modal" data-bs-target="#laporanModal{{ $laporan->id }}"
                                         data-id="{{ $laporan->id }}" style="margin-top: 15px !important;">
@@ -405,7 +405,7 @@
                                                                     <button type="button" class="btn" style="border-radius: 12px; background-color: transparent; border: 1.5px solid #151515; color: #151515; margin-right: 20px; margin-top: 3px !important;" data-bs-toggle="modal" data-bs-target="#modalBanned{{ $laporan->id }}">
                                                                         Banned User
                                                                     </button>
-                                                        
+
                                                                     <button type="button" class="btn" style="border-radius: 12px; background-color: transparent; border: 1.5px solid #FFC300; color: #FFC300; margin-top: 3px !important;" data-bs-toggle="modal" data-bs-target="#modalPeringatan{{ $laporan->id }}">
                                                                         Beri Peringatan
                                                                     </button>
@@ -429,7 +429,7 @@
                                                                     @endif
                                                                 @endif
                                                             </div>
-                                                        
+
                                                             <div>
                                                                 @if ($laporan->status === 'proses')
                                                                     @foreach ([
@@ -439,14 +439,14 @@
                                                                             {{ $action['label'] }}
                                                                         </button>
                                                                     @endforeach
-                                                        
+
                                                                     <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modalTolak{{ $laporan->id }}" style="border-radius: 12px; background-color: transparent; border: 1.5px solid #FF0000; color: #FF0000; margin-left: 20px; margin-top: 3px !important;" onclick="confirmTolakLaporan({{ $laporan->id }})">
                                                                         Tolak Laporan
                                                                     </button>
                                                                 @endif
                                                             </div>
                                                         </div>
-                                                        
+
                                                     </div>
                                                 </div>
                                             </div>

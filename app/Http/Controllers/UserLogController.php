@@ -14,7 +14,11 @@ class UserLogController extends Controller
         ->whereDate('created_at', today())
         ->latest()
         ->limit(50)
-        ->get();
+        ->get()
+        ->map(function ($log) {
+            $log->foto_profil = $log->user->foto_profil ?? null; // Ambil foto_profil dari relasi user
+            return $log;
+        });
 
     $logsThisMonth = UserLog::where('user_id', Auth::id())
         ->whereMonth('created_at', now()->month)
@@ -22,9 +26,14 @@ class UserLogController extends Controller
         ->whereDate('created_at', '!=', today())
         ->latest()
         ->limit(50)
-        ->get();
+        ->get()
+        ->map(function ($log) {
+            $log->foto_profil = $log->user->foto_profil ?? null; // Ambil foto_profil dari relasi user
+            return $log;
+        });
 
-    return view('user.aktivitas', compact('logsToday', 'logsThisMonth'));
+        return view('user.aktivitas', compact('logsToday', 'logsThisMonth'));
 }
+
 
 }

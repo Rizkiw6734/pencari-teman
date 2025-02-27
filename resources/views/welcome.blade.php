@@ -253,7 +253,11 @@
                                         <div class="text-content">
                                             <h3>{{ $rating->user->name }}</h3>
                                             <div class="rating">
-                                                {!! str_repeat('⭐', $rating->rating) !!}{{ $rating->rating }}/5
+                                                @php
+                                                    $filledStars = str_repeat('⭐', $rating->rating);
+                                                    $emptyStars = str_repeat('☆', 5 - $rating->rating);
+                                                @endphp
+                                                {!! $filledStars . $emptyStars !!} {{ $rating->rating }}/5
                                             </div>
                                         </div>
                                     </div>

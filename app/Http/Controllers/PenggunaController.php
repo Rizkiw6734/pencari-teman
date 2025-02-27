@@ -62,10 +62,15 @@ class PenggunaController extends Controller
         $districts = $kabupaten ? Districts::where('regency_id', $kabupaten)->get() : [];
         $villages = $kecamatan ? Villages::where('district_id', $kecamatan)->get() : [];
         $notifications = notifikasi::where('user_id', auth()->id())
-        ->where('status', 'unread')
-        ->orderBy('created_at', 'desc')
-        ->take(10)
-        ->get();
+    ->where('status', 'unread')
+    ->orderBy('created_at', 'desc')
+    ->take(10)
+    ->get()
+    ->map(function ($notification) {
+        $notification->foto_profil = User::where('id', $notification->user_id)->value('foto_profil');
+        return $notification;
+    });
+
 
 
         return view('Admin.users.index', compact('users', 'provinces', 'regencies', 'districts', 'villages','notifications'));
@@ -203,10 +208,15 @@ class PenggunaController extends Controller
 
         $bannedUsers = $query->paginate($perPage);
         $notifications = notifikasi::where('user_id', auth()->id())
-        ->where('status', 'unread')
-        ->orderBy('created_at', 'desc')
-        ->take(10)
-        ->get();
+    ->where('status', 'unread')
+    ->orderBy('created_at', 'desc')
+    ->take(10)
+    ->get()
+    ->map(function ($notification) {
+        $notification->foto_profil = User::where('id', $notification->user_id)->value('foto_profil');
+        return $notification;
+    });
+
 
         return view('Admin.users.banned', compact('bannedUsers','notifications'));
     }
@@ -230,10 +240,15 @@ class PenggunaController extends Controller
 
         $suspendUsers = $query->paginate($perPage);
         $notifications = notifikasi::where('user_id', auth()->id())
-        ->where('status', 'unread')
-        ->orderBy('created_at', 'desc')
-        ->take(10)
-        ->get();
+    ->where('status', 'unread')
+    ->orderBy('created_at', 'desc')
+    ->take(10)
+    ->get()
+    ->map(function ($notification) {
+        $notification->foto_profil = User::where('id', $notification->user_id)->value('foto_profil');
+        return $notification;
+    });
+
 
         return view('Admin.users.suspend', compact('suspendUsers','notifications'));
     }

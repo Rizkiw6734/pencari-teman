@@ -712,14 +712,23 @@
 /* Tambahkan ini agar card sejajar */
 .row {
     display: flex;
-    flex-wrap: wrap; /* Supaya tetap responsif */
-    justify-content: center; /* Rata tengah */
-    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 0 60px; /* Tambahkan padding agar card tidak menempel ke sisi layar */
 }
 
 .col-md-6 {
-    flex: 0 0 50%; /* Setiap kolom jadi 50% agar 2 card sejajar */
-    max-width: 43%;
+    flex: 0 0 calc(50% - 10px); /* Menyesuaikan agar tetap dua kolom */
+    max-width: calc(50% - 10px);
+}
+
+/* Responsif: Jika layar lebih kecil, buat card menjadi satu kolom */
+@media (max-width: 768px) {
+    .col-md-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
 }
 
 .card-text {

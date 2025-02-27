@@ -50,6 +50,7 @@
                                                     <label for="star1" title="Sangat Buruk">&#9733;</label>
                                                 </div>
                                             </div>
+
                                             <div class="mb-3 d-flex flex-column">
                                                 <label for="ulasan" class="form-label fw-bold text-start" style="font-size: 18px;">Ulasan</label>
                                                 <textarea class="form-control" id="ulasan" name="ulasan" rows="3" placeholder="Masukkan ulasan Anda" style="border: 0px solid #ffffff; box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25)"></textarea>

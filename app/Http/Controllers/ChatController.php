@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use App\Models\notifikasi;
+use App\Models\Laporan;
 
 class ChatController extends Controller
 {
@@ -20,17 +21,41 @@ class ChatController extends Controller
     return view('user.home', compact('userId'));
 }
 
+// Fungsi untuk mengambil notifikasi
 public function notif()
-    {
-        // Ambil notifikasi berdasarkan user yang sedang login
-        $notifikasis = notifikasi::where('user_id', auth()->id())
+{
+    // Ambil notifikasi berdasarkan user yang sedang login
+    $notifikasis = notifikasi::where('user_id', auth()->id())
         ->where('status', 'unread')
         ->orderBy('created_at', 'desc')
         ->take(10)
-        ->get();
+        ->get()
+        ->map(function ($notifikasi) {
+            $laporan = Laporan::find($notifikasi->laporan_id);
 
-        return response()->json($notifikasis);
-    }
+            if (!$laporan) {
+                // Jika laporan tidak ditemukan, set default foto
+                $notifikasi->foto_profil = null;
+                return $notifikasi;
+            }
+
+            if ($notifikasi->user_id == auth()->id()) {
+                // Jika user yang login adalah penerima notifikasi (pelapor)
+                $notifikasi->foto_profil = auth()->user()->foto_profil;
+            } else {
+                // Ambil pelapor dari tabel laporan berdasarkan user_id (jika itu adalah kolom pelapor)
+                $pelapor = User::find($laporan->user_id); // Sesuaikan jika nama kolom berbeda
+                $notifikasi->foto_profil = $pelapor ? $pelapor->foto_profil : null;
+            }
+
+            return $notifikasi;
+        });
+
+    return response()->json($notifikasis);
+}
+
+
+
 
 public function latestChatsJson(Request $request)
 {

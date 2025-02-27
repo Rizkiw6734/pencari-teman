@@ -840,7 +840,9 @@ function fetchNotifications() {
             `;
 
             data.forEach(notifikasi => {
-                let gambar = notifikasi.gambar ? notifikasi.gambar : "/assets/img/team-1.jpg";
+                let fotoProfil = notifikasi.foto_profil
+                    ? `{{ asset('storage/') }}/${notifikasi.foto_profil}`
+                    : `{{ asset('images/marie.jpg') }}`;
                 let notifikasiItem = document.createElement("li");
                 notifikasiItem.classList.add("dropdown-item", "border-radius-md");
 
@@ -851,7 +853,7 @@ function fetchNotifications() {
                     <a href="#" onclick="markAsRead(${notifikasi.id}, '${notifikasi.link}', '${notifikasi.user_id}', this)"
                         class="d-flex py-1 mb-0 text-decoration-none text-dark">
                         <div class="my-auto">
-                            <img src="${gambar}" class="avatar avatar-sm me-3" style="width: 50px; height: 50px; border-radius: 50%;">
+                            <img src="${fotoProfil}" class="avatar avatar-sm me-3" style="width: 50px; height: 50px; border-radius: 50%;">
                         </div>
                         <div class="d-flex flex-column justify-content-center">
                             <h6 class="text-sm font-weight-normal mb-1" style="font-size: 12px;">

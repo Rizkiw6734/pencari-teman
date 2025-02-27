@@ -56,7 +56,7 @@
                         <a href="#coment" class="navbar-link">Ulasan</a>
                     </li>
                     <li>
-                        <a href="#footer" class="navbar-link">Kontak</a>
+                        <a href="#contact" class="navbar-link">Kontak</a>
                     </li>
                 </ul>
             </nav>
@@ -236,7 +236,7 @@
             <section id="coment" class="hero" style="margin-bottom: 150px;">
                 <div class="container">
                     <div class="hero-content">
-                        <h1 class="h1 hero-title">Apa Kata Pengguna</h1>
+                        <h1 class="h1 hero-titles">Apa Kata Pengguna</h1>
                         <p class="section-text">
                             Beberapa ulasan dari pengguna yang telah menggunakan AroundYou untuk berbagi momen dan menjalin koneksi.
                         </p>
@@ -279,7 +279,7 @@
         </article>
     </main>
 
-    <section class="min-h-screen flex items-center justify-center relative">
+    <section id="contact" class="min-h-screen flex items-center justify-center relative">
         <div class="bg-white flex rounded-2xl shadow-lg max-w-3xl p-5 items-center relative">
             <div class="md:w-1/2 px-8 md:px-16">
                 <h2 class="font-bold text-[#000000] mb-2" style="font-size: 25px">Kirim Pesan</h2>
@@ -379,7 +379,7 @@
     </section>
 
     <!--- #FOOTER -->
-        <footer id="footer" class="footer">
+        <footer class="footer">
             <div class="footer-top">
                 <div class="container">
                     <div class="footer-link-box">

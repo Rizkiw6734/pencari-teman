@@ -186,7 +186,7 @@
                     <!-- Dropdown untuk Kabupaten -->
                     <select id="regencies" class="form-select"
 
-                        style="background-color: transparent; width: 200px; padding-right: 33px; border: 1px solid #C9C1FF;">
+                        style="background-color: transparent; width: 120px; padding-right: 33px; border: 1px solid #C9C1FF;">
 
                         <option value="">Kabupaten</option>
                     </select>

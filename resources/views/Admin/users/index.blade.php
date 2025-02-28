@@ -277,7 +277,7 @@
                                             </form>
                                         @endif
 
-                                        @if ($user->status !== 'suspend')
+                                        {{-- @if ($user->status !== 'suspend')
                                             <!-- Suspend Form -->
                                             <form action="{{ route('admin.users.disable', $user->id) }}" method="POST"
                                                 class="d-inline" id="suspend-form-{{ $user->id }}">
@@ -288,7 +288,7 @@
                                                     <i class="fa fa-stop-circle" style="font-size: 18px;"></i>
                                                 </button>
                                             </form>
-                                        @endif
+                                        @endif --}}
 
                                         <!-- Delete Form -->
                                         {{-- <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
@@ -405,16 +405,6 @@ document.getElementById('regencies').addEventListener('change', function () {
                                     </form>
                                 ` : ''}
 
-                                ${user.status !== 'suspend' ? `
-                                    <form action="/admin/users/${user.id}/disable" method="POST" class="d-inline" id="suspend-form-${user.id}">
-                                        <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').content}">
-                                        <button type="button" class="btn btn-delete-user btn-sm"
-                                            onclick="confirmAction('suspend', '${user.id}')"
-                                            style="margin-top: 15px !important;">
-                                            <i class="fa fa-stop-circle" style="font-size: 18px;"></i>
-                                        </button>
-                                    </form>
-                                ` : ''}
                             `;
 
                         let row = `

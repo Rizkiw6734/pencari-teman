@@ -279,30 +279,25 @@ class LaporanController extends Controller
                             $laporan->status = 'selesai';
                             $laporan->save();
                         });
-                
+
                     $jenisHukumanTerakhir = Pinalti::whereHas('laporan', function ($query) use ($userId) {
                             $query->where('reported_id', $userId);
                         })
                         ->whereIn('jenis_hukuman', ['suspend', 'banned'])
                         ->orderByDesc('start_date')
                         ->first();
-                
+
                     if ($jenisHukumanTerakhir) {
                         $pesan = "Pengguna ini sudah terkena hukuman {$jenisHukumanTerakhir->jenis_hukuman}. Laporan dianggap selesai.";
-                
+
                         AdminLog::create([
                             'users_id' => Auth::id(),
                             'aktivitas' => "Admin menandai laporan terkait user {$laporan->terlapor->name} sebagai selesai karena pengguna sudah terkena hukuman {$jenisHukumanTerakhir->jenis_hukuman}.",
                         ]);
-                
+
                         return redirect()->route('laporan.index')->with('success', $pesan);
                     }
                 }
-                
-    
-                $laporan->status = 'disuspend';
-                $laporan->save();
-                break;
 
                 // $hasWarnings = Pinalti::whereHas('laporan', function ($query) use ($laporan) {
                 //     $query->where('reported_id', $laporan->reported_id);
@@ -349,27 +344,27 @@ class LaporanController extends Controller
                             $laporan->status = 'selesai';
                             $laporan->save();
                         });
-                
+
                     $jenisHukumanTerakhir = Pinalti::whereHas('laporan', function ($query) use ($userId) {
                             $query->where('reported_id', $userId);
                         })
                         ->whereIn('jenis_hukuman', ['suspend', 'banned'])
                         ->orderByDesc('start_date')
                         ->first();
-                
+
                     if ($jenisHukumanTerakhir) {
                         $pesan = "Pengguna ini sudah terkena hukuman {$jenisHukumanTerakhir->jenis_hukuman}. Laporan dianggap selesai.";
-                
+
                         AdminLog::create([
                             'users_id' => Auth::id(),
                             'aktivitas' => "Admin menandai laporan terkait user {$laporan->terlapor->name} sebagai selesai karena pengguna sudah terkena hukuman {$jenisHukumanTerakhir->jenis_hukuman}.",
                         ]);
-                
+
                         return redirect()->route('laporan.index')->with('success', $pesan);
                     }
                 }
-                
-                
+
+
                 $pinalti = Pinalti::create([
                     'laporan_id' => $laporan->id,
                     'jenis_hukuman' => 'banned',

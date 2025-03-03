@@ -19,10 +19,10 @@
             <p style="font-size: 15px; color:#000000; font-weight: 600; margin-bottom: 10px;">Hari ini</p>
             @foreach($logsToday as $log)
                 <div class="activity">
-                    <div class="d-flex align-items-center p-1 rounded shadow-sm w-100 px-3 mb-3" style="background-color: #D1E0FF;">
+                    <div class="d-flex align-items-center p-2 rounded shadow-sm w-100 px-3 mb-3" style="background-color: #D1E0FF;">
                         <img src="{{ $log->foto_profil ? asset('storage/' . $log->foto_profil) : asset('images/marie.jpg') }}" alt="Profile" class="rounded-circle me-3" width="40" height="40">
                         <div class="flex-grow-1">
-                            <p class="mb-0" style="color: #000000;">{{ $log->aktivitas }}</p>
+                            <p class="mb-0" style="color: #000000; font-size: 14px;">{{ $log->aktivitas }}</p>
                             <small class="d-block text-muted">{{ $log->created_at->diffForHumans() }}</small>
                         </div>
                         <small style="color: #000000;">{{ $log->created_at->format('d M Y') }}</small>
@@ -35,10 +35,10 @@
                 <p style="font-size: 15px; color:#000000; font-weight: 600; margin-bottom: 10px;">Bulan Ini</p>
                 @foreach($logsThisMonth as $log)
                     <div class="activity">
-                        <div class="d-flex align-items-center p-1 rounded shadow-sm w-100 px-3 mb-3" style="background-color: #D1E0FF;">
+                        <div class="d-flex align-items-center p-2 rounded shadow-sm w-100 px-3 mb-3" style="background-color: #D1E0FF;">
                             <img src="{{ $log->foto_profil ? asset('storage/' . $log->foto_profil) : asset('images/marie.jpg') }}" alt="Profile" class="rounded-circle me-3" width="40" height="40">
                             <div class="flex-grow-1">
-                                <p class="mb-0" style="color: #000000;">{{ $log->aktivitas }}</p>
+                                <p class="mb-0" style="color: #000000; font-size: 14px;">{{ $log->aktivitas }}</p>
                                 <small class="d-block text-muted">{{ $log->created_at->diffForHumans() }}</small>
                             </div>
                             <small style="color: #000000;">{{ $log->created_at->format('d M Y') }}</small>

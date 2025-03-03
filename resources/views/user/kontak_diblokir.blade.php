@@ -21,7 +21,7 @@
             @forelse($blokirans as $blokiran)
                 <div style="display: flex; align-items: center; margin-bottom: 20px;">
                     <img src="{{ $blokiran->blockedUser->foto_profil ? asset('storage/' . $blokiran->blockedUser->foto_profil) : asset('images/marie.jpg') }}"
-                         alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 10px;">
+                         alt="Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px;">
                     <span style="font-size: 16px; font-weight: 600; color:#000000;">
                         {{ $blokiran->blockedUser->name }}
                     </span>

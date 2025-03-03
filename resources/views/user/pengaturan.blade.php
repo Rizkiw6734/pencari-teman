@@ -11,18 +11,19 @@
                     </h2>
                     <div style="height: 2px; background-color: #75757580; margin: 2px 0; margin-bottom: 20px;"></div>
                 </header>
-                <a href="{{ route('blokiran') }}" style="font-size: 17px; font-weight: 500; color: #528BFF;">Kontak
-                    Diblokir</a>
-                <p style="font-size: 12px; font-style: italic;">{{ $jumlahBlokir }} Pengguna Diblokir</p>
+                <a href="{{ route('blokiran') }}" style="font-size: 18px; font-weight: 500; color: #528BFF; text-decoration: underline;">Pengguna diblokir</a>
+                <p style="font-size: 12px; font-style: italic; color: #666;">{{ $jumlahBlokir }} Pengguna diblokir</p>
 
-                <a href="{{ route('user.logs') }}" style="font-size: 17px; font-weight: 500; color: #528BFF;">Aktivitas
-                    Anda</a>
-                <p style="font-size: 12px; font-style: italic;">Aktivitas anda dapat dilihat disini</p>
+                <span style="font-size: 18px; font-weight: 600; color: #000;">Aktivitas & Notifikasi</span>
+                <p style="font-size: 12px; font-style: italic; color: #666;">Aktifitas & Notifikasi anda dapat dilihat disini</p>
 
-                <a data-bs-toggle="modal" data-bs-target="#exampleModal" href="#"
-                    style="font-size: 17px; font-weight: 500; color: #528BFF;">Rating Aplikasi</a>
-                <p style="font-size: 12px; font-style: italic;">Kami ingin tahu bagaimana pendapatmu tentang aplikasi ini
-                </p>
+                <a href="{{ route('user.logs') }}" style="font-size: 14px; font-weight: 500; color: #528BFF; text-decoration: underline;">Aktifitas Anda</a><br>
+                <a href="#" style="font-size: 14px; font-weight: 500; color: #528BFF; text-decoration: underline;">Notifikasi Anda</a>
+
+                <br><br>
+                <a data-bs-toggle="modal" data-bs-target="#exampleModal" href="#" style="font-size: 18px; font-weight: 500; color: #528BFF; text-decoration: underline;">Rating Aplikasi</a>
+                <p style="font-size: 12px; font-style: italic; color: #666;">Kami ingin tahu bagaimana pendapatmu tentang aplikasi ini</p>
+
                 <!-- Modal -->
                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg">

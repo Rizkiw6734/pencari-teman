@@ -272,7 +272,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center">Tidak ada pengguna yang disuspend.</td>
+                                    <td colspan="6" class="text-center">Tidak ada pengguna yang disuspend.</td>
                                 </tr>
                             @endforelse
                         </tbody>

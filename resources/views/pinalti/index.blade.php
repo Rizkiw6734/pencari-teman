@@ -257,7 +257,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($pinalti as $data)
+                        @forelse ($pinalti as $data)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ optional($data->laporan->terlapor)->name ?? 'Pengguna tidak ditemukan' }}</td>
@@ -267,7 +267,11 @@
                                 <td>{{ \Carbon\Carbon::parse($data->start_date)->format('d-m-Y') }}</td>
                                 <td>{{ $data->end_date ? \Carbon\Carbon::parse( $data->end_date)->format('d-m-Y') : '-' }}</td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center">Data tidak ditemukan.</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

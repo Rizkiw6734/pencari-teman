@@ -16,7 +16,10 @@
     <div class="image-container" style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Poppins', sans-serif;">
         <img src="/assets/img/suspend.svg" alt="Descriptive Text" style="max-width: 30%; height: auto;">
         <p style="margin-top: 30px; color: #000000; font-size: 18px;">Halo <b>{{ Auth::user()->name }}</b>,</p>
-        <p style="margin-top: -15px; font-size: 18px; color: #000000;">Akun Anda telah <em><b>dibekukan sementara</b></em> karena pelanggaran kebijakan.</p>
+        <p style="margin-top: -15px; font-size: 18px; color: #000000;">
+            Akun Anda telah <em><b>dibekukan sementara</b></em> selama 
+            <b>{{ $pinaltis->first()?->durasi ? $pinaltis->first()->durasi . ' hari' : '-' }}</b> karena pelanggaran kebijakan.
+        </p>
         <p style="margin-top: -15px; font-size: 18px; color: #000000;">Untuk informasi lebih lanjut, silakan hubungi tim dukungan kami.</p>        
     </div>
 
@@ -43,7 +46,7 @@
                         </div>
                         <div class="modal-footer d-flex justify-content-between border-0 mx-4">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="showPreviousModal()" style="background-color: #ffffff; color: rgb(0, 0, 0); font-size: 14px; padding: 10px 30px; border:#000000 solid 1px;">Batal</button>
-                            <button type="submit" class="btn btn-primary" style="background-color: #FF1C1C; color: white; font-size: 14px; padding: 10px 30px;">Ya</button>
+                            <button type="submit" class="btn" style="background-color: #FF1C1C; color: white; font-size: 14px; padding: 10px 30px;">Ya</button>
                         </div>
                     </div>
                 </form>

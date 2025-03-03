@@ -34,7 +34,7 @@
                                                     </div>
                                                     <div class="modal-footer d-flex justify-content-between border-0 mx-4">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="showPreviousModal()" style="background-color: #ffffff; color: rgb(0, 0, 0); font-size: 14px; padding: 10px 30px; border:#000000 solid 1px;">Batal</button>
-                                                        <button type="submit" class="btn btn-primary" style="background-color: #FF1C1C; color: white; font-size: 14px; padding: 10px 30px;">Ya</button>
+                                                        <button type="submit" class="btn" style="background-color: #FF1C1C; color: white; font-size: 14px; padding: 10px 30px;">Ya</button>
                                                     </div>
                                                 </div>
                                             </form>

@@ -130,6 +130,71 @@
             </div>
         </div>
     </div>
+
+    @foreach($notifications as $notification)
+<div class="modal fade" id="modal-{{ $notification->laporan_id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Detail Laporan</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card" style="box-shadow: 0px 0px 1px 1px rgba(82, 139, 255, 0.25);">
+                    <div class="card-body">
+                        @if($notification->laporan)
+                            @if($notification->laporan->pelapor->id == auth()->id())
+                                <!-- Pesan untuk Pelapor -->
+                                @if($notification->laporan->status == 'ditolak')
+                                    <p style="font-size: 13px; margin-bottom: 0px;"><b>Status: Laporan Ditolak</b></p>
+                                    <div class="alert alert-danger" style="font-size: 13px;">
+                                        Laporan Anda telah ditolak oleh admin. Jika Anda merasa ini adalah kesalahan, Anda dapat mengajukan banding.
+                                    </div>
+                                @else
+                                    <p style="font-size: 13px; margin-bottom: 0px;"><b>Status: Laporan Terkirim</b></p>
+                                    <p style="font-size: 13px;">
+                                        Laporan Anda telah berhasil dikirim. Kami akan segera meninjau laporan ini dan memberikan pemberitahuan lebih lanjut.
+                                    </p>
+                                @endif
+                            @else
+                                <!-- Pesan untuk Terlapor -->
+                                <p style="font-size: 13px; margin-bottom: 0px;"><b>Status: Anda telah dilaporkan</b></p>
+                                <p style="font-size: 13px;">
+                                    {{ $notification->pesan }}
+                                </p>
+
+                                <p style="font-size: 13px;">
+                                    📌 <b>Apa yang terjadi selanjutnya?</b>
+                                </p>
+                                <ul style="font-size: 13px;">
+                                    <li>Jika laporan ini <b>terbukti valid</b>, akun Anda mungkin akan dikenakan pembatasan sementara atau tindakan lebih lanjut.</li>
+                                    <li>Jika laporan ini terjadi karena kesalahan, Anda dapat mengajukan <b>banding</b> melalui pusat bantuan kami.</li>
+                                    <li>Kami menyarankan Anda untuk membaca kembali <b>pedoman komunitas</b> agar terhindar dari potensi pelanggaran.</li>
+                                </ul>
+
+                                <p style="font-size: 13px;">
+                                    Kami akan memberikan pemberitahuan lebih lanjut setelah laporan ini ditinjau.
+                                </p>
+                                <p style="font-size: 13px; margin-top: -20px;">Team Pencari Teman</p>
+                            @endif
+                        @endif
+                    </div>
+
+                    <!-- Tombol di Footer -->
+                    <div class="modal-footer d-flex justify-content-between border-0 mx-2" style="margin-bottom: -5px; margin-top: -40px;">
+                        @if($notification->laporan->status == 'ditolak' && $notification->laporan->pelapor->id == auth()->id() || $notification->laporan->pelapor->id != auth()->id())
+                            <!-- Tombol Ajukan Banding untuk Pelapor jika laporan ditolak atau untuk Terlapor -->
+                            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModalAjukan" style="font-size: 14px; padding: 10px 30px; background-color: #FF5E5E; color: white;">Ajukan Banding</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-size: 14px; padding: 10px 30px; background-color: #BEB9B9; color: white;">Batal</button>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
+
 @endsection
 
 @section('scripts')
@@ -797,95 +862,97 @@ $('#chat-input').keypress(function(event) {
             }
         });
     </script>
-    <script>
-       document.addEventListener("DOMContentLoaded", function () {
-    fetchNotifications();
-});
+   <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetchNotifications();
+    });
 
-function fetchNotifications() {
-    let notifikasiCount = document.querySelector(".notifikasi-count");
-    let dropdownMenu = document.querySelector(".dropdown-menu");
+    function fetchNotifications() {
+        let notifikasiCount = document.querySelector(".notifikasi-count");
+        let dropdownMenu = document.querySelector(".dropdown-menu");
 
-    if (!notifikasiCount || !dropdownMenu) return;
+        if (!notifikasiCount || !dropdownMenu) return;
 
-    // **Sembunyikan notifikasi count sebelum request**
-    notifikasiCount.style.visibility = "hidden";
-    notifikasiCount.textContent = "";
+        notifikasiCount.style.visibility = "hidden";
+        notifikasiCount.textContent = "";
 
-    fetch("{{ route('user.notifikasi') }}")
-        .then(response => response.json())
-        .then(data => {
-            dropdownMenu.innerHTML = "";
+        fetch("{{ route('user.notifikasi') }}")
+            .then(response => response.json())
+            .then(data => {
+                dropdownMenu.innerHTML = "";
 
-            if (data.length === 0) {
-                notifikasiCount.style.visibility = "hidden";
-                notifikasiCount.textContent = "";
-                dropdownMenu.innerHTML = `<li class="mb-2 text-center p-3">Tidak ada notifikasi</li>`;
-                return;
-            }
+                if (data.length === 0) {
+                    notifikasiCount.style.visibility = "hidden";
+                    notifikasiCount.textContent = "";
+                    dropdownMenu.innerHTML = `<li class="mb-2 text-center p-3">Tidak ada notifikasi</li>`;
+                    return;
+                }
 
-            // **Tampilkan notifikasi count hanya jika ada notifikasi**
-            notifikasiCount.style.visibility = "visible";
-            notifikasiCount.textContent = data.length;
+                notifikasiCount.style.visibility = "visible";
+                notifikasiCount.textContent = data.length;
 
-            dropdownMenu.innerHTML = `
-                <li class="mb-2">
-                    <div style="border-bottom: 1px solid #ccc; padding-bottom: 10px;" class="mb-3">
-                        <div class="d-flex flex-column">
-                            <h5 class="mb-0">Notifikasi</h5>
-                            <small class="text-muted">Kamu mendapatkan <span style="color: #2970ff;">${data.length} Notifikasi</span> terbaru.</small>
+                dropdownMenu.innerHTML = `
+                    <li class="mb-2">
+                        <div style="border-bottom: 1px solid #ccc; padding-bottom: 10px;" class="mb-3">
+                            <div class="d-flex flex-column">
+                                <h5 class="mb-0">Notifikasi</h5>
+                                <small class="text-muted">Kamu mendapatkan <span style="color: #2970ff;">${data.length} Notifikasi</span> terbaru.</small>
+                            </div>
                         </div>
-                    </div>
-                </li>
-            `;
-
-            data.forEach(notifikasi => {
-                let fotoProfil = notifikasi.foto_profil
-                    ? `{{ asset('storage/') }}/${notifikasi.foto_profil}`
-                    : `{{ asset('images/marie.jpg') }}`;
-                let notifikasiItem = document.createElement("li");
-                notifikasiItem.classList.add("dropdown-item", "border-radius-md");
-
-                let roleText = notifikasi.role === "pelapor" ? "Pelapor" : "Terlapor";
-                let bgColor = notifikasi.role === "pelapor" ? "#ffcccc" : "#ccffcc";
-
-                notifikasiItem.innerHTML = `
-                    <a href="#" onclick="markAsRead(${notifikasi.id}, '${notifikasi.link}', '${notifikasi.user_id}', this)"
-                        class="d-flex py-1 mb-0 text-decoration-none text-dark">
-                        <div class="my-auto">
-                            <img src="${fotoProfil}" class="avatar avatar-sm me-3" style="width: 50px; height: 50px; border-radius: 50%;">
-                        </div>
-                        <div class="d-flex flex-column justify-content-center">
-                            <h6 class="text-sm font-weight-normal mb-1" style="font-size: 12px;">
-                                <span class="font-weight-bold">${notifikasi.judul}</span>
-                            </h6>
-                            <p class="text-xs text-secondary mb-0">
-                                <i class="fa fa-clock me-1"></i>
-                                ${formatDate(notifikasi.created_at)}
-                            </p>
-                        </div>
-                    </a>
+                    </li>
                 `;
-                dropdownMenu.appendChild(notifikasiItem);
-            });
-        })
-        .catch(error => console.error("Error fetching notifications:", error));
-}
 
+                data.forEach(notifikasi => {
+                    let fotoProfil = notifikasi.foto_profil
+                        ? `{{ asset('storage/') }}/${notifikasi.foto_profil}`
+                        : `{{ asset('images/marie.jpg') }}`;
 
-function markAsRead(id, link, user_id, element) {
+                    let notifikasiItem = document.createElement("li");
+                    notifikasiItem.classList.add("dropdown-item", "border-radius-md");
+
+                    notifikasiItem.innerHTML = `
+                        <a href="#" onclick="markAsRead(event, ${notifikasi.id}, '${notifikasi.link}', '${notifikasi.user_id}', this)"
+                            class="d-flex py-1 mb-0 text-decoration-none text-dark">
+                            <div class="my-auto">
+                                <img src="${fotoProfil}" class="avatar avatar-sm me-3" style="width: 50px; height: 50px; border-radius: 50%;">
+                            </div>
+                            <div class="d-flex flex-column justify-content-center">
+                                <h6 class="text-sm font-weight-normal mb-1" style="font-size: 12px;">
+                                    <span class="font-weight-bold">${notifikasi.judul ? notifikasi.judul : notifikasi.message}</span>
+                                </h6>
+                                <p class="text-xs text-secondary mb-0">
+                                    <i class="fa fa-clock me-1"></i>
+                                    ${formatDate(notifikasi.created_at)}
+                                </p>
+                            </div>
+                        </a>
+                    `;
+                    dropdownMenu.appendChild(notifikasiItem);
+                });
+            })
+            .catch(error => console.error("Error fetching notifications:", error));
+    }
+
+    function markAsRead(event, id, link, user_id, element) {
+    event.preventDefault(); // Mencegah pengalihan sebelum notifikasi diproses
+
     fetch(`/notifikasi/${id}/read`, {
         method: "POST",
         headers: {
             "X-CSRF-TOKEN": "{{ csrf_token() }}",
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ user_id: user_id }) // Kirim user_id untuk validasi di backend
+        body: JSON.stringify({ user_id: user_id })
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) throw new Error("Gagal memperbarui notifikasi");
+        return response.json();
+    })
     .then(() => {
-        element.closest("li").remove(); // Hapus dari tampilan
+        // Hapus notifikasi dari daftar
+        element.closest("li").remove();
 
+        // Perbarui jumlah notifikasi
         let notifikasiCount = document.querySelector(".notifikasi-count");
         let dropdownMenu = document.querySelector(".dropdown-menu");
 
@@ -899,23 +966,26 @@ function markAsRead(id, link, user_id, element) {
             notifikasiCount.textContent = newCount;
         }
 
-        window.location.href = link; // Redirect ke halaman tujuan
+        // Buka modal berdasarkan link (ID modal)
+        let modalId = link; // link berisi ID modal, misalnya "modal-1"
+        let modal = new bootstrap.Modal(document.getElementById(modalId));
+        modal.show();
     })
     .catch(error => console.error("Error marking notification as read:", error));
 }
 
-function formatDate(dateString) {
-    let date = new Date(dateString);
-    return date.toLocaleString("id-ID", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
-    });
-}
+    function formatDate(dateString) {
+        let date = new Date(dateString);
+        return date.toLocaleString("id-ID", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    }
+</script>
 
 
-    </script>
 
 @endsection

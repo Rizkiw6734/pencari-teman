@@ -247,9 +247,13 @@
                     <div class="slider-container">
                         <div class="slider-wrapper">
                             @foreach ($ratings as $rating)
-                                <div class="slider-card">
+                                <div class="slider-card" style="position: relative;">
+                                    <!-- Menampilkan tanggal di sebelah kiri atas -->
+                                    <div class="date" style="position: absolute; top: 10px; right: 10px; font-size: 14px; color: gray;">
+                                        {{ \Carbon\Carbon::parse($rating->created_at)->format('d M Y') }}
+                                    </div>
                                     <div class="card-content">
-                                        <img src="{{ $rating->user->foto_profil ? asset('storage/' . $rating->user->foto_profil) : asset('images/marie.jpg') }}"  alt="User" class="card-img">
+                                        <img src="{{ $rating->user->foto_profil ? asset('storage/' . $rating->user->foto_profil) : asset('images/marie.jpg') }}" alt="User" class="card-img">
                                         <div class="text-content">
                                             <h3>{{ $rating->user->name }}</h3>
                                             <div class="rating">
@@ -265,6 +269,8 @@
                                 </div>
                             @endforeach
                         </div>
+                    </div>
+
 
                         <!-- Navigasi Tombol dan Dots -->
                         <div class="slider-navigation">

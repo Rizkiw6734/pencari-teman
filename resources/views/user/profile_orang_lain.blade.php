@@ -166,25 +166,59 @@
                                                             <form id="laporanForm" action="{{ route('laporan.store') }}" method="POST" enctype="multipart/form-data">
                                                                 @csrf
                                                                 <input type="hidden" name="reported_id" id="reported_id" value="{{ $user->id }}">
+
                                                                 <div class="mb-3 d-flex flex-column align-items-start">
-                                                                    <label for="bukti" class="form-label first-circle fw-bold text-start" style="font-size: 15px;">
+                                                                    <label for="bukti" class="form-label fw-bold text-start" style="font-size: 15px;">
                                                                         Bukti <span class="text-muted fst-italic">(*optional)</span>
                                                                     </label>
                                                                     <img id="preview" src="" alt="Pratinjau Gambar" class="mb-2" style="max-width: 100px; display: none;">
-                                                                    <input type="file" class="form-control" id="bukti" name="bukti" accept="image/*" style="border: 0px solid #cecece; box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25);">
+                                                                    <input type="file" class="form-control" id="bukti" name="bukti" accept="image/*">
                                                                     @error('bukti')
                                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                                     @enderror
                                                                 </div>
 
+                                                                <!-- Pilihan Pelanggaran -->
                                                                 <div class="mb-3 d-flex flex-column align-items-start">
-                                                                    <label for="alasan" class="form-label fw-bold text-start" style="font-size: 15px;">Alasan Dilaporkan</label>
-                                                                    <textarea class="form-control" id="alasan" name="alasan" rows="3" placeholder="Masukkan Alasan Anda" style="border: 0px solid #ffffff; box-shadow: 0px 0px 2px 1px rgba(82, 139, 255, 0.25)"></textarea>
-                                                                    @error('alasan')
+                                                                    <label class="form-label fw-bold text-start" style="font-size: 15px;">Jenis Pelanggaran</label>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" id="pelanggaran_privasi" name="pelanggaran" value="Pelanggaran Privasi">
+                                                                        <label class="form-check-label" for="pelanggaran_privasi">Pelanggaran Privasi</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" id="pelanggaran_penipuan" name="pelanggaran" value="Penipuan">
+                                                                        <label class="form-check-label" for="pelanggaran_penipuan">Penipuan</label>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" id="pelanggaran_spam" name="pelanggaran" value="Spam">
+                                                                        <label class="form-check-label" for="pelanggaran_spam">Spam</label>
+                                                                    </div>
+                                                                    @error('pelanggaran')
                                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                                     @enderror
                                                                 </div>
+
+                                                                <div class="mb-3 d-flex flex-column align-items-start">
+                                                                    <label for="alasan" class="form-label fw-bold text-start" style="font-size: 15px;">
+                                                                        Alasan Dilaporkan <span class="text-muted fst-italic">(Maksimal 255 karakter)</span>
+                                                                    </label>
+                                                                    <textarea class="form-control" id="alasan" name="alasan" rows="3"
+                                                                        placeholder="Masukkan Alasan Anda" maxlength="255"></textarea>
+                                                                    <small id="charCount" class="text-muted">255 karakter tersisa</small>
+                                                                    @error('alasan')
+                                                                        <div class="invalid-feedback" style="display:block;">{{ $message }}</div>
+                                                                    @enderror
+                                                                </div>
                                                             </form>
+
+                                                            <script>
+                                                                document.getElementById('alasan').addEventListener('input', function () {
+                                                                    let maxLength = 255;
+                                                                    let currentLength = this.value.length;
+                                                                    let remaining = maxLength - currentLength;
+                                                                    document.getElementById('charCount').textContent = remaining + " karakter tersisa";
+                                                                });
+                                                            </script>
 
                                                             <script>
                                                                 document.getElementById('bukti').addEventListener('change', function(event) {
@@ -204,6 +238,32 @@
                                                                 });
 
                                                                 function submitLaporan() {
+                                                                    let selectedPelanggaran = document.querySelector('input[name="pelanggaran"]:checked');
+                                                                    let alasan = document.getElementById('alasan').value.trim();
+
+                                                                    // Validasi jika jenis pelanggaran tidak dipilih
+                                                                    if (!selectedPelanggaran) {
+                                                                        Swal.fire({
+                                                                            title: "Jenis Pelanggaran Kosong!",
+                                                                            text: "Silakan pilih salah satu jenis pelanggaran sebelum mengirim laporan.",
+                                                                            icon: "error",
+                                                                            confirmButtonText: "OK"
+                                                                        });
+                                                                        return;
+                                                                    }
+
+                                                                    // Validasi jika alasan kosong
+                                                                    if (alasan === "") {
+                                                                        Swal.fire({
+                                                                            title: "Alasan Kosong!",
+                                                                            text: "Silakan isi alasan pelaporan sebelum mengirim laporan.",
+                                                                            icon: "error",
+                                                                            confirmButtonText: "OK"
+                                                                        });
+                                                                        return;
+                                                                    }
+
+                                                                    // Konfirmasi sebelum mengirim laporan
                                                                     Swal.fire({
                                                                         title: "Apakah Anda yakin?",
                                                                         text: "Pastikan data yang Anda isi sudah benar!",

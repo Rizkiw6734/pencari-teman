@@ -1,45 +1,58 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Comment</title>
     <link rel="stylesheet" href="{{ asset('assets/css/style.custom.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  </head>
-  <body>
+</head>
+
+<body>
     <div style="display: flex; align-items: center; margin-bottom: 20px; margin-top: 30px;">
-        <i class="fa-solid fa-arrow-left" style="margin-right: 15px; cursor: pointer; font-size: 20px; margin-left: 30px;" onclick="window.location.href='{{ route('welcome') }}'"></i>
+        <i class="fa-solid fa-arrow-left"
+            style="margin-right: 15px; cursor: pointer; font-size: 20px; margin-left: 30px;"
+            onclick="window.location.href='{{ route('welcome') }}'"></i>
         <span style="font-size: 32px; font-weight: 600; color:#000000;">Semua Komentar</span>
     </div>
 
+
     <div class="row">
         @foreach ($ratings as $rating)
-        <div class="col-md-6 col-sm-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="user-info">
-                        <img src="{{ $rating->user->foto_profil ? asset('storage/' . $rating->user->foto_profil) : asset('images/marie.jpg') }}" alt="User Photo" class="user-photo">
-                        <div>
-                            <h5 class="card-title">{{ $rating->user->name }}</h5>
-                            <div class="rating-2">
-                                @for ($i = 1; $i <= 5; $i++)
-                                    @if ($i <= $rating->rating)
-                                        ⭐
-                                    @else
-                                        ☆
-                                    @endif
-                                @endfor
-                                {{ $rating->rating }}/5
+            <div class="col-md-6 col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="user-info d-flex align-items-center" style="position: relative;">
+                            <img src="{{ $rating->user->foto_profil ? asset('storage/' . $rating->user->foto_profil) : asset('images/marie.jpg') }}"
+                                alt="User Photo" class="user-photo me-3">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title">{{ $rating->user->name }}</h5>
+                                <div class="rating-2">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        @if ($i <= $rating->rating)
+                                            ⭐
+                                        @else
+                                            ☆
+                                        @endif
+                                    @endfor
+                                    {{ $rating->rating }}/5
+                                </div>
                             </div>
+                            <small class="rating-date"
+                                style="position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 0.9rem;
+            color: #6c757d;">{{ $rating->created_at->format('d M Y') }}</small>
                         </div>
+                        <p class="card-text">{{ $rating->ulasan }}</p>
                     </div>
-                    <p class="card-text">{{ $rating->ulasan }}</p>
                 </div>
             </div>
-        </div>
         @endforeach
     </div>
+
 
     <!-- Pagination -->
     <nav aria-label="Page navigation example">
@@ -75,5 +88,6 @@
             @endif
         </ul>
     </nav>
-  </body>
+</body>
+
 </html>

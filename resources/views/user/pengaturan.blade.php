@@ -18,7 +18,7 @@
                 <p style="font-size: 12px; font-style: italic; color: #666;">Aktifitas & Notifikasi anda dapat dilihat disini</p>
 
                 <a href="{{ route('user.logs') }}" style="font-size: 14px; font-weight: 500; color: #528BFF; text-decoration: underline;">Aktifitas Anda</a><br>
-                <a href="#" style="font-size: 14px; font-weight: 500; color: #528BFF; text-decoration: underline;">Notifikasi Anda</a>
+                <a href="{{ route('notifikasi.index')}}" style="font-size: 14px; font-weight: 500; color: #528BFF; text-decoration: underline;">Notifikasi Anda</a>
 
                 <br><br>
                 <a data-bs-toggle="modal" data-bs-target="#exampleModal" href="#" style="font-size: 18px; font-weight: 500; color: #528BFF; text-decoration: underline;">Rating Aplikasi</a>

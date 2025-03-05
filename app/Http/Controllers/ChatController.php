@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use App\Models\notifikasi;
+use App\Models\NotifLaporan;
 use App\Models\Laporan;
 
 class ChatController extends Controller
@@ -18,42 +19,55 @@ class ChatController extends Controller
     public function index()
 {
     $userId = Auth::id();
-    return view('user.home', compact('userId'));
+    $notifications = notifikasi::with('laporan.pelapor2')->where('user_id', $userId)->latest()->get();
+    return view('user.home', compact('userId','notifications'));
 }
 
 // Fungsi untuk mengambil notifikasi
 public function notif()
 {
-    // Ambil notifikasi berdasarkan user yang sedang login
+    // Ambil notifikasi dari tabel notifikasi
     $notifikasis = notifikasi::where('user_id', auth()->id())
         ->where('status', 'unread')
         ->orderBy('created_at', 'desc')
-        ->take(10)
         ->get()
         ->map(function ($notifikasi) {
             $laporan = Laporan::find($notifikasi->laporan_id);
 
             if (!$laporan) {
-                // Jika laporan tidak ditemukan, set default foto
                 $notifikasi->foto_profil = null;
                 return $notifikasi;
             }
 
             if ($notifikasi->user_id == auth()->id()) {
-                // Jika user yang login adalah penerima notifikasi (pelapor)
                 $notifikasi->foto_profil = auth()->user()->foto_profil;
             } else {
-                // Ambil pelapor dari tabel laporan berdasarkan user_id (jika itu adalah kolom pelapor)
-                $pelapor = User::find($laporan->user_id); // Sesuaikan jika nama kolom berbeda
+                $pelapor = User::find($laporan->user_id);
                 $notifikasi->foto_profil = $pelapor ? $pelapor->foto_profil : null;
             }
 
             return $notifikasi;
         });
 
-    return response()->json($notifikasis);
-}
+    // Ambil notifikasi dari tabel notif_laporan
+    $notifikasiPeringatan = NotifLaporan::where('user_id', auth()->id())
+        ->where('is_read', false)
+        ->orderBy('created_at', 'desc')
+        ->get()
+        ->map(function ($notifikasi) {
+            $notifikasi->foto_profil;
 
+            return $notifikasi;
+        });
+
+    // Gabungkan kedua koleksi notifikasi
+    $semuaNotifikasi = $notifikasis->merge($notifikasiPeringatan);
+
+    // Urutkan berdasarkan created_at setelah digabungkan
+    $semuaNotifikasi = $semuaNotifikasi->sortByDesc('created_at')->take(10)->values();
+
+    return response()->json($semuaNotifikasi);
+}
 
 
 

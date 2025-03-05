@@ -249,6 +249,7 @@
                             <th>No</th>
                             <th>Pelapor</th>
                             <th>Terlapor</th>
+                            <th>Jenis Pelanggaran</th>
                             <th>Tanggal</th>
                             <th>Status</th>
                             <th>Aksi</th>
@@ -260,6 +261,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $laporan->pelapor->name }}</td>
                                 <td>{{ $laporan->terlapor->name }}</td>
+                                <td>{{ $laporan->pelanggaran }}</td>
                                 <td>{{ \Carbon\Carbon::parse($laporan->created_at)->format('d-m-Y') }}</td>
                                 <td>
                                     <span class="badge d-inline-flex align-items-center justify-content-center px-3 py-2
@@ -327,8 +329,13 @@
                                                                         </div>
                                                                     </div>
 
+                                                                    <div class="col-6">
+                                                                        <p class="text-dark text-bold">Jenis Pelanggaran</p>
+                                                                        <p>{{ $laporan->pelanggaran }}</p>
+                                                                    </div>
+
                                                                     <div class="row">
-                                                                        <div class="col-6">
+                                                                        <div class="col-10">
                                                                             <p class="text-dark text-bold">Alasan</p>
                                                                             <p>{{ $laporan->alasan }}</p>
                                                                         </div>

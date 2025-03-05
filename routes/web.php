@@ -29,6 +29,7 @@ use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\UserLogController;
 use App\Http\Controllers\RatingController;
+use App\Http\Controllers\NotifLaporanController;
 use App\Jobs\CheckExpiredSuspensionJob;
 use App\Http\Controllers\LocationController;
 use App\Models\Chat;
@@ -113,6 +114,8 @@ Route::middleware(['auth', RoleMiddleware::class . ':Admin', CheckExpiredSuspens
     Route::get('/latest-chats', [ChatController::class, 'latestChatsJson']);
     Route::get('/logs', [UserLogController::class, 'index'])->name('user.logs');
     Route::get('/notifikasi', [ChatController::class, 'notif'])->name('user.notifikasi');
+    Route::get('/notifikasis', [NotifLaporanController::class, 'index'])->name('notifikasi.index');
+    Route::get('/notifikasis/{id}', [NotifLaporanController::class, 'show'])->name('notifikasi.show');
 
     // Banned Page
     Route::get('/banned', [UserStatusController::class, 'bannedPage'])->name('user.banned');

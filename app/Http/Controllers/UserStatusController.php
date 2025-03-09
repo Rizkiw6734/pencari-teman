@@ -15,7 +15,7 @@ class UserStatusController extends Controller
     {
         $user = Auth::user();
         $pinaltis = Pinalti::whereHas('laporan', function ($query) use ($user) {
-            $query->where('reported_id', $user->id)->whereIn('jenis_hukuman', ['peringatan','suspend', 'banned']);
+            $query->where('reported_id', $user->id)->whereIn('jenis_hukuman', ['banned']);
         })->get();
 
         if ($user->status === 'aktif') {
@@ -31,7 +31,7 @@ class UserStatusController extends Controller
     {
         $user = Auth::user();
         $pinaltis = Pinalti::whereHas('laporan', function ($query) use ($user) {
-            $query->where('reported_id', $user->id)->whereIn('jenis_hukuman', ['suspend', 'banned']);
+            $query->where('reported_id', $user->id)->whereIn('jenis_hukuman', ['suspend']);
         })->get();
 
         if ($user->status === 'aktif') {

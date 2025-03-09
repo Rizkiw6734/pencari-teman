@@ -248,12 +248,14 @@ class LaporanController extends Controller
                     'end_date' => null,
                 ]);
 
-                NotifLaporan::create([
+                notifikasi::create([
                     'user_id' => $laporan->reported_id, // Terlapor menerima notifikasi
+                    'laporan_id' => $laporan->id,
                     'type' => 'peringatan',
-                    'message' => 'Anda telah menerima peringatan: ' . $validated['pesan'],
+                    'judul' => 'Anda Mendapat Peringatan',
+                    'pesan' =>  $validated['pesan'],
                     'is_read' => false,
-                    'link' => url()->route('user.logs'),
+                    'link' => 'modal-' . $laporan->id,
                 ]);
 
                 AdminLog::create([

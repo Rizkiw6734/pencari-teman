@@ -11,6 +11,7 @@ class notifikasi extends Model
     protected $fillable = [
         'user_id',
         'laporan_id',
+        'type',
         'judul',
         'pesan',
         'link',

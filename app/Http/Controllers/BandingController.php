@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\AdminLog;
 use Illuminate\Support\Facades\Auth;
 use App\Models\notifikasi;
+use App\Models\Laporan;
 
 class BandingController extends Controller
 {
@@ -154,106 +155,138 @@ class BandingController extends Controller
     }
 
     public function terimaBanding(Request $request, string $id)
-    {
-        $banding = Banding::with('pinalti')->findOrFail($id);
+{
+    $banding = Banding::with('pinalti')->findOrFail($id);
 
-        if ($banding->status === 'diterima' || $banding->status === 'ditolak') {
-            return redirect('/banding')->with('error', 'Banding sudah selesai dan tidak dapat diubah.');
-        }
+    if ($banding->status === 'diterima' || $banding->status === 'ditolak') {
+        return redirect('/banding')->with('error', 'Banding sudah selesai dan tidak dapat diubah.');
+    }
 
-        $pinalti = $banding->pinalti;
+    $pinalti = $banding->pinalti;
 
-        if (!$pinalti) {
-            return redirect('/banding')->with('error', 'Pinalti tidak ditemukan.');
-        }
+    if (!$pinalti) {
+        return redirect('/banding')->with('error', 'Pinalti tidak ditemukan.');
+    }
 
-        $user = User::find($pinalti->laporan->reported_id);
+    $user = User::find($pinalti->laporan->reported_id);
 
-        if (!$user) {
-            return redirect('/banding')->with('error', 'Pengguna terkait pinalti tidak ditemukan.');
-        }
-        $action = $request->input('action');
+    if (!$user) {
+        return redirect('/banding')->with('error', 'Pengguna terkait pinalti tidak ditemukan.');
+    }
+    $action = $request->input('action');
 
-        switch ($pinalti->jenis_hukuman) {
-            case 'suspend':
-                if ($action === 'hapus') {
-                    $user->status = 'aktif';
-                    $user->save();
+    switch ($pinalti->jenis_hukuman) {
+        case 'suspend':
+            if ($action === 'hapus') {
+                // Hapus suspend dan semua peringatan yang terkait
+                $user->status = 'aktif';
+                $user->save();
 
-                    $banding->status = 'diterima';
-                    $banding->pinalti_id = 0;
-                    $banding->save();
+                $banding->status = 'diterima';
+                $banding->pinalti_id = 0;
+                $banding->save();
 
-                    $pinalti->delete();
-                    $laporan = $pinalti->laporan;
+                $pinalti->delete();
+                $laporan = $pinalti->laporan;
 
-                    $laporan->status = 'selesai';
-                    $laporan->save();
+                $laporan->status = 'selesai';
+                $laporan->save();
 
-                    AdminLog::create([
-                        'users_id' => Auth::id(),
-                        'aktivitas' => 'Admin menerima aju banding dari user ' . $banding->user->name . ' dan menghapus pinalti suspend.',
-                    ]);
+                // Hapus semua hukuman peringatan yang terkait dengan user ini
+                $laporanIds = Laporan::where('reported_id', $user->id)->pluck('id');
+                Pinalti::whereIn('laporan_id', $laporanIds)
+                    ->where('jenis_hukuman', 'peringatan')
+                    ->delete();
 
-                    return redirect()->route('banding.index')->with('success', 'Banding diterima dan Suspend berhasil dihapus.');
-                } elseif ($action === 'kurangi') {
-                    $currentDurasi = $pinalti->durasi;
-                    $requestedDurasi = $request->input('durasi', 0);
+                    Laporan::where('reported_id', $user->id)
+                    ->where('status', 'peringatan')
+                    ->update(['status' => 'selesai']);
 
-                    if ($requestedDurasi > $currentDurasi) {
-                        return back()->with('error', 'Pengurangan durasi tidak boleh lebih dari durasi suspend saat ini.');
-                    }
+                AdminLog::create([
+                    'users_id' => Auth::id(),
+                    'aktivitas' => 'Admin menerima aju banding dari user ' . $banding->user->name . ' dan menghapus pinalti suspend beserta semua peringatan.',
+                ]);
 
-                    $pinalti->durasi = $currentDurasi - $requestedDurasi;
-                    $pinalti->end_date = now()->addDays($pinalti->durasi);
-                    $pinalti->save();
+                return redirect()->route('banding.index')->with('success', 'Banding diterima dan Suspend beserta semua peringatan berhasil dihapus.');
+            } elseif ($action === 'kurangi') {
+                // Kurangi durasi suspend tanpa menghapus pinalti
+                $currentDurasi = $pinalti->durasi;
+                $requestedDurasi = $request->input('durasi', 0);
 
-                    $banding->status = 'diterima';
-                    $banding->save();
-
-                    AdminLog::create([
-                        'users_id' => Auth::id(),
-                        'aktivitas' => 'Admin menerima banding dari ' . $banding->user->name . ' dan mengurangi durasi suspend sebanyak ' . $requestedDurasi . ' hari.',
-                    ]);
-
-                    return back()->with('success', 'Durasi suspend berhasil diperbarui.');
-                } else {
-                    return back()->with('error', 'Pilihan tidak valid untuk jenis hukuman suspend.');
+                if ($requestedDurasi > $currentDurasi) {
+                    return back()->with('error', 'Pengurangan durasi tidak boleh lebih dari durasi suspend saat ini.');
                 }
 
-                case 'peringatan':
-                    $banding->status = 'diterima';
-                    $banding->save();
+                $pinalti->durasi = $currentDurasi - $requestedDurasi;
+                $pinalti->end_date = now()->addDays($pinalti->durasi);
+                $pinalti->save();
 
-                    $user->status = 'aktif';
-                    $user->save();
+                $banding->status = 'diterima';
+                $banding->save();
 
-                    // Menghapus pinalti peringatan
-                    $pinalti->delete();
+                AdminLog::create([
+                    'users_id' => Auth::id(),
+                    'aktivitas' => 'Admin menerima banding dari ' . $banding->user->name . ' dan mengurangi durasi suspend sebanyak ' . $requestedDurasi . ' hari.',
+                ]);
 
-                    AdminLog::create([
-                        'users_id' => Auth::id(),
-                        'aktivitas' => 'Admin menerima banding dari user ' . $banding->user->name . ' dan menghapus hukuman peringatan.',
-                    ]);
+                return back()->with('success', 'Durasi suspend berhasil diperbarui.');
+            } else {
+                return back()->with('error', 'Pilihan tidak valid untuk jenis hukuman suspend.');
+            }
 
-                    return redirect()->route('banding.index')->with('success', 'Banding diterima dan hukuman peringatan berhasil dihapus.');
+        case 'peringatan':
+            $banding->status = 'diterima';
+            $banding->save();
 
-                case 'banned':
-                    $banding->status = 'diterima';
-                    $banding->save();
+            $user->status = 'aktif';
+            $user->save();
 
-                    $user->status = 'aktif';
-                    $user->save();
+            // Menghapus pinalti peringatan
+            $pinalti->delete();
+            $laporan = $pinalti->laporan;
 
-                    AdminLog::create([
-                        'users_id' => Auth::id(),
-                        'aktivitas' => 'Admin menerima banding dari user ' . $banding->user->name . ' dan menghapus hukuman banned.',
-                    ]);
+            $laporan->status = 'selesai';
+            $laporan->save();
 
-                    return redirect()->route('banding.index')->with('success', 'Banding diterima dan hukuman banned berhasil dihapus.');
+            AdminLog::create([
+                'users_id' => Auth::id(),
+                'aktivitas' => 'Admin menerima banding dari user ' . $banding->user->name . ' dan menghapus hukuman peringatan.',
+            ]);
 
-            default:
-                return redirect('/banding')->with('error', 'Jenis hukuman tidak dikenali.');
-        }
+            return redirect()->route('banding.index')->with('success', 'Banding diterima dan hukuman peringatan berhasil dihapus.');
+
+        case 'banned':
+            $banding->status = 'diterima';
+            $banding->save();
+
+            $user->status = 'aktif';
+            $user->save();
+
+            $pinalti->delete();
+            $laporan = $pinalti->laporan;
+
+            $laporan->status = 'selesai';
+            $laporan->save();
+
+            // Hapus semua hukuman peringatan yang terkait dengan user ini
+            $laporanIds = Laporan::where('reported_id', $user->id)->pluck('id');
+            Pinalti::whereIn('laporan_id', $laporanIds)
+            ->where('jenis_hukuman', 'peringatan')
+            ->delete();
+
+            Laporan::where('reported_id', $user->id)
+                    ->where('status', 'peringatan')
+                    ->update(['status' => 'selesai']);
+
+            AdminLog::create([
+                'users_id' => Auth::id(),
+                'aktivitas' => 'Admin menerima banding dari user ' . $banding->user->name . ' dan menghapus hukuman banned beserta semua peringatan.',
+            ]);
+
+            return redirect()->route('banding.index')->with('success', 'Banding diterima dan hukuman banned beserta semua peringatan berhasil dihapus.');
+
+        default:
+            return redirect('/banding')->with('error', 'Jenis hukuman tidak dikenali.');
     }
+}
 }

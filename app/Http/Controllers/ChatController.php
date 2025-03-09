@@ -36,7 +36,7 @@ class ChatController extends Controller
         $mergedNotifications = $notifications->merge($notifLaporan)->sortByDesc('created_at')->values();
 
         $pinaltis = Pinalti::whereHas('laporan', function ($query) use ($userId) {
-            $query->where('reported_id', $userId)->whereIn('jenis_hukuman', ['peringatan','suspend', 'banned']);
+            $query->where('reported_id', $userId)->whereIn('jenis_hukuman', ['peringatan']);
         })->get();
 
         // return response()->json([

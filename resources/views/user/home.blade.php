@@ -132,11 +132,11 @@
     </div>
 
     @foreach($notifications as $notification)
-<div class="modal fade" id="modal-{{ $notification->laporan_id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modal-{{ $notification->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Detail Laporan</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Detail Notifikasi</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
             </div>
             <div class="modal-body">
@@ -148,7 +148,7 @@
                                 @if($notification->laporan->status == 'ditolak')
                                     <p style="font-size: 13px; margin-bottom: 0px;"><b>Status: Laporan Ditolak</b></p>
                                     <div class="alert alert-danger" style="font-size: 13px;">
-                                        Laporan Anda telah ditolak oleh admin. Jika Anda merasa ini adalah kesalahan, Anda dapat mengajukan banding.
+                                        Laporan Anda telah ditolak oleh admin karena tidak memenuhi kriteria yang ditetapkan. Silakan periksa kembali dan ajukan laporan yang sesuai.
                                     </div>
                                 @else
                                     <p style="font-size: 13px; margin-bottom: 0px;"><b>Status: Laporan Terkirim</b></p>
@@ -158,33 +158,56 @@
                                 @endif
                             @else
                                 <!-- Pesan untuk Terlapor -->
-                                <p style="font-size: 13px; margin-bottom: 0px;"><b>Status: Anda telah dilaporkan</b></p>
+                                <p style="font-size: 13px; margin-bottom: 0px;"><b>{{ $notification->judul}}</b></p>
                                 <p style="font-size: 13px;">
                                     {{ $notification->pesan }}
                                 </p>
+                            @endif
+                        @endif
 
-                                <p style="font-size: 13px;">
-                                    📌 <b>Apa yang terjadi selanjutnya?</b>
-                                </p>
-                                <ul style="font-size: 13px;">
-                                    <li>Jika laporan ini <b>terbukti valid</b>, akun Anda mungkin akan dikenakan pembatasan sementara atau tindakan lebih lanjut.</li>
-                                    <li>Jika laporan ini terjadi karena kesalahan, Anda dapat mengajukan <b>banding</b> melalui pusat bantuan kami.</li>
-                                    <li>Kami menyarankan Anda untuk membaca kembali <b>pedoman komunitas</b> agar terhindar dari potensi pelanggaran.</li>
-                                </ul>
+                        <!-- Notifikasi dari notif_laporan -->
+                        @if(isset($notification->type))
+                        <p style="font-size: 13px; margin-bottom: 0px;">
+                            <b>Status: {{ ucfirst($notification->type) }}</b>
+                        </p>
 
-                                <p style="font-size: 13px;">
-                                    Kami akan memberikan pemberitahuan lebih lanjut setelah laporan ini ditinjau.
-                                </p>
-                                <p style="font-size: 13px; margin-top: -20px;">Team Pencari Teman</p>
+                        @if($notification->type == 'peringatan')
+                            <div class="alert alert-warning" style="font-size: 13px;">
+                                ⚠️ <b>Peringatan!</b> Anda telah menerima peringatan karena pelanggaran terhadap kebijakan komunitas kami. Harap patuhi aturan agar tidak terkena tindakan lebih lanjut.
+                            </div>
+
+                            <p style="font-size: 13px; color: red;">
+                                📌 <b>Peringatan Akun</b>
+                            </p>
+                            <ul style="font-size: 13px;">
+                                <li>Karena laporan ini <b>terbukti valid</b>, akun Anda mungkin akan dikenakan <b>pembatasan sementara</b> atau <b>tindakan lebih lanjut</b>.</li>
+                                <li>Jika Anda merasa laporan ini terjadi karena kesalahan, Anda dapat mengajukan <b>banding</b> melalui pusat bantuan kami.</li>
+                                <li>Kami menyarankan Anda untuk membaca kembali <b>pedoman komunitas</b> agar terhindar dari potensi pelanggaran di masa mendatang.</li>
+                            </ul>
+
+                            <p style="font-size: 13px;">
+                                Kami akan memberikan pemberitahuan lebih lanjut setelah laporan ini ditinjau.
+                            </p>
+                            <p style="font-size: 13px; margin-top: -20px;"> <b>Team Pencari Teman</b> </p>
+                            @elseif($notification->type == 'suspend')
+                                <div class="alert alert-danger" style="font-size: 13px;">
+                                    ⏸️ <b>Akun Ditangguhkan</b>
+                                    Akun Anda telah ditangguhkan sementara karena pelanggaran serius. Jika Anda merasa ini adalah kesalahan, Anda dapat mengajukan banding.
+                                </div>
+                            @elseif($notification->type == 'banned')
+                                <div class="alert alert-danger" style="font-size: 13px;">
+                                    ❌ <b>Akun Diblokir Permanen</b>
+                                    Akun Anda telah diblokir secara permanen karena pelanggaran berat terhadap aturan komunitas. Jika ini terjadi karena kesalahan, Anda dapat mengajukan banding dalam waktu 7 hari.
+                                </div>
                             @endif
                         @endif
                     </div>
 
                     <!-- Tombol di Footer -->
                     <div class="modal-footer d-flex justify-content-between border-0 mx-2" style="margin-bottom: -5px; margin-top: -40px;">
-                        @if($notification->laporan->status == 'ditolak' && $notification->laporan->pelapor->id == auth()->id() || $notification->laporan->pelapor->id != auth()->id())
-                            <!-- Tombol Ajukan Banding untuk Pelapor jika laporan ditolak atau untuk Terlapor -->
-                            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModalAjukan" style="font-size: 14px; padding: 10px 30px; background-color: #FF5E5E; color: white;">Ajukan Banding</button>
+                        @if(in_array($notification->type ?? '', ['peringatan', 'suspend', 'banned']))
+                            <!-- Tombol Ajukan Banding untuk Peringatan, Suspend, Banned -->
+                            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModalAjukan" style="font-size: 14px; padding: 10px 30px; background-color: #528BFF; color: white;">Ajukan Banding</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-size: 14px; padding: 10px 30px; background-color: #BEB9B9; color: white;">Batal</button>
                         @endif
                     </div>
@@ -194,6 +217,58 @@
     </div>
 </div>
 @endforeach
+
+<!-- Modal Banding  -->
+<div class="modal fade @if ($errors->any()) show @endif" id="exampleModalAjukan" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card" style="box-shadow: 0px 0px 1px 1px rgba(82, 139, 255, 0.25);">
+                    <div class="card-body">
+                        <form action="{{ route('banding.store') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="mb-4">
+                                <label for="pinalti_id" class="form-label" style="font-size: 15px;">Pinalti</label>
+                                <select class="form-select" id="pinalti_id" name="pinalti_id" aria-label="Default select example"
+                                    style="width: 100%; max-width: 800px; border: 0px solid #ffffff; box-shadow: 0px 0px 1px 1px rgba(82, 139, 255, 0.25)">
+                                    <option value="">-- Pilih Pinalti --</option>
+                                    @foreach ($pinaltis as $pinalti)
+                                        <option value="{{ $pinalti->id }}" {{ old('pinalti_id') == $pinalti->id ? 'selected' : '' }}>
+                                            {{ $pinalti->jenis_hukuman ?? 'Tidak ada alasan' }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('pinalti_id')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-4">
+                                <label for="alasan_banding" class="form-label" style="font-size: 15px;">Alasan Banding</label>
+                                <textarea class="form-control" id="alasan_banding" name="alasan_banding" rows="3"
+                                    placeholder="Masukkan Alasan Anda"
+                                    style="border: 0px solid #ffffff; box-shadow: 0px 0px 1px 1px rgba(82, 139, 255, 0.25)">{{ old('alasan_banding') }}</textarea>
+                                @error('alasan_banding')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="modal-footer d-flex justify-content-between border-0 mx-2 mt-3"
+                                style="margin-bottom: -5px; margin-top: -40px;">
+                                <button type="submit" class="btn" style="font-size: 14px; padding: 10px 30px; background-color: #528BFF; color: white;">Ajukan</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                    style="font-size: 14px; padding: 10px 30px; background-color: #BEB9B9; color: white;">Batal</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @endsection
 
@@ -939,7 +1014,7 @@ $('#chat-input').keypress(function(event) {
     fetch(`/notifikasi/${id}/read`, {
         method: "POST",
         headers: {
-            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
             "Content-Type": "application/json"
         },
         body: JSON.stringify({ user_id: user_id })
@@ -957,7 +1032,6 @@ $('#chat-input').keypress(function(event) {
         let dropdownMenu = document.querySelector(".dropdown-menu");
 
         let newCount = parseInt(notifikasiCount.textContent) - 1;
-
         if (newCount <= 0) {
             notifikasiCount.style.visibility = "hidden";
             notifikasiCount.textContent = "";
@@ -966,10 +1040,18 @@ $('#chat-input').keypress(function(event) {
             notifikasiCount.textContent = newCount;
         }
 
-        // Buka modal berdasarkan link (ID modal)
-        let modalId = link; // link berisi ID modal, misalnya "modal-1"
-        let modal = new bootstrap.Modal(document.getElementById(modalId));
-        modal.show();
+        // Perbaikan modal ID yang valid sebelum ditampilkan
+        let modalId = `modal-${id}`;
+        let modalElement = document.getElementById(modalId);
+
+        if (modalElement) {
+            setTimeout(() => {
+                let modal = new bootstrap.Modal(modalElement);
+                modal.show();
+            }, 100);
+        } else {
+            console.warn(`Modal dengan ID '${modalId}' tidak ditemukan.`);
+        }
     })
     .catch(error => console.error("Error marking notification as read:", error));
 }
@@ -984,6 +1066,24 @@ $('#chat-input').keypress(function(event) {
             minute: "2-digit"
         });
     }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        @if ($errors->any())
+            var myModal = new bootstrap.Modal(document.getElementById('exampleModalAjukan'));
+            myModal.show();
+        @endif
+
+    @if (session('success'))
+Swal.fire({
+    title: 'Berhasil!',
+    text: '{{ session("success") }}',
+    icon: 'success',
+    confirmButtonText: 'OK'
+});
+    @endif
+});
 </script>
 
 

@@ -12,16 +12,41 @@ use Illuminate\Support\Facades\Log;
 use App\Models\notifikasi;
 use App\Models\NotifLaporan;
 use App\Models\Laporan;
+use App\Models\Pinalti;
 
 class ChatController extends Controller
 {
     // Menampilkan chat terbaru antara dua user di sidebar
     public function index()
-{
-    $userId = Auth::id();
-    $notifications = notifikasi::with('laporan.pelapor2')->where('user_id', $userId)->latest()->get();
-    return view('user.home', compact('userId','notifications'));
-}
+    {
+        $userId = Auth::id();
+
+        // Ambil data dari tabel notifikasi
+        $notifications = Notifikasi::with('laporan.pelapor2')
+            ->where('user_id', $userId)
+            ->latest()
+            ->get();
+
+        // Ambil data dari tabel notif_laporan
+        $notifLaporan = NotifLaporan::where('user_id', $userId)
+            ->latest()
+            ->get();
+
+        // Gabungkan kedua koleksi dengan merge
+        $mergedNotifications = $notifications->merge($notifLaporan)->sortByDesc('created_at')->values();
+
+        $pinaltis = Pinalti::whereHas('laporan', function ($query) use ($userId) {
+            $query->where('reported_id', $userId)->whereIn('jenis_hukuman', ['peringatan','suspend', 'banned']);
+        })->get();
+
+        // return response()->json([
+        //     'user_id' => $userId,
+        //     'notifications' => $mergedNotifications
+        // ]);
+
+        return view('user.home', compact('userId', 'notifications', 'pinaltis'));
+    }
+
 
 // Fungsi untuk mengambil notifikasi
 public function notif()

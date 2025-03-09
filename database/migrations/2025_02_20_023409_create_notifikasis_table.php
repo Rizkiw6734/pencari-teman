@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Penerima notifikasi
             $table->foreignId('laporan_id')->nullable()->constrained('laporan')->onDelete('cascade'); // Opsional, terkait dengan laporan
+            $table->string('type')->nullable();
             $table->string('judul'); // Judul notifikasi
             $table->text('pesan'); // Isi notifikasi
             $table->string('link')->nullable(); // Link tujuan (misalnya detail laporan)

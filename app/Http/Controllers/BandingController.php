@@ -221,20 +221,36 @@ class BandingController extends Controller
                     return back()->with('error', 'Pilihan tidak valid untuk jenis hukuman suspend.');
                 }
 
-            case 'peringatan':
-            case 'banned':
-                $banding->status = 'diterima';
-                $banding->save();
+                case 'peringatan':
+                    $banding->status = 'diterima';
+                    $banding->save();
 
-                $user->status = 'aktif';
-                $user->save();
+                    $user->status = 'aktif';
+                    $user->save();
 
-                AdminLog::create([
-                    'users_id' => Auth::id(),
-                    'aktivitas' => 'Admin menerima banding dari user ' . $banding->user->name . ' dan menghapus hukuman.',
-                ]);
+                    // Menghapus pinalti peringatan
+                    $pinalti->delete();
 
-                return redirect()->route('banding.index')->with('success', 'Banding diterima dan hukuman berhasil dihapus.');
+                    AdminLog::create([
+                        'users_id' => Auth::id(),
+                        'aktivitas' => 'Admin menerima banding dari user ' . $banding->user->name . ' dan menghapus hukuman peringatan.',
+                    ]);
+
+                    return redirect()->route('banding.index')->with('success', 'Banding diterima dan hukuman peringatan berhasil dihapus.');
+
+                case 'banned':
+                    $banding->status = 'diterima';
+                    $banding->save();
+
+                    $user->status = 'aktif';
+                    $user->save();
+
+                    AdminLog::create([
+                        'users_id' => Auth::id(),
+                        'aktivitas' => 'Admin menerima banding dari user ' . $banding->user->name . ' dan menghapus hukuman banned.',
+                    ]);
+
+                    return redirect()->route('banding.index')->with('success', 'Banding diterima dan hukuman banned berhasil dihapus.');
 
             default:
                 return redirect('/banding')->with('error', 'Jenis hukuman tidak dikenali.');

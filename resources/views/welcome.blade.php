@@ -269,9 +269,7 @@
                                 </div>
                             @endforeach
                         </div>
-                    </div>
-
-
+                        
                         <!-- Navigasi Tombol dan Dots -->
                         <div class="slider-navigation">
                             <button class="slider-btn prev-btn">❮</button>
@@ -283,7 +281,6 @@
                             <button class="slider-btn next-btn">❯</button>
                         </div>
                     </div>
-
                 </div>
             </section>
         </article>
@@ -543,10 +540,7 @@
                 });
             });
         });
-</script>
-
-
-
+    </script>
+    
 </body>
-
 </html>

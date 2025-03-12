@@ -107,7 +107,7 @@
                                                         📌 <b>Peringatan Akun</b>
                                                     </p>
                                                     <ul style="font-size: 13px;">
-                                                        <li>Karena laporan ini <b>terbukti valid</b>, akun Anda mungkin akan
+                                                        <li>Karena laporan dari {{ $notification->laporan->pelapor->name }} terbukti valid, akun Anda mungkin akan
                                                             dikenakan <b>pembatasan sementara</b> atau <b>tindakan lebih
                                                                 lanjut</b>.</li>
                                                         <li>Jika Anda merasa laporan ini terjadi karena kesalahan, Anda

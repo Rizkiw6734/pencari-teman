@@ -180,7 +180,7 @@
                                 📌 <b>Peringatan Akun</b>
                             </p>
                             <ul style="font-size: 13px;">
-                                <li>Karena laporan ini <b>terbukti valid</b>, akun Anda mungkin akan dikenakan <b>pembatasan sementara</b> atau <b>tindakan lebih lanjut</b>.</li>
+                                <li>Karena laporan dari {{ $notification->laporan->pelapor->name }} <b>terbukti valid</b>, akun Anda mungkin akan dikenakan <b>pembatasan sementara</b> atau <b>tindakan lebih lanjut</b>.</li>
                                 <li>Jika Anda merasa laporan ini terjadi karena kesalahan, Anda dapat mengajukan <b>banding</b> melalui pusat bantuan kami.</li>
                                 <li>Kami menyarankan Anda untuk membaca kembali <b>pedoman komunitas</b> agar terhindar dari potensi pelanggaran di masa mendatang.</li>
                             </ul>

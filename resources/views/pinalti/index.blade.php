@@ -260,7 +260,7 @@
                         @forelse ($pinalti as $data)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ optional($data->laporan->terlapor)->name ?? 'Pengguna tidak ditemukan' }}</td>
+                                <td>{{ optional(optional($data->laporan)->terlapor)->name ?? '-' }}</td>
                                 <td>{{ ucwords($data->jenis_hukuman) }}</td>
                                 <td>{{ $data->pesan }}</td>
                                 <td>{{ $data->durasi ? $data->durasi . ' hari' : '-' }}</td>

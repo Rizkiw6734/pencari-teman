@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('pinalti', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('laporan_id')->constrained('laporan')->onDelete('cascade');
+            $table->foreignId('laporan_id')->nullable()->constrained('laporan')->onDelete('cascade');
             $table->enum('jenis_hukuman', ['peringatan', 'suspend', 'banned']);
             $table->text('pesan')->nullable();
             $table->integer('durasi')->nullable();

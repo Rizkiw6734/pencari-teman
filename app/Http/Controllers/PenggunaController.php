@@ -10,6 +10,7 @@ use App\Models\Districts;
 use App\Models\Villages;
 use App\Models\notifikasi;
 use App\Models\AdminLog;
+use App\Models\Pinalti;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -117,21 +118,32 @@ class PenggunaController extends Controller
     }
 
     public function block($id)
-    {
-        $user = User::findOrFail($id);
-        if($user->hasRole('admin')){
-            redirect()->route('Pengguna.index')->with('error', 'pengguna adalah Admin');
-        }
+{
+    $user = User::findOrFail($id);
 
-        AdminLog::create([
-            'users_id' => Auth::id(),
-            'aktivitas' => 'Admin melakukan banned terhadap user ' . $user->name,
-        ]);
-
-        $user->status = 'banned';
-        $user->save();
-        return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil dibanned dan log dicatat');
+    if ($user->hasRole('admin')) {
+        return redirect()->route('Pengguna.index')->with('error', 'Pengguna adalah Admin');
     }
+
+    // Catat log aktivitas admin
+    AdminLog::create([
+        'users_id' => Auth::id(),
+        'aktivitas' => 'Admin melakukan banned terhadap user ' . $user->name,
+    ]);
+
+    // Update status user menjadi banned
+    $user->status = 'banned';
+    $user->save();
+
+    // Tambahkan data ke tabel pinalti
+    Pinalti::create([
+        'jenis_hukuman' => 'banned',
+        'pesan' => 'Pengguna ' . $user->name . ' telah dibanned oleh admin',
+    ]);
+
+    return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil dibanned dan log dicatat');
+}
+
 
     public function unblock($id)
     {
@@ -142,6 +154,14 @@ class PenggunaController extends Controller
 
         $user->status = 'aktif';
         $user->save();
+
+        $pinaltis = Pinalti::where('jenis_hukuman', 'banned')->get(); // Ganti 'Skorsing' sesuai dengan jenis hukuman yang ingin dihapus
+
+        // Hapus setiap pinalti satu per satu berdasarkan id-nya
+        foreach ($pinaltis as $pinalti) {
+            Pinalti::findOrFail($pinalti->id)->delete();
+        }
+
 
         AdminLog::create([
             'users_id' => Auth::id(),

@@ -12,17 +12,27 @@ class UserStatusController extends Controller
      * Menampilkan halaman banned.
      */
     public function bannedPage()
-    {
-        $user = Auth::user();
-        $pinaltis = Pinalti::whereHas('laporan', function ($query) use ($user) {
-            $query->where('reported_id', $user->id)->whereIn('jenis_hukuman', ['banned']);
-        })->get();
+{
+    $user = Auth::user();
 
-        if ($user->status === 'aktif') {
-            return redirect()->route('user.home');
-        }
-        return view('user.banned', compact('pinaltis'));
+    $pinaltis = Pinalti::where(function ($query) use ($user) {
+        // Ambil pinalti yang berasal dari laporan
+        $query->whereHas('laporan', function ($q) use ($user) {
+            $q->where('reported_id', $user->id);
+        });
+
+        // Ambil juga pinalti yang langsung diberikan tanpa laporan
+        $query->orWhereNull('laporan_id')->where('jenis_hukuman', 'banned');
+    })->get();
+
+    // Jika status user masih aktif, kembalikan ke halaman utama
+    if ($user->status === 'aktif') {
+        return redirect()->route('user.home');
     }
+
+    return view('user.banned', compact('pinaltis'));
+}
+
 
     /**
      * Menampilkan halaman suspend.

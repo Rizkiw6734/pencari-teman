@@ -169,7 +169,13 @@ class BandingController extends Controller
         return redirect('/banding')->with('error', 'Pinalti tidak ditemukan.');
     }
 
-    $user = User::find($pinalti->laporan->reported_id);
+    $user = null;
+
+    if ($pinalti->laporan) {
+        $user = User::find($pinalti->laporan->reported_id);
+    } else {
+        $user = User::find($pinalti->id); // Ambil langsung dari pinalti jika tidak ada laporan
+    }
 
     if (!$user) {
         return redirect('/banding')->with('error', 'Pengguna terkait pinalti tidak ditemukan.');
@@ -260,14 +266,13 @@ class BandingController extends Controller
             $banding->status = 'diterima';
             $banding->save();
 
-            $user->status = 'aktif';
-            $user->save();
+            if ($user->status === 'banned') {
+                $user->status = 'aktif';
+                $user->save();
+            }
 
             $pinalti->delete();
             $laporan = $pinalti->laporan;
-
-            $laporan->status = 'selesai';
-            $laporan->save();
 
             // Hapus semua hukuman peringatan yang terkait dengan user ini
             $laporanIds = Laporan::where('reported_id', $user->id)->pluck('id');

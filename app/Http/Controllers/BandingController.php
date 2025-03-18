@@ -65,7 +65,7 @@ class BandingController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'pinalti_id' => 'required|exists:pinalti,id',
             'alasan_banding' => 'required|string|max:255',
         ], [
@@ -73,6 +73,7 @@ class BandingController extends Controller
             'alasan_banding.required' => 'alasan banding harus di isi.',
             'alasan_banding.max' => 'alasan banding tidak bisa lebih dari 255 karakter.'
         ]);
+
 
         $existingBanding = Banding::where('users_id', Auth::user()->id)
         ->where('pinalti_id', $request->pinalti_id)

@@ -302,11 +302,38 @@
                                             <div class="modal-footer d-flex justify-content-between border-0 mx-2"
                                                 style="margin-bottom: -5px; margin-top: -40px;">
                                                 @if (in_array($notification->type ?? '', ['peringatan', 'suspend', 'banned']))
-                                                    <!-- Tombol Ajukan Banding untuk Peringatan, Suspend, Banned -->
-                                                    <button type="button" class="btn" data-bs-toggle="modal"
+                                                    @php
+                                                        // Debugging: Dump variables to see what's available
+                                                        $relatedPinalti = null;
+
+                                                        // If this is a notification with a laporan
+                                                        if (isset($notification->laporan) && $notification->laporan) {
+                                                            // Try to find pinalti directly from the laporan relation
+                                                            $relatedPinalti = $notification->laporan->pinalti;
+
+                                                            // If that doesn't work, try finding it from the pinaltis collection
+                                                            if (!$relatedPinalti && isset($pinaltis)) {
+                                                                $relatedPinalti = $pinaltis->where('laporan_id', $notification->laporan->id)->first();
+                                                            }
+                                                        }
+
+                                                        // If this is a NotifLaporan, try another approach (adapt based on your actual models)
+                                                        if (!$relatedPinalti && isset($notification->id) && get_class($notification) === 'App\Models\NotifLaporan') {
+                                                            // If you have a relation from NotifLaporan to Pinalti or can find it another way
+                                                            // Example: $relatedPinalti = Pinalti::where('notification_id', $notification->id)->first();
+                                                        }
+
+                                                        $pinaltiId = $relatedPinalti ? $relatedPinalti->id : 'not-found';
+                                                    @endphp
+
+                                                    <!-- Tombol Ajukan Banding dengan ID yang lebih jelas -->
+                                                    <button type="button" class="btn btn-primary banding-button"
+                                                        data-bs-toggle="modal"
                                                         data-bs-target="#exampleModalAjukan"
-                                                        style="font-size: 14px; padding: 10px 30px; background-color: #528BFF; color: white;">Ajukan
-                                                        Banding</button>
+                                                        data-pinalti-id="{{ $pinaltiId }}"
+                                                        onclick="setPinaltiId('{{ $pinaltiId }}')">
+                                                        Ajukan Banding
+                                                    </button>
                                                     <button type="button" class="btn btn-secondary"
                                                         data-bs-dismiss="modal"
                                                         style="font-size: 14px; padding: 10px 30px; background-color: #BEB9B9; color: white;">Batal</button>
@@ -329,56 +356,111 @@
             </div>
 
 
-            <!-- Modal Banding  -->
-            <div class="modal fade @if ($errors->any()) show @endif" id="exampleModalAjukan" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-                <div class="modal-dialog modal-dialog-centered modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header border-0">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="card" style="box-shadow: 0px 0px 1px 1px rgba(82, 139, 255, 0.25);">
-                                <div class="card-body">
-                                    <form action="{{ route('banding.store') }}" method="POST" enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="mb-4">
-                                            <label for="pinalti_id" class="form-label" style="font-size: 15px;">Pinalti</label>
-                                            <select class="form-select" id="pinalti_id" name="pinalti_id" aria-label="Default select example"
-                                                style="width: 100%; max-width: 800px; border: 0px solid #ffffff; box-shadow: 0px 0px 1px 1px rgba(82, 139, 255, 0.25)">
-                                                <option value="">-- Pilih Pinalti --</option>
-                                                @foreach ($pinaltis as $pinalti)
-                                                    <option value="{{ $pinalti->id }}" {{ old('pinalti_id') == $pinalti->id ? 'selected' : '' }}>
-                                                        {{ $pinalti->jenis_hukuman ?? 'Tidak ada alasan' }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            @error('pinalti_id')
-                                                <div class="text-danger mt-1">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <div class="mb-4">
-                                            <label for="alasan_banding" class="form-label" style="font-size: 15px;">Alasan Banding</label>
-                                            <textarea class="form-control" id="alasan_banding" name="alasan_banding" rows="3"
-                                                placeholder="Masukkan Alasan Anda"
-                                                style="border: 0px solid #ffffff; box-shadow: 0px 0px 1px 1px rgba(82, 139, 255, 0.25)">{{ old('alasan_banding') }}</textarea>
-                                            @error('alasan_banding')
-                                                <div class="text-danger mt-1">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <div class="modal-footer d-flex justify-content-between border-0 mx-2 mt-3"
-                                            style="margin-bottom: -5px; margin-top: -40px;">
-                                            <button type="submit" class="btn" style="font-size: 14px; padding: 10px 30px; background-color: #528BFF; color: white;">Ajukan</button>
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                                style="font-size: 14px; padding: 10px 30px; background-color: #BEB9B9; color: white;">Batal</button>
-                                        </div>
-                                    </form>
-                                </div>
+            <!-- Modal Banding peringatan  -->
+           <!-- Modal Banding peringatan  -->
+<div class="modal fade @if ($errors->any()) show @endif" id="exampleModalAjukan" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Aju Banding</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card" style="box-shadow: 0px 0px 1px 1px rgba(82, 139, 255, 0.25);">
+                    <div class="card-body">
+                        <form action="{{ route('banding.store') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" id="pinalti_id" name="pinalti_id" value="">
+                            <div class="mb-4">
+                                <label for="alasan_banding" class="form-label" style="font-size: 15px;">Alasan Banding</label>
+                                <textarea class="form-control" id="alasan_banding" name="alasan_banding" rows="3"
+                                    placeholder="Masukkan Alasan Anda"
+                                    style="border: 0px solid #ffffff; box-shadow: 0px 0px 1px 1px rgba(82, 139, 255, 0.25)">{{ old('alasan_banding') }}</textarea>
+                                @error('alasan_banding')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
-                        </div>
+                            <div class="modal-footer d-flex justify-content-between border-0 mx-2 mt-3"
+                                style="margin-bottom: -5px; margin-top: -40px;">
+                                <button type="submit" class="btn" style="font-size: 14px; padding: 10px 30px; background-color: #528BFF; color: white;">Ajukan</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                    style="font-size: 14px; padding: 10px 30px; background-color: #BEB9B9; color: white;">Batal</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+<script>
+    //buat aju banding
+    let currentPinaltiId = null;
+    function setPinaltiId(id) {
+        console.log("setPinaltiId function called with:", id);
+        currentPinaltiId = id;
+
+        // Set the hidden input
+        const pinaltiInput = document.getElementById('pinalti_id');
+        if (pinaltiInput) {
+            pinaltiInput.value = id;
+            console.log("Set pinalti_id input to:", id);
+        }
+
+        // Update debug jan di otak atik
+        const debugDisplay = document.getElementById('debug-display');
+        if (debugDisplay) {
+            debugDisplay.innerHTML = "Pinalti ID: " + id;
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        console.log("DOM fully loaded");
+
+        document.querySelectorAll(".banding-button").forEach(button => {
+            console.log("Found banding button with data-pinalti-id:", button.getAttribute("data-pinalti-id"));
+
+            button.addEventListener("click", function(event) {
+                const pinaltiId = this.getAttribute("data-pinalti-id");
+                console.log("Button clicked with pinalti ID:", pinaltiId);
+                setPinaltiId(pinaltiId);
+            });
+        });
+
+        const bandingModal = document.getElementById('exampleModalAjukan');
+        if (bandingModal) {
+            bandingModal.addEventListener('show.bs.modal', function(event) {
+                console.log("Modal opening, current pinaltiId:", currentPinaltiId);
+
+                const button = event.relatedTarget;
+                if (button) {
+                    const pinaltiId = button.getAttribute('data-pinalti-id');
+                    console.log("Button triggered modal with ID:", pinaltiId);
+                    setPinaltiId(pinaltiId);
+                } else if (currentPinaltiId) {
+                    console.log("Using stored pinaltiId:", currentPinaltiId);
+                    setPinaltiId(currentPinaltiId);
+                }
+            });
+        }
+
+        const bandingForm = document.getElementById('bandingForm');
+        if (bandingForm) {
+            bandingForm.addEventListener('submit', function(event) {
+                const pinaltiInput = document.getElementById('pinalti_id');
+                console.log("Form submitting with pinalti_id:", pinaltiInput.value);
+
+                if (!pinaltiInput.value || pinaltiInput.value === 'not-found') {
+                    event.preventDefault();
+                    alert("Error: Tidak dapat menemukan ID pinalti. Silakan coba lagi.");
+                    console.error("Form submission blocked - missing pinalti_id");
+                }
+            });
+        }
+    });
+</script>
+
+
 
             <script>
                 document.addEventListener("DOMContentLoaded", function() {

@@ -274,6 +274,9 @@ class BandingController extends Controller
             $pinalti->delete();
             $laporan = $pinalti->laporan;
 
+            $laporan->status = 'selesai';
+            $laporan->save();
+
             // Hapus semua hukuman peringatan yang terkait dengan user ini
             $laporanIds = Laporan::where('reported_id', $user->id)->pluck('id');
             Pinalti::whereIn('laporan_id', $laporanIds)

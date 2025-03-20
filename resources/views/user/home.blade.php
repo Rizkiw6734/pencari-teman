@@ -258,6 +258,32 @@
             <div class="modal-body">
                 <div class="card" style="box-shadow: 0px 0px 1px 1px rgba(82, 139, 255, 0.25);">
                     <div class="card-body">
+                        @if (session('success'))
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    Swal.fire({
+                                        title: 'Berhasil!',
+                                        text: '{{ session("success") }}',
+                                        icon: 'success',
+                                        confirmButtonText: 'OK'
+                                    });
+                                });
+                            </script>
+                        @endif
+
+                        @if (session('error'))
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    Swal.fire({
+                                        title: 'Gagal!',
+                                        text: '{{ session("error") }}',
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
+                                });
+                            </script>
+                        @endif
+
                         <form action="{{ route('banding.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" id="pinalti_id" name="pinalti_id" value="">
@@ -283,6 +309,9 @@
         </div>
     </div>
 </div>
+
+
+
 
 <script>
     //buat aju banding

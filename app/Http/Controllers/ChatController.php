@@ -35,11 +35,11 @@ class ChatController extends Controller
         // Gabungkan kedua koleksi dengan merge
         $mergedNotifications = $notifications->merge($notifLaporan)->sortByDesc('created_at')->values();
 
-        $pinaltis = Pinalti::with(['laporan.pelapor'])
-        ->whereHas('laporan', function ($query) use ($userId) {
-            $query->where('reported_id', $userId)->whereIn('jenis_hukuman', ['peringatan']);
-        })
-        ->get();
+        $pinaltis = Pinalti::whereHas('laporan', function ($query) use ($userId) {
+            $query->where('reported_id', $userId)
+                  ->whereNotNull('laporan_id')
+                  ->whereIn('jenis_hukuman', ['peringatan', 'suspend', 'banned']);
+        })->get();
 
         // return response()->json([
         //     'user_id' => $userId,

@@ -36,7 +36,7 @@ class NotifLaporanController extends Controller
     $pinaltis = Pinalti::whereHas('laporan', function ($query) use ($userId) {
         $query->where('reported_id', $userId)->whereIn('jenis_hukuman', ['peringatan', 'suspend', 'banned']);
     })->get();
-    
+
     // return response()->json([
     //     'todayNotifications' => $todayNotifications->values(),
     //     'thisMonthNotifications' => $thisMonthNotifications->values(),

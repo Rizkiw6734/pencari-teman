@@ -357,42 +357,41 @@
 
 
             <!-- Modal Banding peringatan  -->
-           <!-- Modal Banding peringatan  -->
-<div class="modal fade @if ($errors->any()) show @endif" id="exampleModalAjukan" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header border-0">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Aju Banding</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
-            </div>
-            <div class="modal-body">
-                <div class="card" style="box-shadow: 0px 0px 1px 1px rgba(82, 139, 255, 0.25);">
-                    <div class="card-body">
-                        <form action="{{ route('banding.store') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <input type="hidden" id="pinalti_id" name="pinalti_id" value="">
-                            <div class="mb-4">
-                                <label for="alasan_banding" class="form-label" style="font-size: 15px;">Alasan Banding</label>
-                                <textarea class="form-control" id="alasan_banding" name="alasan_banding" rows="3"
-                                    placeholder="Masukkan Alasan Anda"
-                                    style="border: 0px solid #ffffff; box-shadow: 0px 0px 1px 1px rgba(82, 139, 255, 0.25)">{{ old('alasan_banding') }}</textarea>
-                                @error('alasan_banding')
-                                    <div class="text-danger mt-1">{{ $message }}</div>
-                                @enderror
+            <div class="modal fade @if ($errors->any()) show @endif" id="exampleModalAjukan" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header border-0">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Aju Banding</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card" style="box-shadow: 0px 0px 1px 1px rgba(82, 139, 255, 0.25);">
+                                <div class="card-body">
+                                    <form action="{{ route('banding.store') }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <input type="hidden" id="pinalti_id" name="pinalti_id" value="">
+                                        <div class="mb-4">
+                                            <label for="alasan_banding" class="form-label" style="font-size: 15px;">Alasan Banding</label>
+                                            <textarea class="form-control" id="alasan_banding" name="alasan_banding" rows="3"
+                                                placeholder="Masukkan Alasan Anda"
+                                                style="border: 0px solid #ffffff; box-shadow: 0px 0px 1px 1px rgba(82, 139, 255, 0.25)">{{ old('alasan_banding') }}</textarea>
+                                            @error('alasan_banding')
+                                                <div class="text-danger mt-1">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="modal-footer d-flex justify-content-between border-0 mx-2 mt-3"
+                                            style="margin-bottom: -5px; margin-top: -40px;">
+                                            <button type="submit" class="btn" style="font-size: 14px; padding: 10px 30px; background-color: #528BFF; color: white;">Ajukan</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                                style="font-size: 14px; padding: 10px 30px; background-color: #BEB9B9; color: white;">Batal</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
-                            <div class="modal-footer d-flex justify-content-between border-0 mx-2 mt-3"
-                                style="margin-bottom: -5px; margin-top: -40px;">
-                                <button type="submit" class="btn" style="font-size: 14px; padding: 10px 30px; background-color: #528BFF; color: white;">Ajukan</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                    style="font-size: 14px; padding: 10px 30px; background-color: #BEB9B9; color: white;">Batal</button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
 <script>
     //buat aju banding
     let currentPinaltiId = null;

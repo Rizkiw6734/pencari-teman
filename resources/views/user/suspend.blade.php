@@ -13,7 +13,30 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <div class="image-container" style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Poppins', sans-serif;">
+    <div class="image-container" style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Poppins', sans-serif; position: relative;">
+        <!-- Icon bell di pojok kanan atas -->
+        <div class="dropdown" style="position: absolute; top: 35px; right: 50px; z-index: 1050;">
+            <a class="nav-link text-body p-0 d-flex align-items-center justify-content-center"
+                id="dropdownMenuButton"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                href="#"
+                style="position: relative;">
+                <i class="fas fa-bell" style="font-size: 24px; color: #000000; cursor: pointer;"></i>
+                <span class="badge notifikasi-count" style="position: absolute; top: -5px; left: 12px; font-size: 10px; background-color: #2D9CDB; border-radius: 50%; padding: 3px 6px;">0</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end px-2 py-3"
+                aria-labelledby="dropdownMenuButton"
+                style="z-index: 1050; position: absolute;">
+                <li><a class="dropdown-item" href="#">Notifikasi 1</a></li>
+                <li><a class="dropdown-item" href="#">Notifikasi 2</a></li>
+                <li><a class="dropdown-item" href="#">Notifikasi 3</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">Lihat Semua Notifikasi</a></li>
+            </ul>
+        </div>
+
+
         <img src="/assets/img/suspend.svg" alt="Descriptive Text" style="max-width: 30%; height: auto;">
         <p style="margin-top: 30px; color: #000000; font-size: 18px;">Halo <b>{{ Auth::user()->name }}</b>,</p>
         <p style="margin-top: -15px; font-size: 18px; color: #000000;">
@@ -22,6 +45,7 @@
         </p>
         <p style="margin-top: -15px; font-size: 18px; color: #000000;">Untuk informasi lebih lanjut, silakan hubungi tim dukungan kami.</p>
     </div>
+
 
     <div class="d-grid gap-5 d-md-flex justify-content-center" style="margin-top: -75px;">
         <!-- Tombol Logout -->

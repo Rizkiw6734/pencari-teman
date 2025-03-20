@@ -7,7 +7,7 @@
                 <div class="col-md-5" style="background-color: #F0F3F9; height: 100vh; overflow-y: auto;">
                     <div class="mb-3">
                         <div class="mb-2 mt-3 d-flex justify-content-between align-items-center">
-                            <h5 class="font-weight-bold">Sedang Aktif</h5>
+                            <h5 class="font-weight-bold">Teman Aktif</h5>
                             <li class="nav-item dropdown pe-2 d-flex align-items-center justify-content-center">
                                 <a href="javascript:;"
                                     class="nav-link text-body p-0 d-flex align-items-center justify-content-center"
@@ -509,44 +509,61 @@
                 let userContainer = document.querySelector('.active-users');
                 if (!userContainer) return;
 
+                // Kosongkan container sebelum memperbarui
                 userContainer.innerHTML = '';
 
                 // Ubah objek menjadi array menggunakan Object.values()
                 const users = Object.values(data);
 
-                // Pastikan data yang diterima adalah array
-                if (Array.isArray(users)) {
-                    users.forEach(user => {
-                        const userElement = document.createElement('div');
-                        userElement.style.cssText = 'display: inline-block; text-align: center; margin-right: 16px; position: relative; cursor: pointer;';
-                        userElement.innerHTML = `
-                            <div style="width: 55px; height: 55px; border-radius: 50%; position: relative;">
-                                <img src="${user.foto_profil ? '/storage/' + user.foto_profil : '/images/marie.jpg'}" alt="Foto Profil"
-                                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 2px solid #ddd;">
-                                <!-- Indikator hijau lebih besar -->
-                                <div style="width: 16px; height: 16px; background-color: #1abc9c; border-radius: 50%; position: absolute; bottom: 0px; right: 0px; border: 2px solid white;"></div>
-                            </div>
-                            <p style="margin-top: 8px; font-weight: bold;">${user.name}</p>
-                        `;
-
-                        // Tambahkan event listener untuk memanggil fungsi selectChat saat diklik
-                        userElement.addEventListener('click', function() {
-                            selectChat(userElement, user.id,);  // Panggil selectChat dengan user.id
-                        });
-
-                        userContainer.appendChild(userElement);
-                    });
-                } else {
-                    console.error('Data yang diterima bukan array:', users);
+                // Jika tidak ada teman yang aktif, tampilkan pesan
+                if (Array.isArray(users) && users.length === 0) {
+                    userContainer.innerHTML = `
+                        <div class="text-center text-muted" style="padding: 10px;">
+                            <p style="text-align: center; color: #888; font-size: 15px; margin-left: 80px;">Tidak ada teman yang aktif</p>
+                        </div>
+                    `;
+                    return;
                 }
+
+                // Tampilkan teman yang aktif
+                users.forEach(user => {
+                    const userElement = document.createElement('div');
+                    userElement.style.cssText = 'display: inline-block; text-align: center; margin-right: 16px; position: relative; cursor: pointer;';
+                    userElement.innerHTML = `
+                        <div style="width: 55px; height: 55px; border-radius: 50%; position: relative;">
+                            <img src="${user.foto_profil ? '/storage/' + user.foto_profil : '/images/marie.jpg'}" alt="Foto Profil"
+                                style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 2px solid #ddd;">
+                            <div style="width: 16px; height: 16px; background-color: #1abc9c; border-radius: 50%; position: absolute; bottom: 0px; right: 0px; border: 2px solid white;"></div>
+                        </div>
+                        <p style="margin-top: 8px; font-weight: bold;">${user.name}</p>
+                    `;
+
+                    userElement.addEventListener('click', function() {
+                        selectChat(userElement, user.id);
+                    });
+
+                    userContainer.appendChild(userElement);
+                });
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                let userContainer = document.querySelector('.active-users');
+                if (userContainer) {
+                    userContainer.innerHTML = `
+                        <div class="text-center text-danger" style="padding: 20px;">
+                            <p>Gagal memuat data teman yang aktif.</p>
+                        </div>
+                    `;
+                }
+            });
     }
 
     // Panggil setiap 5 detik untuk update real-time
     setInterval(loadActiveUsers, 5000);
     loadActiveUsers();
 });
+
+
 
 
 

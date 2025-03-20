@@ -59,27 +59,52 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         @if (session('success'))
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Sukses!',
-                        text: "{{ session('success') }}",
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'OK'
-                    });
-                });
-            </script>
-        @endif
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Sukses!',
+                text: "{{ session('success') }}",
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+        });
+    </script>
+@endif
 
-        @if ($errors->any())
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    var bandingModal = new bootstrap.Modal(document.getElementById('bandingModal'));
-                    bandingModal.show();
-                });
-            </script>
-        @endif
+@if (session('error'))
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: "{{ session('error') }}",
+            });
+        });
+    </script>
+@endif
+
+@if ($errors->any())
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var bandingModal = new bootstrap.Modal(document.getElementById('bandingModal'));
+            bandingModal.show();
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Terjadi Kesalahan!',
+                html: '<ul style="text-align: left;">' +
+                    @foreach ($errors->all() as $error)
+                        '<li>{{ $error }}</li>' +
+                    @endforeach
+                    '</ul>',
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Perbaiki'
+            });
+        });
+    </script>
+@endif
+
 
         <button type="button" class="text-dark btn btn-sm btn-rounded" data-bs-toggle="modal" data-bs-target="#bandingModal"
             style="box-shadow: 0 0 10px hsla(0, 0%, 0%, 0.2); border-radius: 10px; margin-left: 150px; background-color: transparent; font-size: 16px; padding: 10px 20px;">
@@ -113,7 +138,7 @@
                                                 <div class="text-danger mt-1">{{ $message }}</div>
                                             @enderror
                                         </div>
-                                        
+
                                         <div class="mb-3">
                                             <label for="alasan_banding" class="form-label">Alasan Banding</label>
                                             <textarea name="alasan_banding" id="alasan_banding" rows="4" class="form-control">{{ old('alasan_banding') }}</textarea>

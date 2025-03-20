@@ -461,23 +461,47 @@
 
 
 
-            <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    @if ($errors->any())
-                        var myModal = new bootstrap.Modal(document.getElementById('exampleModalAjukan'));
-                        myModal.show();
-                    @endif
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        @if ($errors->any())
+            var myModal = new bootstrap.Modal(document.getElementById('exampleModalAjukan'));
+            myModal.show();
 
-                @if (session('success'))
+            // Menampilkan alert error dengan SweetAlert
+            Swal.fire({
+                title: 'Error!',
+                html: `
+                    <ul style="text-align: left; color: red;">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                `,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        @endif
+
+        @if (session('success'))
             Swal.fire({
                 title: 'Berhasil!',
                 text: '{{ session("success") }}',
                 icon: 'success',
                 confirmButtonText: 'OK'
             });
-                @endif
+        @endif
+
+        @if (session('error'))
+            Swal.fire({
+                title: 'Gagal!',
+                text: '{{ session("error") }}',
+                icon: 'error',
+                confirmButtonText: 'OK'
             });
-            </script>
+        @endif
+    });
+</script>
+
 
 
 

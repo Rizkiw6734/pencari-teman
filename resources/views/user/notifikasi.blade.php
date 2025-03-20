@@ -302,6 +302,7 @@
                                             <div class="modal-footer d-flex justify-content-between border-0 mx-2"
                                                 style="margin-bottom: -5px; margin-top: -40px;">
                                                 @if (in_array($notification->type ?? '', ['peringatan', 'suspend', 'banned']))
+
                                                     @php
                                                         // Debugging: Dump variables to see what's available
                                                         $relatedPinalti = null;
@@ -460,6 +461,7 @@
 </script>
 
 
+>>>>>>> 58679dec152eae7ba50e3166586ef6ef4223fad8
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
